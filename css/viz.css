@@ -506,7 +506,7 @@ body.embed-mode .viz-search {
     background: #1a1a1a;
     border: 1px solid var(--color-border);
     border-radius: 6px;
-    color: var(--color-text-primary);
+    color: #ececec;   /* always light: the tip's background is dark in both themes */
     font-size: 0.82rem;
     line-height: 1.55;
     padding: 0.5rem 0.8rem;

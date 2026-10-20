@@ -10,7 +10,7 @@
         orange:        '#fb923c',
         maconGreen:      '#16a34a', // Regional map — Macon-Bibb County highlight
         maconGreenLight: '#5cdc8b', // lightened — map stroke/highlight text
-        lightestGreen:   '#bbf7d0', // Regional map — Wilkinson County (barely-positive net commuting)
+        lightestGreen:   '#bbf7d0', // Regional map — any county besides Macon-Bibb with positive net commuting
         bgSurface:     '#2d2d2d',
         bgSurfaceDeep: '#252525',
         textPrimary:   '#ffffff',
@@ -20,7 +20,6 @@
     };
 
     const BIBB      = '13021';
-    const WILKINSON = '13319'; // only county with positive net commuting right now — called out as the palest green on the regional map
 
     // ===== HELPERS =====
     function toNum(v) {
@@ -500,9 +499,11 @@
         const maxPos  = Math.max(0, ...nonBibb.filter(([, v]) => v >  0).map(([, v]) =>  v));
         const maxNeg  = Math.max(0, ...nonBibb.filter(([, v]) => v <= 0).map(([, v]) => -v));
 
+        // Besides Macon-Bibb, a county that gains workers on net is drawn pale green
+        const isOtherGainer = fips => fips !== BIBB && (commLookup[fips] || 0) > 0;
         const countyFill = fips => {
             if (fips === BIBB) return C.maconGreen;
-            if (fips === WILKINSON) return C.lightestGreen;
+            if (isOtherGainer(fips)) return C.lightestGreen;
             const comm = commLookup[fips] || 0;
             if (comm > 0) {
                 const t = comm / (maxPos || 1);
@@ -697,14 +698,14 @@
                 ? `+${Math.round(comm).toLocaleString()} net`
                 : `net: ${Math.round(comm).toLocaleString()}`;
 
-            // Wilkinson's fill is near-white, so the usual white text +
+            // A gaining county's fill is near-white, so the usual white text +
             // dark shadow (built for the mid/dark fills every other county
             // uses) would be unreadable — flip to dark text with no shadow.
-            const isWilkinson = fips === WILKINSON;
+            const isPale = isOtherGainer(fips);
             const g = labelG.append('g')
                 .attr('class', isBibb ? 'county-label county-label--bibb' : 'county-label')
                 .attr('transform', `translate(${cx},${cy})`)
-                .style('text-shadow', isWilkinson ? 'none' : '1px 1px 2px rgba(0,0,0,0.85)');
+                .style('text-shadow', isPale ? 'none' : '1px 1px 2px rgba(0,0,0,0.85)');
 
             if (isBibb) {
                 g.append('text').text('Macon-Bibb')
@@ -724,12 +725,12 @@
                 const fs = Math.max(7, Math.min(10, minDim / 6));
                 g.append('text').text(name)
                     .attr('text-anchor', 'middle').attr('dy', minDim < 42 ? '-2' : '-5')
-                    .attr('font-size', fs).attr('font-weight', 600).attr('fill', isWilkinson ? '#1a3a26' : '#ffffff');
+                    .attr('font-size', fs).attr('font-weight', 600).attr('fill', isPale ? '#1a3a26' : '#ffffff');
                 g.append('text').text(popStr)
                     .attr('text-anchor', 'middle').attr('dy', '8')
-                    .attr('font-size', fs - 1).attr('fill', isWilkinson ? '#3d5b4a' : '#d8d8d8');
+                    .attr('font-size', fs - 1).attr('fill', isPale ? '#3d5b4a' : '#d8d8d8');
                 if (minDim >= 42) {
-                    const commColor = isWilkinson ? C.maconGreen : (comm > 0 ? '#bbf7d0' : '#fed7aa');
+                    const commColor = isPale ? C.maconGreen : (comm > 0 ? '#bbf7d0' : '#fed7aa');
                     g.append('text').text(commStr)
                         .attr('text-anchor', 'middle').attr('dy', '20')
                         .attr('font-size', fs - 1).attr('fill', commColor);
@@ -749,7 +750,7 @@
                 const name   = nameLookup[fips] || 'Unknown';
                 const pop    = (popLookup[fips] || 0).toLocaleString();
                 const comm   = commLookup[fips] || 0;
-                const commColor = isBibb ? C.maconGreen : (fips === WILKINSON ? C.maconGreenLight : (comm > 0 ? C.teal : C.orange));
+                const commColor = isBibb ? C.maconGreen : (isOtherGainer(fips) ? C.maconGreenLight : (comm > 0 ? C.teal : C.orange));
                 const commLine  = `Net commuting balance: <strong style="color:${commColor}">${comm > 0 ? '+' : ''}${Math.round(comm).toLocaleString()}</strong>`;
                 tip.innerHTML = `<strong style="display:block;margin-bottom:3px">${name} County</strong>Population: <strong>${pop}</strong><br>${commLine}`;
                 const rect = container.getBoundingClientRect();
@@ -836,7 +837,7 @@
             { color: C.maconGreen, stroke: C.maconGreenLight, label: 'Macon-Bibb County' },
             { color: C.orange, label: 'Negative net commuting' },
             { color: C.lightestGreen, stroke: C.maconGreen, label: 'Positive net commuting' },
-        ];
+        ].filter(item => item.color !== C.lightestGreen || Object.keys(commLookup).some(isOtherGainer));
         const legW = 158, legH = 14 + LEG_ITEMS.length * 18 + 8;
         // Narrow map: stack directly above the stats box instead of
         // sitting bottom-right — same X so the two read as one column.
@@ -897,7 +898,7 @@
         d3.csv('data/Industry Snapshot.csv'),
         d3.csv('data/Occupation Snapshot.csv'),
         d3.csv('data/Population By County.csv'),
-        d3.csv('data/Net Commuting.csv'),
+        d3.csv('data/Net Commuting LODES.csv'),   // LODES 2023: jobs located here minus employed residents
         d3.csv('data/Demographics.csv'),
         d3.json('data/counties.geojson'),
         d3.json('data/major-highways.geojson'),
