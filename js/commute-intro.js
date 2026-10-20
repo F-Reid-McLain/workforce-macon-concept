@@ -48,6 +48,7 @@
 
     // Story colors, and the regional map's (same values the old 2D map used)
     const BLUE = [123, 143, 209], GOLD = [242, 196, 107];
+    const PAY = [[160, 170, 190], [242, 196, 107], [45, 212, 191]];   // ≤ $1,250 · $1,251–3,333 · > $3,333 a month
     const MAP = { bibb: [22, 163, 74], bibbLine: [92, 220, 139], orange: [251, 146, 60], darkBrown: [58, 36, 17], gainer: [187, 247, 208], border: [68, 68, 68] };
     const HWY = {   // interstates read as primary: thick, bright, teal shield
         interstate: { order: 2, width: 3, alpha: 1, badge: [45, 212, 191], text: [10, 38, 34] },
@@ -87,12 +88,15 @@
         const TRAVEL = 0.5;
         const PER_DOT = d3.sum(region.flows, f => f.jobs) / (mobile ? 140 : 230);
         let seed = 3; const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296;
+        // Each dot also carries a pay band (LODES earnings), split in proportion to its flow's mix
+        const bandAt = (pay, q) => { const tot = d3.sum(pay); let acc = 0; for (let b = 0; b < pay.length; b++) { acc += pay[b] / tot; if (q < acc) return b; } return pay.length - 1; };
         const commuters = region.flows.flatMap(f => {
             const n = Math.max(1, Math.round(f.jobs / PER_DOT));
             return d3.range(n).map(i => {
                 const t0 = departAt((i + rnd()) / n);
                 const j = () => (rnd() - 0.5) * 0.06;
-                return { from: f.from, to: f.to, people: f.jobs / n, t0, t1: Math.max(t0 + TRAVEL + 1, returnAt(rnd())), a: [j(), j()], b: [j(), j()] };
+                return { from: f.from, to: f.to, people: f.jobs / n, t0, t1: Math.max(t0 + TRAVEL + 1, returnAt(rnd())), a: [j(), j()], b: [j(), j()],
+                         band: f.pay ? bandAt(f.pay, (i + 0.5) / n) : 1 };
             });
         });
         function rawPeople(h) {
@@ -135,8 +139,25 @@
             topSources: topSources.slice(0, -1).join(', ') + ' and ' + topSources[topSources.length - 1],
             bibbNet: fmt(net.get(BIBB) || 0),
             statRegion: fmtK(regionPop), statBibb: fmtK(bibbPop),
+            neighborPop: fmt(regionPop - bibbPop),
+            payIn: Math.round(100 * d3.sum(region.flows.filter(f => f.to === BIBB), f => f.pay[2]) / inFromRegion) + '%',
+            payLocal: Math.round(100 * region.localPay[2] / d3.sum(region.localPay)) + '%',
         };
         section.querySelectorAll('[data-ci]').forEach(el => { if (values[el.dataset.ci] !== undefined) el.textContent = values[el.dataset.ci]; });
+
+        // Each dot's start and end points (county center plus a little jitter), computed once
+        commuters.forEach(d => {
+            const a = center.get(d.from), b = center.get(d.to);
+            d.ax = a[0] + d.a[0]; d.ay = a[1] + d.a[1]; d.bx = b[0] + d.b[0]; d.by = b[1] + d.b[1];
+        });
+
+        // ----- Opening: Macon-Bibb alone, then its neighbors rise in, largest commuter flow first -----
+        const arrivalOrder = region.flows.filter(f => f.to === BIBB).sort((a, b) => b.jobs - a.jobs).map(f => f.from);
+        const arriveAt = (fips, h) => {
+            if (fips === BIBB) return 1;
+            const i = Math.max(0, arrivalOrder.indexOf(fips));
+            return smooth(5.05 + 0.05 * i, 5.3 + 0.05 * i, h);
+        };
 
         // ----- The regional map's colors (net commuting, LODES) -----
         const isOtherGainer = fips => fips !== BIBB && (net.get(fips) || 0) > 0;
@@ -205,9 +226,10 @@
         // ----- Camera: keyframed by time of day, so it only moves as you scroll -----
         const V = (lon, lat, zoom, pitch, bearing) => ({ longitude: lon, latitude: lat, zoom: zoom - (mobile ? 0.9 : 0), pitch, bearing });
         const CAMERA = [
-            [5,     V(-83.62, 33.05, 8.0, 58, -10)],   // welcome: the region low in the frame, under the headline
-            [6,     V(-83.62, 32.62, 8.3, 54, 0)],     // dawn, everyone home
-            [8.25,  V(-83.63, 32.68, 8.45, 60, -8)],   // rush hour
+            [5,     V(bc[0], bc[1] + 0.2, 9.55, 58, -10)],   // welcome: Macon-Bibb alone, low in the frame under the headline
+            [6,     V(-83.62, 32.62, 8.3, 54, 0)],     // its neighbors have arrived; everyone home
+            [7.5,   V(-83.63, 32.68, 8.45, 60, -8)],   // rush hour
+            [8.5,   V(-83.63, 32.68, 8.5, 60, -2)],    // who's coming in
             [12.5,  V(-83.62, 32.68, 8.4, 60, 6)],     // the workday
             [17.75, V(-83.62, 32.64, 8.3, 56, 0)],     // heading home
         ];
@@ -337,7 +359,8 @@
             const m = morphAt(hour), S = stagesOf(m);
             const p = rise * (1 - S.settle);   // blocks lower to flat as the camera turns overhead
             const k = fips => heightShare(fips, hour);
-            const homeTop = fips => p * BLOCK_H * Math.min(1, k(fips)), fullTop = fips => p * BLOCK_H * k(fips);
+            const arr = fips => arriveAt(fips, hour);
+            const homeTop = fips => arr(fips) * p * BLOCK_H * Math.min(1, k(fips)), fullTop = fips => arr(fips) * p * BLOCK_H * k(fips);
             const material = { ambient: lerp(0.6, 1, S.light), diffuse: 0.42 * (1 - S.light), shininess: 8, specularColor: [40, 40, 40].map(v => v * (1 - S.light)) };
             const geoKey = Math.round(p * 1000) + '|' + hour.toFixed(3);
             const colorKey = m.toFixed(3);
@@ -345,8 +368,8 @@
             const out = [
                 new deck.SolidPolygonLayer({ id: 'mask-region', data: rings, getPolygon: r => r.ring, operation: 'mask' }),
                 new deck.SolidPolygonLayer({ id: 'home', data: rings, extruded: true, pickable: true, material, getPolygon: r => r.ring,
-                    getElevation: r => homeTop(r.fips), getFillColor: r => fill(r.fips, BLUE),
-                    updateTriggers: { getElevation: geoKey, getFillColor: colorKey } }),
+                    getElevation: r => homeTop(r.fips), getFillColor: r => fill(r.fips, BLUE).concat(Math.round(255 * smooth(0, 0.4, arr(r.fips)))),
+                    updateTriggers: { getElevation: geoKey, getFillColor: colorKey + '|' + (hour < 6 ? hour.toFixed(3) : 'in') } }),
             ];
             // Gold: the extra people who came in to work, stacked on each gaining county.
             // One small layer per county, lifted with modelMatrix so its outline is never re-tessellated.
@@ -361,37 +384,57 @@
                 // County edges: story outlines on the block tops, ending as the map's borders
                 new deck.PathLayer({ id: 'edges', data: rings, getPath: r => lift(r.ring, fullTop(r.fips) + 20), widthUnits: 'pixels',
                     getWidth: r => r.fips === BIBB ? 2.5 : 1,
-                    getColor: r => r.fips === BIBB ? mixRGB([180, 140, 70], MAP.bibbLine, S.light).concat(230) : mixRGB([255, 255, 255], MAP.border, S.light).concat(lerp(120, 255, S.light)),
-                    updateTriggers: { getPath: geoKey, getColor: colorKey } }),
+                    getColor: r => r.fips === BIBB ? mixRGB([180, 140, 70], MAP.bibbLine, S.light).concat(230)
+                        : mixRGB([255, 255, 255], MAP.border, S.light).concat(lerp(120, 255, S.light) * arr(r.fips)),
+                    updateTriggers: { getPath: geoKey, getColor: colorKey + '|' + (hour < 6 ? hour.toFixed(3) : 'in') } }),
                 // Night-time height of counties that emptied out
                 new deck.PathLayer({ id: 'night', data: rings.filter(r => k(r.fips) < 0.998), visible: S.settle < 0.99, opacity: 1 - S.settle,
                     getPath: r => lift(r.ring, p * BLOCK_H), widthUnits: 'pixels', getWidth: 1.2, getColor: [255, 255, 255, 150], updateTriggers: { getPath: geoKey } }),
             );
-            // Commuters on the road right now
-            const moving = m < 0.15 ? commuters.filter(d => (hour > d.t0 && hour < d.t0 + TRAVEL) || (hour > d.t1 && hour < d.t1 + TRAVEL)) : [];
-            if (moving.length && rise > 0.9) out.push(new deck.ScatterplotLayer({ id: 'dots', data: moving,
-                getPosition: d => {
-                    const u = hour < d.t1 ? (hour - d.t0) / TRAVEL : 1 - (hour - d.t1) / TRAVEL;   // 0 = home, 1 = work
-                    const a = center.get(d.from), b = center.get(d.to);
-                    const ax = a[0] + d.a[0], ay = a[1] + d.a[1], bx = b[0] + d.b[0], by = b[1] + d.b[1];
-                    const za = fullTop(d.from), zb = fullTop(d.to);
-                    return [ax + (bx - ax) * u, ay + (by - ay) * u, za + (zb - za) * u + Math.sin(Math.PI * u) * ARC];
-                },
-                getFillColor: d => d.to === BIBB ? [242, 196, 107, 245] : [255, 255, 255, 240],
-                stroked: true, getLineColor: [40, 35, 25, 200], lineWidthUnits: 'pixels', getLineWidth: 0.6,
-                radiusUnits: 'pixels', getRadius: mobile ? 2.4 : 3, billboard: true,
-                parameters: { depthCompare: 'always' }, updateTriggers: { getPosition: geoKey } }));
+            // Commuters on the road right now, each trailing a short comet tail
+            const onRoad = (d, h) => (h > d.t0 && h < d.t0 + TRAVEL) || (h > d.t1 && h < d.t1 + TRAVEL);
+            const tops = new Map(counties.map(c => [c.fips, fullTop(c.fips)]));   // once per frame, not per dot
+            const dotPosAt = (d, h) => {
+                const u = clamp01(h < d.t1 ? (h - d.t0) / TRAVEL : 1 - (h - d.t1) / TRAVEL);   // 0 = home, 1 = work
+                const za = tops.get(d.from), zb = tops.get(d.to);
+                return [d.ax + (d.bx - d.ax) * u, d.ay + (d.by - d.ay) * u, za + (zb - za) * u + Math.sin(Math.PI * u) * ARC];
+            };
+            // "Who's coming in": from 8:10 AM the dots take their pay colors and keep them
+            const payMix = smooth(8.1, 8.45, hour);
+            const dotColor = d => mixRGB(d.to === BIBB ? GOLD : [255, 255, 255], PAY[d.band], payMix);
+            const moving = m < 0.15 ? commuters.filter(d => onRoad(d, hour)) : [];
+            if (moving.length && rise > 0.9) {
+                const TRAIL = 4, STEP = 0.014;
+                const trail = moving.flatMap(d => d3.range(1, TRAIL + 1).filter(k => onRoad(d, hour - k * STEP)).map(k => ({ d, k })));
+                out.push(
+                    new deck.ScatterplotLayer({ id: 'trails', data: trail, getPosition: t => dotPosAt(t.d, hour - t.k * STEP),
+                        getFillColor: t => dotColor(t.d).concat(Math.round(200 * (1 - t.k / (TRAIL + 1)))),
+                        radiusUnits: 'pixels', getRadius: t => (mobile ? 2.2 : 2.7) * (1 - 0.1 * t.k), billboard: true,
+                        parameters: { depthCompare: 'always' }, updateTriggers: { getPosition: geoKey, getFillColor: payMix } }),
+                    new deck.ScatterplotLayer({ id: 'dots', data: moving, getPosition: d => dotPosAt(d, hour),
+                        getFillColor: d => dotColor(d).concat(245),
+                        stroked: true, getLineColor: [40, 35, 25, 200], lineWidthUnits: 'pixels', getLineWidth: 0.6,
+                        radiusUnits: 'pixels', getRadius: mobile ? 2.4 : 3, billboard: true,
+                        parameters: { depthCompare: 'always' }, updateTriggers: { getPosition: geoKey, getFillColor: payMix } }),
+                );
+            }
             // Story labels: county name and its change right now (text rebuilt only when a figure changes)
-            if (S.storyLabels > 0.01 && step > 0 && rise > 0.9) {
+            if (S.storyLabels > 0.01 && hour > 5.15 && rise > 0.9) {
                 const pct = c => Math.round((share(c.fips, hour) - 1) * 100);
                 const textKey = counties.map(pct).join();
+                // One shared layer. Names fade in with their counties; the dark outline (a single
+                // value for the whole layer) waits until everyone has arrived, so no outline shows
+                // ahead of a county that isn't there yet.
+                const nameAlpha = c => c.fips === BIBB ? smooth(5.15, 5.5, hour) : smooth(0.5, 1, arr(c.fips));
                 out.push(new deck.TextLayer({ id: 'names', data: counties, opacity: S.storyLabels,
-                    getPosition: c => { const ctr = center.get(c.fips); return [ctr[0], ctr[1], fullTop(c.fips) + 900]; },
-                    getText: c => pct(c) !== 0 ? `${nameOf.get(c.fips)}\n${pct(c) > 0 ? '+' : ''}${pct(c)}%` : nameOf.get(c.fips),
-                    getSize: c => c.fips === BIBB ? (mobile ? 14 : 17) : (mobile ? 10 : 12), lineHeight: 1.1,
-                    getColor: c => c.fips === BIBB ? [242, 196, 107, 255] : [245, 240, 228, 230], fontFamily: labelFont, fontWeight: 600,
-                    billboard: true, fontSettings: { sdf: true }, outlineWidth: 4, outlineColor: [16, 23, 26, 230],
-                    parameters: { depthCompare: 'always', depthWriteEnabled: false }, updateTriggers: { getPosition: geoKey, getText: textKey } }));
+                    getPosition: d => { const ctr = center.get(d.fips); return [ctr[0], ctr[1], fullTop(d.fips) + 900]; },
+                    getText: d => pct(d) !== 0 ? `${nameOf.get(d.fips)}\n${pct(d) > 0 ? '+' : ''}${pct(d)}%` : nameOf.get(d.fips),
+                    getSize: d => d.fips === BIBB ? (mobile ? 14 : 17) : (mobile ? 10 : 12), lineHeight: 1.1,
+                    getColor: d => (d.fips === BIBB ? [242, 196, 107] : [245, 240, 228]).concat(Math.round(255 * nameAlpha(d))),
+                    fontFamily: labelFont, fontWeight: 600, billboard: true, fontSettings: { sdf: true },
+                    outlineWidth: 4 * smooth(5.8, 6.0, hour), outlineColor: [16, 23, 26, 230],
+                    parameters: { depthCompare: 'always', depthWriteEnabled: false },
+                    updateTriggers: { getPosition: geoKey, getText: textKey, getColor: hour < 6 ? hour.toFixed(3) : 'in' } }));
             }
             // Highways (click the finished map), clipped to the region; badges stay whole
             if (hwy > 0.01 && hwyPaths.length) out.push(
@@ -400,6 +443,35 @@
                     capRounded: true, jointRounded: true, extensions: [MASK], maskId: 'mask-region' }),
             );
             return out;
+        }
+
+        // ----- Live pulse: Macon-Bibb's head count through the day -----
+        const pulseEl = section.querySelector('.ci-pulse');
+        const pulseNum = document.getElementById('ci-pulse-num');
+        const pulseChg = document.getElementById('ci-pulse-chg');
+        const PW = 260, PH = 48, H0 = 5, H1 = 21;
+        const series = d3.range(H0, H1 + 0.001, 0.1).map(h => [h, peopleNow(h).get(BIBB)]);
+        const yMax = d3.max(series, d => d[1]), yMin = bibbPop - (yMax - bibbPop) * 0.25;
+        const px = h => (h - H0) / (H1 - H0) * PW, py = v => PH - 4 - (v - yMin) / (yMax - yMin) * (PH - 8);
+        const line = d3.line(d => px(d[0]), d => py(d[1]))(series);
+        const area = d3.area(d => px(d[0]), () => py(bibbPop), d => py(Math.max(bibbPop, d[1])))(series);
+        section.querySelector('.ci-pulse__chart').innerHTML =
+            `<path d="${area}" fill="rgba(242,196,107,0.28)"/><line x1="0" x2="${PW}" y1="${py(bibbPop)}" y2="${py(bibbPop)}" stroke="rgba(255,255,255,0.35)" stroke-dasharray="3 3"/>` +
+            `<path d="${line}" fill="none" stroke="#f2c46b" stroke-width="1.6"/>`;
+        // The playhead is an HTML dot moved with a transform (compositor-only, no SVG repaint)
+        const pulseDot = section.querySelector('.ci-pulse__dot');
+        let lastPulse = '';
+        function updatePulse() {
+            const now = peopleNow(hour).get(BIBB), d = (now - bibbPop) / bibbPop;
+            const hh = Math.min(H1, Math.max(H0, hour));
+            pulseDot.style.transform = `translate(${px(hh).toFixed(1)}px, ${py(now).toFixed(1)}px)`;
+            // Text only changes when the count moves by 50 or more (fewer repaints while scrolling)
+            const key = String(Math.round(now / 50));
+            if (key === lastPulse) return;
+            lastPulse = key;
+            pulseNum.textContent = fmt(Math.round(now / 50) * 50);
+            pulseChg.textContent = Math.abs(d) < 0.005 ? 'all residents home' : `${d > 0 ? '+' : '−'}${Math.abs(Math.round(d * 100))}% vs. residents`;
+            pulseChg.classList.toggle('is-up', d >= 0.005);
         }
 
         let lastScene = '';
@@ -418,6 +490,8 @@
             section.style.setProperty('--ci-maplabels', S.mapLabels.toFixed(3));
             section.style.setProperty('--ci-hwy', hwy.toFixed(3));
             section.style.setProperty('--ci-settle', S.settle.toFixed(3));
+            section.style.setProperty('--ci-pulse', (smooth(5.6, 5.95, hour) * (1 - smooth(18.9, 19.5, hour))).toFixed(3));
+            updatePulse();
             section.classList.toggle('is-map', S.live);
             if (m > 0.05 && m < 0.97) tip.style.display = 'none';
         }

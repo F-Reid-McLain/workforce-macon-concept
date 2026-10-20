@@ -57,6 +57,31 @@
     .ci-maplabel--bibb b { font-size: 12px; }
 }
 
+/* ----- Live pulse: Macon-Bibb's head count through the day ----- */
+.ci-pulse {
+    position: absolute; z-index: 3; left: 50%; bottom: 18px; transform: translateX(-50%);
+    display: grid; gap: 0.15rem; padding: 0.65rem 0.9rem 0.55rem; border-radius: 12px;
+    background: rgba(16, 23, 32, 0.85); border: 1px solid rgba(255, 255, 255, 0.12);
+    opacity: var(--ci-pulse, 0); pointer-events: none;
+}
+.ci-pulse__label { font-size: 0.62rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #9aa3b2; }
+.ci-pulse__row { display: flex; align-items: baseline; gap: 0.6rem; }
+.ci-pulse__row b { font: var(--font-heading-weight) 1.7rem/1.1 var(--font-heading); color: #fff; font-variant-numeric: tabular-nums; min-width: 6.2ch; }
+.ci-pulse__chg { font-size: 0.78rem; color: #9fb1c9; font-variant-numeric: tabular-nums; }
+.ci-pulse__chg.is-up { color: #f2c46b; }
+.ci-pulse { will-change: opacity; contain: layout paint; }   /* its own layer: updates don't repaint the map */
+.ci-pulse__plot { position: relative; display: block; margin-top: 0.2rem; }
+.ci-pulse__chart { display: block; overflow: visible; }
+.ci-pulse__dot {
+    position: absolute; left: -4px; top: -4px; width: 8px; height: 8px; border-radius: 50%;
+    background: #fff; border: 1.5px solid #f2c46b; box-sizing: border-box; will-change: transform;
+}
+.ci-pulse__axis { display: flex; justify-content: space-between; font-size: 0.58rem; color: #7d8798; }
+
+/* Pay key in the "Who's coming in" card */
+.ci-paykey { display: flex; flex-wrap: wrap; gap: 0.35rem 0.8rem; font-size: 0.78rem; }
+.ci-paykey i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 0.35rem; }
+
 /* ----- The finished map's controls, stats box and key ----- */
 .ci-overlay {
     position: absolute; z-index: 3;
@@ -157,6 +182,10 @@ body.ci-on-screen .page-jumpnav { opacity: 0; pointer-events: none; }
     .ci-step--welcome { align-items: center; padding-bottom: 0; }
     .ci-card { max-width: none; width: 100%; }
     .ci-time { top: 10px; right: 10px; font-size: 0.85rem; }
+    /* Cards sit at the bottom on phones, so the pulse goes up top */
+    .ci-pulse { top: 52px; bottom: auto; padding: 0.5rem 0.7rem; }
+    .ci-pulse__row b { font-size: 1.3rem; }
+    .ci-pulse__chart { width: 260px; height: 48px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

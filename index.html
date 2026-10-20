@@ -68,6 +68,13 @@
                 <div id="ci-map" aria-hidden="true"></div>
                 <div class="ci-time" aria-hidden="true"><span id="ci-time-icon">☾</span><span id="ci-time-label">5:00 AM</span></div>
                 <div class="ci-tip" id="ci-tip"></div>
+                <!-- Live pulse: Macon-Bibb's head count through the day -->
+                <div class="ci-pulse">
+                    <span class="ci-pulse__label">People in Macon-Bibb right now</span>
+                    <span class="ci-pulse__row"><b id="ci-pulse-num">156,580</b><span class="ci-pulse__chg" id="ci-pulse-chg">all residents home</span></span>
+                    <span class="ci-pulse__plot"><svg class="ci-pulse__chart" viewBox="0 0 260 48" width="260" height="48" aria-hidden="true"></svg><i class="ci-pulse__dot" aria-hidden="true"></i></span>
+                    <span class="ci-pulse__axis" aria-hidden="true"><span>5 AM</span><span>Noon</span><span>9 PM</span></span>
+                </div>
                 <!-- The finished map's controls, stats and key (fade in as the story becomes the map) -->
                 <div class="ci-overlay ci-tools">
                     <button type="button" class="ci-pill" id="ci-hwy" aria-pressed="false"><span class="ci-pill__dot" aria-hidden="true"></span>Highways</button>
@@ -98,14 +105,21 @@
                 </div>
                 <div class="ci-step" data-time="6" id="ci-dawn"><div class="ci-card">
                     <div class="ci-when">6:00 AM</div>
-                    <h3>Before the commute</h3>
-                    <p>Macon-Bibb and its 16 neighbors are home to <strong data-ci="regionPop"></strong> people. Every county starts level, with all of its residents at home.</p>
+                    <h3>Macon and its neighbors</h3>
+                    <p>Macon-Bibb sits at the center of 16 neighboring counties, home to <strong data-ci="neighborPop"></strong> more people. Right now every county stands level, with all of its residents at home.</p>
                 </div></div>
-                <div class="ci-step" data-time="8.25"><div class="ci-card">
-                    <div class="ci-when">8:15 AM</div>
+                <div class="ci-step" data-time="7.5"><div class="ci-card">
+                    <div class="ci-when">7:30 AM</div>
                     <h3>Rush hour</h3>
                     <p>Each dot is about <span data-ci="perDot"></span> commuters. <span class="ci-swatch" style="background:#f2c46b"></span>Gold dots head into Macon-Bibb; <span class="ci-swatch" style="background:#fff"></span>white dots are Macon residents heading out. A county drops as its dots leave and rises as they land.</p>
                     <p class="ci-note">Heights exaggerate each county's change 2.5× so it's easy to see; the labels show the real change. Commute timing is illustrative.</p>
+                </div></div>
+                <div class="ci-step" data-time="8.5"><div class="ci-card">
+                    <div class="ci-when">8:30 AM</div>
+                    <h3>Who's coming in</h3>
+                    <p>The dots now show what each commuter earns. <strong data-ci="payIn"></strong> of the neighbors who work in Macon-Bibb earn more than $3,333 a month, compared with <strong data-ci="payLocal"></strong> of people who both live and work here.</p>
+                    <p class="ci-paykey"><span><i style="background:rgb(45,212,191)"></i>More than $3,333/mo</span><span><i style="background:rgb(242,196,107)"></i>$1,251–3,333</span><span><i style="background:rgb(160,170,190)"></i>$1,250 or less</span></p>
+                    <p class="ci-note">Monthly earnings bands from LODES 2023.</p>
                 </div></div>
                 <div class="ci-step" data-time="12.5"><div class="ci-card">
                     <div class="ci-when">12:30 PM</div>
