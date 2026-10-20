@@ -63,12 +63,26 @@
     <main class="main-content">
         <!-- Welcome + commuting intro: a short 3D scroll story (js/commute-intro.js) -->
         <section class="ci" id="section-commute" aria-label="How Middle Georgia commutes to Macon-Bibb">
-            <div class="ci-stage" id="ci-stage">
+            <div class="ci-stage" id="ci-stage" data-pad-left="400" data-pad-breakpoint="900">
+                <div class="ci-shadow" aria-hidden="true"></div>
                 <div id="ci-map" aria-hidden="true"></div>
                 <div class="ci-time" aria-hidden="true"><span id="ci-time-icon">☾</span><span id="ci-time-label">5:00 AM</span></div>
                 <div class="ci-tip" id="ci-tip"></div>
-                <!-- The regional map (js/workforce-data.js). The 3D scene flattens into it at the end of the story. -->
-                <div id="region-map" data-pad-left="400" data-pad-breakpoint="900"></div>
+                <!-- The finished map's controls, stats and key (fade in as the story becomes the map) -->
+                <div class="ci-overlay ci-tools">
+                    <button type="button" class="ci-pill" id="ci-hwy" aria-pressed="false"><span class="ci-pill__dot" aria-hidden="true"></span>Highways</button>
+                    <button type="button" class="ci-pill" id="ci-png">⤓ PNG</button>
+                </div>
+                <div class="ci-overlay ci-stats">
+                    <b data-ci="statRegion"></b><span>Total regional population</span>
+                    <b class="ci-stats__bibb" data-ci="statBibb"></b><span>Macon-Bibb population</span>
+                </div>
+                <div class="ci-overlay ci-key">
+                    <span class="ci-key__title">Map key</span>
+                    <span><i style="background:#16a34a"></i>Macon-Bibb County</span>
+                    <span><i style="background:#fb923c"></i>Negative net commuting</span>
+                    <span class="ci-key__gainer"><i style="background:#bbf7d0"></i>Positive net commuting</span>
+                </div>
             </div>
             <div class="ci-steps">
                 <div class="ci-step ci-step--welcome" data-time="5">
@@ -105,11 +119,11 @@
                     <p>The dots reverse and the region settles back to its night-time shape, ready to do it again tomorrow.</p>
                     <p class="ci-note">Commuting: U.S. Census Bureau LODES 2023, between Macon-Bibb and its 16 neighbors. Residents: ACS 2024.</p>
                 </div></div>
-                <div class="ci-step ci-step--map" data-time="20" id="section-region"><div class="ci-card">
+                <div class="ci-step ci-step--map" data-time="21" id="section-region"><div class="ci-card">
                     <div class="ci-when">Regional context</div>
                     <h3>Regional Commuting Patterns</h3>
-                    <p>Counting commuters from anywhere, every county around Macon-Bibb sends more workers out than it takes in, while Macon-Bibb gains <strong>21,871</strong> workers on net.</p>
-                    <p>Hover any county for detail, or click the map to see the region's major highways.</p>
+                    <p>Counting commuters from anywhere, every county around Macon-Bibb sends more workers out than it takes in, while Macon-Bibb gains <strong data-ci="bibbNet">21,871</strong> workers on net.</p>
+                    <p>Hover any county for detail, or click the map to show the region's major highways.</p>
                     <p class="ci-note">Net commuting = jobs located in the county minus employed residents (LODES 2023). Population: ACS 2024.</p>
                 </div></div>
             </div>

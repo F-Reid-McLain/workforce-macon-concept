@@ -4,6 +4,8 @@
 .ci {
     --ci-top: 70px;              /* set from the fixed header's real height */
     --ci-sky: 40, 60, 110;       /* glow behind the map, follows the time of day */
+    --ci-map: 0;                 /* 0 = story, 1 = finished regional map (set from JS) */
+    --ci-settle: 0;              /* how far the scene has turned overhead and flattened */
     position: relative;
     margin: -2rem 0 3rem;        /* flush under the header (cancels main's top padding) */
     color: #eef1f6;
@@ -20,26 +22,53 @@
         #0e1420;
 }
 #ci-map { position: absolute; inset: 0; }
-/* The 2D regional map, layered over the 3D scene; js/commute-intro.js fades it in
-   as the scene flattens into it, then it takes over (hover, highways). */
-.ci-stage #region-map {
-    position: absolute; inset: 0; z-index: 2; height: auto;
-    border: 0; border-radius: 0; opacity: 0; pointer-events: none;
+/* A soft shadow under the model (a static gradient, cheaper than filtering the canvas
+   every frame); it fades as the scene flattens into the map */
+.ci-shadow {
+    position: absolute; left: 50%; top: 64%; width: 62%; height: 34%; transform: translate(-50%, -50%);
+    background: radial-gradient(closest-side, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
+    opacity: calc(1 - var(--ci-settle)); pointer-events: none;
 }
-.ci-stage #region-map.is-live { pointer-events: auto; }
-#ci-map canvas { filter: drop-shadow(0 26px 28px rgba(0, 0, 0, 0.45)); }
+
+/* ----- The finished map's controls, stats box and key ----- */
+.ci-overlay {
+    position: absolute; z-index: 3;
+    opacity: var(--ci-map); transform: translateY(calc((1 - var(--ci-map)) * 10px));
+    pointer-events: none;
+}
+.ci.is-map .ci-overlay { pointer-events: auto; }
+.ci-tools { top: 16px; right: 16px; display: flex; gap: 0.5rem; }
+.ci-pill {
+    display: inline-flex; align-items: center; gap: 0.45rem; cursor: pointer;
+    padding: 0.4rem 0.8rem; border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(0, 0, 0, 0.6); color: #fff; font: 600 0.75rem/1 var(--font-body);
+}
+.ci-pill:hover { background: rgba(50, 55, 65, 0.9); }
+.ci-pill[aria-pressed="true"] { border-color: #2dd4bf; }
+.ci-pill__dot { width: 7px; height: 7px; border-radius: 50%; background: var(--color-accent, #afa66d); }
+.ci.is-map .ci-pill:not(.is-used) .ci-pill__dot { animation: ci-pulse 1.6s ease-in-out infinite; }
+@keyframes ci-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(175, 166, 109, 0.6); } 50% { box-shadow: 0 0 0 5px rgba(175, 166, 109, 0); } }
+.ci-stats, .ci-key {
+    bottom: 12px; padding: 0.6rem 0.75rem; border-radius: 8px;
+    background: rgba(16, 23, 32, 0.85); border: 1px solid rgba(255, 255, 255, 0.12);
+}
+.ci-stats { left: 12px; display: grid; grid-template-columns: auto; gap: 0; }
+.ci-stats b { font: 700 1.1rem/1.1 var(--font-body); color: #fff; font-variant-numeric: tabular-nums; }
+.ci-stats b.ci-stats__bibb { color: #5cdc8b; margin-top: 0.45rem; }
+.ci-stats span, .ci-key__title { font-size: 0.56rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #9aa3b2; }
+.ci-key { right: 12px; display: grid; gap: 0.3rem; font-size: 0.72rem; color: #e6e9ee; }
+.ci-key i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 0.45rem; vertical-align: -1px; }
 
 /* The map fades in once its data has loaded */
-.ci-stage #ci-map, .ci-time { opacity: 0; transition: opacity 0.8s ease; }
-.ci.is-ready #ci-map, .ci.is-ready .ci-time { opacity: 1; }
+.ci-stage #ci-map { opacity: 0; transition: opacity 0.8s ease; }
+.ci.is-ready #ci-map { opacity: 1; }
 
 .ci-time {
     position: absolute; top: 18px; right: 18px; z-index: 3;
     display: flex; align-items: center; gap: 0.45rem;
     padding: 0.4rem 0.8rem; border-radius: 999px;
-    background: rgba(16, 23, 32, 0.6); border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(16, 23, 32, 0.75); border: 1px solid rgba(255, 255, 255, 0.12);
     font: 600 0.95rem/1 var(--font-body); font-variant-numeric: tabular-nums;
-    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
 }
 
 .ci-tip {
@@ -61,9 +90,8 @@
 
 .ci-card {
     pointer-events: auto; max-width: 380px; padding: 1.2rem 1.35rem;
-    background: rgba(16, 23, 32, 0.72); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 14px;
+    background: rgba(16, 23, 32, 0.88); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 14px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
     opacity: 0.55; transform: translateY(10px); transition: opacity 0.35s, transform 0.35s;
 }
 .ci-step.is-active .ci-card { opacity: 1; transform: none; }
@@ -106,5 +134,6 @@ body.ci-on-screen .page-jumpnav { opacity: 0; pointer-events: none; }
 
 @media (prefers-reduced-motion: reduce) {
     .ci-scroll svg { animation: none; }
-    .ci-card, .ci-stage #ci-map, .ci-time { transition: none; }
+    .ci-card, .ci-stage #ci-map { transition: none; }
+    .ci.is-map .ci-pill:not(.is-used) .ci-pill__dot { animation: none; }
 }
