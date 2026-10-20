@@ -196,7 +196,9 @@
             center.innerHTML = `<b>${fmtShare(d.value / total)}</b><span>${d.name}</span><small>${Math.round(d.value).toLocaleString()} jobs${d.wage ? ` · $${Math.round(d.wage / 1000)}K avg wage` : ''}</small>`;
         };
         const legend = document.getElementById('donut-legend');
-        legend.innerHTML = pie.map((d, i) => `<li><button type="button" data-i="${i}" ${isRoot ? '' : 'tabindex="-1"'}>
+        // Column headings make it plain that every slice is a count of jobs
+        legend.innerHTML = `<li class="donut-legend__head" aria-hidden="true"><span></span><span>${isRoot ? 'Industry sector' : 'Industry in ' + node.name}</span>
+            <span>Jobs</span><span>${isRoot ? '% of jobs' : '% of sector'}</span></li>` + pie.map((d, i) => `<li><button type="button" data-i="${i}" ${isRoot ? '' : 'tabindex="-1"'}>
             <i style="background:${d.data.color}"></i><span class="dl-name">${d.data.name}</span>
             <span class="dl-val">${Math.round(d.value).toLocaleString()}</span><span class="dl-share">${fmtShare(d.value / total)}</span></button></li>`).join('');
         const legendRows = Array.from(legend.querySelectorAll('button'));
