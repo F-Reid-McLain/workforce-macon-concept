@@ -73,6 +73,13 @@
                 .sort((a, b) => b.value - a.value);
             renderHiringChart();
 
+            // Hiring-now ticker and headline (homepage chapter 06)
+            const totalEl = document.getElementById('hire-total');
+            if (totalEl) totalEl.textContent = d3.sum(hiringAllData, d => d.value).toLocaleString();
+            const findEl = document.getElementById('find-hiring');
+            const top = hiringAllData[0];
+            if (findEl && top) findEl.innerHTML = `<em>${top.label.replace(' & Social Assistance', '')}</em> is hiring the most, with <em>${top.value.toLocaleString()}</em> openings.`;
+
             const btn = document.getElementById('hiring-toggle');
             if (btn) {
                 btn.addEventListener('click', function () {

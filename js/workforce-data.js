@@ -38,37 +38,32 @@
     }
 
     // ===== INDUSTRY CONFIG (2-digit NAICS prefix -> sector) =====
-    // Colors: the three largest/most-referenced sectors are pinned to the
-    // site's actual accent trio (teal/orange/gold) so the treemap ties back
-    // to the same brand vocabulary as the rest of the site; the remaining
-    // sectors use a golden-angle hue rotation (a fixed ~137.5° step) so that
-    // sectors adjacent in the treemap's size-sorted layout stay visually
-    // distinct, at a saturation/lightness band that matches the pinned three
-    // instead of the old grab-bag of bright Tailwind pastels. Every cell is
-    // always directly labeled with its name, so hue is a wayfinding aid here,
-    // not the sole identifier — full CVD-safe separation across all 20 isn't
-    // the goal the way it would be for a legend-dependent chart.
+    // Colors: the three biggest sectors carry the homepage story's colors
+    // (health care teal, food services orange, retail gold); the rest are muted
+    // blues and violets from the same night palette, so the big three stand out.
+    // Every slice is named in the legend beside the donut, so hue is a
+    // wayfinding aid, not the only way to tell sectors apart.
     const INDUSTRIES = {
-        '11': { name: 'Agriculture, Forestry & Fishing',   prefixes: ['11'],           color: '#5857c1' },
-        '21': { name: 'Mining & Oil and Gas',               prefixes: ['21'],           color: '#bc5ec9' },
-        '22': { name: 'Utilities',                          prefixes: ['22'],           color: '#b9c775' },
-        '23': { name: 'Construction',                       prefixes: ['23'],           color: '#a8c775' },
-        '31': { name: 'Manufacturing',                      prefixes: ['31', '32', '33'], color: '#7cc775' },
-        '42': { name: 'Wholesale Trade',                    prefixes: ['42'],           color: '#c95e63' },
-        '44': { name: 'Retail Trade',                       prefixes: ['44', '45'],     color: '#afa66d' },
-        '48': { name: 'Transportation & Warehousing',       prefixes: ['48', '49'],     color: '#6e57c1' },
-        '51': { name: 'Information',                        prefixes: ['51'],           color: '#c95e9d' },
-        '52': { name: 'Finance & Insurance',                prefixes: ['52'],           color: '#5ec98f' },
-        '53': { name: 'Real Estate',                        prefixes: ['53'],           color: '#9157c1' },
-        '54': { name: 'Professional & Technical Services',  prefixes: ['54'],           color: '#577ac1' },
-        '55': { name: 'Management of Companies',            prefixes: ['55'],           color: '#75c78a' },
-        '56': { name: 'Administrative & Support',           prefixes: ['56'],           color: '#b275c7' },
-        '61': { name: 'Educational Services',                prefixes: ['61'],           color: '#c95e86' },
-        '62': { name: 'Health Care & Social Assistance',    prefixes: ['62'],           color: '#2dd4bf' },
-        '71': { name: 'Arts & Entertainment',                prefixes: ['71'],           color: '#8dc775' },
-        '72': { name: 'Accommodation & Food Services',      prefixes: ['72'],           color: '#fb923c' },
-        '81': { name: 'Other Services',                      prefixes: ['81'],           color: '#579ec1' },
-        '92': { name: 'Public Administration',                prefixes: ['92'],           color: '#c95ec0' },
+        '11': { name: 'Agriculture, Forestry & Fishing',   prefixes: ['11'],             color: '#6b7aa8' },
+        '21': { name: 'Mining & Oil and Gas',               prefixes: ['21'],             color: '#7d6fa6' },
+        '22': { name: 'Utilities',                          prefixes: ['22'],             color: '#5f8fb0' },
+        '23': { name: 'Construction',                       prefixes: ['23'],             color: '#8a7cc4' },
+        '31': { name: 'Manufacturing',                      prefixes: ['31', '32', '33'], color: '#5b8fd0' },
+        '42': { name: 'Wholesale Trade',                    prefixes: ['42'],             color: '#9a86c9' },
+        '44': { name: 'Retail Trade',                       prefixes: ['44', '45'],       color: '#f2c46b' },
+        '48': { name: 'Transportation & Warehousing',       prefixes: ['48', '49'],       color: '#6d9ec4' },
+        '51': { name: 'Information',                        prefixes: ['51'],             color: '#a58fd8' },
+        '52': { name: 'Finance & Insurance',                prefixes: ['52'],             color: '#7b8fd1' },
+        '53': { name: 'Real Estate',                        prefixes: ['53'],             color: '#8e7bb8' },
+        '54': { name: 'Professional & Technical Services',  prefixes: ['54'],             color: '#6aa6c9' },
+        '55': { name: 'Management of Companies',            prefixes: ['55'],             color: '#9fa8d6' },
+        '56': { name: 'Administrative & Support',           prefixes: ['56'],             color: '#b08bd1' },
+        '61': { name: 'Educational Services',               prefixes: ['61'],             color: '#5aa7b5' },
+        '62': { name: 'Health Care & Social Assistance',    prefixes: ['62'],             color: '#2dd4bf' },
+        '71': { name: 'Arts & Entertainment',               prefixes: ['71'],             color: '#c294d6' },
+        '72': { name: 'Accommodation & Food Services',      prefixes: ['72'],             color: '#fb923c' },
+        '81': { name: 'Other Services',                     prefixes: ['81'],             color: '#7f93b8' },
+        '92': { name: 'Public Administration',              prefixes: ['92'],             color: '#8f9fe0' },
     };
 
     function sectorFor(naics) {
@@ -110,10 +105,7 @@
         if (topEl) topEl.textContent = topId ? INDUSTRIES[topId].name : '—';
     }
 
-    // ===== TREEMAP =====
-    let hierarchy   = null;
-    let currentNode = null;
-
+    // Sectors (2-digit NAICS) holding their 6-digit industries
     function buildHierarchy(rows) {
         const groups = {};
         for (const [id, cfg] of Object.entries(INDUSTRIES)) {
@@ -136,64 +128,140 @@
         return { name: 'root', children: Object.values(groups).filter(g => g.children.length) };
     }
 
-    function renderTreemap(node) {
-        const container = document.getElementById('treemap-canvas');
-        if (!container || !node) return;
-        currentNode = node;
+    // ===== INDUSTRIES DONUT =====
+    // Sectors by jobs. It assembles (slices sweep in, largest first) as its section
+    // scrolls through (progress from js/chapters.js); clicking a slice or a legend
+    // row drills into that sector's industries (top 10 + "Other").
+    let hierarchy = null, donutNode = null, donutBuilt = 0, donutAnim = null, officialJobs = 0;
+    const DONUT_OTHER = '#4b5568';
 
-        const W = container.clientWidth || 900;
-        const H = Math.max(360, Math.round(W * 0.45));
-        container.style.height = H + 'px';
-
-        const isRoot = node.name === 'root';
-
-        const root = d3.hierarchy(node)
-            .sum(d => d.empl || 0)
-            .sort((a, b) => b.value - a.value);
-
-        d3.treemap().size([W, H]).padding(isRoot ? 3 : 2).round(true)(root);
-
-        const cells = isRoot ? (root.children || []) : root.leaves();
-
-        const bc   = document.getElementById('treemap-bc');
-        const hint = document.getElementById('treemap-hint');
-        if (isRoot) {
-            bc.innerHTML = '<span class="bc-current">All Industries</span>';
-            hint.textContent = 'Click a sector to drill in →';
-        } else {
-            bc.innerHTML = `<button class="bc-back" id="bc-back-btn">← All Industries</button><span class="bc-sep">›</span><span class="bc-current">${node.name}</span>`;
-            hint.textContent = `${cells.length} sub-industries`;
-            document.getElementById('bc-back-btn').addEventListener('click', () => renderTreemap(hierarchy));
+    const sectorJobs = g => d3.sum(g.children, c => c.empl);
+    const sectorWage = g => { const j = sectorJobs(g); return j ? d3.sum(g.children, c => c.empl * c.wage) / j : 0; };
+    function donutSlices(node) {
+        if (node === hierarchy) {
+            return node.children.map(g => ({ name: g.name, value: sectorJobs(g), wage: sectorWage(g), color: g.color, sector: g }))
+                .sort((a, b) => b.value - a.value);
         }
+        const kids = [...node.children].sort((a, b) => b.empl - a.empl), top = kids.slice(0, 10), rest = kids.slice(10);
+        const out = top.map((c, i) => ({ name: c.name, value: c.empl, wage: c.wage,
+            color: d3.interpolateRgb(node.color, '#1b2433')(Math.min(0.75, i * 0.075)) }));
+        if (rest.length) out.push({ name: `Other (${rest.length} industries)`, value: d3.sum(rest, c => c.empl),
+            wage: d3.sum(rest, c => c.empl * c.wage) / d3.sum(rest, c => c.empl), color: DONUT_OTHER, other: true });
+        return out;
+    }
 
-        container.innerHTML = cells.map((cell, idx) => {
-            const w = Math.max(0, cell.x1 - cell.x0);
-            const h = Math.max(0, cell.y1 - cell.y0);
-            if (w < 4 || h < 4) return '';
+    function renderDonut(node, opts = {}) {
+        const box = document.getElementById('donut');
+        if (!box || !node) return;
+        donutNode = node;
+        const isRoot = node === hierarchy;
+        const slices = donutSlices(node);
+        const allJobs = sectorJobsAll();
+        const total = d3.sum(slices, d => d.value);
+        const size = Math.max(240, Math.min(box.clientWidth || 480, 520)), R = size / 2, inner = R * 0.62;
+        const svg = d3.select('#donut-svg').attr('viewBox', `${-R} ${-R} ${size} ${size}`).attr('width', size).attr('height', size);
+        box.style.setProperty('--donut-size', size + 'px');
+        const pie = d3.pie().value(d => d.value).sort(null).padAngle(0.006)(slices);
+        const arc = d3.arc().innerRadius(inner).outerRadius(R - 6).cornerRadius(3);
+        const arcHot = d3.arc().innerRadius(inner - 2).outerRadius(R).cornerRadius(3);
+        const fmtShare = v => (v * 100 >= 10 ? Math.round(v * 100) : (v * 100).toFixed(1)) + '%';
 
-            const color   = isRoot ? cell.data.color : (node.color || C.accent);
-            const opacity = isRoot ? 0.82 : (0.45 + (cell.value / root.value) * 0.55);
-            const showName = w > 56 && h > 24;
-            const showEmpl = w > 70 && h > 42;
-            const showWage = !isRoot && w > 100 && h > 58 && cell.data.wage > 0;
+        const paths = svg.selectAll('path').data(pie, d => d.data.name).join('path')
+            .attr('fill', d => d.data.color)
+            .attr('tabindex', 0)
+            .attr('role', isRoot ? 'button' : 'img')
+            .attr('aria-label', d => `${d.data.name}: ${Math.round(d.value).toLocaleString()} jobs, ${fmtShare(d.value / total)}`)
+            .style('cursor', isRoot ? 'pointer' : 'default');
 
-            return `<div class="treemap-cell${isRoot ? ' drillable' : ''}"
-                style="left:${cell.x0}px;top:${cell.y0}px;width:${w}px;height:${h}px;background:${color};opacity:${opacity};"
-                data-idx="${idx}"
-                title="${cell.data.name}: ${Math.round(cell.value).toLocaleString()} jobs">
-                ${showName ? `<div class="tc-name">${cell.data.name}</div>` : ''}
-                ${showEmpl ? `<div class="tc-empl">${Math.round(cell.value).toLocaleString()} jobs</div>` : ''}
-                ${showWage ? `<div class="tc-empl">$${Math.round(cell.data.wage / 1000)}K avg</div>` : ''}
-            </div>`;
-        }).join('');
+        // Draw at assembly progress a (0–1): each slice sweeps open in turn, largest first
+        const n = pie.length;
+        function draw(a, hot) {
+            paths.attr('d', (d, i) => {
+                const r = Math.max(0, Math.min(1, (a * (n + 4) - i) / 4));
+                const e = 1 - Math.pow(1 - r, 3);
+                if (e <= 0) return null;
+                return (hot === i ? arcHot : arc)({ ...d, endAngle: d.startAngle + (d.endAngle - d.startAngle) * e });
+            }).attr('opacity', (d, i) => (a * (n + 4) - i) > 0 ? 1 : 0);
+        }
+        let hot = -1;
+        const center = document.getElementById('donut-center');
+        const centerDefault = () => isRoot
+            ? `<b>${Math.round(officialJobs || allJobs).toLocaleString()}</b><span>jobs in ${slices.length} sectors</span><small>Click a slice to look inside</small>`
+            : `<b>${fmtShare(total / allJobs)}</b><span>${node.name}</span><small>${Math.round(total).toLocaleString()} jobs · click here to go back</small>`;
+        const setCenter = i => {
+            if (i < 0) { center.innerHTML = centerDefault(); return; }
+            const d = pie[i].data;
+            center.innerHTML = `<b>${fmtShare(d.value / total)}</b><span>${d.name}</span><small>${Math.round(d.value).toLocaleString()} jobs${d.wage ? ` · $${Math.round(d.wage / 1000)}K avg wage` : ''}</small>`;
+        };
+        const legend = document.getElementById('donut-legend');
+        legend.innerHTML = pie.map((d, i) => `<li><button type="button" data-i="${i}" ${isRoot ? '' : 'tabindex="-1"'}>
+            <i style="background:${d.data.color}"></i><span class="dl-name">${d.data.name}</span>
+            <span class="dl-val">${Math.round(d.value).toLocaleString()}</span><span class="dl-share">${fmtShare(d.value / total)}</span></button></li>`).join('');
+        const legendRows = Array.from(legend.querySelectorAll('button'));
+        const highlight = i => {
+            hot = i;
+            draw(donutBuilt, hot);
+            paths.attr('fill-opacity', (d, j) => i < 0 || j === i ? 1 : 0.35);
+            legendRows.forEach((b, j) => b.classList.toggle('is-hot', j === i));
+            setCenter(i);
+        };
+        const drill = i => { const d = pie[i] && pie[i].data; if (isRoot && d && d.sector) animateTo(d.sector); };
 
-        if (isRoot) {
-            container.querySelectorAll('.drillable').forEach(el => {
-                el.addEventListener('click', () => {
-                    const child = cells[+el.dataset.idx];
-                    if (child) renderTreemap(child.data);
-                });
-            });
+        paths.on('mouseenter', (e, d) => highlight(pie.indexOf(d))).on('mouseleave', () => highlight(-1))
+            .on('focus', (e, d) => highlight(pie.indexOf(d))).on('blur', () => highlight(-1))
+            .on('click', (e, d) => drill(pie.indexOf(d)))
+            .on('keydown', (e, d) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); drill(pie.indexOf(d)); } });
+        legendRows.forEach((b, i) => {
+            b.addEventListener('mouseenter', () => highlight(i)); b.addEventListener('mouseleave', () => highlight(-1));
+            b.addEventListener('focus', () => highlight(i)); b.addEventListener('blur', () => highlight(-1));
+            b.addEventListener('click', () => drill(i));
+        });
+        center.classList.toggle('is-back', !isRoot);
+        center.onclick = isRoot ? null : () => animateTo(hierarchy);
+        const back = document.getElementById('donut-back');
+        back.hidden = isRoot;
+        back.onclick = () => animateTo(hierarchy);
+        box.classList.toggle('is-drilled', !isRoot);
+
+        renderDonut.draw = a => draw(a, hot);
+        setCenter(-1);
+        draw(opts.assemble === undefined ? donutBuilt : opts.assemble, -1);
+    }
+    function sectorJobsAll() { return hierarchy ? d3.sum(hierarchy.children, sectorJobs) : 0; }
+    // Drill in or out: the new ring sweeps in over ~0.7 s
+    function animateTo(node) {
+        if (donutAnim) donutAnim.stop();
+        const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+        donutBuilt = 1;   // once someone has drilled, the ring is never scroll-assembled again
+        renderDonut(node, { assemble: reduce ? 1 : 0 });
+        if (reduce) return;
+        donutAnim = d3.timer(t => { const a = Math.min(1, t / 750); renderDonut.draw(a); if (a >= 1) { donutAnim.stop(); donutAnim = null; } });
+    }
+    // Scroll-driven assembly the first time through (js/chapters.js sets the progress)
+    document.addEventListener('chapter:progress', e => {
+        if (e.target.id !== 'donut-scrub' || donutBuilt >= 1) return;
+        const a = Math.max(donutBuilt, Math.min(1, e.detail.p / 0.6));
+        if (a === donutBuilt) return;
+        donutBuilt = a;
+        if (donutNode === hierarchy && renderDonut.draw && !donutAnim) renderDonut.draw(a);
+    });
+
+    // ===== CHAPTER FINDINGS (headlines computed from the data) =====
+    function writeFindings(totalRow, occRows, demoRows) {
+        const set = (id, html) => { const el = document.getElementById(id); if (el && html) el.innerHTML = html; };
+        if (totalRow) set('find-kpis', `<em>${Math.round(toNum(totalRow['Empl'])).toLocaleString()}</em> jobs. <em>$${Math.round(toNum(totalRow['Avg Ann Wages'])).toLocaleString()}</em> average pay.`);
+        if (hierarchy) {
+            const top = d3.greatest(hierarchy.children, sectorJobs), share = sectorJobs(top) / sectorJobsAll();
+            set('find-industries', `<em>1 in ${Math.round(1 / share)}</em> jobs in Macon-Bibb is in <em>${top.name.toLowerCase().replace('&', 'and')}</em>.`);
+        }
+        const demo = {}; demoRows.forEach(r => { demo[norm(r.Metric)] = toNum(r.Value2024); });
+        const prime = demo['Prime-Age Labor Force Participation Rate and Size (civilian population 25-54)'];
+        if (prime) set('find-demo', `<em>${Math.round(prime * 100)}%</em> of prime-age adults in Macon-Bibb are working or looking for work.`);
+        const occ = occRows.filter(r => r['Occupation'] && r['SOC'] && r['SOC'].slice(-2) !== '00' && !r['Occupation'].toLowerCase().includes('total'));
+        const topOcc = d3.greatest(occ, r => toNum(r['Empl']));
+        if (topOcc) {
+            const name = topOcc['Occupation'].trim(), nice = name.charAt(0) + name.slice(1).toLowerCase();
+            set('find-occ', `<em>${nice}</em> are Macon-Bibb's most common job: <em>${Math.round(toNum(topOcc['Empl'])).toLocaleString()}</em> positions averaging <em>$${(Math.round(toNum(topOcc['Mean Ann Wages2']) / 100) * 100).toLocaleString()}</em>.`);
         }
     }
 
@@ -481,7 +549,9 @@
         loadKPIs(dataRows, totalRow, popRows, commRows);
 
         hierarchy = buildHierarchy(dataRows);
-        renderTreemap(hierarchy);
+        officialJobs = totalRow ? toNum(totalRow['Empl']) : 0;   // same total as the KPI (a few jobs sit outside the 20 sectors)
+        renderDonut(hierarchy);
+        writeFindings(totalRow, occRows, demoRows);
 
         renderDemographics(demoRows, popRows);
         renderOccupations(occRows);
@@ -491,7 +561,7 @@
     });
 
     window.addEventListener('resize', debounce(function () {
-        if (currentNode) renderTreemap(currentNode);
+        if (donutNode) renderDonut(donutNode, { assemble: donutBuilt });
     }, 250));
 
 })();

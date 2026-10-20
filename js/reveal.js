@@ -1,7 +1,7 @@
 /* ===== SCROLL REVEAL — Workforce Data page =====
    Each chart and card group plays a short build-in the first time it
-   scrolls into view: bars grow from the left, treemap tiles rise in
-   (largest first), table rows and cards fade up in sequence, and numbers
+   scrolls into view: bars grow from the left, table rows and cards fade
+   up in sequence, and numbers
    count up from zero. Everything plays once; later re-renders (Show All,
    tab switches, resizes) appear instantly, as before.
 
@@ -20,13 +20,13 @@
 
     // ----- Chart and card groups -----
     const GROUPS = [
-        '.stats-grid', '.adj-metrics-grid', '.treemap-canvas', '.demo-stat-grid', '.demo-grid',
+        '.stats-grid', '.demo-stat-grid', '.demo-grid',
         '#age-bars', '#race-bars', '#edu-bars', '.occ-table',
         '#occ-proj-growth', '#occ-wage-mean', '#occ-demand-chart', '#hiring-chart', '#employers-chart',
     ];
     const STAGGER_MS = 1800;   // long enough for the last staggered item to finish
 
-    const ITEMS = '.demo-bar-row, .treemap-cell, tbody tr, .kpi-block, .adj-card, .demo-stat, .demo-card';
+    const ITEMS = '.demo-bar-row, tbody tr, .kpi-block, .demo-stat, .demo-card';
 
     const groupObserver = new IntersectionObserver(entries => {
         entries.forEach(e => {
@@ -62,7 +62,7 @@
     // Reads each number's own text (e.g. "$55,410", "+23,963", "77.3%", "~$50K"),
     // so no data code has to change. Text that isn't a single number
     // ("Health Care…", "60–70%") is left alone.
-    const NUMBERS = '.kpi-val, .demo-stat-val, .adj-row-val, .adj-callout-val';
+    const NUMBERS = '.kpi-val, .demo-stat-val, .adj-row-val, .adj-callout-val, .ticker__num, .paycheck__val';
     const NUM_RE = /^([^\d]*?)(\d[\d,]*(?:\.\d+)?)([^\d]*)$/;
     const DURATION = 1200;
     const easeOut = t => 1 - Math.pow(1 - t, 3);
