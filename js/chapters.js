@@ -3,7 +3,7 @@
    while it scrolls. This sets --p on it (0 as it reaches the top of the
    window, 1 as it's about to leave), smoothed so wheel ticks glide, and fires
    a 'chapter:progress' event ({ detail: { p } }) for scripts that draw with it
-   (the industries donut). CSS reads --p directly (the paycheck bars).
+   (the industries donut). CSS can also read --p directly.
 
    On phones the stages aren't sticky, and with reduced motion there's nothing
    to scrub: those get p = 1 as soon as they come into view. */
@@ -16,16 +16,6 @@
     const header = document.querySelector('.main-header');
 
     const state = new Map(els.map(el => [el, { target: 0, shown: 0, onScreen: false }]));
-
-    // The paycheck figures count with their bars: each value grows as its bar fills
-    document.querySelectorAll('.paycheck').forEach(pc => {
-        const vals = Array.from(pc.querySelectorAll('.paycheck__val')).map(el => ({ el, v: +el.textContent.replace(/[^0-9]/g, '') }));
-        vals.forEach(x => x.el.setAttribute('aria-label', x.el.textContent));
-        pc.addEventListener('chapter:progress', e => {
-            const a = Math.max(0, Math.min(1, (e.detail.p - 0.04) / 0.36)), k = 1 - Math.pow(1 - a, 2);
-            vals.forEach(x => { x.el.textContent = '$' + Math.round(x.v * k).toLocaleString(); });
-        });
-    });
     const publish = (el, p) => {
         el.style.setProperty('--p', p.toFixed(4));
         el.dispatchEvent(new CustomEvent('chapter:progress', { bubbles: true, detail: { p } }));

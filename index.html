@@ -107,13 +107,13 @@
                 <div class="ci-step" data-time="6" id="ci-dawn"><div class="ci-card">
                     <div class="ci-when">6:00 AM</div>
                     <h3>Macon and its neighbors</h3>
-                    <p>Macon-Bibb sits at the center of 16 neighboring counties, home to <strong data-ci="neighborPop"></strong> more people. Right now every county stands level, with all of its residents at home.</p>
+                    <p>Macon-Bibb sits at the center of 16 neighboring counties. Right now every one of them stands level, with all of its residents at home.</p>
                 </div></div>
                 <div class="ci-step" data-time="7.5"><div class="ci-card">
                     <div class="ci-when">7:30 AM</div>
                     <h3>Rush hour</h3>
-                    <p>Each dot is about <span data-ci="perDot"></span> commuters. <span class="ci-swatch" style="background:#f2c46b"></span>Gold dots head into Macon-Bibb; <span class="ci-swatch" style="background:#fff"></span>white dots are Macon residents heading out. A county drops as its dots leave and rises as they land.</p>
-                    <p class="ci-note">Heights exaggerate each county's change 2.5× so it's easy to see; the labels show the real change. Commute timing is illustrative.</p>
+                    <p>By 8 AM, Macon-Bibb has already gained <strong data-ci="rushGain"></strong> people, and the neighbors are emptying out.</p>
+                    <p class="ci-note"><span class="ci-swatch" style="background:#f2c46b"></span>Gold dots head into Macon-Bibb, <span class="ci-swatch" style="background:#fff"></span>white dots head out; each is <span data-ci="perDot"></span> commuters. A county drops as its dots leave and rises as they land. Heights exaggerate the change 2.5×; labels show the real change. Timing is illustrative.</p>
                 </div></div>
                 <div class="ci-step" data-time="8.5"><div class="ci-card">
                     <div class="ci-when">8:30 AM</div>
@@ -131,13 +131,13 @@
                 <div class="ci-step" data-time="17.75"><div class="ci-card">
                     <div class="ci-when">5:45 PM</div>
                     <h3>Heading home</h3>
-                    <p>The dots reverse and the region settles back to its night-time shape, ready to do it again tomorrow.</p>
+                    <p>The dots reverse, and most of those higher paychecks head home with them. By evening the region is back to its night-time shape, ready to do it again tomorrow.</p>
                     <p class="ci-note">Commuting: U.S. Census Bureau LODES 2023, between Macon-Bibb and its 16 neighbors. Residents: ACS 2024.</p>
                 </div></div>
                 <div class="ci-step ci-step--map" data-time="21" id="section-region"><div class="ci-card">
-                    <div class="ci-when">Regional context</div>
+                    <div class="ci-when">The whole picture</div>
                     <h3>Regional Commuting Patterns</h3>
-                    <p>Counting commuters from anywhere, every county around Macon-Bibb sends more workers out than it takes in, while Macon-Bibb gains <strong data-ci="bibbNet">21,871</strong> workers on net.</p>
+                    <p>Counting commuters from everywhere, not just next door, the pattern holds: every county around Macon-Bibb sends out more workers than it takes in. Only Macon-Bibb gains.</p>
                     <p>Hover any county for detail, or click the map to show the region's major highways.</p>
                     <p class="ci-note">Net commuting = jobs located in the county minus employed residents (LODES 2023). Population: ACS 2024.</p>
                 </div></div>
@@ -147,22 +147,21 @@
         <!-- Section rail (right edge on wide screens; pill bar on phones) -->
         <nav class="page-jumpnav" aria-label="Page sections">
             <a href="#section-region">Commuting</a>
-            <a href="#section-kpis">By the numbers</a>
-            <a href="#section-adjusted">Paychecks</a>
+            <a href="#section-kpis">The jobs</a>
             <a href="#section-industries">Industries</a>
-            <a href="#section-demographics">People</a>
-            <a href="#section-occupations">Jobs</a>
+            <a href="#section-occupations">Occupations</a>
             <a href="#section-hiring">Hiring</a>
+            <a href="#section-demographics">Talent</a>
         </nav>
 
-        <!-- 01 · By the numbers -->
+        <!-- 01 · The jobs that pull them in -->
         <section class="chapter" id="section-kpis">
             <header class="chapter-head">
-                <p class="chapter-kicker"><span>01</span>By the numbers <span class="info-btn-wrap"><button type="button" class="info-btn" aria-label="About this data">i</button><span class="info-popover"><strong>What this shows</strong><span>Total Jobs and Avg Annual Wage are payroll figures from the regional industry snapshot (QCEW-based). Population comes from ACS 2024 estimates. Daily In-Commuters is net commuting from the Census Bureau's LODES 2023 origin-destination data: jobs located in Macon-Bibb minus employed residents. Largest Employer Sector is the top 2-digit NAICS sector by total employment.</span></span></span></p>
+                <p class="chapter-kicker"><span>01</span>The jobs that pull them in <span class="info-btn-wrap"><button type="button" class="info-btn" aria-label="About this data">i</button><span class="info-popover"><strong>What this shows</strong><span>Total jobs and average annual wage are payroll figures from the regional industry snapshot (QCEW-based). Population comes from ACS 2024 estimates.</span></span></span></p>
                 <h2 class="chapter-finding" id="find-kpis"><em>85,088</em> jobs. <em>$55,410</em> average pay.</h2>
-                <p class="chapter-dek">Macon-Bibb County's economy at a glance: payroll jobs and wages, residents, and the workers who commute in every day.</p>
+                <p class="chapter-dek">That's what draws the region in every morning: more jobs than Macon-Bibb's own workforce can fill.</p>
             </header>
-            <div class="stats-grid">
+            <div class="stats-grid stats-grid--3">
                 <div class="kpi-block">
                     <div class="kpi-val" id="kpi-jobs">—</div>
                     <div class="kpi-label">Total Jobs</div>
@@ -175,50 +174,17 @@
                 </div>
                 <div class="kpi-block">
                     <div class="kpi-val" id="kpi-pop">—</div>
-                    <div class="kpi-label">Population</div>
-                    <div class="kpi-note">ACS 2024 estimate · residents, not workforce</div>
-                </div>
-                <div class="kpi-block">
-                    <div class="kpi-val" id="kpi-commute">—</div>
-                    <div class="kpi-label">Daily In-Commuters</div>
-                    <div class="kpi-note">Net figure — workers entering Bibb minus residents leaving</div>
-                </div>
-                <div class="kpi-block">
-                    <div class="kpi-val" id="kpi-top">—</div>
-                    <div class="kpi-label">Largest Employer Sector</div>
+                    <div class="kpi-label">Residents</div>
+                    <div class="kpi-note">ACS 2024 estimate · people who live here</div>
                 </div>
             </div>
+            <p class="chapter-bridge">And one industry accounts for more of those jobs than any other.</p>
         </section>
 
-        <!-- 02 · Where the paycheck lives -->
-        <section class="chapter" id="section-adjusted">
-            <header class="chapter-head">
-                <p class="chapter-kicker"><span>02</span>Where the paycheck lives</p>
-                <h2 class="chapter-finding">Jobs in Macon-Bibb pay a median <em>$68,900</em>. The official figure says <em class="is-muted">$50,747</em>.</h2>
-                <p class="chapter-dek">One in three jobs in Macon-Bibb is held by someone from a neighboring county, and standard Census income figures follow each paycheck home. Counted where the work happens, Macon-Bibb's earnings look very different.</p>
-            </header>
-            <div class="paycheck" data-scrub>
-                <div class="paycheck__stage">
-                    <div class="paycheck__row paycheck__row--job" style="--v: 1">
-                        <span class="paycheck__label">Median earnings at jobs in Macon-Bibb</span>
-                        <span class="paycheck__bar"><i></i></span>
-                        <b class="paycheck__val">$68,900</b>
-                    </div>
-                    <div class="paycheck__row paycheck__row--home" style="--v: 0.7365">
-                        <span class="paycheck__label">Official household median here</span>
-                        <span class="paycheck__bar"><i></i></span>
-                        <b class="paycheck__val">$50,747</b>
-                    </div>
-                    <p class="paycheck__gap"><b>+$18,153</b> a year earned here and counted somewhere else</p>
-                    <p class="paycheck__source">Adjusted job-site median: George, A. (2025), <em>Reclassifying Municipal Realities</em>. Official median: U.S. Census Bureau, ACS.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- 03 · Industries (donut) -->
+        <!-- 02 · Health care runs it -->
         <section class="chapter" id="section-industries">
             <header class="chapter-head">
-                <p class="chapter-kicker"><span>03</span>Where Macon works <span class="info-btn-wrap"><button type="button" class="info-btn" aria-label="About this data">i</button><span class="info-popover"><strong>What this shows</strong><span>Regional labor market data (QCEW-based) for Bibb County, broken out by 6-digit NAICS industry — total employment and average annual wage, grouped into 2-digit NAICS sectors.</span></span></span></p>
+                <p class="chapter-kicker"><span>02</span>Where Macon works <span class="info-btn-wrap"><button type="button" class="info-btn" aria-label="About this data">i</button><span class="info-popover"><strong>What this shows</strong><span>Regional labor market data (QCEW-based) for Bibb County, broken out by 6-digit NAICS industry — total employment and average annual wage, grouped into 2-digit NAICS sectors.</span></span></span></p>
                 <h2 class="chapter-finding" id="find-industries"><em>1 in 5</em> jobs in Macon-Bibb is in <em>health care</em>.</h2>
                 <p class="chapter-dek">Employment by industry. Click any slice, or a sector in the list, to see the industries inside it.</p>
             </header>
@@ -234,36 +200,16 @@
                     </div>
                 </div>
             </div>
+            <p class="chapter-bridge">Inside that industry, one job stands out.</p>
         </section>
 
-        <!-- 04 · People -->
-        <section class="chapter" id="section-demographics">
-            <header class="chapter-head">
-                <p class="chapter-kicker"><span>04</span>Who lives here <span class="info-btn-wrap"><button type="button" class="info-btn" aria-label="About this data">i</button><span class="info-popover"><strong>What this shows</strong><span>American Community Survey (ACS) 2024 estimates for Macon-Bibb County residents — age distribution, race &amp; ethnicity, educational attainment, and labor force participation.</span></span></span></p>
-                <h2 class="chapter-finding" id="find-demo"><em>58%</em> of working-age adults in Macon-Bibb have education beyond high school. <em>27%</em> hold a bachelor's degree or higher.</h2>
-                <p class="chapter-dek">American Community Survey 2024 estimates for county residents. Median household income ($50,747) counts every income source for households living here, which is different from the average wage per job above.</p>
-            </header>
-            <div class="demo-stat-grid">
-                <div class="demo-stat"><div class="demo-stat-val" id="demo-population">—</div><div class="demo-stat-key">Population</div></div>
-                <div class="demo-stat"><div class="demo-stat-val" id="demo-lfpr">—</div><div class="demo-stat-key">Labor Force Participation · Age 16+</div></div>
-                <div class="demo-stat"><div class="demo-stat-val" id="demo-primeage">—</div><div class="demo-stat-key">Prime-Age Participation · Ages 25–54</div></div>
-                <div class="demo-stat"><div class="demo-stat-val" id="demo-wfh">—</div><div class="demo-stat-key">Work From Home</div></div>
-            </div>
-            <div class="demo-grid">
-                <div class="demo-card"><div class="demo-card-title">Age Distribution</div><div id="age-bars"></div></div>
-                <div class="demo-card"><div class="demo-card-title">Race &amp; Ethnicity</div><div id="race-bars"></div></div>
-                <div class="demo-card"><div class="demo-card-title">Educational Attainment (Age 25–64)</div><div id="edu-bars"></div></div>
-            </div>
-        </section>
-
-        <!-- 05 · The jobs -->
+        <!-- 03 · The work itself -->
         <section class="chapter" id="section-occupations">
             <header class="chapter-head">
-                <p class="chapter-kicker"><span>05</span>The jobs <span class="info-btn-wrap"><button type="button" class="info-btn" aria-label="About this data">i</button><span class="info-popover"><strong>What this shows</strong><span>Occupational Employment and Wage Statistics (OES) estimates for Macon-Bibb County — employment and mean annual wage by occupation (SOC code), plus regional projections: 1-year growth, exits, transfers and net new positions. Totals differ from the QCEW payroll count above due to classification methodology.</span></span></span></p>
+                <p class="chapter-kicker"><span>03</span>The work itself <span class="info-btn-wrap"><button type="button" class="info-btn" aria-label="About this data">i</button><span class="info-popover"><strong>What this shows</strong><span>Occupational Employment and Wage Statistics (OES) estimates for Macon-Bibb County — employment and mean annual wage by occupation (SOC code), plus regional projections: 1-year growth, exits, transfers and net new positions. Totals differ from the QCEW payroll count above due to classification methodology.</span></span></span></p>
                 <h2 class="chapter-finding" id="find-occ"><em>Registered nurses</em> are Macon-Bibb's most common job: <em>2,779</em> positions averaging <em>$87,600</em>.</h2>
-                <p class="chapter-dek">The top occupations by employment, then where the labor market is moving: what's growing, what pays most, and where workers are leaving or switching.</p>
+                <p class="chapter-dek">The occupations with the most people working in Macon-Bibb.</p>
             </header>
-            <h3 class="chapter-sub">Top occupations</h3>
             <div class="occ-table-wrap">
                 <table class="occ-table">
                     <thead>
@@ -280,36 +226,39 @@
             <div class="chart-expand-row">
                 <button class="chart-expand-btn" id="occ-toggle">▼ Show All Occupations</button>
             </div>
-            <h3 class="chapter-sub">Labor market signals</h3>
-            <div class="occ-charts-grid">
-                <div class="occ-chart-card">
-                    <div class="occ-chart-title">Top Growing Occupations</div>
-                    <div class="occ-chart-sub">1-year forecast growth rate · 3-digit SOC group · min. 50 employees</div>
-                    <div id="occ-proj-growth"></div>
-                    <div class="chart-expand-row"><button class="chart-expand-btn" id="occ-growth-toggle">▼ Show More</button></div>
+            <details class="chapter-more">
+                <summary>More labor market detail: fastest-growing and best-paying jobs, exits and transfers</summary>
+                <div class="occ-charts-grid">
+                    <div class="occ-chart-card">
+                        <div class="occ-chart-title">Top Growing Occupations</div>
+                        <div class="occ-chart-sub">1-year forecast growth rate · 3-digit SOC group · min. 50 employees</div>
+                        <div id="occ-proj-growth"></div>
+                        <div class="chart-expand-row"><button class="chart-expand-btn" id="occ-growth-toggle">▼ Show More</button></div>
+                    </div>
+                    <div class="occ-chart-card">
+                        <div class="occ-chart-title">Top Paying Jobs</div>
+                        <div class="occ-chart-sub">Mean annual wage</div>
+                        <div id="occ-wage-mean"></div>
+                        <div class="chart-expand-row"><button class="chart-expand-btn" id="occ-wage-toggle">▼ Show More</button></div>
+                    </div>
                 </div>
-                <div class="occ-chart-card">
-                    <div class="occ-chart-title">Top Paying Jobs</div>
-                    <div class="occ-chart-sub">Mean annual wage</div>
-                    <div id="occ-wage-mean"></div>
-                    <div class="chart-expand-row"><button class="chart-expand-btn" id="occ-wage-toggle">▼ Show More</button></div>
+                <div class="occ-chart-card occ-chart-card--wide">
+                    <div class="occ-tabs" role="tablist" aria-label="Occupation demand metric">
+                        <button class="occ-tab active" data-metric="exits" role="tab" aria-selected="true">Job Exits</button>
+                        <button class="occ-tab" data-metric="transfers" role="tab" aria-selected="false">Occupational Transfers</button>
+                        <button class="occ-tab" data-metric="netgrowth" role="tab" aria-selected="false">Net New Positions</button>
+                    </div>
+                    <div class="occ-chart-sub" id="occ-demand-sub">Workers permanently leaving the occupation annually</div>
+                    <div id="occ-demand-chart"></div>
                 </div>
-            </div>
-            <div class="occ-chart-card occ-chart-card--wide">
-                <div class="occ-tabs" role="tablist" aria-label="Occupation demand metric">
-                    <button class="occ-tab active" data-metric="exits" role="tab" aria-selected="true">Job Exits</button>
-                    <button class="occ-tab" data-metric="transfers" role="tab" aria-selected="false">Occupational Transfers</button>
-                    <button class="occ-tab" data-metric="netgrowth" role="tab" aria-selected="false">Net New Positions</button>
-                </div>
-                <div class="occ-chart-sub" id="occ-demand-sub">Workers permanently leaving the occupation annually</div>
-                <div id="occ-demand-chart"></div>
-            </div>
+            </details>
+            <p class="chapter-bridge">And employers are still looking.</p>
         </section>
 
-        <!-- 06 · Hiring -->
+        <!-- 04 · Still hiring -->
         <section class="chapter" id="section-hiring">
             <header class="chapter-head">
-                <p class="chapter-kicker"><span>06</span>Hiring <span class="info-btn-wrap"><button type="button" class="info-btn" aria-label="About this data">i</button><span class="info-popover"><strong>What this shows</strong><span>Active online job ads for Bibb County from the site's most recent snapshot (March 2026), grouped by industry and by employer. The headline total sums the industry counts. Ads measure hiring demand, not filled positions or total employment.</span></span></span></p>
+                <p class="chapter-kicker"><span>04</span>Still hiring <span class="info-btn-wrap"><button type="button" class="info-btn" aria-label="About this data">i</button><span class="info-popover"><strong>What this shows</strong><span>Active online job ads for Bibb County from the site's most recent snapshot (March 2026), grouped by industry and by employer. The headline total sums the industry counts. Ads measure hiring demand, not filled positions or total employment.</span></span></span></p>
                 <div class="ticker">
                     <b class="ticker__num" id="hire-total">1,612</b>
                     <span class="ticker__label">active online job ads in Macon-Bibb</span>
@@ -331,17 +280,45 @@
                     <div class="chart-expand-row"><button class="chart-expand-btn" id="hiring-toggle">▼ Show All Industries</button></div>
                 </div>
             </div>
+            <p class="chapter-bridge">So who's here, at home, to fill them?</p>
         </section>
 
-        <!-- Closing -->
+        <!-- 05 · The talent at home -->
+        <section class="chapter" id="section-demographics">
+            <header class="chapter-head">
+                <p class="chapter-kicker"><span>05</span>The talent at home <span class="info-btn-wrap"><button type="button" class="info-btn" aria-label="About this data">i</button><span class="info-popover"><strong>What this shows</strong><span>American Community Survey (ACS) 2024 estimates for Macon-Bibb County residents — educational attainment, labor force participation, age, and race &amp; ethnicity.</span></span></span></p>
+                <h2 class="chapter-finding" id="find-demo"><em>58%</em> of working-age adults in Macon-Bibb have education beyond high school. <em>27%</em> hold a bachelor's degree or higher.</h2>
+                <p class="chapter-dek">Macon-Bibb's own residents: the local talent pool employers draw on before they look to the region.</p>
+            </header>
+            <div class="demo-stat-grid">
+                <div class="demo-stat"><div class="demo-stat-val" id="demo-population">—</div><div class="demo-stat-key">Residents</div></div>
+                <div class="demo-stat"><div class="demo-stat-val" id="demo-lfpr">—</div><div class="demo-stat-key">Labor Force Participation · Age 16+</div></div>
+                <div class="demo-stat"><div class="demo-stat-val" id="demo-primeage">—</div><div class="demo-stat-key">Prime-Age Participation · Ages 25–54</div></div>
+                <div class="demo-stat"><div class="demo-stat-val" id="demo-wfh">—</div><div class="demo-stat-key">Work From Home</div></div>
+            </div>
+            <div class="demo-grid demo-grid--1">
+                <div class="demo-card"><div class="demo-card-title">Educational Attainment (Age 25–64)</div><div id="edu-bars"></div></div>
+            </div>
+            <details class="chapter-more">
+                <summary>More about residents: age and race &amp; ethnicity</summary>
+                <div class="demo-grid demo-grid--2">
+                    <div class="demo-card"><div class="demo-card-title">Age Distribution</div><div id="age-bars"></div></div>
+                    <div class="demo-card"><div class="demo-card-title">Race &amp; Ethnicity</div><div id="race-bars"></div></div>
+                </div>
+            </details>
+        </section>
+
+        <!-- Closing: the thesis, then what to do next -->
         <section class="chapter chapter--close">
-            <h2 class="chapter-finding">Want numbers like these for your organization?</h2>
-            <p class="chapter-dek">The Greater Macon Chamber of Commerce tracks Middle Georgia's workforce every quarter. Take the overview with you, explore the region's workforce partners, or get in touch.</p>
+            <p class="chapter-kicker chapter-kicker--center">The takeaway</p>
+            <h2 class="chapter-finding">Macon-Bibb is where Middle Georgia goes to work, and health care is why.</h2>
+            <p class="chapter-dek">Want numbers like these for your organization? The Greater Macon Chamber of Commerce tracks the region's workforce every quarter.</p>
             <div class="close-actions">
                 <a class="close-btn close-btn--primary" href="reports/macon-overview.pdf" download>Download the Regional Overview (PDF)</a>
                 <a class="close-btn" href="navigator.html">Explore the Workforce Navigator</a>
                 <a class="close-btn" href="about.html">Contact the Chamber</a>
             </div>
+            <p class="close-sources">Sources: commuting, U.S. Census Bureau LODES 2023 · residents and education, American Community Survey 2024 · jobs, wages and occupations, regional QCEW and OES snapshots · job ads, March 2026 snapshot.</p>
         </section>
     </main>
 
