@@ -12,6 +12,12 @@
           location.replace('navigator.html' + location.search + location.hash);
         }
       })();
+      // Scroll build-ins (js/reveal.js). Skipped for reduced motion, and
+      // switched off again if that script never loads, so nothing stays hidden.
+      if (!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+        document.documentElement.classList.add('reveal-on');
+        setTimeout(function () { if (!window.WFReveal) document.documentElement.classList.remove('reveal-on'); }, 4000);
+      }
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -31,6 +37,7 @@
         <link rel="stylesheet" href="css/main.css">
         <link rel="stylesheet" href="css/viz.css">
         <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/reveal.css">
 </head>
 <body>
     <header class="main-header">
@@ -451,5 +458,6 @@
     <script src="js/charts.js"></script>
     <script src="js/workforce-data.js"></script>
     <script src="js/nav.js"></script>
+    <script src="js/reveal.js"></script>
 </body>
 </html>

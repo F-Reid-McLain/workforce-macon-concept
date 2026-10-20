@@ -1,0 +1,78 @@
+/* ===== SCROLL REVEAL — Workforce Data page =====
+   "Before" states for the build-in animations in js/reveal.js. They only
+   apply while <html> has .reveal-on (added in index.html's <head> unless
+   the visitor prefers reduced motion), and each group returns to normal
+   as soon as js/reveal.js marks it .in-view. */
+
+/* Bars grow from the left, one row after another */
+html.reveal-on .demo-bar-fill {
+    transform-origin: left center;
+    transition: width 0.3s ease, transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+html.reveal-on :is(#age-bars, #race-bars, #edu-bars, #occ-proj-growth, #occ-wage-mean, #occ-demand-chart, #hiring-chart, #employers-chart):not(.in-view) .demo-bar-fill {
+    transform: scaleX(0);
+}
+
+html.reveal-on .revealing .demo-bar-row:nth-child(1) .demo-bar-fill { transition-delay: 0ms; }
+html.reveal-on .revealing .demo-bar-row:nth-child(2) .demo-bar-fill { transition-delay: 60ms; }
+html.reveal-on .revealing .demo-bar-row:nth-child(3) .demo-bar-fill { transition-delay: 120ms; }
+html.reveal-on .revealing .demo-bar-row:nth-child(4) .demo-bar-fill { transition-delay: 180ms; }
+html.reveal-on .revealing .demo-bar-row:nth-child(5) .demo-bar-fill { transition-delay: 240ms; }
+html.reveal-on .revealing .demo-bar-row:nth-child(6) .demo-bar-fill { transition-delay: 300ms; }
+html.reveal-on .revealing .demo-bar-row:nth-child(7) .demo-bar-fill { transition-delay: 360ms; }
+html.reveal-on .revealing .demo-bar-row:nth-child(8) .demo-bar-fill { transition-delay: 420ms; }
+html.reveal-on .revealing .demo-bar-row:nth-child(9) .demo-bar-fill { transition-delay: 480ms; }
+html.reveal-on .revealing .demo-bar-row:nth-child(10) .demo-bar-fill { transition-delay: 540ms; }
+html.reveal-on .revealing .demo-bar-row:nth-child(11) .demo-bar-fill { transition-delay: 600ms; }
+html.reveal-on .revealing .demo-bar-row:nth-child(12) .demo-bar-fill { transition-delay: 660ms; }
+html.reveal-on .revealing .demo-bar-row:nth-child(13) .demo-bar-fill { transition-delay: 720ms; }
+html.reveal-on .revealing .demo-bar-row:nth-child(14) .demo-bar-fill { transition-delay: 780ms; }
+html.reveal-on .revealing .demo-bar-row:nth-child(15) .demo-bar-fill { transition-delay: 840ms; }
+
+/* Treemap tiles rise into place, largest first */
+html.reveal-on .treemap-cell {
+    clip-path: inset(0 0 0 0);   /* a shape, not "none", so the reveal can animate to it */
+    transition: opacity var(--transition-fast), filter var(--transition-fast), clip-path 0.75s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+html.reveal-on .treemap-canvas:not(.in-view) .treemap-cell { clip-path: inset(100% 0 0 0); }
+html.reveal-on .revealing .treemap-cell:nth-child(1) { transition-delay: 0ms; }
+html.reveal-on .revealing .treemap-cell:nth-child(2) { transition-delay: 55ms; }
+html.reveal-on .revealing .treemap-cell:nth-child(3) { transition-delay: 110ms; }
+html.reveal-on .revealing .treemap-cell:nth-child(4) { transition-delay: 165ms; }
+html.reveal-on .revealing .treemap-cell:nth-child(5) { transition-delay: 220ms; }
+html.reveal-on .revealing .treemap-cell:nth-child(6) { transition-delay: 275ms; }
+html.reveal-on .revealing .treemap-cell:nth-child(7) { transition-delay: 330ms; }
+html.reveal-on .revealing .treemap-cell:nth-child(8) { transition-delay: 385ms; }
+html.reveal-on .revealing .treemap-cell:nth-child(9) { transition-delay: 440ms; }
+html.reveal-on .revealing .treemap-cell:nth-child(10) { transition-delay: 495ms; }
+html.reveal-on .revealing .treemap-cell:nth-child(11) { transition-delay: 550ms; }
+html.reveal-on .revealing .treemap-cell:nth-child(12) { transition-delay: 605ms; }
+html.reveal-on .revealing .treemap-cell:nth-child(13) { transition-delay: 660ms; }
+html.reveal-on .revealing .treemap-cell:nth-child(14) { transition-delay: 715ms; }
+html.reveal-on .revealing .treemap-cell:nth-child(15) { transition-delay: 770ms; }
+html.reveal-on .revealing .treemap-cell:nth-child(16) { transition-delay: 825ms; }
+html.reveal-on .revealing .treemap-cell:nth-child(17) { transition-delay: 880ms; }
+html.reveal-on .revealing .treemap-cell:nth-child(18) { transition-delay: 935ms; }
+html.reveal-on .revealing .treemap-cell:nth-child(19) { transition-delay: 990ms; }
+html.reveal-on .revealing .treemap-cell:nth-child(20) { transition-delay: 1045ms; }
+
+/* Cards and table rows fade up in sequence */
+html.reveal-on :is(.kpi-block, .adj-card, .demo-stat, .demo-card, .occ-table tbody tr) {
+    transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow var(--transition-base), border-color var(--transition-fast);
+}
+html.reveal-on :is(.stats-grid, .adj-metrics-grid, .demo-stat-grid, .demo-grid, .occ-table):not(.in-view) :is(.kpi-block, .adj-card, .demo-stat, .demo-card, tbody tr) {
+    opacity: 0;
+    transform: translateY(14px);
+}
+html.reveal-on .revealing :is(.kpi-block, .adj-card, .demo-stat, .demo-card, tbody tr):nth-child(1) { transition-delay: 0ms; }
+html.reveal-on .revealing :is(.kpi-block, .adj-card, .demo-stat, .demo-card, tbody tr):nth-child(2) { transition-delay: 80ms; }
+html.reveal-on .revealing :is(.kpi-block, .adj-card, .demo-stat, .demo-card, tbody tr):nth-child(3) { transition-delay: 160ms; }
+html.reveal-on .revealing :is(.kpi-block, .adj-card, .demo-stat, .demo-card, tbody tr):nth-child(4) { transition-delay: 240ms; }
+html.reveal-on .revealing :is(.kpi-block, .adj-card, .demo-stat, .demo-card, tbody tr):nth-child(5) { transition-delay: 320ms; }
+html.reveal-on .revealing :is(.kpi-block, .adj-card, .demo-stat, .demo-card, tbody tr):nth-child(6) { transition-delay: 400ms; }
+html.reveal-on .revealing :is(.kpi-block, .adj-card, .demo-stat, .demo-card, tbody tr):nth-child(7) { transition-delay: 480ms; }
+html.reveal-on .revealing :is(.kpi-block, .adj-card, .demo-stat, .demo-card, tbody tr):nth-child(8) { transition-delay: 560ms; }
+html.reveal-on .revealing :is(.kpi-block, .adj-card, .demo-stat, .demo-card, tbody tr):nth-child(9) { transition-delay: 640ms; }
+html.reveal-on .revealing :is(.kpi-block, .adj-card, .demo-stat, .demo-card, tbody tr):nth-child(10) { transition-delay: 720ms; }
+html.reveal-on .revealing :is(.kpi-block, .adj-card, .demo-stat, .demo-card, tbody tr):nth-child(11) { transition-delay: 800ms; }
+html.reveal-on .revealing :is(.kpi-block, .adj-card, .demo-stat, .demo-card, tbody tr):nth-child(12) { transition-delay: 880ms; }
