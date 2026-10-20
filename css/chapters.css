@@ -119,7 +119,7 @@ body.page-home .occ-table tbody tr:first-child td { color: var(--ch-gold); font-
     background: transparent; border: 1px solid rgba(242, 196, 107, 0.5); color: var(--ch-gold); font: 600 0.82rem var(--font-body);
 }
 .donut-legend {
-    list-style: none; margin: 0; padding: 0 4px 0 0; max-height: calc(100vh - 200px); overflow-y: auto; display: grid; gap: 0;
+    list-style: none; margin: 0; padding: 0 4px 0 0; max-height: calc(100vh - 200px); overflow-y: auto; overflow-x: hidden; display: grid; gap: 0;
     scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
 }
 .donut-legend button {

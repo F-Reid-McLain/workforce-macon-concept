@@ -16,6 +16,16 @@
     const header = document.querySelector('.main-header');
 
     const state = new Map(els.map(el => [el, { target: 0, shown: 0, onScreen: false }]));
+
+    // The paycheck figures count with their bars: each value grows as its bar fills
+    document.querySelectorAll('.paycheck').forEach(pc => {
+        const vals = Array.from(pc.querySelectorAll('.paycheck__val')).map(el => ({ el, v: +el.textContent.replace(/[^0-9]/g, '') }));
+        vals.forEach(x => x.el.setAttribute('aria-label', x.el.textContent));
+        pc.addEventListener('chapter:progress', e => {
+            const a = Math.max(0, Math.min(1, (e.detail.p - 0.04) / 0.36)), k = 1 - Math.pow(1 - a, 2);
+            vals.forEach(x => { x.el.textContent = '$' + Math.round(x.v * k).toLocaleString(); });
+        });
+    });
     const publish = (el, p) => {
         el.style.setProperty('--p', p.toFixed(4));
         el.dispatchEvent(new CustomEvent('chapter:progress', { bubbles: true, detail: { p } }));
@@ -52,4 +62,31 @@
     addEventListener('resize', wake);
     els.forEach(el => publish(el, 0));
     wake();
+})();
+
+/* Long in-page jumps (the "Skip to the data" link, the section rail) would otherwise
+   smooth-scroll through thousands of pixels of the 3D story. Instead: a quick fade
+   out, an instant jump, and a fade back in. Short jumps keep native smooth scrolling. */
+(function () {
+    'use strict';
+    const main = document.querySelector('main');
+    if (!main) return;
+    const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    document.addEventListener('click', e => {
+        const a = e.target.closest('a[href^="#"]');
+        const target = a && a.hash.length > 1 && document.getElementById(a.hash.slice(1));
+        if (!target) return;
+        const top = Math.max(0, target.getBoundingClientRect().top + scrollY - (parseFloat(getComputedStyle(target).scrollMarginTop) || 0));
+        if (Math.abs(top - scrollY) < innerHeight * 1.5) return;
+        e.preventDefault();
+        const land = () => { scrollTo({ top, behavior: 'instant' }); history.pushState(null, '', a.hash); };
+        if (reduce) { land(); return; }
+        main.style.transition = 'opacity 0.18s ease';
+        main.style.opacity = '0';
+        setTimeout(() => {
+            land();
+            requestAnimationFrame(() => { main.style.opacity = '1'; });
+            setTimeout(() => { main.style.transition = ''; }, 260);
+        }, 180);
+    });
 })();

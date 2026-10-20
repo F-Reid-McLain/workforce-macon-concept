@@ -182,6 +182,8 @@
                 if (e <= 0) return null;
                 return (hot === i ? arcHot : arc)({ ...d, endAngle: d.startAngle + (d.endAngle - d.startAngle) * e });
             }).attr('opacity', (d, i) => (a * (n + 4) - i) > 0 ? 1 : 0);
+            // Each legend row arrives with its slice
+            legendRows.forEach((b, i) => { const r = Math.max(0, Math.min(1, (a * (n + 4) - i) / 2)); b.style.opacity = r; b.style.transform = `translateX(${(1 - r) * 8}px)`; });
         }
         let hot = -1;
         const center = document.getElementById('donut-center');

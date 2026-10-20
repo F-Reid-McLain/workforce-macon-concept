@@ -62,7 +62,7 @@
     // Reads each number's own text (e.g. "$55,410", "+23,963", "77.3%", "~$50K"),
     // so no data code has to change. Text that isn't a single number
     // ("Health Care…", "60–70%") is left alone.
-    const NUMBERS = '.kpi-val, .demo-stat-val, .adj-row-val, .adj-callout-val, .ticker__num, .paycheck__val';
+    const NUMBERS = '.kpi-val, .demo-stat-val, .ticker__num';
     const NUM_RE = /^([^\d]*?)(\d[\d,]*(?:\.\d+)?)([^\d]*)$/;
     const DURATION = 1200;
     const easeOut = t => 1 - Math.pow(1 - t, 3);

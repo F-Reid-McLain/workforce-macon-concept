@@ -422,7 +422,9 @@
                 );
             }
             // Story labels: county name and its change right now (text rebuilt only when a figure changes)
-            if (S.storyLabels > 0.01 && hour > 5.15 && rise > 0.9) {
+            // Built from the first frame (names start fully transparent), so the label font
+            // texture is made during the welcome screen rather than mid-scroll
+            if (S.storyLabels > 0.01) {
                 const pct = c => Math.round((share(c.fips, hour) - 1) * 100);
                 const textKey = counties.map(pct).join();
                 // One shared layer. Names fade in with their counties; the dark outline (a single
@@ -518,7 +520,8 @@
             anchors.forEach((a, i) => { if (y >= a.y - innerHeight * 0.35) idx = i; });
             anchors.forEach((a, i) => a.el.classList.toggle('is-active', i === idx));
             target = t; step = idx;
-            if (reducedMotion) hour = t;
+            // A big jump (link, scrollbar drag) lands directly instead of fast-forwarding the day
+            if (reducedMotion || Math.abs(t - hour) > 2.5) hour = t;
             wake();
         }
         addEventListener('scroll', onScroll, { passive: true });
