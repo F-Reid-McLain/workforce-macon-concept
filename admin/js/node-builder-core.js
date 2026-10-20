@@ -383,7 +383,7 @@ function refreshMapPreview() {
 
     const id = idField.value.trim() || slugify(nameField.value);
     sessionStorage.setItem('wf_preview_node', JSON.stringify({ id, data: buildNodeObject() }));
-    frame.src = `../index.html?asset=${encodeURIComponent(id)}&preview=${encodeURIComponent(id)}`;
+    frame.src = `../navigator.html?asset=${encodeURIComponent(id)}&preview=${encodeURIComponent(id)}`;
     frameCard.hidden = false;
     return true;
 }
@@ -450,7 +450,7 @@ function initNodeBuilderCore() {
             } else {
                 const id = idField.value.trim() || slugify(nameField.value);
                 sessionStorage.setItem('wf_preview_node', JSON.stringify({ id, data: buildNodeObject() }));
-                window.open(`../index.html?asset=${encodeURIComponent(id)}&preview=${encodeURIComponent(id)}`, '_blank');
+                window.open(`../navigator.html?asset=${encodeURIComponent(id)}&preview=${encodeURIComponent(id)}`, '_blank');
             }
         });
     }

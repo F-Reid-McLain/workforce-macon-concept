@@ -41,7 +41,7 @@ function safeHref(url) {
         .replace(/>/g, '&gt;');
 }
 
-// No-ops on index.html (loads this same file for openAssetModal/etc. but
+// No-ops on navigator.html (loads this same file for openAssetModal/etc. but
 // has no .directory-grid) — only the actual Directory page has one.
 // Preserves assets.json's own key order within each category (whatever
 // order entries were added/published in) rather than re-sorting, so
@@ -88,7 +88,7 @@ async function loadAssetData() {
             }
         }
 
-        // Renders (a no-op on index.html) then wires clicks on the links it
+        // Renders (a no-op on navigator.html) then wires clicks on the links it
         // just created — has to happen in this order and after the fetch
         // resolves, not alongside it, since the links don't exist yet
         // beforehand.

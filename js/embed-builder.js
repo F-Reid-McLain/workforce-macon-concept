@@ -80,7 +80,7 @@
     function update() {
         const query  = buildQuery();
         const height = Math.max(parseInt(heightEl.value, 10) || 800, 100);
-        const src    = 'https://maconworkforce.com/' + (query ? '?' + query : '');
+        const src    = 'https://maconworkforce.com/navigator.html' + (query ? '?' + query : '');
 
         // Map-only mode's fullscreen button escapes the iframe via the real
         // Fullscreen API (requestFullscreen), which browsers block by default
@@ -99,8 +99,8 @@
             '    loading="lazy"' + allowAttr + '>\n' +
             '</iframe>';
 
-        previewEl.src = 'index.html' + (query ? '?' + query : '');
-        if (openLinkEl) openLinkEl.href = 'index.html' + (query ? '?' + query : '');
+        previewEl.src = 'navigator.html' + (query ? '?' + query : '');
+        if (openLinkEl) openLinkEl.href = 'navigator.html' + (query ? '?' + query : '');
         layoutPreview();
     }
 

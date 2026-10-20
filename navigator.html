@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Macon Workforce Navigator - Greater Macon Chamber of Commerce</title>
+    <meta name="description" content="Explore the interconnected workforce development ecosystem that drives Macon-Bibb County's economy — colleges, job training, community partners, and more, all in one interactive map.">
+    <meta property="og:site_name" content="Macon Workforce Navigator">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Macon Workforce Navigator">
+    <meta property="og:description" content="Explore the interconnected workforce development ecosystem that drives Macon-Bibb County's economy — colleges, job training, community partners, and more, all in one interactive map.">
+    <meta property="og:url" content="https://maconworkforce.com/navigator.html">
+    <meta property="og:image" content="https://maconworkforce.com/assets/icons/icon-512.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16.png">
+    <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+    <link rel="manifest" href="site.webmanifest">
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/viz.css">
+    <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+    <script>
+      document.body.classList.toggle('embed-mode', new URLSearchParams(location.search).get('embed') === '1');
+      if (new URLSearchParams(location.search).get('theme') === 'light') document.documentElement.setAttribute('data-theme', 'light');
+    </script>
+    <header class="main-header">
+        <div class="container">
+            <div class="logo">
+                <a href="index.html"><h1>WORKFORCE <span class="accent">macon</span></h1></a>
+            </div>
+            <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+            <nav class="main-nav" id="main-nav">
+                <ul>
+                    <li><a href="index.html" class="nav-link">Workforce Data</a></li>
+                    <li><a href="navigator.html" class="nav-link active">Workforce Navigator</a></li>
+                    <li><a href="directory.html" class="nav-link">Directory</a></li>
+                    <li><a href="about.html" class="nav-link">About</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <section class="visualization-section">
+            <div class="container">
+                <div class="viz-header">
+                    <h2>Macon Workforce Navigator</h2>
+                    <p>Explore the interconnected workforce ecosystem that drives Macon's economy</p>
+                </div>
+                <div id="network-visualization" class="viz-container">
+                    <!-- Network visualization will be created by JavaScript -->
+                    <div class="viz-search" id="viz-search">
+                        <div class="viz-search-input-row">
+                            <input type="text" id="map-search-input" class="search-input" placeholder="Search the map…" aria-label="Search the map">
+                            <button type="button" id="map-search-clear" class="search-clear-btn" title="Clear search" aria-label="Clear search">&times;</button>
+                        </div>
+                        <ul class="viz-search-results" id="viz-search-results" hidden></ul>
+                    </div>
+                    <div class="viz-zoom-controls" id="viz-zoom-controls">
+                        <button class="viz-fullscreen-btn" id="fullscreen-btn" title="Toggle Fullscreen">&#x26F6;</button>
+                        <button class="viz-zoom-btn" id="zoom-in-btn" title="Zoom In">+</button>
+                        <button class="viz-zoom-btn" id="zoom-out-btn" title="Zoom Out">&#8722;</button>
+                    </div>
+                    <div class="viz-fs-controls" id="viz-fs-controls">
+                        <div class="fs-control-group">
+                            <label for="fs-size-slider">Size</label>
+                            <input type="range" id="fs-size-slider" min="0.5" max="1.5" step="0.1" value="1" class="fs-slider">
+                            <span id="fs-size-value">1.0</span>
+                        </div>
+                        <div class="fs-control-group">
+                            <label for="fs-hub-slider">Hub Distance</label>
+                            <input type="range" id="fs-hub-slider" min="20" max="80" value="28" class="fs-slider">
+                            <span id="fs-hub-value">28</span>
+                        </div>
+                        <button class="fs-reset-btn" id="fs-reset-btn">Reset View</button>
+                        <button class="fs-reset-btn mobile-map-toggle" id="fs-mobile-map-toggle">Show Full Map</button>
+                    </div>
+                    <div id="viz-info-panel" class="viz-info-panel">
+                        <div class="viz-info-header">
+                            <h3 id="viz-info-title"></h3>
+                            <button class="viz-info-close" id="viz-info-close">&#10005;</button>
+                        </div>
+                        <div class="viz-info-body" id="viz-info-body"></div>
+                    </div>
+                </div>
+                <div class="viz-controls">
+                    <div class="controls-row controls-row--sliders">
+                        <div class="control-group">
+                            <label for="size-slider">Node Size:</label>
+                            <input type="range" id="size-slider" min="0.5" max="1.5" step="0.1" value="1" class="slider">
+                            <span id="size-value">1.0</span>
+                        </div>
+                        <div class="control-group">
+                            <label for="hub-distance-slider">Hub Distance:</label>
+                            <input type="range" id="hub-distance-slider" min="20" max="80" value="28" class="slider">
+                            <span id="hub-distance-value">28</span>
+                        </div>
+                    </div>
+                    <div class="controls-row controls-row--actions">
+                        <button class="control-btn" id="reset-btn">Reset View</button>
+                        <button class="control-btn mobile-map-toggle" id="mobile-map-toggle">Show Full Map</button>
+                        <a href="directory.html" class="control-btn directory-link">View Full Directory →</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Asset detail modal -->
+    <div id="asset-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Asset Name</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="modal-content">Loading...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm before leaving the site via a related-program link -->
+    <div id="link-confirm-modal" class="modal">
+        <div class="modal-content link-confirm-content">
+            <div class="modal-header">
+                <h2>Open External Link?</h2>
+                <span class="close" id="link-confirm-close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>Open <strong id="link-confirm-label"></strong> in a new tab?</p>
+                <div class="link-confirm-actions">
+                    <button class="control-btn" id="link-confirm-cancel">Cancel</button>
+                    <button class="control-btn control-btn--accent" id="link-confirm-open">Open in New Tab</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="main-footer">
+        <div class="main-footer__wrapper">
+            <div class="main-footer__inner">
+                <div class="main-footer__contact">
+                    <span class="main-footer__eyebrow">Contact Us</span>
+                    <address class="main-footer__address">
+                        Greater Macon Chamber of Commerce<br>
+                        338 Poplar Street<br>
+                        Macon, GA 31217
+                    </address>
+                    <div class="main-footer__phone"><a href="tel:+14786212000">(478) 621-2000</a></div>
+                </div>
+                <div class="main-footer__logo">
+                    <a href="https://maconchamber.com/" target="_blank" rel="noopener">
+                        <img src="assets/logos/greater macon chamber white lockup.svg" alt="Greater Macon Chamber of Commerce">
+                    </a>
+                    <a href="https://choosemacon.com/" target="_blank" rel="noopener">
+                        <img src="assets/logos/choose-macon-white.png" alt="Choose Macon">
+                    </a>
+                </div>
+                <ul class="main-footer__links">
+                    <li><a href="index.html" class="main-footer__link">Workforce Data</a></li>
+                    <li><a href="navigator.html" class="main-footer__link">Workforce Navigator</a></li>
+                    <li><a href="directory.html" class="main-footer__link">Directory</a></li>
+                    <li><a href="about.html" class="main-footer__link">About</a></li>
+                </ul>
+            </div>
+            <div class="main-footer__attribution">The Macon Workforce Navigator is an initiative of the Greater Macon Chamber of Commerce.</div>
+            <div class="main-footer__meta-links">
+                <a href="submit-asset.html" class="main-footer__meta-link">Suggest an Asset</a>
+                <span class="main-footer__meta-sep">·</span>
+                <a href="request-edit.html" class="main-footer__meta-link">Request an Edit</a>
+            </div>
+        </div>
+    </footer>
+
+   <!-- Order is critical: Library first, then engine (data), then main (UI) -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="js/viz-engine.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/directory.js"></script>
+    <script src="js/search.js"></script>
+    <script src="js/nav.js"></script>
+</body>
+</body>
+</html>

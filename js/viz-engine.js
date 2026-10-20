@@ -323,7 +323,7 @@ const structuralLinks = [
 
   // Reads the --color-node-* / --viz-* custom properties set by css/theme.css
   // (and its :root[data-theme="light"] override, toggled by ?theme=light —
-  // see the inline script at the top of index.html) so the graph's own D3-
+  // see the inline script at the top of navigator.html) so the graph's own D3-
   // drawn colors follow the page theme instead of being locked to dark mode.
   // Defaults below match what used to be hardcoded directly here, so a page
   // with no theme param renders identically to before this existed.
