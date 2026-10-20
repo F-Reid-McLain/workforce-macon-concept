@@ -125,10 +125,11 @@
         function setLight(h) {
             if (h === lightHour) return;
             lightHour = h;
+            const m = settleAt(h);
             const i = Math.max(0, LIGHT.findIndex(k => k[0] > h) - 1), a = LIGHT[i], b = LIGHT[i + 1] || a;
             const k = smooth(a[0], b[0], h), mix = (x, y) => Array.isArray(x) ? x.map((v, j) => Math.round(v + (y[j] - v) * k)) : x + (y - x) * k;
-            ambient.color = mix(a[1], b[1]); ambient.intensity = mix(a[2], b[2]);
-            sun.color = mix(a[3], b[3]); sun.intensity = mix(a[4], b[4]);
+            ambient.color = mixRGB(mix(a[1], b[1]), [255, 255, 255], m); ambient.intensity = mix(a[2], b[2]) * (1 - m) + m;
+            sun.color = mix(a[3], b[3]); sun.intensity = mix(a[4], b[4]) * (1 - m);
             const dir = [-3 + 6 * smooth(6.5, 19, h), -1.5, -2.2], len = Math.hypot(...dir);
             sun.direction = dir.map(v => v / len);   // deck.gl only normalizes this in its constructor
             section.style.setProperty('--ci-sky', mix(a[5], b[5]).join(', '));
@@ -155,6 +156,39 @@
         }
 
         let hour = 5, step = 0, rise = reducedMotion ? 1 : 0;
+        const morphAt = h => smooth(18.6, 19.8, h);   // 0 = 3D story, 1 = the flat regional map
+        // The scene flattens, recolors and turns overhead in the first three quarters of the
+        // hand-off; only then does the 2D map fade in on top, so the two never ghost
+        const settleAt = h => smooth(0, 0.75, morphAt(h));
+
+        // ----- Hand-off to the 2D regional map (#region-map, drawn by js/workforce-data.js) -----
+        // Both use Mercator fitted to the same box, so the flattened scene lands exactly on it.
+        const flatMap = document.getElementById('region-map');
+        const allPts = rings.flatMap(r => r.ring);
+        const bounds = [[d3.min(allPts, p => p[0]), d3.min(allPts, p => p[1])], [d3.max(allPts, p => p[0]), d3.max(allPts, p => p[1])]];
+        let flatView = null;
+        function computeFlat() {
+            const W = stage.clientWidth, H = stage.clientHeight;
+            const padLeft = flatMap && W > +(flatMap.dataset.padBreakpoint || Infinity) ? +(flatMap.dataset.padLeft || 0) : 0;
+            const vp = new deck.WebMercatorViewport({ width: W, height: H })
+                .fitBounds(bounds, { padding: { top: 24, bottom: 24, left: 24 + padLeft, right: 24 } });
+            flatView = { longitude: vp.longitude, latitude: vp.latitude, zoom: vp.zoom, pitch: 0, bearing: 0 };
+        }
+        computeFlat();
+        // Each county's color on the 2D map, read from its SVG (re-read when the map redraws)
+        let fills = { svg: null, map: new Map() };
+        function mapFill(fips, fallback) {
+            const svg = flatMap && flatMap.querySelector('svg');
+            if (svg !== fills.svg) {
+                fills = { svg, map: new Map() };
+                if (svg) svg.querySelectorAll('path').forEach(el => {
+                    const d = el.__data__, f = el.getAttribute('fill');
+                    if (d && d.id && f && f !== 'none' && !fills.map.has(String(d.id))) { const c = d3.rgb(f); fills.map.set(String(d.id), [c.r, c.g, c.b]); }
+                });
+            }
+            return fills.map.get(fips) || fallback;
+        }
+        const mixRGB = (a, b, k) => a.map((v, i) => Math.round(v + (b[i] - v) * k));
         const deckgl = new deck.Deck({
             parent: mapEl, views: new deck.MapView({ repeat: false }), viewState: base, controller: false,
             effects: [new deck.LightingEffect({ ambient, sun })],
@@ -169,13 +203,15 @@
         });
 
         function layers() {
-            const p = rise;
+            const m = settleAt(hour), fade = morphAt(hour);
+            const p = rise * (1 - m);   // blocks flatten into the 2D map
             const k = r => heightShare(r.fips, hour);
             const homeTop = r => p * BLOCK_H * Math.min(1, k(r)), fullTop = r => p * BLOCK_H * k(r);
             const gainers = rings.filter(r => k(r) > 1.002), losers = rings.filter(r => k(r) < 0.998);
             const lift = (ring, z) => ring.map(([x, y]) => [x, y, z]);
-            const material = { ambient: 0.6, diffuse: 0.42, shininess: 8, specularColor: [40, 40, 40] };
-            const key = [hour, p];
+            const material = { ambient: 0.6 + 0.4 * m, diffuse: 0.42 * (1 - m), shininess: 8, specularColor: [40, 40, 40].map(v => v * (1 - m)) };
+            const key = [hour, p, m, fills.svg];
+            const BLUE = [123, 143, 209], GOLD = [242, 196, 107];
             const moving = commuters.filter(d => (hour > d.t0 && hour < d.t0 + TRAVEL) || (hour > d.t1 && hour < d.t1 + TRAVEL));
             const top = fips => p * BLOCK_H * heightShare(fips, hour);
             const dotPos = d => {
@@ -186,20 +222,22 @@
                 return [ax + (bx - ax) * u, ay + (by - ay) * u, za + (zb - za) * u + Math.sin(Math.PI * u) * ARC];
             };
             return [
-                new deck.SolidPolygonLayer({ id: 'home', data: rings, extruded: true, pickable: true, material, getPolygon: r => r.ring,
-                    getElevation: homeTop, getFillColor: [123, 143, 209], updateTriggers: { getElevation: key } }),
-                new deck.SolidPolygonLayer({ id: 'gain', data: gainers, extruded: true, pickable: true, material, getPolygon: r => lift(r.ring, homeTop(r)),
-                    getElevation: r => fullTop(r) - homeTop(r), getFillColor: [242, 196, 107], updateTriggers: { getPolygon: key, getElevation: key } }),
-                new deck.PathLayer({ id: 'edges', data: rings, getPath: r => lift(r.ring, fullTop(r) + 20), widthUnits: 'pixels',
+                new deck.SolidPolygonLayer({ id: 'home', data: rings, extruded: true, pickable: m < 0.5, material, getPolygon: r => r.ring,
+                    getElevation: homeTop, getFillColor: r => m > 0 ? mixRGB(BLUE, mapFill(r.fips, BLUE), m) : BLUE,
+                    updateTriggers: { getElevation: key, getFillColor: key } }),
+                new deck.SolidPolygonLayer({ id: 'gain', data: gainers, extruded: true, pickable: m < 0.5, material, getPolygon: r => lift(r.ring, homeTop(r)),
+                    getElevation: r => fullTop(r) - homeTop(r), getFillColor: r => m > 0 ? mixRGB(GOLD, mapFill(r.fips, GOLD), m) : GOLD,
+                    updateTriggers: { getPolygon: key, getElevation: key, getFillColor: key } }),
+                new deck.PathLayer({ id: 'edges', data: rings, opacity: 1 - fade, getPath: r => lift(r.ring, fullTop(r) + 20), widthUnits: 'pixels',
                     getWidth: r => r.fips === BIBB ? 2.5 : 1, getColor: r => r.fips === BIBB ? [180, 140, 70, 230] : [255, 255, 255, 120], updateTriggers: { getPath: key } }),
-                new deck.PathLayer({ id: 'night', data: losers, getPath: r => lift(r.ring, p * BLOCK_H), widthUnits: 'pixels',
+                new deck.PathLayer({ id: 'night', data: losers, opacity: 1 - fade, getPath: r => lift(r.ring, p * BLOCK_H), widthUnits: 'pixels',
                     getWidth: 1.2, getColor: [255, 255, 255, 150], updateTriggers: { getPath: key } }),
-                new deck.ScatterplotLayer({ id: 'dots', data: moving, visible: moving.length > 0 && p > 0.9,
+                new deck.ScatterplotLayer({ id: 'dots', data: moving, visible: moving.length > 0 && rise > 0.9 && m < 0.5,
                     getPosition: dotPos, getFillColor: d => d.to === BIBB ? [242, 196, 107, 245] : [255, 255, 255, 240],
                     stroked: true, getLineColor: [40, 35, 25, 200], lineWidthUnits: 'pixels', getLineWidth: 0.6,
                     radiusUnits: 'pixels', getRadius: mobile ? 2.4 : 3, billboard: true,
                     parameters: { depthCompare: 'always' }, updateTriggers: { getPosition: [hour, p] } }),
-                new deck.TextLayer({ id: 'names', data: counties, visible: p > 0.9 && step > 0,
+                new deck.TextLayer({ id: 'names', data: counties, visible: rise > 0.9 && step > 0 && m < 0.98, opacity: 1 - m,
                     getPosition: c => { const ctr = center.get(c.fips); return [ctr[0], ctr[1], p * BLOCK_H * heightShare(c.fips, hour) + 900]; },
                     getText: c => {
                         const pct = Math.round((share(c.fips, hour) - 1) * 100);
@@ -217,6 +255,13 @@
             deckgl.setProps({ layers: layers() });
             timeLabel.textContent = fmtTime(hour);
             timeIcon.textContent = hour >= 6.5 && hour < 19 ? '☀' : '☾';
+            const m = morphAt(hour);
+            timeLabel.parentElement.style.opacity = String(1 - m);
+            if (flatMap) {
+                flatMap.style.opacity = String(smooth(0.8, 1, m));
+                flatMap.classList.toggle('is-live', m > 0.97);
+            }
+            if (m > 0.5) tip.style.display = 'none';
             if (step !== lastView) {
                 lastView = step;
                 const to = VIEWS[Math.min(step, VIEWS.length - 1)];
@@ -247,7 +292,7 @@
         }
         let scrollRAF = null;
         addEventListener('scroll', () => { if (!scrollRAF) scrollRAF = requestAnimationFrame(() => { scrollRAF = null; onScroll(); }); }, { passive: true });
-        addEventListener('resize', () => { measure(); onScroll(); });
+        addEventListener('resize', () => { measure(); computeFlat(); onScroll(); });
 
         // ----- Animation loop: camera tween, mouse tilt, first rise — only while on screen -----
         const ease = x => x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
@@ -264,7 +309,13 @@
                 if (k >= 1) tween = null;
             }
             tilt.x += (tilt.tx - tilt.x) * 0.06; tilt.y += (tilt.ty - tilt.y) * 0.06;
-            const vs = { ...base, bearing: base.bearing + tilt.x * 7, pitch: Math.max(0, base.pitch - tilt.y * 5) };
+            let vs = { ...base, bearing: base.bearing + tilt.x * 7, pitch: Math.max(0, base.pitch - tilt.y * 5) };
+            const m = settleAt(hour);
+            if (m > 0 && flatView) {
+                const f = flatView, e = m;
+                vs = { longitude: vs.longitude + (f.longitude - vs.longitude) * e, latitude: vs.latitude + (f.latitude - vs.latitude) * e,
+                       zoom: vs.zoom + (f.zoom - vs.zoom) * e, pitch: vs.pitch * (1 - e), bearing: lerpAngle(vs.bearing, 0, e) };
+            }
             const key = [vs.longitude, vs.latitude, vs.zoom, vs.pitch, vs.bearing].map(v => v.toFixed(4)).join();
             if (key !== lastKey) { lastKey = key; deckgl.setProps({ viewState: vs }); }
             if (onScreen) loopRAF = requestAnimationFrame(frame);

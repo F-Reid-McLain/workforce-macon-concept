@@ -20,6 +20,13 @@
         #0e1420;
 }
 #ci-map { position: absolute; inset: 0; }
+/* The 2D regional map, layered over the 3D scene; js/commute-intro.js fades it in
+   as the scene flattens into it, then it takes over (hover, highways). */
+.ci-stage #region-map {
+    position: absolute; inset: 0; z-index: 2; height: auto;
+    border: 0; border-radius: 0; opacity: 0; pointer-events: none;
+}
+.ci-stage #region-map.is-live { pointer-events: auto; }
 #ci-map canvas { filter: drop-shadow(0 26px 28px rgba(0, 0, 0, 0.45)); }
 
 /* The map fades in once its data has loaded */
@@ -50,7 +57,7 @@
     margin-top: calc(-1 * (100svh - var(--ci-top)));
 }
 .ci-step { min-height: 80vh; display: flex; align-items: center; padding: 0 1.5rem; }
-.ci-step:last-child { min-height: 95vh; }
+.ci-step:last-child { min-height: 110vh; }   /* the map holds for a moment before the page moves on */
 
 .ci-card {
     pointer-events: auto; max-width: 380px; padding: 1.2rem 1.35rem;

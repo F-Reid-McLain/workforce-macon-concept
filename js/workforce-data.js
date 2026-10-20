@@ -513,7 +513,11 @@
             return d3.interpolateRgb('#3a2411', C.orange)(0.2 + t * 0.8);
         };
 
-        const projection = d3.geoAlbers().fitExtent([[24, 24], [W - 24, H - 24]], geo);
+        // Mercator and the detailed outlines from data/commute-region.json — the same
+        // as the 3D commuting intro, whose last frame lines up with this map exactly.
+        // data-pad-left (wide screens only) leaves room for the story card on the left.
+        const padLeft = W > +(container.dataset.padBreakpoint || Infinity) ? +(container.dataset.padLeft || 0) : 0;
+        const projection = d3.geoMercator().fitExtent([[24 + padLeft, 24], [W - 24, H - 24]], geo);
         const pathGen     = d3.geoPath().projection(projection);
 
         const svg = d3.select(container)
@@ -891,6 +895,22 @@
         container.appendChild(dlBtn);
     }
 
+    // County outlines (data/commute-region.json) as GeoJSON for d3. TIGER rings
+    // wind the opposite way from what d3's spherical math expects, so any ring
+    // that would cover "the rest of the globe" is reversed.
+    function regionGeo(region) {
+        const fix = ring => d3.geoArea({ type: 'Polygon', coordinates: [ring] }) > 2 * Math.PI ? ring.slice().reverse() : ring;
+        return {
+            type: 'FeatureCollection',
+            features: region.counties.map(c => ({
+                type: 'Feature', id: c.fips, properties: { name: c.name },
+                geometry: c.rings.length === 1
+                    ? { type: 'Polygon', coordinates: [fix(c.rings[0])] }
+                    : { type: 'MultiPolygon', coordinates: c.rings.map(r => [fix(r)]) },
+            })),
+        };
+    }
+
     // ===== INIT =====
     let cachedCommRows, cachedPopRows, cachedGeo, cachedHighwaysGeo;
 
@@ -900,7 +920,7 @@
         d3.csv('data/Population By County.csv'),
         d3.csv('data/Net Commuting LODES.csv'),   // LODES 2023: jobs located here minus employed residents
         d3.csv('data/Demographics.csv'),
-        d3.json('data/counties.geojson'),
+        d3.json('data/commute-region.json').then(regionGeo),
         d3.json('data/major-highways.geojson'),
     ]).then(([indRows, occRows, popRows, commRows, demoRows, geo, highwaysGeo]) => {
         const dataRows = indRows.filter(r => (r['NAICS'] || '').trim() !== '');

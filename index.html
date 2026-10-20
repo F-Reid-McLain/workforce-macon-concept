@@ -67,6 +67,8 @@
                 <div id="ci-map" aria-hidden="true"></div>
                 <div class="ci-time" aria-hidden="true"><span id="ci-time-icon">☾</span><span id="ci-time-label">5:00 AM</span></div>
                 <div class="ci-tip" id="ci-tip"></div>
+                <!-- The regional map (js/workforce-data.js). The 3D scene flattens into it at the end of the story. -->
+                <div id="region-map" data-pad-left="400" data-pad-breakpoint="900"></div>
             </div>
             <div class="ci-steps">
                 <div class="ci-step ci-step--welcome" data-time="5">
@@ -101,27 +103,17 @@
                     <div class="ci-when">5:45 PM</div>
                     <h3>Heading home</h3>
                     <p>The dots reverse and the region settles back to its night-time shape, ready to do it again tomorrow.</p>
-                    <p><a href="#section-region">Explore the region ↓</a></p>
                     <p class="ci-note">Commuting: U.S. Census Bureau LODES 2023, between Macon-Bibb and its 16 neighbors. Residents: ACS 2024.</p>
+                </div></div>
+                <div class="ci-step ci-step--map" data-time="20" id="section-region"><div class="ci-card">
+                    <div class="ci-when">Regional context</div>
+                    <h3>Regional Commuting Patterns</h3>
+                    <p>Counting commuters from anywhere, every county around Macon-Bibb sends more workers out than it takes in, while Macon-Bibb gains <strong>21,871</strong> workers on net.</p>
+                    <p>Hover any county for detail, or click the map to see the region's major highways.</p>
+                    <p class="ci-note">Net commuting = jobs located in the county minus employed residents (LODES 2023). Population: ACS 2024.</p>
                 </div></div>
             </div>
         </section>
-
-        <!-- Regional map: where the story lands (net commuting, LODES 2023) -->
-        <div class="section" id="section-region">
-            <div class="section-label teal">Regional Context</div>
-            <div class="section-title">Regional Commuting Patterns
-                <span class="info-btn-wrap">
-                    <button type="button" class="info-btn" aria-label="About this data">i</button>
-                    <div class="info-popover">
-                        <strong>What this shows</strong>
-                        <p>County population (ACS 2024 estimates) and net commuting for the 17-county Middle Georgia region from the U.S. Census Bureau's LODES 2023 origin-destination data. Net commuting = jobs located in the county minus employed residents, counting commuters from anywhere, not just the 16 neighbors in the story above.</p>
-                    </div>
-                </span>
-            </div>
-            <p class="section-desc">Every county around Macon-Bibb sends more workers out than it takes in, while Macon-Bibb gains 21,871 workers on net. Hover any county for detail, or click the map to see the region's major highways.</p>
-            <div id="region-map"></div>
-        </div>
 
         <!-- In-page section nav — a direct child of <main>, not nested inside
              .container, so its sticky containing block spans the whole page
