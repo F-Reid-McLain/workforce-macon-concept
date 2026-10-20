@@ -163,7 +163,6 @@
             const pts = feats.flatMap(f => f.geometry.type === 'LineString' ? f.geometry.coordinates : f.geometry.coordinates.flat()).filter(insideRegion);
             return pts.length ? { route, cls: feats[0].properties.class, at: pts[Math.floor(pts.length / 2)] } : null;
         }).filter(Boolean).sort((a, b) => HWY[a.cls].order - HWY[b.cls].order);
-        let hwyLabels = hwyLabelsGeo;
 
         // ----- Stage -----
         const stage = document.getElementById('ci-stage');
@@ -249,8 +248,33 @@
                     else { a.xy = [a.xy[0] - ux * need / 2, a.xy[1] - uy * need / 2]; b.xy = [b.xy[0] + ux * need / 2, b.xy[1] + uy * need / 2]; }
                 }
             }
-            hwyLabels = pts.map(p => ({ ...p, at: fv.unproject(p.xy) }));
+            pts.forEach((p, i) => { const el = hwyEls[i]; el.style.left = p.xy[0] + 'px'; el.style.top = p.xy[1] + 'px'; });
+            counties.forEach((c, i) => { const xy = fv.project(center.get(c.fips)); countyEls[i].style.left = xy[0] + 'px'; countyEls[i].style.top = xy[1] + 'px'; });
         }
+        // The finished map's labels are plain HTML pinned over the canvas (crisper than
+        // canvas text at these small sizes); the camera is static by the time they show
+        const labelsEl = document.createElement('div');
+        labelsEl.className = 'ci-maplabels';
+        labelsEl.setAttribute('aria-hidden', 'true');
+        const countyEls = counties.map(c => {
+            const el = document.createElement('div');
+            const v = net.get(c.fips) || 0;
+            el.className = 'ci-maplabel' + (c.fips === BIBB ? ' ci-maplabel--bibb' : '') + (isOtherGainer(c.fips) ? ' ci-maplabel--pale' : '');
+            el.innerHTML = `<b>${nameOf.get(c.fips)}</b><span>${fmtK(pop.get(c.fips))}</span><span>${c.fips === BIBB ? `+${fmt(v)} net` : `net: ${fmt(v)}`}</span>`;
+            labelsEl.appendChild(el);
+            return el;
+        });
+        const hwyLayerEl = document.createElement('div');
+        hwyLayerEl.className = 'ci-hwylabels';
+        hwyLayerEl.setAttribute('aria-hidden', 'true');
+        const hwyEls = hwyLabelsGeo.map(l => {
+            const el = document.createElement('span');
+            el.className = 'ci-hwybadge ci-hwybadge--' + l.cls;
+            el.textContent = l.route;
+            hwyLayerEl.appendChild(el);
+            return el;
+        });
+        mapEl.after(hwyLayerEl, labelsEl);
         computeFlat();
 
         // ----- Hand-off: the story becomes the map, staged across the evening -----
@@ -374,27 +398,7 @@
                 new deck.PathLayer({ id: 'highways', data: hwyPaths, opacity: hwy, getPath: d => d.path, widthUnits: 'pixels',
                     getWidth: d => HWY[d.cls].width, getColor: d => [255, 255, 255, Math.round(255 * HWY[d.cls].alpha)],
                     capRounded: true, jointRounded: true, extensions: [MASK], maskId: 'mask-region' }),
-                new deck.TextLayer({ id: 'highway-badges', data: hwyLabels, opacity: hwy, getPosition: d => d.at, getText: d => d.route,
-                    getSize: d => d.cls === 'interstate' ? 11 : 9.5, fontWeight: 700, fontFamily: labelFont, getColor: d => HWY[d.cls].text,
-                    background: true, getBackgroundColor: d => HWY[d.cls].badge, backgroundPadding: [6, 3, 6, 3],
-                    getBorderColor: d => d.cls === 'interstate' ? [0, 0, 0, 0] : [255, 255, 255, Math.round(255 * HWY[d.cls].alpha)], getBorderWidth: 1,
-                    parameters: { depthCompare: 'always' }, updateTriggers: { getPosition: hwyLabels } }),
             );
-            // Map labels: name, residents and net commuting, as on the regional map
-            if (S.mapLabels > 0.01) {
-                const dark = c => isOtherGainer(c.fips);
-                const common = { data: counties, opacity: S.mapLabels, fontFamily: labelFont, billboard: true, fontSettings: { sdf: true },
-                    getPosition: c => { const ctr = center.get(c.fips); return [ctr[0], ctr[1], 60]; },
-                    outlineWidth: 3, outlineColor: [0, 0, 0, 200], parameters: { depthCompare: 'always', depthWriteEnabled: false } };
-                out.push(
-                    new deck.TextLayer({ id: 'map-names', ...common, getText: c => nameOf.get(c.fips), fontWeight: 700,
-                        getSize: c => c.fips === BIBB ? 14 : (mobile ? 10 : 12), getPixelOffset: [0, -9],
-                        getColor: c => dark(c) ? [26, 58, 38, 255] : [255, 255, 255, 255] }),
-                    new deck.TextLayer({ id: 'map-figures', ...common, fontWeight: 500, lineHeight: 1.2, getSize: mobile ? 9 : 10.5, getPixelOffset: [0, 11],
-                        getText: c => c.fips === BIBB ? `${fmtK(pop.get(c.fips))}\n+${fmt(net.get(c.fips) || 0)} net` : `${fmtK(pop.get(c.fips))}\nnet: ${fmt(net.get(c.fips) || 0)}`,
-                        getColor: c => c.fips === BIBB ? [92, 220, 139, 255] : dark(c) ? [61, 91, 74, 255] : [216, 216, 216, 255] }),
-                );
-            }
             return out;
         }
 
@@ -411,6 +415,8 @@
             timeIcon.textContent = hour >= 6.5 && hour < 19 ? '☀' : '☾';
             timePill.style.opacity = String(1 - smooth(0.4, 0.7, m));
             section.style.setProperty('--ci-map', S.overlays.toFixed(3));
+            section.style.setProperty('--ci-maplabels', S.mapLabels.toFixed(3));
+            section.style.setProperty('--ci-hwy', hwy.toFixed(3));
             section.style.setProperty('--ci-settle', S.settle.toFixed(3));
             section.classList.toggle('is-map', S.live);
             if (m > 0.05 && m < 0.97) tip.style.display = 'none';
@@ -486,6 +492,28 @@
             g.drawImage(src, 0, 0);
             g.scale(scale, scale);
             const H = stage.clientHeight, W = stage.clientWidth;
+            // The map's labels are HTML on screen; draw them into the image too
+            const textAt = (txt, x, y, font, color, shadow = true) => {
+                g.font = font; g.textAlign = 'center'; g.fillStyle = color;
+                g.shadowColor = shadow ? 'rgba(0,0,0,0.85)' : 'transparent'; g.shadowOffsetX = g.shadowOffsetY = 1; g.shadowBlur = 2;
+                g.fillText(txt, x, y);
+            };
+            if (!hwyOn) counties.forEach((c, i) => {
+                const x = parseFloat(countyEls[i].style.left), y = parseFloat(countyEls[i].style.top), bibb = c.fips === BIBB, pale = isOtherGainer(c.fips);
+                const [name, popTxt, netTxt] = Array.from(countyEls[i].children, el => el.textContent);
+                textAt(name, x, y - 8, `700 ${bibb ? 14 : 12}px sans-serif`, pale ? '#1a3a26' : '#fff', !pale);
+                textAt(popTxt, x, y + 5, '500 10.5px sans-serif', bibb ? '#5cdc8b' : pale ? '#3d5b4a' : '#d8d8d8', !pale);
+                textAt(netTxt, x, y + 18, '500 10.5px sans-serif', bibb ? '#5cdc8b' : pale ? '#3d5b4a' : '#d8d8d8', !pale);
+            });
+            if (hwyOn) hwyLabelsGeo.forEach((l, i) => {
+                const x = parseFloat(hwyEls[i].style.left), y = parseFloat(hwyEls[i].style.top), inter = l.cls === 'interstate';
+                g.shadowColor = 'transparent'; g.font = `700 ${inter ? 10.5 : 9}px sans-serif`;
+                const w = g.measureText(l.route).width + 12, h = inter ? 17 : 15;
+                g.fillStyle = inter ? '#2dd4bf' : '#1a1a1a'; g.beginPath(); g.roundRect(x - w / 2, y - h / 2, w, h, 3); g.fill();
+                if (!inter) { g.strokeStyle = 'rgba(255,255,255,0.65)'; g.stroke(); }
+                g.textAlign = 'center'; g.fillStyle = inter ? '#0a2622' : '#fff'; g.fillText(l.route, x, y + 3.5);
+            });
+            g.shadowColor = 'transparent'; g.textAlign = 'left';
             const box = (x, y, w, h) => { g.fillStyle = 'rgba(16,23,32,0.85)'; g.strokeStyle = 'rgba(255,255,255,0.15)'; g.beginPath(); g.roundRect(x, y, w, h, 6); g.fill(); g.stroke(); };
             box(12, H - 92, 170, 80);
             g.fillStyle = '#fff'; g.font = '700 16px sans-serif'; g.fillText(values.statRegion, 24, H - 66);

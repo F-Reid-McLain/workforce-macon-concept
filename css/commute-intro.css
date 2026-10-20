@@ -30,13 +30,40 @@
     opacity: calc(1 - var(--ci-settle)); pointer-events: none;
 }
 
+/* ----- The finished map's labels: HTML pinned over the canvas, for crisp small text ----- */
+.ci-maplabels, .ci-hwylabels { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.ci-maplabels { opacity: calc(var(--ci-maplabels, 0) * (1 - var(--ci-hwy, 0))); }   /* county labels step aside for highways, as on the old map */
+.ci-hwylabels { opacity: var(--ci-hwy, 0); }
+.ci-maplabel {
+    position: absolute; transform: translate(-50%, -50%); text-align: center; white-space: nowrap;
+    display: flex; flex-direction: column; align-items: center; line-height: 1.2;
+    font-family: var(--font-body); color: #d8d8d8; font-size: 10.5px; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.85);
+}
+.ci-maplabel b { font-size: 12px; font-weight: 700; color: #fff; }
+.ci-maplabel--bibb b { font-size: 14px; }
+.ci-maplabel--bibb span { color: #5cdc8b; }
+.ci-maplabel--pale { text-shadow: none; color: #3d5b4a; }
+.ci-maplabel--pale b { color: #1a3a26; }
+.ci-hwybadge {
+    position: absolute; transform: translate(-50%, -50%); white-space: nowrap;
+    padding: 2px 6px; border-radius: 3px; font: 700 9px/1.2 var(--font-body);
+    background: #1a1a1a; color: #fff; border: 1px solid rgba(255, 255, 255, 0.65);
+}
+.ci-hwybadge--state { color: rgba(255, 255, 255, 0.75); border-color: rgba(255, 255, 255, 0.4); }
+.ci-hwybadge--interstate { background: #2dd4bf; color: #0a2622; border-color: transparent; font-size: 10.5px; padding: 2px 7px; }
+@media (max-width: 700px) {
+    .ci-maplabel { font-size: 9px; }
+    .ci-maplabel b { font-size: 10px; }
+    .ci-maplabel--bibb b { font-size: 12px; }
+}
+
 /* ----- The finished map's controls, stats box and key ----- */
 .ci-overlay {
     position: absolute; z-index: 3;
     opacity: var(--ci-map); transform: translateY(calc((1 - var(--ci-map)) * 10px));
     pointer-events: none;
 }
-.ci.is-map .ci-overlay { pointer-events: auto; }
+.ci.is-map .ci-overlay { pointer-events: auto; transform: none; }
 .ci-tools { top: 16px; right: 16px; display: flex; gap: 0.5rem; }
 .ci-pill {
     display: inline-flex; align-items: center; gap: 0.45rem; cursor: pointer;
