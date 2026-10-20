@@ -490,6 +490,7 @@
             section.style.setProperty('--ci-maplabels', S.mapLabels.toFixed(3));
             section.style.setProperty('--ci-hwy', hwy.toFixed(3));
             section.style.setProperty('--ci-settle', S.settle.toFixed(3));
+            section.style.setProperty('--ci-bg', smooth(0.5, 0.9, m).toFixed(3));   // stage fades into the page as the map forms
             section.style.setProperty('--ci-pulse', (smooth(5.6, 5.95, hour) * (1 - smooth(18.9, 19.5, hour))).toFixed(3));
             updatePulse();
             section.classList.toggle('is-map', S.live);

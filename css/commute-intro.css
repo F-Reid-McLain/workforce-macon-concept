@@ -6,6 +6,7 @@
     --ci-sky: 40, 60, 110;       /* glow behind the map, follows the time of day */
     --ci-map: 0;                 /* 0 = story, 1 = finished regional map (set from JS) */
     --ci-settle: 0;              /* how far the scene has turned overhead and flattened */
+    --ci-bg: 0;                  /* 0 = night-sky stage, 1 = the page's background */
     position: relative;
     margin: -2rem 0 3rem;        /* flush under the header (cancels main's top padding) */
     color: #eef1f6;
@@ -17,9 +18,11 @@
     height: calc(100vh - var(--ci-top));
     height: calc(100svh - var(--ci-top));
     overflow: hidden;
+    /* Night-sky navy for the story, easing into the page's own background as the finished
+       map arrives (--ci-bg, set from JS), so the map scrolls away into the page with no seam */
     background:
-        radial-gradient(ellipse 65% 60% at 50% 60%, rgba(var(--ci-sky), 0.45), rgba(var(--ci-sky), 0) 72%),
-        #0e1420;
+        radial-gradient(ellipse 65% 60% at 50% 60%, rgba(var(--ci-sky), calc(0.45 * (1 - var(--ci-bg)))), rgba(var(--ci-sky), 0) 72%),
+        color-mix(in srgb, var(--color-bg-page) calc(var(--ci-bg) * 100%), #0e1420);
 }
 #ci-map { position: absolute; inset: 0; }
 /* A soft shadow under the model (a static gradient, cheaper than filtering the canvas
