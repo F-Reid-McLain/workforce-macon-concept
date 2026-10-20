@@ -49,7 +49,10 @@
     // Story colors, and the regional map's (same values the old 2D map used)
     const BLUE = [123, 143, 209], GOLD = [242, 196, 107];
     const PAY = [[160, 170, 190], [242, 196, 107], [45, 212, 191]];   // ≤ $1,250 · $1,251–3,333 · > $3,333 a month
-    const MAP = { bibb: [22, 163, 74], bibbLine: [92, 220, 139], orange: [251, 146, 60], darkBrown: [58, 36, 17], gainer: [187, 247, 208], border: [68, 68, 68] };
+    // The finished map in the homepage's night palette: Macon-Bibb in gold, counties that
+    // lose workers in the story's blue (brighter = bigger loss), any other gainer in teal,
+    // and borders in the page's navy so counties read as separate tiles
+    const MAP = { bibb: [242, 196, 107], bibbLine: [255, 224, 150], lossLow: [34, 46, 78], lossHigh: [123, 143, 209], gainer: [45, 212, 191], border: [14, 20, 32] };
     const HWY = {   // interstates read as primary: thick, bright, teal shield
         interstate: { order: 2, width: 3, alpha: 1, badge: [45, 212, 191], text: [10, 38, 34] },
         us:         { order: 1, width: 1.4, alpha: 0.65, badge: [26, 26, 26], text: [255, 255, 255] },
@@ -165,7 +168,7 @@
         const mapColor = new Map(counties.map(c => {
             if (c.fips === BIBB) return [c.fips, MAP.bibb];
             if (isOtherGainer(c.fips)) return [c.fips, MAP.gainer];
-            return [c.fips, mixRGB(MAP.darkBrown, MAP.orange, 0.2 + 0.8 * clamp01(-(net.get(c.fips) || 0) / maxLoss))];
+            return [c.fips, mixRGB(MAP.lossLow, MAP.lossHigh, 0.15 + 0.85 * Math.sqrt(clamp01(-(net.get(c.fips) || 0) / maxLoss)))];
         }));
         if (!counties.some(c => isOtherGainer(c.fips))) section.querySelector('.ci-key__gainer')?.remove();
         // The recolor ripples outward from Macon-Bibb: each county's delay grows with distance
@@ -329,7 +332,7 @@
             const m = morphAt(hour);
             if (m > 0.05 && m < 0.97) { tip.style.display = 'none'; return; }   // mid-transition: no tooltip
             if (m >= 0.97) {
-                const v = net.get(fips) || 0, col = fips === BIBB ? '#5cdc8b' : v > 0 ? '#bbf7d0' : '#fb923c';
+                const v = net.get(fips) || 0, col = fips === BIBB ? '#f2c46b' : v > 0 ? '#2dd4bf' : '#a9b8ec';
                 tip.innerHTML = `<b>${fips === BIBB ? 'Bibb' : nameOf.get(fips)} County</b>Population: <span>${fmt(pop.get(fips))}</span>` +
                     `<br>Net commuting balance: <span style="color:${col}">${v > 0 ? '+' : ''}${fmt(v)}</span>`;
             } else {
@@ -576,9 +579,10 @@
             if (!hwyOn) counties.forEach((c, i) => {
                 const x = parseFloat(countyEls[i].style.left), y = parseFloat(countyEls[i].style.top), bibb = c.fips === BIBB, pale = isOtherGainer(c.fips);
                 const [name, popTxt, netTxt] = Array.from(countyEls[i].children, el => el.textContent);
-                textAt(name, x, y - 8, `700 ${bibb ? 14 : 12}px sans-serif`, pale ? '#1a3a26' : '#fff', !pale);
-                textAt(popTxt, x, y + 5, '500 10.5px sans-serif', bibb ? '#5cdc8b' : pale ? '#3d5b4a' : '#d8d8d8', !pale);
-                textAt(netTxt, x, y + 18, '500 10.5px sans-serif', bibb ? '#5cdc8b' : pale ? '#3d5b4a' : '#d8d8d8', !pale);
+                const onLight = bibb || pale;   // dark text on the gold and teal tiles
+                textAt(name, x, y - 8, `700 ${bibb ? 14 : 12}px sans-serif`, onLight ? '#1b1608' : '#fff', !onLight);
+                textAt(popTxt, x, y + 5, '500 10.5px sans-serif', onLight ? '#3b2e0c' : '#d8d8d8', !onLight);
+                textAt(netTxt, x, y + 18, '500 10.5px sans-serif', onLight ? '#3b2e0c' : '#d8d8d8', !onLight);
             });
             if (hwyOn) hwyLabelsGeo.forEach((l, i) => {
                 const x = parseFloat(hwyEls[i].style.left), y = parseFloat(hwyEls[i].style.top), inter = l.cls === 'interstate';
@@ -593,9 +597,9 @@
             box(12, H - 92, 170, 80);
             g.fillStyle = '#fff'; g.font = '700 16px sans-serif'; g.fillText(values.statRegion, 24, H - 66);
             g.fillStyle = '#9aa3b2'; g.font = '600 8px sans-serif'; g.fillText('TOTAL REGIONAL POPULATION', 24, H - 54);
-            g.fillStyle = '#5cdc8b'; g.font = '700 16px sans-serif'; g.fillText(values.statBibb, 24, H - 32);
+            g.fillStyle = '#f2c46b'; g.font = '700 16px sans-serif'; g.fillText(values.statBibb, 24, H - 32);
             g.fillStyle = '#9aa3b2'; g.font = '600 8px sans-serif'; g.fillText('MACON-BIBB POPULATION', 24, H - 20);
-            const keys = [['Macon-Bibb County', MAP.bibb], ['Negative net commuting', MAP.orange]].concat(counties.some(c => isOtherGainer(c.fips)) ? [['Positive net commuting', MAP.gainer]] : []);
+            const keys = [['Macon-Bibb County', MAP.bibb], ['Net loss of workers', MAP.lossHigh]].concat(counties.some(c => isOtherGainer(c.fips)) ? [['Net gain of workers', MAP.gainer]] : []);
             const kh = 22 + keys.length * 18;
             box(W - 186, H - kh - 12, 174, kh);
             g.fillStyle = '#9aa3b2'; g.font = '600 8px sans-serif'; g.fillText('MAP KEY', W - 174, H - kh + 4);
