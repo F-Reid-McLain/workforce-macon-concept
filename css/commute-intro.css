@@ -1,0 +1,103 @@
+/* ===== COMMUTING INTRO — homepage (js/commute-intro.js) =====
+   A sticky, always-dark 3D stage with the story's steps scrolling over it.
+   The first step is the site's welcome screen. */
+.ci {
+    --ci-top: 70px;              /* set from the fixed header's real height */
+    --ci-sky: 40, 60, 110;       /* glow behind the map, follows the time of day */
+    position: relative;
+    margin: -2rem 0 3rem;        /* flush under the header (cancels main's top padding) */
+    color: #eef1f6;
+}
+
+.ci-stage {
+    position: sticky;
+    top: var(--ci-top);
+    height: calc(100vh - var(--ci-top));
+    height: calc(100svh - var(--ci-top));
+    overflow: hidden;
+    background:
+        radial-gradient(ellipse 65% 60% at 50% 60%, rgba(var(--ci-sky), 0.45), rgba(var(--ci-sky), 0) 72%),
+        #0e1420;
+}
+#ci-map { position: absolute; inset: 0; }
+#ci-map canvas { filter: drop-shadow(0 26px 28px rgba(0, 0, 0, 0.45)); }
+
+/* The map fades in once its data has loaded */
+.ci-stage #ci-map, .ci-time { opacity: 0; transition: opacity 0.8s ease; }
+.ci.is-ready #ci-map, .ci.is-ready .ci-time { opacity: 1; }
+
+.ci-time {
+    position: absolute; top: 18px; right: 18px; z-index: 3;
+    display: flex; align-items: center; gap: 0.45rem;
+    padding: 0.4rem 0.8rem; border-radius: 999px;
+    background: rgba(16, 23, 32, 0.6); border: 1px solid rgba(255, 255, 255, 0.12);
+    font: 600 0.95rem/1 var(--font-body); font-variant-numeric: tabular-nums;
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+}
+
+.ci-tip {
+    position: absolute; z-index: 4; pointer-events: none; display: none;
+    background: #10171a; color: #e9ece6; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 8px;
+    padding: 0.5rem 0.7rem; font: 400 0.8rem/1.45 var(--font-body); box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+}
+.ci-tip b { display: block; margin-bottom: 2px; }
+.ci-tip span { font-variant-numeric: tabular-nums; color: #f2c46b; }
+
+/* ----- Steps scroll over the stage ----- */
+.ci-steps {
+    position: relative; z-index: 2; pointer-events: none;
+    margin-top: calc(-1 * (100vh - var(--ci-top)));
+    margin-top: calc(-1 * (100svh - var(--ci-top)));
+}
+.ci-step { min-height: 80vh; display: flex; align-items: center; padding: 0 1.5rem; }
+.ci-step:last-child { min-height: 95vh; }
+
+.ci-card {
+    pointer-events: auto; max-width: 380px; padding: 1.2rem 1.35rem;
+    background: rgba(16, 23, 32, 0.72); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+    opacity: 0.55; transform: translateY(10px); transition: opacity 0.35s, transform 0.35s;
+}
+.ci-step.is-active .ci-card { opacity: 1; transform: none; }
+.ci-card .ci-when { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #9fb1c9; margin-bottom: 0.35rem; }
+.ci-card h3 { font: var(--font-heading-weight) 1.4rem/1.2 var(--font-heading); margin: 0 0 0.5rem; color: #fff; }
+.ci-card p { margin: 0 0 0.6rem; font-size: 0.95rem; line-height: 1.5; color: #d3d9e3; }
+.ci-card p:last-child { margin-bottom: 0; }
+.ci-card strong { color: #f2c46b; font-variant-numeric: tabular-nums; }
+.ci-card .ci-note { font-size: 0.78rem; color: #93a0b4; }
+.ci-swatch { display: inline-block; width: 0.7em; height: 0.7em; border-radius: 50%; margin-right: 0.3em; vertical-align: baseline; }
+.ci-card a { color: #f2c46b; font-weight: 600; }
+
+/* ----- Welcome: the first step ----- */
+.ci-step--welcome { justify-content: center; text-align: center; min-height: calc(100vh - var(--ci-top)); }
+.ci-welcome { pointer-events: auto; max-width: 760px; text-shadow: 0 2px 18px rgba(0, 0, 0, 0.55); }
+.ci-eyebrow { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #f2c46b; margin: 0 0 1rem; }
+.ci-welcome h1 {
+    font: var(--font-heading-weight) clamp(2.3rem, 6vw, 4rem)/1.05 var(--font-heading);
+    letter-spacing: -0.02em; margin: 0 0 1.1rem; color: #fff; text-wrap: balance;
+}
+.ci-lede { font-size: clamp(1rem, 2.2vw, 1.2rem); line-height: 1.55; color: #dbe2ec; margin: 0 auto 2rem; max-width: 600px; }
+.ci-scroll {
+    display: inline-flex; flex-direction: column; align-items: center; gap: 0.35rem;
+    color: #fff; text-decoration: none; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.04em;
+}
+.ci-scroll svg { animation: ci-bob 1.8s ease-in-out infinite; }
+@keyframes ci-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+.ci-skip { display: block; margin-top: 1.4rem; font-size: 0.82rem; color: #b8c3d3; }
+
+/* The page's section menu steps aside while the story is on screen */
+.page-jumpnav { transition: opacity 0.3s; }
+body.ci-on-screen .page-jumpnav { opacity: 0; pointer-events: none; }
+
+@media (max-width: 768px) {
+    .ci-step { align-items: flex-end; padding: 0 0.75rem 6vh; }
+    .ci-step--welcome { align-items: center; padding-bottom: 0; }
+    .ci-card { max-width: none; width: 100%; }
+    .ci-time { top: 10px; right: 10px; font-size: 0.85rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ci-scroll svg { animation: none; }
+    .ci-card, .ci-stage #ci-map, .ci-time { transition: none; }
+}

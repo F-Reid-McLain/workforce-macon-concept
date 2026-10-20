@@ -38,6 +38,7 @@
         <link rel="stylesheet" href="css/viz.css">
         <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/commute-intro.css">
 </head>
 <body>
     <header class="main-header">
@@ -60,6 +61,52 @@
     </header>
 
     <main class="main-content">
+        <!-- Welcome + commuting intro: a short 3D scroll story (js/commute-intro.js) -->
+        <section class="ci" id="section-commute" aria-label="How Middle Georgia commutes to Macon-Bibb">
+            <div class="ci-stage" id="ci-stage">
+                <div id="ci-map" aria-hidden="true"></div>
+                <div class="ci-time" aria-hidden="true"><span id="ci-time-icon">☾</span><span id="ci-time-label">5:00 AM</span></div>
+                <div class="ci-tip" id="ci-tip"></div>
+            </div>
+            <div class="ci-steps">
+                <div class="ci-step ci-step--welcome" data-time="5">
+                    <div class="ci-welcome">
+                        <p class="ci-eyebrow">Macon Workforce · Greater Macon Chamber of Commerce</p>
+                        <h1>Middle Georgia comes to work in Macon.</h1>
+                        <p class="ci-lede">Every workday, <strong data-ci="inFromRegion">26,349</strong> people from 16 neighboring counties head into Macon-Bibb for work. This is the Chamber's free guide to the people, jobs and industries behind that.</p>
+                        <a class="ci-scroll" href="#ci-dawn">Scroll to watch a workday
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+                        </a>
+                        <a class="ci-skip" href="#section-kpis">Skip to the data</a>
+                    </div>
+                </div>
+                <div class="ci-step" data-time="6" id="ci-dawn"><div class="ci-card">
+                    <div class="ci-when">6:00 AM</div>
+                    <h3>Before the commute</h3>
+                    <p>Macon-Bibb and its 16 neighbors are home to <strong data-ci="regionPop"></strong> people. Every county starts level, with all of its residents at home.</p>
+                </div></div>
+                <div class="ci-step" data-time="8.25"><div class="ci-card">
+                    <div class="ci-when">8:15 AM</div>
+                    <h3>Rush hour</h3>
+                    <p>Each dot is about <span data-ci="perDot"></span> commuters. <span class="ci-swatch" style="background:#f2c46b"></span>Gold dots head into Macon-Bibb; <span class="ci-swatch" style="background:#fff"></span>white dots are Macon residents heading out. A county drops as its dots leave and rises as they land.</p>
+                    <p class="ci-note">Heights exaggerate each county's change 2.5× so it's easy to see; the labels show the real change. Commute timing is illustrative.</p>
+                </div></div>
+                <div class="ci-step" data-time="12.5"><div class="ci-card">
+                    <div class="ci-when">12:30 PM</div>
+                    <h3>The workday</h3>
+                    <p>Macon-Bibb now holds about <strong data-ci="bibbDay"></strong> people (<span data-ci="bibbPct"></span>), drawn most from <span data-ci="topSources"></span>.</p>
+                    <p><strong data-ci="oneIn"></strong> jobs in Macon-Bibb is held by someone who lives in a neighboring county.</p>
+                </div></div>
+                <div class="ci-step" data-time="17.75"><div class="ci-card">
+                    <div class="ci-when">5:45 PM</div>
+                    <h3>Heading home</h3>
+                    <p>The dots reverse and the region settles back to its night-time shape, ready to do it again tomorrow.</p>
+                    <p><a href="#section-kpis">See the full picture ↓</a></p>
+                    <p class="ci-note">Commuting: U.S. Census Bureau LODES 2023, between Macon-Bibb and its 16 neighbors. Residents: ACS 2024.</p>
+                </div></div>
+            </div>
+        </section>
+
         <!-- In-page section nav — a direct child of <main>, not nested inside
              .container, so its sticky containing block spans the whole page
              instead of just the short hero+KPIs box .container wraps. Nested
@@ -69,7 +116,7 @@
              for the rest of the page. -->
         <nav class="page-jumpnav" aria-label="Page sections">
             <a href="#section-kpis">Key Indicators</a>
-            <a href="#section-region">Regional Context</a>
+            <a href="#section-commute">Commuting</a>
             <a href="#section-adjusted">Adjusted Picture</a>
             <a href="#section-industries">Industries</a>
             <a href="#section-demographics">Demographics</a>
@@ -123,21 +170,6 @@
             </section>
         </div>
 
-        <!-- Regional Map -->
-        <div class="section" id="section-region">
-            <div class="section-label teal">Regional Context</div>
-            <div class="section-title">Regional Commuting Patterns
-                <span class="info-btn-wrap">
-                    <button type="button" class="info-btn" aria-label="About this data">i</button>
-                    <div class="info-popover">
-                        <strong>What this shows</strong>
-                        <p>County population (ACS 2024 estimates) and net commuting balances for the 17-county Middle Georgia region, from LEHD/LODES Origin-Destination Employment Statistics. Net commuting = in-commuters minus out-commuters.</p>
-                    </div>
-                </span>
-            </div>
-            <p class="section-desc">Nearly every surrounding county has a negative net commuting balance, reflecting a regional workforce that flows toward Macon-Bibb for employment. Net commuting = a county's total in-commuters minus its out-commuters. Hover any county for detail, or click the map to see the region's major highways.</p>
-            <div id="region-map"></div>
-        </div>
 
         <hr class="section-divider">
 
@@ -455,9 +487,11 @@
     </footer>
 
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/deck.gl@9.0.38/dist.min.js"></script>
     <script src="js/charts.js"></script>
     <script src="js/workforce-data.js"></script>
     <script src="js/nav.js"></script>
     <script src="js/reveal.js"></script>
+    <script src="js/commute-intro.js"></script>
 </body>
 </html>
