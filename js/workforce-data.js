@@ -255,8 +255,11 @@
             set('find-industries', `<em>1 in ${Math.round(1 / share)}</em> jobs in Macon-Bibb is in <em>${top.name.toLowerCase().replace('&', 'and')}</em>.`);
         }
         const demo = {}; demoRows.forEach(r => { demo[norm(r.Metric)] = toNum(r.Value2024); });
-        const prime = demo['Prime-Age Labor Force Participation Rate and Size (civilian population 25-54)'];
-        if (prime) set('find-demo', `<em>${Math.round(prime * 100)}%</em> of prime-age adults in Macon-Bibb are working or looking for work.`);
+        // Education of working-age adults (ACS): the share with schooling past high school, and with a bachelor's or higher
+        const pg = demo['Postgraduate Degree'], ba = demo["Bachelor's Degree"], aa = demo["Associate's Degree"], sc = demo['Some College, No Degree'];
+        if ([pg, ba, aa, sc].every(v => v !== undefined)) {
+            set('find-demo', `<em>${Math.round((pg + ba + aa + sc) * 100)}%</em> of working-age adults in Macon-Bibb have education beyond high school. <em>${Math.round((pg + ba) * 100)}%</em> hold a bachelor's degree or higher.`);
+        }
         const occ = occRows.filter(r => r['Occupation'] && r['SOC'] && r['SOC'].slice(-2) !== '00' && !r['Occupation'].toLowerCase().includes('total'));
         const topOcc = d3.greatest(occ, r => toNum(r['Empl']));
         if (topOcc) {

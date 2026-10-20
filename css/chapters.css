@@ -69,7 +69,7 @@ body.page-home .occ-table tbody td { font-size: 0.95rem; padding: 14px 18px; }
 body.page-home .occ-table tbody tr:first-child td { color: var(--ch-gold); font-weight: 700; }
 
 /* ----- 02 · Where the paycheck lives: bars grow as the section scrolls ----- */
-.paycheck { --p: 0; height: 210vh; position: relative; }
+.paycheck { --p: 0; height: 175vh; position: relative; }
 .paycheck__stage {
     position: sticky; top: 96px; min-height: calc(100vh - 140px);
     display: flex; flex-direction: column; justify-content: center; gap: 22px;
@@ -91,10 +91,7 @@ body.page-home .occ-table tbody tr:first-child td { color: var(--ch-gold); font-
     opacity: clamp(0, (var(--p) - 0.42) / 0.12, 1);
 }
 .paycheck__gap b { color: var(--ch-gold); font-size: 1.5rem; }
-.paycheck__more {
-    opacity: clamp(0, (var(--p) - 0.58) / 0.14, 1);
-    transform: translateY(calc((1 - clamp(0, (var(--p) - 0.58) / 0.14, 1)) * 18px));
-}
+.paycheck__source { margin: 8px 0 0; font-size: 0.78rem; color: var(--color-text-muted); opacity: clamp(0, (var(--p) - 0.5) / 0.12, 1); }
 
 /* ----- 03 · Industries donut ----- */
 .donut-scrub { --p: 0; height: 190vh; position: relative; }
@@ -141,6 +138,7 @@ body.page-home .occ-table tbody tr:first-child td { color: var(--ch-gold); font-
 .ticker { display: flex; flex-direction: column; gap: 4px; margin: 0 0 1.4rem; }
 .ticker__num { font: 800 clamp(4.2rem, 13vw, 9.5rem)/0.9 var(--font-heading); letter-spacing: -0.04em; color: var(--ch-teal); font-variant-numeric: tabular-nums; }
 .ticker__label { font-size: clamp(1.1rem, 2vw, 1.5rem); font-weight: 600; color: #fff; }
+.ticker__note { font-size: 0.8rem; color: var(--color-text-muted); }
 .hiring-grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: 20px; align-items: start; }
 body.page-home .hiring-grid .chart-container { margin: 0; padding: 26px; }
 body.page-home .hiring-employers .demo-bar-track { height: 14px; }
