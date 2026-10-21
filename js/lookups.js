@@ -9,9 +9,7 @@
      between the biggest sectors, Macon's specialties (location quotient) and
      what commuters come in for, each lighting its slices of the donut, plus a
      search that swings the donut to the industry's sector (data/Industry Snapshot.csv).
-   - Hiring (#hiring): active online job ads as employer bubbles
-     (js/hiring-bubbles.js), or as bars by employer or by industry, with a filter
-     (data/Bibb Top Employers.csv, data/Top Hiring Industries.csv).
+   - Your county (#counties) lives in js/county-explorer.js and uses the helpers below.
 
    Picking something puts it in the address (#jobs/registered-nurses,
    #industries/hospitals), so a link reopens the tool on it. A tool left
@@ -31,7 +29,7 @@
     const slug = s => String(s).toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
     // Chapters from the earlier homepage, so old links still land somewhere sensible
     const OLD = { 'section-kpis': 'industries', 'section-industries': 'industries', 'section-occupations': 'jobs',
-                  'section-hiring': 'hiring', 'section-demographics': 'custom-research', 'section-explore': 'custom-research' };
+                  'section-hiring': 'counties', 'hiring': 'counties', 'section-demographics': 'custom-research', 'section-explore': 'custom-research' };
     const openers = {};
     const jumpTo = id => { const el = document.getElementById(id); if (el) el.scrollIntoView({ behavior: 'instant', block: 'start' }); };
     function route() {
@@ -39,9 +37,15 @@
         if (OLD[stop]) { history.replaceState(null, '', '#' + OLD[stop]); jumpTo(OLD[stop]); return; }
         if (item && openers[stop]) { openers[stop](item); jumpTo(stop); }   // an unknown item still lands on its tool
     }
+    // Each tool's data arrives at its own pace and changes the page's height, so a plain
+    // link to a stop (#counties) is re-landed as each one loads, until the visitor scrolls
+    let touched = false;
+    ['wheel', 'touchmove', 'keydown', 'pointerdown'].forEach(ev => addEventListener(ev, () => { touched = true; }, { passive: true, once: true }));
+    const plainStop = () => { const id = location.hash.slice(1); return id && !id.includes('/') && document.getElementById(id) && !OLD[id] ? id : null; };
     function register(stop, open) {
         openers[stop] = open;
         if (location.hash.slice(1).split('/')[0] === stop) route();   // a link into this tool, now that its data is here
+        else if (plainStop() && !touched) jumpTo(plainStop());
     }
     const remember = (stop, name) => history.replaceState(null, '', '#' + stop + '/' + slug(name));
     addEventListener('hashchange', route);
@@ -291,76 +295,10 @@
         ]);
     }).catch(err => console.error('Industry lookup failed to load', err));
 
-    // ----- Hiring -----
-    const SHORT_NAMES = {
-        'Health Care and Social Assistance':                                         'Health Care & Social Assistance',
-        'Accommodation and Food Services':                                          'Accommodation & Food',
-        'Administrative and Support and Waste Management and Remediation Services': 'Admin & Support Services',
-        'Other Services (except Public Administration)':                            'Other Services',
-        'Transportation and Warehousing':                                           'Transportation & Warehousing',
-        'Professional, Scientific, and Technical Services':                         'Prof. & Technical Services',
-        'Management of Companies and Enterprises':                                  'Management of Companies',
-        'Real Estate and Rental and Leasing':                                       'Real Estate & Leasing',
-        'Arts, Entertainment, and Recreation':                                      'Arts & Entertainment',
-        'Finance and Insurance':                                                    'Finance & Insurance',
-    };
-    Promise.all([d3.csv('data/Bibb Top Employers.csv'), d3.csv('data/Top Hiring Industries.csv')]).then(([emp, ind]) => {
-        const byDesc = (a, b) => b.value - a.value;
-        const data = {
-            employers:  emp.filter(d => d.Company && d['Active Jobs']).map(d => ({ label: d.Company.trim(), value: num(d['Active Jobs']) })).sort(byDesc),
-            industries: ind.filter(d => d.Industry && d['Active Job Ads']).map(d => ({ label: SHORT_NAMES[d.Industry] || d.Industry, value: num(d['Active Job Ads']) })).sort(byDesc),
-        };
-        const total = d3.sum(data.industries, d => d.value), topInd = data.industries[0];
-        const el = document.getElementById('hiring-bars'), input = document.getElementById('hire-q'), more = document.getElementById('hire-more');
-        const field = document.getElementById('hire-field'), countNote = document.getElementById('hire-count');
-        const B = window.WFBubbles;
-        if (B) B.mount(field, data.employers, total);
-        let view = 'bubbles', expanded = false;
-        function render() {
-            const q = input.value.trim().toLowerCase();
-            const bubbles = view === 'bubbles' && B;
-            field.hidden = !bubbles; el.hidden = !!bubbles;
-            if (B) B.show(!!bubbles);
-            if (bubbles) {
-                const n = B.filter(q);
-                more.hidden = true;
-                countNote.textContent = q ? `${n} of ${data.employers.length} employers match` : `The ${data.employers.length} employers with the most ads. Bubble area is proportional to ads.`;
-                return;
-            }
-            const all = data[view].filter(r => !q || r.label.toLowerCase().includes(q));
-            const short = mobile() ? 6 : 10, rows = expanded || q ? all : all.slice(0, short);
-            const max = d3.max(data[view], r => r.value);
-            flip(el, () => {
-                el.innerHTML = rows.length ? rows.map(r => `
-                    <div class="demo-bar-row" data-key="${esc(r.label)}">
-                        <div class="demo-bar-label wide-label" title="${esc(r.label)}">${esc(r.label)}</div>
-                        <div class="demo-bar-track"><div class="demo-bar-fill" data-bar style="width:${(r.value / max * 100).toFixed(1)}%;background:${view === 'employers' ? '#2dd4bf' : '#f2c46b'};"></div></div>
-                        <div class="occ-bar-val">${r.value.toLocaleString()}</div>
-                    </div>`).join('') : `<p class="tool-empty">No ${view} match “${esc(input.value.trim())}” in this snapshot.</p>`;
-            });
-            more.hidden = !!q || all.length <= short;
-            more.textContent = expanded ? '▲ Show fewer' : `▼ Show all ${all.length}`;
-            countNote.textContent = view === 'employers' ? 'Employers with the most active job ads.' : 'Active job ads by industry sector.';
-        }
-        const hireView = segmented(document.getElementById('hire-views'), v => {
-            if (!B && v === 'bubbles') v = 'employers';
-            view = v; expanded = false; input.value = '';
-            input.placeholder = v === 'industries' ? 'Filter industries' : 'Filter employers';
-            render();
-        });
-        hireView(B ? 'bubbles' : 'employers');
-        input.addEventListener('input', render);
-        more.addEventListener('click', () => { expanded = !expanded; render(); });
-        let resizeT; addEventListener('resize', () => { clearTimeout(resizeT); resizeT = setTimeout(() => { if (view !== 'bubbles') render(); }, 250); });   // phone vs. desktop list length
-
-        const totalEl = document.getElementById('hire-total'), findEl = document.getElementById('find-hiring');
-        if (totalEl) totalEl.textContent = total.toLocaleString();
-        const plain = topInd ? topInd.label.replace(' & Social Assistance', '') : '';
-        if (findEl && topInd) findEl.innerHTML = `<em>${esc(plain.charAt(0) + plain.slice(1).toLowerCase())}</em> is hiring the most, with <em>${topInd.value.toLocaleString()}</em> openings.`;
-        // Idle demo: the biggest employers light up in turn
-        if (B) attract(document.getElementById('hiring'), [0, 1, 2, 3].map(k => () => { if (view === 'bubbles') B.pulse(k); }));
-    }).catch(err => console.error('Hiring data failed to load', err));
+    // Shared with js/county-explorer.js (the fourth stop)
+    window.WFTools = { register, remember, attract, countIn, swap, slug, segmented };
 
     // Plain links to a stop, or a chapter from the earlier homepage
     if (OLD[location.hash.slice(1)]) route();
+    addEventListener('load', () => { if (plainStop() && !touched && !/^(6am|8am|pay|noon|evening|map)$/.test(plainStop())) setTimeout(() => jumpTo(plainStop()), 50); });
 })();

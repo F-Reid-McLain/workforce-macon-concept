@@ -119,9 +119,7 @@ body.page-home .demo-bar-row { padding: 5px 0; font-size: 0.86rem; }
 .ticker__num { margin-bottom: 0.14em; font: 800 clamp(4.2rem, 13vw, 9.5rem)/0.9 var(--font-heading); letter-spacing: -0.04em; color: var(--ch-teal); font-variant-numeric: tabular-nums; }
 .ticker__label { font-size: clamp(1.1rem, 2vw, 1.5rem); font-weight: 600; color: #fff; }
 .ticker__note { font-size: 0.8rem; color: var(--color-text-muted); }
-body.page-home .hiring-bars .demo-bar-track { height: 14px; }
-body.page-home .hiring-bars .demo-bar-row { font-size: 0.95rem; padding: 7px 0; }
-#hire-more { align-self: flex-start; }
+
 
 /* ----- Closing ----- */
 .chapter--close { text-align: center; padding: 140px 24px 120px; }
@@ -286,36 +284,73 @@ body.page-home .hiring-bars .demo-bar-row { font-size: 0.95rem; padding: 7px 0; 
 .stop-hint.is-on { opacity: 1; transform: none; animation: hint-breathe 1.8s ease-in-out infinite; }
 @keyframes hint-breathe { 50% { box-shadow: 0 0 0 6px rgba(242, 196, 107, 0.08); } }
 
-/* ----- Employer bubbles (js/hiring-bubbles.js) ----- */
-.bubble-field { position: relative; }
-.bubble-field[hidden], .hiring-bars[hidden] { display: none; }
-.bubble-field svg { display: block; width: 100%; height: auto; overflow: visible; }
-.bubble { cursor: pointer; outline: none; }
-.bubble__body { transform: scale(0); transition: transform 0.3s cubic-bezier(0.3, 1.4, 0.4, 1), opacity 0.3s; }
-#hire-bubbles.is-built .bubble__body { transform: scale(1); }
-#hire-bubbles.is-built .bubble:nth-child(3n + 1) .bubble__body { transition-delay: 0.05s; }
-#hire-bubbles.is-built .bubble:nth-child(3n + 2) .bubble__body { transition-delay: 0.15s; }
-#hire-bubbles.is-built .bubble:nth-child(3n) .bubble__body { transition-delay: 0.25s; }
-.bubble circle { fill-opacity: 0.82; stroke: rgba(255, 255, 255, 0.0); stroke-width: 2; transition: fill-opacity 0.2s, stroke 0.2s; }
-.bubble text { text-anchor: middle; pointer-events: none; fill: #10151f; font-family: var(--font-body); }
-.bubble__name { font-weight: 700; }
-.bubble__num { font-weight: 800; font-variant-numeric: tabular-nums; }
-#hire-bubbles .bubble:hover .bubble__body, #hire-bubbles .bubble:focus-visible .bubble__body, #hire-bubbles .bubble.is-hot .bubble__body { transform: scale(1.15); transition-delay: 0s; }
-.bubble:hover circle, .bubble:focus-visible circle, .bubble.is-hot circle { fill-opacity: 1; stroke: #fff; }
-.bubble.is-dim .bubble__body { opacity: 0.15; }
-.bubble-tip {
+/* ----- Your county (js/county-explorer.js) ----- */
+.tool-panel--county { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); align-items: center; }
+.cty-map-wrap { position: relative; }
+#cty-map { display: block; width: 100%; height: auto; overflow: visible; }
+.cty { fill: rgba(242, 196, 107, var(--shade, 0.1)); stroke: rgba(14, 20, 32, 0.9); stroke-width: 1.2; cursor: pointer; outline: none; transition: fill 0.2s, stroke 0.2s; }
+.cty:hover, .cty:focus-visible { fill: rgba(242, 196, 107, calc(var(--shade, 0.1) + 0.18)); }
+.cty.is-on { stroke: var(--ch-gold); stroke-width: 2.5; fill: rgba(242, 196, 107, calc(var(--shade, 0.1) + 0.12)); }
+.cty--bibb { fill: #268a6b; stroke: #34d399; stroke-width: 1.5; cursor: default; }
+.cty--bibb:hover { fill: #2b9a77; }
+.cty-labels text { text-anchor: middle; dominant-baseline: middle; font: 600 0.68rem var(--font-body); fill: rgba(255, 255, 255, 0.72); pointer-events: none; paint-order: stroke; stroke: rgba(14, 20, 32, 0.7); stroke-width: 3px; }
+.cty-labels text.is-bibb { font-size: 0.8rem; font-weight: 800; fill: #fff; }
+.cty-flows { pointer-events: none; }
+.cty-route { fill: none; stroke: rgba(242, 196, 107, 0.28); stroke-width: 1.5; stroke-dasharray: 3 5; }
+.cty-route--out { stroke: rgba(232, 236, 243, 0.2); }
+.cty-tip {
     position: absolute; left: 0; top: 0; z-index: 5; display: flex; flex-direction: column; gap: 2px; padding: 8px 12px; border-radius: 10px;
     background: #18212f; border: 1px solid rgba(255, 255, 255, 0.16); box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
-    font-size: 0.8rem; color: var(--color-text-secondary); white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity 0.18s;
+    font-size: 0.8rem; color: var(--color-text-secondary); white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity 0.15s;
 }
-.bubble-tip.is-on { opacity: 1; }
-.bubble-tip b { color: #fff; font-size: 0.9rem; }
-.bubble-legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 10px; font-size: 0.78rem; color: var(--color-text-muted); }
-.bubble-legend span { display: inline-flex; align-items: center; gap: 6px; }
-.bubble-legend i { width: 10px; height: 10px; border-radius: 50%; }
+.cty-tip.is-on { opacity: 1; }
+.cty-tip b { color: #fff; font-size: 0.9rem; }
+.cty-key { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 8px; font-size: 0.76rem; color: var(--color-text-muted); }
+.cty-key span { display: inline-flex; align-items: center; gap: 6px; }
+.cty-key i { width: 18px; height: 0; border-top: 2px dashed; }
+.cty-key__in { border-color: var(--ch-gold); }
+.cty-key__out { border-color: #e8ecf3; }
+.cty-pick select {
+    width: 100%; box-sizing: border-box; padding: 0.7rem 2.2rem 0.7rem 0.9rem; border-radius: 10px; font: 600 0.95rem var(--font-body);
+    background: #0e1420 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23f2c46b' stroke-width='2'/%3E%3C/svg%3E") no-repeat right 0.9rem center;
+    color: #fff; border: 1px solid rgba(255, 255, 255, 0.16); appearance: none; -webkit-appearance: none; cursor: pointer;
+}
+.cty-pick select:focus { outline: none; border-color: var(--ch-gold); }
+.cty-card { padding: 18px 20px; border-radius: 12px; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--color-border); }
+.cty-big { display: flex; align-items: baseline; gap: 10px; margin-bottom: 10px; }
+.cty-big b { font: 800 clamp(2rem, 3.2vw, 2.6rem)/1 var(--font-heading); color: var(--ch-gold); font-variant-numeric: tabular-nums; }
+.cty-big > span { font-size: 0.9rem; line-height: 1.35; color: var(--color-text-secondary); }
+.cty-share { display: grid; gap: 6px; margin-bottom: 16px; font-size: 0.86rem; color: var(--color-text-secondary); }
+.cty-share b { color: #fff; }
+.cty-share__bar { height: 6px; border-radius: 3px; background: rgba(255, 255, 255, 0.07); overflow: hidden; }
+.cty-share__bar i { display: block; height: 100%; width: 0; border-radius: 3px; background: var(--ch-gold); transition: width 0.7s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.cty-card .tool-stats dd { font-size: 1.02rem; }
+.cty-card .tool-stats dd[data-net] { font-size: 0.92rem; line-height: 1.3; }
+@media (min-width: 901px) and (max-height: 780px) {
+    .cty-card { padding: 14px 16px; }
+    .cty-big { margin-bottom: 6px; }
+    .cty-big b { font-size: 1.9rem; }
+    .cty-share { margin-bottom: 10px; }
+    .cty-card .tool-stats { gap: 8px 16px; }
+    .cty-pay { margin-top: 10px; padding-top: 10px; }
+}
+/* Very short screens: drop the county's residents and local jobs, keep the commuting figures */
+@media (min-width: 901px) and (max-height: 690px) {
+    .cty-card .tool-stats div:nth-child(n + 3) { display: none; }
+}
+.cty-card .tool-stats dt { letter-spacing: 0.04em; }
+.cty-pay { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--color-border); }
+.cty-pay__title { margin: 0 0 8px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-muted); }
+.cty-pay__bar { display: flex; height: 12px; border-radius: 6px; overflow: hidden; background: rgba(255, 255, 255, 0.06); }
+.cty-pay__bar i { display: block; height: 100%; width: 0; transition: width 0.7s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.cty-pay__key { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 8px; font-size: 0.72rem; color: var(--color-text-muted); }
+.cty-pay__key span { display: inline-flex; align-items: center; gap: 5px; }
+.cty-pay__key i { width: 9px; height: 9px; border-radius: 2px; }
+.cty-pay__vs { margin: 10px 0 0; font-size: 0.84rem; line-height: 1.45; color: var(--color-text-secondary); }
+.cty-pay__vs b { color: #fff; }
 
 @media (prefers-reduced-motion: reduce) {
-    .seg__pill, .pay-gauge__me, .row-bar [data-bar], .bubble__body { transition: none; }
+    .seg__pill, .pay-gauge__me, .row-bar [data-bar], .cty-share__bar i, .cty-pay__bar i { transition: none; }
     .tool-result.is-swap, .stop-hint.is-on { animation: none; }
 }
 

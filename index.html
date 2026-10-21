@@ -163,7 +163,7 @@
             <a href="#section-commute">Commute</a>
             <a href="#jobs">Jobs</a>
             <a href="#industries">Industries</a>
-            <a href="#hiring">Hiring</a>
+            <a href="#counties">Your county</a>
             <a href="#custom-research">Custom research</a>
         </nav>
 
@@ -254,46 +254,36 @@
             </div>
         </section>
 
-        <!-- Stop 4 · Hiring: a title slide, then the tool -->
+        <!-- Stop 4 · Your county: a title slide, then the tool -->
         <div class="stop-intro">
             <div class="stop-intro__inner">
-                <p class="chapter-kicker">Hiring</p>
+                <p class="chapter-kicker">Your county</p>
                 <div class="ticker">
-                    <b class="ticker__num" id="hire-total">1,612</b>
-                    <span class="ticker__label">active online job ads in Macon-Bibb</span>
-                    <span class="ticker__note">Latest job-ad snapshot (March 2026)</span>
+                    <b class="ticker__num" id="cty-total">26,349</b>
+                    <span class="ticker__label">jobs in <span class="nw">Macon-Bibb</span> are held by people from its 16 neighbors</span>
                 </div>
-                <h2 class="chapter-finding chapter-finding--sm" id="find-hiring"><em>Health care</em> is hiring the most, with <em>480</em> openings.</h2>
+                <h2 class="chapter-finding chapter-finding--sm" id="find-county">In <em>Jones County</em>, <em>38%</em> of the jobs residents hold are in <span class="nw">Macon-Bibb</span>.</h2>
             </div>
         </div>
-        <section class="stop" id="hiring">
+        <section class="stop" id="counties">
             <p class="stop-hint" aria-hidden="true">Click anything to explore</p>
             <div class="stop-label">
-                <p class="chapter-kicker">Hiring <span class="info-btn-wrap"><button type="button" class="info-btn" aria-label="About this data">i</button><span class="info-popover"><strong>What this shows</strong><span>Active online job ads for Bibb County from the most recent snapshot (March 2026), by employer and by industry. The total sums the industry counts. Ads measure hiring demand, not filled positions.</span></span></span></p>
-                <p class="stop-label__text">Active online job ads by employer and industry (March 2026 snapshot).</p>
+                <p class="chapter-kicker">Your county <span class="info-btn-wrap"><button type="button" class="info-btn" aria-label="About this data">i</button><span class="info-popover"><strong>What this shows</strong><span>U.S. Census Bureau LODES 2023: jobs (not people; someone with two jobs counts twice) by where the worker lives and where the job is. Pay bands are LODES's monthly earnings groups. Population: ACS 2024.</span></span></span></p>
+                <p class="stop-label__text">Pick any neighboring county to see how it and <span class="nw">Macon-Bibb</span> trade workers.</p>
             </div>
-            <div class="tool-panel tool-panel--one">
+            <div class="tool-panel tool-panel--county">
+                <div class="cty-map-wrap">
+                    <svg id="cty-map" role="group" aria-label="Map of Macon-Bibb and its 16 neighboring counties"></svg>
+                    <div class="cty-tip" aria-hidden="true"></div>
+                    <div class="cty-key"><span><i class="cty-key__in"></i>Coming to work in Macon-Bibb</span><span><i class="cty-key__out"></i>Leaving Macon-Bibb for work</span></div>
+                </div>
                 <div class="tool-col">
-                    <div class="tool-row">
-                        <div class="seg" id="hire-views" role="group" aria-label="Show job ads by">
-                            <button type="button" data-view="bubbles">Bubbles</button>
-                            <button type="button" data-view="employers">By employer</button>
-                            <button type="button" data-view="industries">By industry</button>
-                        </div>
-                        <label class="tool-search tool-search--sm">
-                            <span class="sr-only">Filter the list</span>
-                            <input id="hire-q" type="search" placeholder="Filter employers" autocomplete="off">
-                        </label>
-                    </div>
-                    <p class="pane-note" id="hire-count"></p>
-                    <div class="bubble-field" id="hire-field">
-                        <svg id="hire-bubbles" role="group" aria-label="Employers by active job ads"></svg>
-                        <div class="bubble-tip" aria-live="polite"></div>
-                        <div class="bubble-legend"></div>
-                    </div>
-                    <div id="hiring-bars" class="hiring-bars" hidden></div>
-                    <button type="button" class="chart-expand-btn" id="hire-more" hidden></button>
-                    <p class="tool-upsell">Want to know what a job pays or how many open each year? <a href="#jobs">Look it up in Jobs →</a> Need hiring trends over time? <a href="#custom-research">Request custom research →</a></p>
+                    <label class="tool-search cty-pick">
+                        <span class="sr-only">Pick a county</span>
+                        <select id="cty-select"></select>
+                    </label>
+                    <div class="tool-result cty-card" id="cty-card" aria-live="polite"></div>
+                    <p class="tool-upsell">Need the full labor shed around a site? <a href="#custom-research">Request custom research →</a></p>
                 </div>
             </div>
         </section>
@@ -316,7 +306,7 @@
                     <a class="close-btn" href="navigator.html">Explore the Workforce Navigator</a>
                 </div>
             </div>
-            <p class="close-sources">Sources: commuting, U.S. Census Bureau LODES 2023 · residents, American Community Survey 2024 · jobs, wages, occupations and industry concentration, regional QCEW and OES snapshots · job ads, March 2026 snapshot.</p>
+            <p class="close-sources">Sources: commuting, U.S. Census Bureau LODES 2023 · residents, American Community Survey 2024 · jobs, wages, occupations and industry concentration, regional QCEW and OES snapshots.</p>
         </section>
     </main>
 
@@ -362,8 +352,8 @@
     <script src="js/nav.js"></script>
     <script src="js/reveal.js"></script>
     <script src="js/chapters.js"></script>
-    <script src="js/hiring-bubbles.js"></script>
     <script src="js/lookups.js"></script>
+    <script src="js/county-explorer.js"></script>
     <script src="js/commute-intro.js"></script>
 </body>
 </html>

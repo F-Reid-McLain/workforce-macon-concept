@@ -9,7 +9,7 @@ html.reveal-on .demo-bar-fill {
     transform-origin: left center;
     transition: width 0.3s ease, transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
-html.reveal-on :is(#sector-commute-bars, #hiring-bars):not(.in-view) .demo-bar-fill {
+html.reveal-on #sector-commute-bars:not(.in-view) .demo-bar-fill {
     transform: scaleX(0);
 }
 

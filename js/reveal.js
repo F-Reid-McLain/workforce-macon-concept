@@ -1,7 +1,7 @@
 /* ===== SCROLL REVEAL — Workforce Data page =====
    Each tool stop rises in the first time it scrolls into view (its headline
    figures counting up), each bar chart's bars grow from the left, and the
-   hiring total counts up from zero.
+   big totals count up from zero.
    Everything plays once; later re-renders (switches, filters, Show all,
    resizes) appear instantly.
 
@@ -19,7 +19,7 @@
     window.WFReveal = true;
 
     // ----- Chart and card groups -----
-    const GROUPS = ['#sector-commute-bars', '#hiring-bars'];
+    const GROUPS = ['#sector-commute-bars'];
     const STAGGER_MS = 1800;   // long enough for the last staggered item to finish
 
     const ITEMS = '.demo-bar-row';
