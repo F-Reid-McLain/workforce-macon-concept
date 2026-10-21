@@ -1,50 +1,7 @@
-/* ===== SEARCH — directory list filter + map highlight/jump-to ===== */
-
-/* ----- Directory page ----- */
-(function () {
-    const input = document.getElementById('directory-search-input');
-    if (!input) return;
-
-    const clearBtn = document.getElementById('directory-search-clear');
-    const emptyMsg = document.getElementById('directory-empty');
-
-    function applyFilter() {
-        const q = input.value.trim().toLowerCase();
-        let anyGroupVisible = false;
-
-        // Queried fresh each time rather than cached at load — the list
-        // is now built by directory.js from assets.json after an async
-        // fetch, so the groups don't exist yet at the moment this IIFE
-        // itself runs.
-        const groups = Array.from(document.querySelectorAll('.directory-group'));
-        groups.forEach(group => {
-            const heading = group.querySelector('h3');
-            const headingMatches = !q || (heading && heading.textContent.toLowerCase().includes(q));
-            let groupHasMatch = headingMatches;
-
-            group.querySelectorAll('.asset-link').forEach(link => {
-                const matches = headingMatches || link.textContent.toLowerCase().includes(q);
-                link.closest('li').hidden = !matches;
-                if (matches) groupHasMatch = true;
-            });
-
-            group.hidden = !groupHasMatch;
-            if (groupHasMatch) anyGroupVisible = true;
-        });
-
-        if (emptyMsg) emptyMsg.hidden = anyGroupVisible;
-    }
-
-    input.addEventListener('input', applyFilter);
-
-    if (clearBtn) {
-        clearBtn.addEventListener('click', () => {
-            input.value = '';
-            applyFilter();
-            input.focus();
-        });
-    }
-})();
+/* ===== SEARCH — map highlight/jump-to =====
+   The map's own search box (shown in map-only embeds; on the full page the
+   finder in js/navigator-finder.js does the searching), and window.WFMap, which
+   lets the finder drive the same highlighting. */
 
 /* ----- Map page ----- */
 (function () {
@@ -226,6 +183,28 @@
             input.focus();
         });
     }
+
+    // For the finder (js/navigator-finder.js): light up a set of nodes and dim the
+    // rest, open a node exactly as a click on it would, or pick one out on hover
+    const byId = id => nodeSelection && nodeSelection.data().find(d => d.id === id);
+    window.WFMap = {
+        ready: () => !!nodeSelection,
+        highlight(ids) {
+            if (!nodeSelection) return;
+            if (!ids) { resetHighlight(); return; }
+            const set = new Set(ids);
+            applyHighlight(nodeSelection.data().filter(d => set.has(d.id)));
+        },
+        open(id) {
+            if (!nodeSelection) return;
+            nodeSelection.filter(d => d.id === id).dispatch('click');
+        },
+        center(id) { const d = byId(id); if (d) jumpToNode(d); },
+        hover(id) {
+            if (!nodeSelection) return;
+            nodeSelection.select('circle').classed('is-pulse', d => d.id === id);
+        },
+    };
 
     // Close the results dropdown when clicking outside the search box
     document.addEventListener('click', (e) => {

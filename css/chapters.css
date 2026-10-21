@@ -4,24 +4,7 @@
    finding headline, then the tool (js/lookups.js). Then the custom-research
    close. Scoped to body.page-home (index.html only). */
 
-/* ----- Night palette for the whole homepage ----- */
-body.page-home {
-    --color-bg-page: #0e1420;
-    --color-bg-surface: #141c2a;
-    --color-bg-surface-deep: #111827;
-    --color-bg-surface-mid: #111827;
-    --color-border: rgba(255, 255, 255, 0.09);
-    --color-border-subtle: rgba(255, 255, 255, 0.12);
-    --color-text-secondary: #c3cad6;
-    --color-text-muted: #8a94a6;
-    --header-bg: rgba(14, 20, 32, 0.92);
-    --footer-bg: #0a0f19;
-    --footer-bg-bar: #070b13;
-    --ch-gold: #f2c46b;
-    --ch-teal: #2dd4bf;
-    --ch-card: #131b29;
-}
-body.page-home .main-header { background: rgba(14, 20, 32, 0.92); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+/* The night palette itself lives in css/theme.css (:root.theme-night), shared with the Navigator */
 body.page-home .main-content { padding-bottom: 0; }
 
 /* ----- Stop frame: a title slide with the headline, then the tool on a screen of its own ----- */

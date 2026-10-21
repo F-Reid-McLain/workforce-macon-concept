@@ -1,0 +1,123 @@
+/* ===== WORKFORCE NAVIGATOR — finder + map (navigator.html) =====
+   "What do you need?" picks, search and filters over cards on the left, the
+   network map sticky on the right (js/navigator-finder.js). Colors come from
+   the shared night palette in css/theme.css (:root.theme-night). Map-only
+   embeds (?embed=1) hide the finder and keep the map filling the frame. */
+
+.finder { max-width: 1320px; margin: 0 auto; padding: 8px 24px 40px; }
+.finder-head { margin: 8px 0 22px; }
+.finder-head .chapter-kicker { margin-bottom: 0.7rem; }
+.finder-title { margin: 0 0 0.6rem; max-width: 26ch; font: 700 clamp(1.8rem, 3.3vw, 2.8rem)/1.1 var(--font-heading); letter-spacing: -0.02em; color: #fff; text-wrap: balance; }
+.finder-dek { margin: 0; max-width: 64ch; font-size: 1.05rem; line-height: 1.55; color: var(--color-text-secondary); }
+
+/* What do you need? */
+.finder-needs { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin-bottom: 16px; }
+.finder-needs__label { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ch-gold); }
+.finder-needs__chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.finder-needs .fchip { padding: 0.55rem 1rem; font-size: 0.9rem; }
+
+.fchip {
+    display: inline-flex; align-items: center; gap: 7px; padding: 0.4rem 0.8rem; border-radius: 999px; cursor: pointer;
+    font: 600 0.82rem var(--font-body); color: var(--color-text-secondary); background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.16); transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+}
+.fchip:hover { color: #fff; border-color: rgba(255, 255, 255, 0.35); transform: translateY(-1px); }
+.fchip.is-on { background: var(--ch-gold); border-color: var(--ch-gold); color: #1b1608; box-shadow: 0 4px 16px rgba(242, 196, 107, 0.3); }
+.fchip i { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+
+/* Search, filters and the count */
+.finder-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin-bottom: 10px; }
+.finder-search { flex: 1 1 320px; max-width: 520px; }
+.finder-more, .finder-clear {
+    padding: 0.6rem 0.95rem; border-radius: 10px; cursor: pointer; font: 600 0.86rem var(--font-body);
+    background: transparent; color: var(--color-text-secondary); border: 1px solid rgba(255, 255, 255, 0.16);
+}
+.finder-more:hover, .finder-clear:hover { color: #fff; border-color: rgba(255, 255, 255, 0.35); }
+.finder-more[aria-expanded="true"] { color: var(--ch-gold); border-color: rgba(242, 196, 107, 0.5); }
+.finder-clear { border-color: transparent; color: var(--ch-gold); }
+.finder-count { margin: 0 0 0 auto; font-size: 0.9rem; font-weight: 600; color: #fff; }
+.finder-filters { display: grid; gap: 10px; margin-bottom: 14px; padding: 14px 16px; border-radius: 14px; background: var(--ch-card); border: 1px solid var(--color-border); }
+.finder-filters[hidden] { display: none; }
+.finder-filters__row { display: grid; grid-template-columns: 11rem minmax(0, 1fr); align-items: baseline; gap: 10px; }
+.finder-filters__row > span { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-muted); }
+.finder-filters__row > div { display: flex; flex-wrap: wrap; gap: 6px; }
+
+/* Cards beside the map */
+.finder-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 24px; align-items: start; }
+.finder-cards { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.fcard {
+    width: 100%; display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 14px; align-items: start; text-align: left;
+    padding: 14px 16px; border-radius: 14px; cursor: pointer; font: inherit; color: inherit;
+    background: var(--ch-card); border: 1px solid var(--color-border);
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.25s, background 0.2s;
+}
+.fcard:hover { border-color: rgba(242, 196, 107, 0.45); transform: translateX(2px); box-shadow: inset 3px 0 0 var(--ch-gold); }
+.fcard.is-active { border-color: var(--ch-gold); background: #172133; box-shadow: inset 3px 0 0 var(--ch-gold), 0 0 0 3px rgba(242, 196, 107, 0.12); }
+.fcard:focus-visible { outline: 2px solid var(--ch-gold); outline-offset: 2px; }
+.fcard__logo { width: 56px; height: 56px; border-radius: 12px; overflow: hidden; background: #fff; display: grid; place-items: center; }
+.fcard__logo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.fcard__logo.is-contain img { object-fit: contain; padding: 6px; box-sizing: border-box; }
+.fcard__logo.is-blank { opacity: 0.6; }
+.fcard__text { display: grid; gap: 4px; min-width: 0; }
+.fcard__kind { display: inline-flex; align-items: center; gap: 6px; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-muted); }
+.fcard__kind i { width: 8px; height: 8px; border-radius: 50%; }
+.fcard__name { font-size: 1.04rem; line-height: 1.25; color: #fff; }
+.fcard__blurb { font-size: 0.86rem; line-height: 1.45; color: var(--color-text-secondary); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.fcard__tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 2px; }
+.fcard__tags em { font-style: normal; font-size: 0.7rem; font-weight: 600; padding: 2px 8px; border-radius: 999px; color: #c9d2e0; background: rgba(255, 255, 255, 0.06); }
+.finder-empty { margin: 8px 0; color: var(--color-text-secondary); }
+.finder-linkbtn { padding: 0; border: 0; background: none; color: var(--ch-gold); font: inherit; font-weight: 600; cursor: pointer; }
+.finder-suggest { margin: 18px 0 0; font-size: 0.84rem; color: var(--color-text-muted); }
+.finder-suggest a { color: var(--ch-gold); text-decoration: none; font-weight: 600; }
+.finder-tomap { display: none; }
+
+/* The map column: sticky beside the cards, filling the screen's height */
+.finder-map { position: sticky; top: 78px; }
+.finder-map .visualization-section { margin: 0; max-width: none; text-align: left; }
+.finder-map .visualization-section .container { max-width: none; padding: 0; }
+.finder-map .viz-header { display: none; }
+.finder-map-note { margin: 0 0 8px; font-size: 0.84rem; color: var(--color-text-muted); }
+.finder-map .viz-container { margin: 0; height: calc(100vh - 170px); min-height: 460px; border-radius: 16px; }
+.finder-map #network-visualization, .finder-map #network-visualization svg { min-height: 0; }
+.finder-map .viz-controls { margin-top: 10px; padding: 0; background: none; border: 0; }
+.finder-map .controls-row--sliders { display: none; }   /* still in the map's fullscreen controls */
+.finder-map .controls-row--actions { justify-content: flex-end; gap: 8px; }
+.finder-map .control-btn {
+    padding: 0.45rem 0.95rem; border-radius: 999px; font: 600 0.82rem var(--font-body); width: auto; min-width: 0;
+    background: transparent; color: var(--color-text-secondary); border: 1px solid rgba(255, 255, 255, 0.16);
+}
+.finder-map .control-btn:hover { color: #fff; background: transparent; border-color: rgba(255, 255, 255, 0.35); }
+body:not(.embed-mode) .finder-map .viz-search { display: none; }   /* the finder does the searching */
+/* A card hovered in the list picks out its dot */
+#network-visualization circle.is-pulse { stroke: var(--ch-gold) !important; stroke-width: 5px !important; filter: drop-shadow(0 0 8px rgba(242, 196, 107, 0.9)); }
+
+/* ----- Phones and tablets: cards, then the map; details open as a sheet ----- */
+@media (max-width: 900px) {
+    .finder { padding: 4px 16px 32px; }
+    .finder-body { grid-template-columns: minmax(0, 1fr); }
+    .finder-map { position: static; scroll-margin-top: 70px; }
+    .finder-map .viz-container { height: 70vh; min-height: 380px; }
+    .finder-tomap { display: inline-block; margin-bottom: 10px; font-size: 0.86rem; font-weight: 600; color: var(--ch-gold); text-decoration: none; }
+    .finder-count { margin-left: 0; width: 100%; }
+    .finder-filters__row { grid-template-columns: minmax(0, 1fr); }
+    .finder-search { max-width: none; }
+    #asset-modal .modal-content {
+        position: fixed; left: 0; right: 0; bottom: 0; width: 100%; max-width: none; max-height: 82vh; margin: 0;
+        border-radius: 18px 18px 0 0; animation: sheet-up 0.28s cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+}
+@keyframes sheet-up { from { transform: translateY(100%); } to { transform: none; } }
+#asset-modal .modal-content { background: var(--viz-panel-bg); }
+#asset-modal .modal-header { background: var(--viz-panel-header-bg); }
+
+@media (prefers-reduced-motion: reduce) {
+    .fcard, .fchip { transition: none; }
+    #asset-modal .modal-content { animation: none; }
+}
+
+/* ----- Map-only embeds: just the map, filling the frame ----- */
+body.embed-mode :is(.finder-head, .finder-needs, .finder-bar, .finder-filters, .finder-list, .finder-map-note) { display: none; }
+body.embed-mode .finder { flex: 1; min-height: 0; display: flex; max-width: none; padding: 0; margin: 0; }
+body.embed-mode .finder-body { flex: 1; min-height: 0; display: flex; align-items: stretch; }
+body.embed-mode .finder-map { flex: 1; min-height: 0; display: flex; position: static; }
+body.embed-mode .finder-map .viz-container { height: auto; min-height: 0; border-radius: 0; }

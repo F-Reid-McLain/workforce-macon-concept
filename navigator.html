@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="theme-night">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,6 +19,8 @@
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/viz.css">
     <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/chapters.css">
+    <link rel="stylesheet" href="css/navigator.css">
 </head>
 <body>
     <script>
@@ -37,7 +39,6 @@
                 <ul>
                     <li><a href="index.html" class="nav-link">Workforce Data</a></li>
                     <li><a href="navigator.html" class="nav-link active">Workforce Navigator</a></li>
-                    <li><a href="directory.html" class="nav-link">Directory</a></li>
                     <li><a href="about.html" class="nav-link">About</a></li>
                 </ul>
             </nav>
@@ -45,12 +46,47 @@
     </header>
 
     <main class="main-content">
+      <div class="finder">
+        <header class="finder-head">
+            <p class="chapter-kicker">Workforce Navigator</p>
+            <h2 class="finder-title">Find the right program, school or partner in Greater Macon.</h2>
+            <p class="finder-dek"><span id="finder-total">29</span> organizations that train, place and support workers in <span class="nw">Macon-Bibb</span> and the region. Start with what you need, search, or explore the map.</p>
+        </header>
+
+        <div class="finder-needs" role="group" aria-labelledby="finder-needs-label">
+            <span class="finder-needs__label" id="finder-needs-label">What do you need?</span>
+            <div class="finder-needs__chips" id="finder-needs"></div>
+        </div>
+
+        <div class="finder-bar">
+            <label class="tool-search finder-search">
+                <span class="sr-only">Search organizations</span>
+                <input id="finder-q" type="search" placeholder="Search organizations, programs or topics" autocomplete="off">
+            </label>
+            <button type="button" class="finder-more" id="finder-more" aria-expanded="false" aria-controls="finder-filters">More filters</button>
+            <p class="finder-count" id="finder-count" aria-live="polite"></p>
+            <button type="button" class="finder-clear" id="finder-clear" hidden>Clear all</button>
+        </div>
+        <div class="finder-filters" id="finder-filters" hidden>
+            <div class="finder-filters__row"><span>Topics</span><div id="finder-tags"></div></div>
+            <div class="finder-filters__row"><span>Kinds of organization</span><div id="finder-cats"></div></div>
+        </div>
+
+        <div class="finder-body">
+          <div class="finder-list">
+            <a class="finder-tomap" href="#finder-map">See them on the map ↓</a>
+            <ol class="finder-cards" id="finder-cards"></ol>
+            <p class="finder-empty" id="finder-empty" hidden>Nothing matches all of those. Try fewer filters, or <button type="button" class="finder-linkbtn" id="finder-empty-clear">clear them</button>.</p>
+            <p class="finder-suggest">Know an organization that belongs here? <a href="submit-asset.html">Suggest it</a> · <a href="request-edit.html">Request an edit</a></p>
+          </div>
+          <div class="finder-map" id="finder-map">
         <section class="visualization-section">
             <div class="container">
                 <div class="viz-header">
                     <h2>Workforce Navigator</h2>
                     <p>Explore the interconnected workforce ecosystem that drives Macon's economy</p>
                 </div>
+                <p class="finder-map-note">Every organization, by the kind of help it offers. Click a dot for details.</p>
                 <div id="network-visualization" class="viz-container">
                     <!-- Network visualization will be created by JavaScript -->
                     <div class="viz-search" id="viz-search">
@@ -103,11 +139,13 @@
                     <div class="controls-row controls-row--actions">
                         <button class="control-btn" id="reset-btn">Reset View</button>
                         <button class="control-btn mobile-map-toggle" id="mobile-map-toggle">Show Full Map</button>
-                        <a href="directory.html" class="control-btn directory-link">View Full Directory →</a>
                     </div>
                 </div>
             </div>
         </section>
+          </div>
+        </div>
+      </div>
     </main>
 
     <!-- Asset detail modal -->
@@ -163,7 +201,6 @@
                 <ul class="main-footer__links">
                     <li><a href="index.html" class="main-footer__link">Workforce Data</a></li>
                     <li><a href="navigator.html" class="main-footer__link">Workforce Navigator</a></li>
-                    <li><a href="directory.html" class="main-footer__link">Directory</a></li>
                     <li><a href="about.html" class="main-footer__link">About</a></li>
                 </ul>
             </div>
@@ -182,7 +219,7 @@
     <script src="js/main.js"></script>
     <script src="js/directory.js"></script>
     <script src="js/search.js"></script>
+    <script src="js/navigator-finder.js"></script>
     <script src="js/nav.js"></script>
-</body>
 </body>
 </html>

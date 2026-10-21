@@ -1,22 +1,12 @@
-/* ===== DIRECTORY & MODAL LOGIC ===== */
+/* ===== ASSET DATA & DETAIL PANEL — Workforce Navigator =====
+   Loads content/assets.json (the one source for the map, the finder's cards and
+   this panel, so publishing a node through the admin tools updates them all),
+   and shows an organization's details: in the map's inline info panel, or as a
+   sheet (#asset-modal) when the map isn't the thing being looked at (the
+   finder's cards on phones). The Directory page this used to serve is now part
+   of navigator.html (js/navigator-finder.js). */
 
 let assetData = {}; // Global store for data fetched from JSON
-
-// Section order + heading text for the Directory page — matches the 6
-// categories used everywhere else (admin builder's dropdown, viz-engine.js's
-// CATEGORY_COLORS). The Directory list used to be hand-written HTML that
-// silently went stale the moment a node was published anywhere else;
-// building it from assetData here means publishing a node updates the map,
-// map search, Directory listing, and Directory search all from the same
-// one write to assets.json, instead of needing a second manual HTML edit.
-const DIRECTORY_CATEGORIES = [
-    { slug: 'colleges',           heading: 'Higher Education Institutions, Colleges & Universities' },
-    { slug: 'k12-secondary',      heading: 'Secondary Education & Career Academy Programs (K-12)' },
-    { slug: 'community-dev',      heading: 'Community & Economic Development Partners' },
-    { slug: 'job-training',       heading: 'Job Training & Career Services, Adult & Workforce Programs' },
-    { slug: 'faith-based',        heading: 'Faith-Based and Community Workforce Initiatives' },
-    { slug: 'special-population', heading: 'Special Population & Re-entry Programs' }
-];
 
 function escapeHtmlDir(str) {
     const div = document.createElement('div');
@@ -39,28 +29,6 @@ function safeHref(url) {
         .replace(/'/g, '&#39;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;');
-}
-
-// No-ops on navigator.html (loads this same file for openAssetModal/etc. but
-// has no .directory-grid) — only the actual Directory page has one.
-// Preserves assets.json's own key order within each category (whatever
-// order entries were added/published in) rather than re-sorting, so
-// existing entries don't visibly reshuffle just from switching this from
-// static HTML to a dynamic render.
-function renderDirectoryList() {
-    const grid = document.querySelector('.directory-grid');
-    if (!grid) return;
-
-    grid.innerHTML = DIRECTORY_CATEGORIES.map(({ slug, heading }) => {
-        const entries = Object.entries(assetData).filter(([, d]) => d.category === slug);
-        if (!entries.length) return '';
-        const items = entries.map(([id, d]) => `<li><a href="#${id}" class="asset-link">${escapeHtmlDir(d.name)}</a></li>`).join('');
-        return `
-                <section class="directory-group">
-                    <h3>${escapeHtmlDir(heading)}</h3>
-                    <ul class="asset-list">${items}</ul>
-                </section>`;
-    }).join('');
 }
 
 /**
@@ -88,14 +56,8 @@ async function loadAssetData() {
             }
         }
 
-        // Renders (a no-op on navigator.html) then wires clicks on the links it
-        // just created — has to happen in this order and after the fetch
-        // resolves, not alongside it, since the links don't exist yet
-        // beforehand.
-        renderDirectoryList();
-        wireAssetLinks();
-
-        console.log("Asset data loaded successfully");
+        // The finder (js/navigator-finder.js) builds its cards from this
+        document.dispatchEvent(new CustomEvent('assets:loaded'));
 
         // Only check for URL parameters (from map clicks) AFTER data is ready
         checkUrlParameters();
@@ -116,16 +78,6 @@ document.addEventListener('DOMContentLoaded', () => {
 /**
  * 3. UI FUNCTIONS
  */
-function wireAssetLinks() {
-    document.querySelectorAll('.asset-link').forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const assetId = link.getAttribute('href').substring(1);
-            openAssetModal(assetId);
-        });
-    });
-}
-
 function setupModalListeners() {
     // Close inline viz panel
     const vizInfoClose = document.getElementById('viz-info-close');
@@ -186,9 +138,10 @@ function shortenUrl(url) {
     }
 }
 
-function openAssetModal(assetId) {
+// opts.sheet: show it in the sheet even where the map's inline panel exists
+function openAssetModal(assetId, opts) {
     const asset = assetData[assetId];
-    const inlinePanel  = document.getElementById('viz-info-panel');
+    const inlinePanel  = (opts && opts.sheet) ? null : document.getElementById('viz-info-panel');
 
     // Build shared HTML content. Every value below can originate from a
     // public "Suggest an Asset"/"Request an Edit" submission that an admin
@@ -216,7 +169,7 @@ function openAssetModal(assetId) {
         return;
     }
 
-    // Directory page (no inline panel): use the regular fixed modal
+    // No inline panel (or asked for the sheet): use the fixed modal
     const modal   = document.getElementById('asset-modal');
     const title   = document.getElementById('modal-title');
     const content = document.getElementById('modal-content');
@@ -229,13 +182,16 @@ function openAssetModal(assetId) {
 }
 
 function checkUrlParameters() {
-    // Allows the Map page to link directly to a specific modal
+    // ?asset=mercer opens that organization (old Directory links redirect here with it)
     const urlParams = new URLSearchParams(window.location.search);
     const assetId = urlParams.get('asset');
     
     if (assetId) {
-        openAssetModal(assetId);
-        // Clean up URL in browser bar without reloading the page
-        window.history.replaceState({}, document.title, window.location.pathname);
+        // On phones the map sits below the list, so show it as a sheet there
+        openAssetModal(assetId, { sheet: window.innerWidth <= 900 });
+        // Drop just this parameter from the address, keeping the finder's own
+        urlParams.delete('asset');
+        const rest = urlParams.toString();
+        window.history.replaceState({}, document.title, window.location.pathname + (rest ? '?' + rest : '') + window.location.hash);
     }
 }

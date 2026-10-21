@@ -2,117 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Workforce Directory · Workforce Macon</title>
-    <meta name="description" content="Browse the full directory of workforce development organizations, colleges, job training programs, and community partners serving Macon-Bibb County.">
-    <meta property="og:site_name" content="Workforce Macon">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="Workforce Directory · Workforce Macon">
-    <meta property="og:description" content="Browse the full directory of workforce development organizations, colleges, job training programs, and community partners serving Macon-Bibb County.">
-    <meta property="og:url" content="https://maconworkforce.com/directory.html">
-    <meta property="og:image" content="https://maconworkforce.com/assets/icons/icon-512.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16.png">
-        <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
-        <link rel="manifest" href="site.webmanifest">
-        <link rel="stylesheet" href="css/theme.css">
-        <link rel="stylesheet" href="css/main.css">
-        <link rel="stylesheet" href="css/viz.css">
-        <link rel="stylesheet" href="css/components.css">
+    <title>Workforce Navigator · Workforce Macon</title>
+    <!-- The Directory is now part of the Workforce Navigator; keep old links working
+         (directory.html?asset=mercer and directory.html#mercer both open that organization) -->
+    <link rel="canonical" href="https://maconworkforce.com/navigator.html">
+    <meta http-equiv="refresh" content="0; url=navigator.html">
+    <script>
+        (function () {
+            var p = new URLSearchParams(location.search), id = p.get('asset') || location.hash.slice(1);
+            location.replace('navigator.html' + (id ? '?asset=' + encodeURIComponent(id) : ''));
+        })();
+    </script>
 </head>
 <body>
-    <header class="main-header">
-        <div class="container">
-            <div class="logo">
-                <a href="index.html"><h1>WORKFORCE <span class="accent">macon</span></h1></a>
-            </div>
-            <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
-                <span></span><span></span><span></span>
-            </button>
-            <nav class="main-nav" id="main-nav">
-                <ul>
-                    <li><a href="index.html" class="nav-link">Workforce Data</a></li>
-                    <li><a href="navigator.html" class="nav-link">Workforce Navigator</a></li>
-                    <li><a href="directory.html" class="nav-link active">Directory</a></li>
-                    <li><a href="about.html" class="nav-link">About</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
-
-    <main class="main-content">
-        <div class="container">
-            <section class="page-header">
-                <h2>Workforce Asset Directory</h2>
-                <p>Complete listing of workforce development resources in Greater Macon</p>
-            </section>
-
-            <div class="directory-search">
-                <input type="text" id="directory-search-input" class="search-input" placeholder="Search organizations or categories…" aria-label="Search the directory">
-                <button type="button" id="directory-search-clear" class="search-clear-btn" title="Clear search" aria-label="Clear search">&times;</button>
-            </div>
-            <p class="directory-empty" id="directory-empty" hidden>No matching assets. Try a different search.</p>
-
-            <!-- Populated by js/directory.js's renderDirectoryList(), built fresh from
-                 content/assets.json on every load — not hand-maintained HTML, so a
-                 node published through the admin tools shows up here automatically
-                 instead of needing a second manual edit to this file. -->
-            <div class="directory-grid"></div>
-        </div>
-    </main>
-
-    <footer class="main-footer">
-        <div class="main-footer__wrapper">
-            <div class="main-footer__inner">
-                <div class="main-footer__contact">
-                    <span class="main-footer__eyebrow">Contact Us</span>
-                    <address class="main-footer__address">
-                        Greater Macon Chamber of Commerce<br>
-                        338 Poplar Street<br>
-                        Macon, GA 31217
-                    </address>
-                    <div class="main-footer__phone"><a href="tel:+14786212000">(478) 621-2000</a></div>
-                </div>
-                <div class="main-footer__logo">
-                    <a href="https://maconchamber.com/" target="_blank" rel="noopener">
-                        <img src="assets/logos/greater macon chamber white lockup.svg" alt="Greater Macon Chamber of Commerce">
-                    </a>
-                    <a href="https://choosemacon.com/" target="_blank" rel="noopener">
-                        <img src="assets/logos/choose-macon-white.png" alt="Choose Macon">
-                    </a>
-                </div>
-                <ul class="main-footer__links">
-                    <li><a href="index.html" class="main-footer__link">Workforce Data</a></li>
-                    <li><a href="navigator.html" class="main-footer__link">Workforce Navigator</a></li>
-                    <li><a href="directory.html" class="main-footer__link">Directory</a></li>
-                    <li><a href="about.html" class="main-footer__link">About</a></li>
-                </ul>
-            </div>
-            <div class="main-footer__attribution">Workforce Macon is an initiative of the Greater Macon Chamber of Commerce.</div>
-            <div class="main-footer__meta-links">
-                <a href="submit-asset.html" class="main-footer__meta-link">Suggest an Asset</a>
-                <span class="main-footer__meta-sep">·</span>
-                <a href="request-edit.html" class="main-footer__meta-link">Request an Edit</a>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Modal -->
-    <div id="asset-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="modal-title">Asset Name</h2>
-                <span class="close">&times;</span>
-            </div>
-            <div class="modal-body">
-                <div id="modal-content">Loading...</div>
-            </div>
-        </div>
-    </div>
-
-    <script src="js/main.js"></script>
-    <script src="js/directory.js"></script>
-    <script src="js/search.js"></script>
-    <script src="js/nav.js"></script>
+    <p>The Directory is now part of the <a href="navigator.html">Workforce Navigator</a>.</p>
 </body>
 </html>
