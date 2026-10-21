@@ -3,10 +3,10 @@
    1. Build-in, once the banner is on screen: the hub appears, its six kinds of help
       sprout, then every organization blooms out along its link, while the counts
       beside the headline tick up.
-   2. Tour: the banner then lights one kind of help at a time (the map itself stays
-      still), naming a few of its organizations in the caption, and loops while left alone.
-      Any click, key, scroll, touch or hover over the banner ends the tour and
-      hands the map back; so does filtering the programs below.
+   2. Tour: the caption then walks through the six kinds of help, naming a few
+      organizations in each, and loops while left alone.
+      Any click, key, scroll, touch or hover over the banner ends the tour; so does
+      filtering the programs below.
    The map sits a little closer than a plain fit so its dots read at banner size.
    Off with reduced motion (the map simply appears) and in map-only embeds.
    Uses the map's globals from js/viz-engine.js (nodeSelection, linkSelection, svg,
@@ -83,15 +83,12 @@
     function tour(i = 0) {
         if (stopped) return;
         touring = true;
-        if (i >= TOUR_ORDER.length) {   // back to the whole picture, then around again
-            if (window.WFMap) WFMap.highlight(null);
+        if (i >= TOUR_ORDER.length) {   // back to the general caption, then around again
             if (note) note.textContent = DEFAULT_NOTE;
             later(() => tour(0), 6500);
             return;
         }
         const kind = TOUR_ORDER[i];
-        const members = workforceData.nodes.filter(d => d.category === kind).map(d => d.id);
-        if (window.WFMap) WFMap.highlight([kind, 'hub'].concat(members));
         if (note) note.textContent = caption(kind);
         later(() => tour(i + 1), STEP);
     }
@@ -102,10 +99,7 @@
         timers.forEach(clearTimeout); timers = [];
         if (!touring) return;
         touring = false;
-        if (!quiet) {
-            if (window.WFMap) WFMap.highlight(null);
-            if (note) note.textContent = DEFAULT_NOTE;
-        }
+        if (!quiet && note) note.textContent = DEFAULT_NOTE;
     }
     ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach(ev => addEventListener(ev, e => { if (e.isTrusted) stopTour(false); }, { passive: true }));
     hero.addEventListener('mouseenter', () => stopTour(false));
