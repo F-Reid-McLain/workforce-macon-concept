@@ -81,6 +81,7 @@
     // comes into view; clicking a slice or a legend row drills into that sector's
     // industries (top 10 + "Other").
     let hierarchy = null, donutNode = null, donutBuilt = 0, donutAnim = null, officialJobs = 0;
+    let donutLit = null, pendingFocus = null;   // sectors lit by the other tools; an industry to open once loaded
     const DONUT_OTHER = '#4b5568';
 
     const sectorJobs = g => d3.sum(g.children, c => c.empl);
@@ -91,7 +92,7 @@
                 .sort((a, b) => b.value - a.value);
         }
         const kids = [...node.children].sort((a, b) => b.empl - a.empl), top = kids.slice(0, 10), rest = kids.slice(10);
-        const out = top.map((c, i) => ({ name: c.name, value: c.empl, wage: c.wage,
+        const out = top.map((c, i) => ({ name: c.name, naics: c.naics, value: c.empl, wage: c.wage,
             color: d3.interpolateRgb(node.color, '#1b2433')(Math.min(0.75, i * 0.075)) }));
         if (rest.length) out.push({ name: `Other (${rest.length} industries)`, value: d3.sum(rest, c => c.empl),
             wage: d3.sum(rest, c => c.empl * c.wage) / d3.sum(rest, c => c.empl), color: DONUT_OTHER, other: true });
@@ -150,10 +151,16 @@
             <i style="background:${d.data.color}"></i><span class="dl-name">${d.data.name}</span>
             <span class="dl-val">${Math.round(d.value).toLocaleString()}</span><span class="dl-share">${fmtShare(d.value / total)}</span></button></li>`).join('');
         const legendRows = Array.from(legend.querySelectorAll('button'));
+        // Slice i hot (or none, -1); with none, any sectors lit by the other tools stay lit
+        const paint = i => {
+            const lit = isRoot && donutLit;
+            paths.attr('fill-opacity', (d, j) => i >= 0 ? (j === i ? 1 : 0.35) : !lit || lit.has(d.data.sector.id) ? 1 : 0.2);
+            legendRows.forEach((b, j) => b.classList.toggle('is-dim', i < 0 && !!lit && !lit.has(pie[j].data.sector.id)));
+        };
         const highlight = i => {
             hot = i;
             draw(donutBuilt, hot);
-            paths.attr('fill-opacity', (d, j) => i < 0 || j === i ? 1 : 0.35);
+            paint(i);
             legendRows.forEach((b, j) => b.classList.toggle('is-hot', j === i));
             setCenter(i);
         };
@@ -176,6 +183,9 @@
         box.classList.toggle('is-drilled', !isRoot);
 
         renderDonut.draw = a => draw(a, hot);
+        renderDonut.hot = highlight;
+        renderDonut.indexOf = naics => { const k = pie.findIndex(d => d.data.naics === naics); return k >= 0 ? k : pie.findIndex(d => d.data.other); };
+        paint(-1);
         setCenter(-1);
         draw(opts.assemble === undefined ? donutBuilt : opts.assemble, -1);
     }
@@ -207,6 +217,29 @@
         io.observe(box);
     }
 
+    // ===== LINKS FROM THE OTHER TOOLS (js/lookups.js) =====
+    // light(ids): dim every sector but these (null for all). focusSector(naics): swing the
+    // donut into that industry's sector and light its slice (or "Other" if it's not in the top 10).
+    const WFDonut = window.WFDonut = {
+        sectorOf: naics => sectorFor(String(naics || '')),
+        light(ids) {
+            donutLit = ids && ids.length ? new Set(ids) : null;
+            if (!hierarchy) return;
+            if (donutNode !== hierarchy) animateTo(hierarchy);
+            else if (renderDonut.hot) renderDonut.hot(-1);
+        },
+        focusSector(naics) {
+            if (!hierarchy) { pendingFocus = naics; return; }
+            const sector = hierarchy.children.find(g => g.id === sectorFor(String(naics)));
+            if (!sector) return;
+            donutLit = null;
+            const lightIt = () => { const k = renderDonut.indexOf(String(naics)); if (k >= 0) renderDonut.hot(k); };
+            if (donutNode === sector) { lightIt(); return; }
+            animateTo(sector);
+            setTimeout(lightIt, donutAnim ? 780 : 0);
+        },
+    };
+
     // ===== WHAT COMMUTERS COME IN FOR (LODES 2023, by industry) =====
     // data/commute-sectors.json: per industry, jobs located in Macon-Bibb and the minimum
     // filled by people who live elsewhere (jobs here minus residents working in it anywhere)
@@ -214,14 +247,23 @@
         const el = document.getElementById('sector-commute-bars');
         if (!el || !data) return;
         const rows = data.sectors.filter(r => r.commutersAtLeast > 0).slice(0, 10);
+        // LODES sector names → the donut's sectors, by first word
+        const LODES_SECTOR = { health: '62', finance: '52', retail: '44', educational: '61', manufacturing: '31', accommodation: '72',
+            management: '55', wholesale: '42', public: '92', other: '81', construction: '23', admin: '56', professional: '54',
+            real: '53', arts: '71', utilities: '22', agriculture: '11', mining: '21', transportation: '48', information: '51' };
+        const idOf = r => LODES_SECTOR[r.sector.split(/\s/)[0].toLowerCase()];
+        WFDonut.commuterIds = rows.map(idOf).filter(Boolean);
         const max = rows[0].commutersAtLeast;
         const pct = r => Math.round(100 * r.commutersAtLeast / r.jobs);
         el.innerHTML = rows.map(r => `
-            <div class="demo-bar-row">
+            <div class="demo-bar-row" data-sector="${idOf(r) || ''}">
                 <div class="demo-bar-label wide-label" title="${r.sector}">${r.sector}</div>
                 <div class="demo-bar-track"><div class="demo-bar-fill" style="width:${(r.commutersAtLeast / max * 100).toFixed(1)}%;background:${TEAL};"></div></div>
                 <div class="occ-bar-val sector-val">${r.commutersAtLeast.toLocaleString()}<span>${pct(r)}% of its jobs</span></div>
             </div>`).join('');
+        // Hovering a bar lights its slice of the donut
+        el.addEventListener('mouseover', e => { const row = e.target.closest('[data-sector]'); if (row && row.dataset.sector) WFDonut.light([row.dataset.sector]); });
+        el.addEventListener('mouseleave', () => WFDonut.light(WFDonut.commuterIds));
         // Headline: most commuters by count, and the most commuter-dependent sizeable industry
         const top = rows[0];
         const lean = data.sectors.filter(r => r.jobs >= 1500).sort((a, b) => b.commutersAtLeast / b.jobs - a.commutersAtLeast / a.jobs)[0];
@@ -259,6 +301,7 @@
         officialJobs = totalRow ? toNum(totalRow['Empl']) : 0;   // same total as the headline (a few jobs sit outside the 20 sectors)
         renderDonut(hierarchy);
         assembleOnView();
+        if (pendingFocus) { WFDonut.focusSector(pendingFocus); pendingFocus = null; }
         writeFindings(totalRow, occRows);
     }).catch(err => {
         console.error('Workforce data load error:', err);

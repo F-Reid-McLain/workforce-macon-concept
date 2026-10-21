@@ -3,17 +3,19 @@
    deliberately limited to the essentials (the depth is what custom research is for):
 
    - Jobs (#jobs): search any of ~800 occupations, or browse the top 10 by
-     most common, best paid, fastest growing or most openings
-     (data/Occupation Snapshot.csv, OES-based).
+     most common, best paid, fastest growing or most openings; each job's pay
+     is shown against the average Macon-Bibb job (data/Occupation Snapshot.csv, OES-based).
    - Industries (#industries): beside the donut (js/workforce-data.js), a switch
      between the biggest sectors, Macon's specialties (location quotient) and
-     what commuters come in for, plus a search across all industries
-     (data/Industry Snapshot.csv, QCEW-based).
-   - Hiring (#hiring): active online job ads by employer or by industry, with
-     a filter (data/Bibb Top Employers.csv, data/Top Hiring Industries.csv).
+     what commuters come in for, each lighting its slices of the donut, plus a
+     search that swings the donut to the industry's sector (data/Industry Snapshot.csv).
+   - Hiring (#hiring): active online job ads as employer bubbles
+     (js/hiring-bubbles.js), or as bars by employer or by industry, with a filter
+     (data/Bibb Top Employers.csv, data/Top Hiring Industries.csv).
 
    Picking something puts it in the address (#jobs/registered-nurses,
-   #industries/hospitals), so a link reopens the tool on it. */
+   #industries/hospitals), so a link reopens the tool on it. A tool left
+   untouched on screen demos itself once, and stops the moment anyone touches it. */
 (function () {
     'use strict';
     if (!window.d3) return;
@@ -23,6 +25,7 @@
     const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
     const timesUS = lq => (lq >= 10 ? Math.round(lq) : lq.toFixed(1)) + '×';
     const mobile = () => window.innerWidth <= 768;
+    const reduce = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
 
     // ----- Links into a tool: #<stop>/<item> -----
     const slug = s => String(s).toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -43,18 +46,94 @@
     const remember = (stop, name) => history.replaceState(null, '', '#' + stop + '/' + slug(name));
     addEventListener('hashchange', route);
 
-    // A row of buttons that picks one view ([data-view]); calls onPick(view)
+    // ----- Motion helpers -----
+    // A row of buttons that picks one view ([data-view]), with a gold pill that slides to it
     function segmented(root, onPick) {
         const btns = Array.from(root.querySelectorAll('[data-view]'));
+        const pill = document.createElement('span');
+        pill.className = 'seg__pill'; pill.setAttribute('aria-hidden', 'true');
+        root.prepend(pill);
+        let current = null;
+        const place = () => {
+            const b = btns.find(b => b.dataset.view === current);
+            if (!b || !b.offsetWidth) return;
+            pill.style.width = b.offsetWidth + 'px'; pill.style.height = b.offsetHeight + 'px';
+            pill.style.transform = `translate(${b.offsetLeft}px, ${b.offsetTop}px)`;
+        };
         const pick = v => {
+            current = v;
             btns.forEach(b => { const on = b.dataset.view === v; b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', String(on)); });
-            onPick(v);
+            place(); onPick(v);
         };
         btns.forEach(b => b.addEventListener('click', () => pick(b.dataset.view)));
+        addEventListener('resize', place);
+        if (document.fonts) document.fonts.ready.then(place);
+        new IntersectionObserver(() => place()).observe(root);   // sizes are only known once it's on screen
+        pick.current = () => current;
         return pick;
     }
 
-    // A text box with a short list of matches (biggest first); Enter picks the top match
+    // Re-render a list, then slide each row from where it was to where it is now (keyed by
+    // data-key); new rows rise in, and each row's [data-bar] grows from its old width
+    function flip(list, render) {
+        const before = new Map(Array.from(list.children).map(el => {
+            const bar = el.querySelector('[data-bar]');
+            return [el.dataset.key, { top: el.getBoundingClientRect().top, w: bar ? bar.style.width : null }];
+        }));
+        render();
+        if (reduce) return;
+        Array.from(list.children).forEach((el, i) => {
+            if (!el.animate) return;
+            const was = before.get(el.dataset.key), top = el.getBoundingClientRect().top;
+            const ease = { duration: 480, delay: i * 22, easing: 'cubic-bezier(0.2, 0.7, 0.2, 1)', fill: 'backwards' };
+            el.animate(was ? [{ transform: `translateY(${was.top - top}px)` }, { transform: 'none' }]
+                           : [{ transform: 'translateY(10px)', opacity: 0 }, { transform: 'none', opacity: 1 }], ease);
+            const bar = el.querySelector('[data-bar]');
+            if (bar && bar.animate) bar.animate([{ width: was && was.w ? was.w : '0%' }, { width: bar.style.width }], { ...ease, duration: 620 });
+        });
+    }
+
+    // Numbers in a card ([data-num], [data-f] = format) count from the last value shown to the new one
+    const FORMATS = { money, int: fmt, approx: n => '~' + fmt(n) };
+    function countIn(root, last) {
+        root.querySelectorAll('[data-num]').forEach(el => {
+            const key = el.dataset.k, to = +el.dataset.num, f = FORMATS[el.dataset.f] || fmt;
+            const from = last[key] === undefined ? to : last[key];
+            last[key] = to;
+            el.textContent = f(from === to || reduce ? to : from);
+            if (from === to || reduce) return;
+            const i = d3.interpolateNumber(from, to);
+            const t = d3.timer(e => { const k = Math.min(1, e / 520); el.textContent = f(i(d3.easeCubicOut(k))); if (k >= 1) t.stop(); });
+        });
+    }
+    // A quick lift-and-fade whenever a card's contents change
+    function swap(el) { el.classList.remove('is-swap'); void el.offsetWidth; el.classList.add('is-swap'); }
+
+    // A tool left untouched on screen plays its steps once, then stops; any touch ends it
+    const canDemo = !reduce && !(window.matchMedia && matchMedia('(hover: none)').matches) && 'IntersectionObserver' in window;
+    function attract(stop, steps) {
+        if (!canDemo || !stop) return;
+        let idle = null, timers = [], done = false;
+        const hint = stop.querySelector('.stop-hint');
+        const end = () => { clearTimeout(idle); timers.forEach(clearTimeout); timers = []; if (hint) hint.classList.remove('is-on'); stop.classList.remove('is-demo'); };
+        const quit = () => { done = true; end(); };
+        ['pointerdown', 'keydown', 'focusin', 'wheel', 'touchstart'].forEach(ev => stop.addEventListener(ev, e => { if (e.isTrusted && !done) quit(); }, { passive: true }));
+        new IntersectionObserver(es => {
+            if (done) return;
+            const seen = es.some(e => e.isIntersecting);
+            end();
+            if (!seen) return;
+            idle = setTimeout(() => {
+                done = true;
+                stop.classList.add('is-demo');
+                if (hint) hint.classList.add('is-on');
+                steps.forEach((fn, k) => timers.push(setTimeout(fn, k * 1600)));
+                timers.push(setTimeout(end, steps.length * 1600 + 900));
+            }, 3500);
+        }, { threshold: 0.6 }).observe(stop);
+    }
+
+    // A typeahead box with a short list of matches (biggest first); Enter picks the top match
     function typeahead({ input, list, items, label, onPick }) {
         let matches = [];
         const show = () => {
@@ -80,6 +159,9 @@
             .map(r => ({ name: r['Occupation'].trim(), empl: num(r['Empl']), wage: num(r['Mean Ann Wages2']),
                          openings: num(r['Total Demand']), growth: num(r['Ann % Growth']) }))
             .sort((a, b) => b.empl - a.empl);
+        // The average across all occupations, from the same survey (the "Total - All Occupations" row)
+        const allRow = rows.find(r => r['SOC'] === '00-0000');
+        const avgPay = allRow ? num(allRow['Mean Ann Wages2']) : d3.sum(jobs, j => j.empl * j.wage) / d3.sum(jobs, j => j.empl);
         const pct = g => (g > 0 ? '+' : '') + (g * 100).toFixed(1) + '%';
         // Each ranking, with a floor on size where a handful of jobs would swamp it
         const SORTS = {
@@ -90,63 +172,123 @@
         };
         const out = document.getElementById('job-result'), list = document.getElementById('job-rank'), note = document.getElementById('job-rank-note');
         const outlook = g => g > 0.005 ? ['Growing', 'is-up'] : g < -0.005 ? ['Shrinking', 'is-down'] : ['Steady', ''];
-        let current = jobs[0], ranked = [];
-        function show(j) {
+
+        // The card is built once, so its numbers can count and its gauge marker can glide
+        const PAY_LO = 20000, PAY_HI = 400000, gx = v => (100 * Math.log(Math.max(PAY_LO, Math.min(PAY_HI, v)) / PAY_LO) / Math.log(PAY_HI / PAY_LO)).toFixed(1) + '%';
+        out.innerHTML = `<h4></h4>
+            <dl class="tool-stats">
+                <div><dt>Average pay</dt><dd data-k="wage" data-f="money"></dd></div>
+                <div><dt>Jobs in Macon-Bibb</dt><dd data-k="empl" data-f="int"></dd></div>
+                <div><dt>Openings a year</dt><dd data-k="openings" data-f="approx"></dd></div>
+                <div><dt>Outlook</dt><dd data-k="outlook"></dd></div>
+            </dl>
+            <div class="pay-gauge" aria-hidden="true">
+                <div class="pay-gauge__track"><span class="pay-gauge__avg" style="left:${gx(avgPay)}"><em>Avg. job ${money(avgPay)}</em></span><span class="pay-gauge__me"></span></div>
+                <div class="pay-gauge__ends"><span>$20K</span><span>$400K</span></div>
+            </div>
+            <p class="pay-gauge__cap"></p>`;
+        const last = {};
+        let current = jobs[0], ranked = [], view = 'common';
+        function show(j, quiet) {
+            const changed = current !== j;
             current = j;
             const [word, cls] = outlook(j.growth);
-            out.innerHTML = `<h4>${esc(j.name)}</h4>
-                <dl class="tool-stats">
-                    <div><dt>Average pay</dt><dd>${money(j.wage)}</dd></div>
-                    <div><dt>Jobs in Macon-Bibb</dt><dd>${fmt(j.empl)}</dd></div>
-                    <div><dt>Openings a year</dt><dd>~${fmt(j.openings)}</dd></div>
-                    <div><dt>Outlook</dt><dd class="${cls}">${word}</dd></div>
-                </dl>`;
+            out.querySelector('h4').textContent = j.name;
+            ['wage', 'empl', 'openings'].forEach(k => { out.querySelector(`[data-k="${k}"]`).dataset.num = j[k]; });
+            countIn(out, last);
+            const ol = out.querySelector('[data-k="outlook"]'); ol.textContent = word; ol.className = cls;
+            out.querySelector('.pay-gauge__me').style.left = gx(j.wage);
+            const diff = j.wage - avgPay;
+            out.querySelector('.pay-gauge__cap').innerHTML = Math.abs(diff) < 1000 ? 'About the same as the average Macon-Bibb job.'
+                : `<b>${money(Math.abs(diff))} ${diff > 0 ? 'more' : 'less'}</b> than the average Macon-Bibb job (${money(avgPay)}).`;
+            if (changed && !quiet) swap(out);
             list.querySelectorAll('button').forEach(b => b.classList.toggle('is-hot', ranked[+b.dataset.i] === j));
         }
-        function rank(view) {
-            const s = SORTS[view];
+        function rank(v) {
+            view = v;
+            const s = SORTS[v];
             ranked = jobs.filter(j => j.empl >= s.min).sort((a, b) => s.key(b) - s.key(a)).slice(0, 10);
-            list.innerHTML = ranked.map((j, i) => `<li><button type="button" data-i="${i}"><b>${i + 1}</b><span>${esc(j.name)}</span><em>${s.val(j)}</em></button></li>`).join('');
+            const top = s.key(ranked[0]) || 1;
+            flip(list, () => {
+                list.innerHTML = ranked.map((j, i) => `<li data-key="${esc(j.name)}"><button type="button" data-i="${i}"><b>${i + 1}</b><span>${esc(j.name)}</span><em>${s.val(j)}</em>
+                    <i class="row-bar"><i data-bar style="width:${Math.max(2, 100 * s.key(j) / top).toFixed(1)}%"></i></i></button></li>`).join('');
+            });
             note.textContent = s.note;
-            show(current);
+            show(current, true);
         }
         list.addEventListener('click', e => { const b = e.target.closest('button'); if (b) { show(ranked[+b.dataset.i]); remember('jobs', current.name); } });
         const count = document.getElementById('job-count');
         if (count) count.textContent = jobs.length.toLocaleString();
         typeahead({ input: document.getElementById('job-q'), list: document.getElementById('job-list'), items: jobs, label: j => j.name,
                     onPick: j => { show(j); remember('jobs', j.name); } });
-        segmented(document.getElementById('job-sorts'), rank)('common');
+        const sortBy = segmented(document.getElementById('job-sorts'), rank);
+        sortBy('common');
+        show(current, true);
         register('jobs', s => { const j = jobs.find(j => slug(j.name) === s); if (j) show(j); return !!j; });
+        // Idle demo: each ranking in turn, its #1 into the card, then back where it started
+        const demo = v => () => { sortBy(v); show(ranked[0]); };
+        attract(document.getElementById('jobs'), [demo('paid'), demo('growing'), demo('openings'), demo('common')]);
     }).catch(err => console.error('Job lookup failed to load', err));
 
     // ----- Industries -----
+    const D = () => window.WFDonut || { light() {}, focusSector() {}, sectorOf() {} };
     const indPanes = Array.from(document.querySelectorAll('#industries [data-pane]'));
-    segmented(document.getElementById('ind-views'), v => indPanes.forEach(p => { p.hidden = p.dataset.pane !== v; }))('biggest');
+    let specialtyIds = [];
+    const lightFor = v => D().light(v === 'specialties' ? specialtyIds : v === 'commuters' ? D().commuterIds : null);
+    const indView = segmented(document.getElementById('ind-views'), v => { indPanes.forEach(p => { p.hidden = p.dataset.pane !== v; }); lightFor(v); });
+    indView('biggest');
     d3.csv('data/Industry Snapshot.csv').then(rows => {
         const inds = rows.filter(r => (r['NAICS'] || '').trim() && num(r['Empl']) > 0)
-            .map(r => ({ name: r['Industry'].trim(), empl: num(r['Empl']), wage: num(r['Avg Ann Wages']), lq: num(r['LQ']), change: num(r['Empl Change']) }))
+            .map(r => ({ name: r['Industry'].trim(), naics: r['NAICS'].trim(), empl: num(r['Empl']), wage: num(r['Avg Ann Wages']), lq: num(r['LQ']), change: num(r['Empl Change']) }))
             .sort((a, b) => b.empl - a.empl);
         const out = document.getElementById('strength-result'), input = document.getElementById('strength-q');
+        const last = {};
+        out.innerHTML = `<h4></h4>
+            <dl class="tool-stats">
+                <div><dt>Jobs in Macon-Bibb</dt><dd data-k="empl" data-f="int"></dd></div>
+                <div><dt>Average wage</dt><dd data-k="wage" data-f="money"></dd></div>
+                <div><dt>Concentration</dt><dd data-k="conc"></dd></div>
+                <div><dt>Recent change</dt><dd data-k="change"></dd></div>
+            </dl>`;
         function show(i) {
             const conc = i.lq >= 1.2 ? `${timesUS(i.lq)} the U.S. concentration` : i.lq <= 0.8 ? `less concentrated than the U.S. (${i.lq.toFixed(2)}×)` : 'about the U.S. average';
-            out.innerHTML = `<h4>${esc(i.name)}</h4>
-                <dl class="tool-stats">
-                    <div><dt>Jobs in Macon-Bibb</dt><dd>${fmt(i.empl)}</dd></div>
-                    <div><dt>Average wage</dt><dd>${money(i.wage)}</dd></div>
-                    <div><dt>Concentration</dt><dd>${conc}</dd></div>
-                    <div><dt>Recent change</dt><dd class="${i.change > 0 ? 'is-up' : i.change < 0 ? 'is-down' : ''}">${i.change > 0 ? '+' : ''}${fmt(i.change)} jobs</dd></div>
-                </dl>`;
+            out.querySelector('h4').textContent = i.name;
+            out.querySelector('[data-k="empl"]').dataset.num = i.empl;
+            out.querySelector('[data-k="wage"]').dataset.num = i.wage;
+            countIn(out, last);
+            out.querySelector('[data-k="conc"]').textContent = conc;
+            const ch = out.querySelector('[data-k="change"]');
+            ch.textContent = (i.change > 0 ? '+' : '') + fmt(i.change) + ' jobs';
+            ch.className = i.change > 0 ? 'is-up' : i.change < 0 ? 'is-down' : '';
             out.hidden = false;
+            swap(out);
+            D().focusSector(i.naics);   // swing the donut to this industry's sector
         }
         const pick = i => { input.value = i.name; show(i); remember('industries', i.name); };
         // Specialties: much more concentrated here than nationally, and big enough to matter
         const top = inds.filter(i => i.lq >= 2 && i.empl >= 200).sort((a, b) => b.lq - a.lq).slice(0, 8);
+        specialtyIds = Array.from(new Set(top.map(i => D().sectorOf(i.naics)).filter(Boolean)));
+        // LQ on a log scale from the U.S. average (1×) to the top specialty
+        const lqx = lq => (100 * Math.log(Math.max(1, lq)) / Math.log(top[0].lq)).toFixed(1) + '%';
         const strengths = document.getElementById('strength-list');
-        strengths.innerHTML = top.map((i, k) => `<li><button type="button" data-i="${k}">
-            <b>${timesUS(i.lq)}</b><span>${esc(i.name)}</span><small>${fmt(i.empl)} jobs · ${money(i.wage)} avg</small></button></li>`).join('');
+        strengths.innerHTML = top.map((i, k) => `<li data-key="${esc(i.name)}"><button type="button" data-i="${k}">
+            <b>${timesUS(i.lq)}</b><span>${esc(i.name)}</span><small>${fmt(i.empl)} jobs · ${money(i.wage)} avg</small>
+            <i class="row-bar row-bar--lq"><i data-bar style="width:${lqx(i.lq)}"></i></i></button></li>`).join('');
         strengths.addEventListener('click', e => { const b = e.target.closest('button'); if (b) pick(top[+b.dataset.i]); });
+        // The specialty bars grow in the first time the pane is opened
+        const bars = Array.from(strengths.querySelectorAll('[data-bar]'));
+        if (!reduce) bars.forEach(b => { b.dataset.w = b.style.width; b.style.width = '0%'; });
+        const growBars = () => requestAnimationFrame(() => bars.forEach((b, k) => { b.style.transitionDelay = k * 50 + 'ms'; b.style.width = b.dataset.w || b.style.width; }));
+        document.querySelector('#ind-views [data-view="specialties"]').addEventListener('click', growBars, { once: true });
+        if (indView.current() === 'specialties') { lightFor('specialties'); growBars(); }
         typeahead({ input, list: document.getElementById('strength-qlist'), items: inds, label: i => i.name, onPick: pick });
         register('industries', s => { const i = inds.find(i => slug(i.name) === s); if (i) { input.value = i.name; show(i); } return !!i; });
+        // Idle demo: specialties (their sectors light up), what commuters come for, then back
+        attract(document.getElementById('industries'), [
+            () => { indView('specialties'); growBars(); },
+            () => indView('commuters'),
+            () => indView('biggest'),
+        ]);
     }).catch(err => console.error('Industry lookup failed to load', err));
 
     // ----- Hiring -----
@@ -168,36 +310,54 @@
             employers:  emp.filter(d => d.Company && d['Active Jobs']).map(d => ({ label: d.Company.trim(), value: num(d['Active Jobs']) })).sort(byDesc),
             industries: ind.filter(d => d.Industry && d['Active Job Ads']).map(d => ({ label: SHORT_NAMES[d.Industry] || d.Industry, value: num(d['Active Job Ads']) })).sort(byDesc),
         };
+        const total = d3.sum(data.industries, d => d.value), topInd = data.industries[0];
         const el = document.getElementById('hiring-bars'), input = document.getElementById('hire-q'), more = document.getElementById('hire-more');
-        let view = 'employers', expanded = false;
+        const field = document.getElementById('hire-field'), countNote = document.getElementById('hire-count');
+        const B = window.WFBubbles;
+        if (B) B.mount(field, data.employers, total);
+        let view = 'bubbles', expanded = false;
         function render() {
             const q = input.value.trim().toLowerCase();
+            const bubbles = view === 'bubbles' && B;
+            field.hidden = !bubbles; el.hidden = !!bubbles;
+            if (B) B.show(!!bubbles);
+            if (bubbles) {
+                const n = B.filter(q);
+                more.hidden = true;
+                countNote.textContent = q ? `${n} of ${data.employers.length} employers match` : `The ${data.employers.length} employers with the most ads. Bubble area is proportional to ads.`;
+                return;
+            }
             const all = data[view].filter(r => !q || r.label.toLowerCase().includes(q));
             const short = mobile() ? 6 : 10, rows = expanded || q ? all : all.slice(0, short);
             const max = d3.max(data[view], r => r.value);
-            el.innerHTML = rows.length ? rows.map(r => `
-                <div class="demo-bar-row">
-                    <div class="demo-bar-label wide-label" title="${esc(r.label)}">${esc(r.label)}</div>
-                    <div class="demo-bar-track"><div class="demo-bar-fill" style="width:${(r.value / max * 100).toFixed(1)}%;background:${view === 'employers' ? '#2dd4bf' : '#f2c46b'};"></div></div>
-                    <div class="occ-bar-val">${r.value.toLocaleString()}</div>
-                </div>`).join('') : `<p class="tool-empty">No ${view} match “${esc(input.value.trim())}” in this snapshot.</p>`;
+            flip(el, () => {
+                el.innerHTML = rows.length ? rows.map(r => `
+                    <div class="demo-bar-row" data-key="${esc(r.label)}">
+                        <div class="demo-bar-label wide-label" title="${esc(r.label)}">${esc(r.label)}</div>
+                        <div class="demo-bar-track"><div class="demo-bar-fill" data-bar style="width:${(r.value / max * 100).toFixed(1)}%;background:${view === 'employers' ? '#2dd4bf' : '#f2c46b'};"></div></div>
+                        <div class="occ-bar-val">${r.value.toLocaleString()}</div>
+                    </div>`).join('') : `<p class="tool-empty">No ${view} match “${esc(input.value.trim())}” in this snapshot.</p>`;
+            });
             more.hidden = !!q || all.length <= short;
             more.textContent = expanded ? '▲ Show fewer' : `▼ Show all ${all.length}`;
+            countNote.textContent = view === 'employers' ? 'Employers with the most active job ads.' : 'Active job ads by industry sector.';
         }
-        input.placeholder = 'Filter employers';
-        segmented(document.getElementById('hire-views'), v => {
+        const hireView = segmented(document.getElementById('hire-views'), v => {
+            if (!B && v === 'bubbles') v = 'employers';
             view = v; expanded = false; input.value = '';
-            input.placeholder = v === 'employers' ? 'Filter employers' : 'Filter industries';
+            input.placeholder = v === 'industries' ? 'Filter industries' : 'Filter employers';
             render();
-        })('employers');
+        });
+        hireView(B ? 'bubbles' : 'employers');
         input.addEventListener('input', render);
         more.addEventListener('click', () => { expanded = !expanded; render(); });
-        let resizeT; addEventListener('resize', () => { clearTimeout(resizeT); resizeT = setTimeout(render, 250); });   // phone vs. desktop list length
+        let resizeT; addEventListener('resize', () => { clearTimeout(resizeT); resizeT = setTimeout(() => { if (view !== 'bubbles') render(); }, 250); });   // phone vs. desktop list length
 
-        const total = d3.sum(data.industries, d => d.value), top = data.industries[0];
         const totalEl = document.getElementById('hire-total'), findEl = document.getElementById('find-hiring');
         if (totalEl) totalEl.textContent = total.toLocaleString();
-        if (findEl && top) findEl.innerHTML = `<em>${esc(top.label.replace(' & Social Assistance', ''))}</em> is hiring the most, with <em>${top.value.toLocaleString()}</em> openings.`;
+        if (findEl && topInd) findEl.innerHTML = `<em>${esc(topInd.label.replace(' & Social Assistance', ''))}</em> is hiring the most, with <em>${topInd.value.toLocaleString()}</em> openings.`;
+        // Idle demo: the biggest employers light up in turn
+        if (B) attract(document.getElementById('hiring'), [0, 1, 2, 3].map(k => () => { if (view === 'bubbles') B.pulse(k); }));
     }).catch(err => console.error('Hiring data failed to load', err));
 
     // Plain links to a stop, or a chapter from the earlier homepage

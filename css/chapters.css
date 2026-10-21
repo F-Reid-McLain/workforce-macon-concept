@@ -143,23 +143,28 @@ body.page-home .hiring-bars .demo-bar-row { font-size: 0.95rem; padding: 7px 0; 
 [data-pane][hidden] { display: none; }
 .tool-empty { margin: 8px 0; color: var(--color-text-muted); font-size: 0.9rem; }
 
-/* A row of choices, one on at a time */
-.seg { display: flex; flex-wrap: wrap; gap: 6px; }
+/* A row of choices, one on at a time; a gold pill slides to the one that's on (js/lookups.js) */
+.seg { position: relative; display: flex; flex-wrap: wrap; gap: 6px; }
 .seg button {
-    padding: 0.45rem 0.85rem; border-radius: 999px; cursor: pointer; font: 600 0.82rem var(--font-body);
+    position: relative; z-index: 1; padding: 0.45rem 0.85rem; border-radius: 999px; cursor: pointer; font: 600 0.82rem var(--font-body);
     background: transparent; color: var(--color-text-secondary); border: 1px solid rgba(255, 255, 255, 0.16);
+    transition: color 0.25s, border-color 0.25s, transform 0.15s;
 }
-.seg button:hover { color: #fff; border-color: rgba(255, 255, 255, 0.35); }
-.seg button.is-on { background: var(--ch-gold); border-color: var(--ch-gold); color: #1b1608; }
+.seg button:hover { color: #fff; border-color: rgba(255, 255, 255, 0.35); transform: translateY(-1px); }
+.seg button.is-on { color: #1b1608; border-color: transparent; }
+.seg__pill {
+    position: absolute; left: 0; top: 0; width: 0; height: 0; border-radius: 999px; background: var(--ch-gold);
+    box-shadow: 0 4px 18px rgba(242, 196, 107, 0.35); pointer-events: none;
+    transition: transform 0.42s cubic-bezier(0.3, 1.25, 0.4, 1), width 0.42s cubic-bezier(0.3, 1.25, 0.4, 1);
+}
 
 /* Ranked list of jobs */
 .rank-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
 .rank-list button {
-    width: 100%; display: grid; grid-template-columns: 1.6rem minmax(0, 1fr) auto; align-items: baseline; gap: 10px;
+    width: 100%; display: grid; grid-template-columns: 1.6rem minmax(0, 1fr) auto; align-items: baseline; column-gap: 10px; row-gap: 5px;
     padding: 7px 10px; border: 0; border-radius: 8px; background: transparent; cursor: pointer; text-align: left;
     font: 500 0.92rem var(--font-body); color: var(--color-text-secondary);
 }
-.rank-list button:hover, .rank-list button.is-hot { background: rgba(255, 255, 255, 0.06); color: #fff; }
 .rank-list b { font-variant-numeric: tabular-nums; color: var(--color-text-muted); font-weight: 700; }
 .rank-list span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .rank-list em { font-style: normal; font-weight: 700; color: #fff; font-variant-numeric: tabular-nums; white-space: nowrap; }
@@ -190,8 +195,8 @@ body.page-home .hiring-bars .demo-bar-row { font-size: 0.95rem; padding: 7px 0; 
     width: 100%; display: grid; grid-template-columns: 4.2rem minmax(0, 1fr); column-gap: 10px; align-items: baseline;
     padding: 6px 10px; border: 0; border-radius: 8px; background: transparent; cursor: pointer; text-align: left; font: inherit;
 }
-.strength-list button:hover { background: rgba(255, 255, 255, 0.06); }
-.strength-list b { grid-row: span 2; font: 800 1.35rem/1 var(--font-heading); color: var(--ch-teal); font-variant-numeric: tabular-nums; }
+
+.strength-list b { grid-row: span 3; font: 800 1.35rem/1 var(--font-heading); color: var(--ch-teal); font-variant-numeric: tabular-nums; }
 .strength-list span { font-size: 0.88rem; font-weight: 600; color: #e6e9ee; }
 .strength-list small { font-size: 0.74rem; color: var(--color-text-muted); }
 .tool-upsell { margin: 0; padding-top: 12px; border-top: 1px solid var(--color-border); font-size: 0.84rem; line-height: 1.5; color: var(--color-text-secondary); }
@@ -224,6 +229,82 @@ body.page-home .hiring-bars .demo-bar-row { font-size: 0.95rem; padding: 7px 0; 
 }
 @media (min-width: 769px) and (max-width: 1320px) {
     body.page-home .page-jumpnav { display: none; }
+}
+
+/* ----- Movement: list rows, bars, card swaps (js/lookups.js) ----- */
+:is(.rank-list, .strength-list) button { transition: background 0.2s, color 0.2s, box-shadow 0.25s, transform 0.25s; }
+:is(.rank-list, .strength-list) button:hover, .rank-list button.is-hot {
+    background: rgba(255, 255, 255, 0.06); color: #fff; box-shadow: inset 3px 0 0 var(--ch-gold); transform: translateX(2px);
+}
+/* A thin bar under each row, scaled to the top value */
+.row-bar { grid-column: 2 / -1; display: block; height: 3px; border-radius: 2px; background: rgba(255, 255, 255, 0.06); overflow: hidden; }
+.row-bar [data-bar] { display: block; height: 100%; border-radius: 2px; background: linear-gradient(90deg, rgba(242, 196, 107, 0.55), var(--ch-gold)); transition: width 0.6s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.rank-list button.is-hot .row-bar [data-bar] { background: var(--ch-gold); }
+.row-bar--lq { margin-top: 5px; }
+.row-bar--lq [data-bar] { background: linear-gradient(90deg, rgba(45, 212, 191, 0.45), var(--ch-teal)); }
+.strength-list .row-bar { grid-column: 2; }
+.tool-result.is-swap { animation: card-swap 0.38s cubic-bezier(0.2, 0.7, 0.2, 1); }
+@keyframes card-swap { from { opacity: 0.25; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.donut-legend li button.is-dim { opacity: 0.4; }
+
+/* Pay gauge in the job card: this job against the average Macon-Bibb job */
+.pay-gauge { margin-top: 22px; }
+.pay-gauge__track { position: relative; height: 8px; border-radius: 4px; background: linear-gradient(90deg, rgba(143, 155, 176, 0.25), rgba(242, 196, 107, 0.3)); }
+.pay-gauge__avg { position: absolute; top: -6px; bottom: -6px; width: 2px; margin-left: -1px; background: #c3cad6; }
+.pay-gauge__avg em {
+    position: absolute; bottom: calc(100% + 4px); left: 50%; transform: translateX(-50%); white-space: nowrap;
+    font-style: normal; font-size: 0.68rem; font-weight: 600; color: var(--color-text-muted);
+}
+.pay-gauge__me {
+    position: absolute; top: 50%; width: 18px; height: 18px; margin: -9px 0 0 -9px; border-radius: 50%;
+    background: var(--ch-gold); box-shadow: 0 0 0 4px rgba(242, 196, 107, 0.22), 0 0 16px rgba(242, 196, 107, 0.6);
+    transition: left 0.7s cubic-bezier(0.3, 1.3, 0.4, 1);
+}
+.pay-gauge__ends { display: flex; justify-content: space-between; margin-top: 8px; font-size: 0.68rem; color: var(--color-text-muted); }
+.pay-gauge__cap { margin: 10px 0 0; font-size: 0.88rem; color: var(--color-text-secondary); }
+.pay-gauge__cap b { color: #fff; }
+
+/* Idle demo: a hint chip while a tool shows itself off */
+.stop { position: relative; }
+.stop-hint {
+    position: absolute; top: 96px; right: 24px; margin: 0; padding: 0.4rem 0.8rem; border-radius: 999px;
+    background: rgba(242, 196, 107, 0.14); border: 1px solid rgba(242, 196, 107, 0.4); color: var(--ch-gold);
+    font-size: 0.78rem; font-weight: 600; opacity: 0; transform: translateY(-4px); pointer-events: none; transition: opacity 0.4s, transform 0.4s;
+}
+.stop-hint.is-on { opacity: 1; transform: none; animation: hint-breathe 1.8s ease-in-out infinite; }
+@keyframes hint-breathe { 50% { box-shadow: 0 0 0 6px rgba(242, 196, 107, 0.08); } }
+
+/* ----- Employer bubbles (js/hiring-bubbles.js) ----- */
+.bubble-field { position: relative; }
+.bubble-field[hidden], .hiring-bars[hidden] { display: none; }
+.bubble-field svg { display: block; width: 100%; height: auto; overflow: visible; }
+.bubble { cursor: pointer; outline: none; }
+.bubble__body { transform: scale(0); transition: transform 0.3s cubic-bezier(0.3, 1.4, 0.4, 1), opacity 0.3s; }
+#hire-bubbles.is-built .bubble__body { transform: scale(1); }
+#hire-bubbles.is-built .bubble:nth-child(3n + 1) .bubble__body { transition-delay: 0.05s; }
+#hire-bubbles.is-built .bubble:nth-child(3n + 2) .bubble__body { transition-delay: 0.15s; }
+#hire-bubbles.is-built .bubble:nth-child(3n) .bubble__body { transition-delay: 0.25s; }
+.bubble circle { fill-opacity: 0.82; stroke: rgba(255, 255, 255, 0.0); stroke-width: 2; transition: fill-opacity 0.2s, stroke 0.2s; }
+.bubble text { text-anchor: middle; pointer-events: none; fill: #10151f; font-family: var(--font-body); }
+.bubble__name { font-weight: 700; }
+.bubble__num { font-weight: 800; font-variant-numeric: tabular-nums; }
+#hire-bubbles .bubble:hover .bubble__body, #hire-bubbles .bubble:focus-visible .bubble__body, #hire-bubbles .bubble.is-hot .bubble__body { transform: scale(1.15); transition-delay: 0s; }
+.bubble:hover circle, .bubble:focus-visible circle, .bubble.is-hot circle { fill-opacity: 1; stroke: #fff; }
+.bubble.is-dim .bubble__body { opacity: 0.15; }
+.bubble-tip {
+    position: absolute; left: 0; top: 0; z-index: 5; display: flex; flex-direction: column; gap: 2px; padding: 8px 12px; border-radius: 10px;
+    background: #18212f; border: 1px solid rgba(255, 255, 255, 0.16); box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
+    font-size: 0.8rem; color: var(--color-text-secondary); white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity 0.18s;
+}
+.bubble-tip.is-on { opacity: 1; }
+.bubble-tip b { color: #fff; font-size: 0.9rem; }
+.bubble-legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 10px; font-size: 0.78rem; color: var(--color-text-muted); }
+.bubble-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.bubble-legend i { width: 10px; height: 10px; border-radius: 50%; }
+
+@media (prefers-reduced-motion: reduce) {
+    .seg__pill, .pay-gauge__me, .row-bar [data-bar], .bubble__body { transition: none; }
+    .tool-result.is-swap, .stop-hint.is-on { animation: none; }
 }
 
 /* ----- Tablets and phones: stack ----- */

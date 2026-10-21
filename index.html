@@ -169,6 +169,7 @@
 
         <!-- Stop 2 · Jobs -->
         <section class="stop" id="jobs">
+            <p class="stop-hint" aria-hidden="true">Click anything to explore</p>
             <header class="stop-head">
                 <p class="chapter-kicker">Jobs <span class="info-btn-wrap"><button type="button" class="info-btn" aria-label="About this data">i</button><span class="info-popover"><strong>What this shows</strong><span>Occupational Employment and Wage Statistics (OES) estimates for Macon-Bibb: jobs and average annual pay by occupation, with regional projections for growth and openings (new jobs plus people retiring or changing careers).</span></span></span></p>
                 <h2 class="chapter-finding" id="find-occ"><em>Registered nurses</em> are Macon-Bibb's most common job: <em>2,779</em> positions averaging <em>$87,600</em>.</h2>
@@ -199,6 +200,7 @@
 
         <!-- Stop 3 · Industries -->
         <section class="stop" id="industries">
+            <p class="stop-hint" aria-hidden="true">Click anything to explore</p>
             <header class="stop-head">
                 <p class="chapter-kicker">Industries <span class="info-btn-wrap"><button type="button" class="info-btn" aria-label="About this data">i</button><span class="info-popover"><strong>What this shows</strong><span>Payroll jobs and average annual wage by industry (QCEW-based), grouped into sectors. Concentration compares each industry's share of jobs here with its share nationally (location quotient). What commuters come in for uses U.S. Census Bureau LODES 2023.</span></span></span></p>
                 <h2 class="chapter-finding" id="find-industries"><em>1 in 5</em> jobs in Macon-Bibb is in <em>health care</em>.</h2>
@@ -246,6 +248,7 @@
 
         <!-- Stop 4 · Hiring -->
         <section class="stop" id="hiring">
+            <p class="stop-hint" aria-hidden="true">Click anything to explore</p>
             <header class="stop-head">
                 <p class="chapter-kicker">Hiring <span class="info-btn-wrap"><button type="button" class="info-btn" aria-label="About this data">i</button><span class="info-popover"><strong>What this shows</strong><span>Active online job ads for Bibb County from the most recent snapshot (March 2026), by employer and by industry. The total sums the industry counts. Ads measure hiring demand, not filled positions.</span></span></span></p>
                 <div class="ticker">
@@ -259,6 +262,7 @@
                 <div class="tool-col">
                     <div class="tool-row">
                         <div class="seg" id="hire-views" role="group" aria-label="Show job ads by">
+                            <button type="button" data-view="bubbles">Bubbles</button>
                             <button type="button" data-view="employers">By employer</button>
                             <button type="button" data-view="industries">By industry</button>
                         </div>
@@ -267,7 +271,13 @@
                             <input id="hire-q" type="search" placeholder="Filter employers" autocomplete="off">
                         </label>
                     </div>
-                    <div id="hiring-bars" class="hiring-bars"></div>
+                    <p class="pane-note" id="hire-count"></p>
+                    <div class="bubble-field" id="hire-field">
+                        <svg id="hire-bubbles" role="group" aria-label="Employers by active job ads"></svg>
+                        <div class="bubble-tip" aria-live="polite"></div>
+                        <div class="bubble-legend"></div>
+                    </div>
+                    <div id="hiring-bars" class="hiring-bars" hidden></div>
                     <button type="button" class="chart-expand-btn" id="hire-more" hidden></button>
                     <p class="tool-upsell">Want to know what a job pays or how many open each year? <a href="#jobs">Look it up in Jobs →</a> Need hiring trends over time? <a href="#custom-research">Request custom research →</a></p>
                 </div>
@@ -338,6 +348,7 @@
     <script src="js/nav.js"></script>
     <script src="js/reveal.js"></script>
     <script src="js/chapters.js"></script>
+    <script src="js/hiring-bubbles.js"></script>
     <script src="js/lookups.js"></script>
     <script src="js/commute-intro.js"></script>
 </body>

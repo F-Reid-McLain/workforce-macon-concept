@@ -1,6 +1,7 @@
 /* ===== SCROLL REVEAL — Workforce Data page =====
-   Each bar chart plays a short build-in the first time it scrolls into
-   view (bars grow from the left), and the hiring total counts up from zero.
+   Each tool stop rises in the first time it scrolls into view (its headline
+   figures counting up), each bar chart's bars grow from the left, and the
+   hiring total counts up from zero.
    Everything plays once; later re-renders (switches, filters, Show all,
    resizes) appear instantly.
 
@@ -102,4 +103,18 @@
     }, { rootMargin: '0px 0px -8% 0px', threshold: 0.6 });
 
     document.querySelectorAll(NUMBERS).forEach(el => numberObserver.observe(el));
+
+    // ----- Stops build in -----
+    // Each tool stop's kicker, headline and panel rise in as it arrives, and the
+    // headline's gold figures count up (read when it arrives, after the data has
+    // rewritten them)
+    const stopObserver = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+            if (!e.isIntersecting) return;
+            stopObserver.unobserve(e.target);
+            e.target.classList.add('in-view');
+            e.target.querySelectorAll('.chapter-finding em').forEach(countUp);
+        });
+    }, { rootMargin: '0px 0px -15% 0px', threshold: 0.12 });
+    document.querySelectorAll('.stop').forEach(el => stopObserver.observe(el));
 })();
