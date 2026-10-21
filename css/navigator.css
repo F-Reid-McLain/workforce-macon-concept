@@ -62,6 +62,17 @@
 .fcard__kind { display: inline-flex; align-items: center; gap: 6px; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-muted); }
 .fcard__kind i { width: 8px; height: 8px; border-radius: 50%; }
 .fcard__name { font-size: 1.04rem; line-height: 1.25; color: #fff; }
+/* What you'll earn: one color per kind of credential */
+.finder-earn { margin-top: -4px; }
+.fcard__earn, .info-earn { display: flex; flex-wrap: wrap; gap: 5px; }
+.earn { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 0.68rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; border: 1px solid; }
+.earn--degree         { color: #a9bcff; border-color: rgba(169, 188, 255, 0.45); background: rgba(169, 188, 255, 0.1); }
+.earn--certificate    { color: #2dd4bf; border-color: rgba(45, 212, 191, 0.45); background: rgba(45, 212, 191, 0.1); }
+.earn--apprenticeship { color: #f2c46b; border-color: rgba(242, 196, 107, 0.45); background: rgba(242, 196, 107, 0.1); }
+.earn--diploma        { color: #f59e7b; border-color: rgba(245, 158, 123, 0.45); background: rgba(245, 158, 123, 0.1); }
+.earn--services       { color: #aab4c5; border-color: rgba(170, 180, 197, 0.35); background: rgba(170, 180, 197, 0.07); }
+.info-earn { align-items: center; margin: 0 0 14px; }
+.info-earn span { margin-right: 4px; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text-muted); }
 .fcard__best { font-size: 0.84rem; line-height: 1.4; color: var(--color-text-secondary); }
 .fcard__best strong { color: var(--ch-gold); font-weight: 700; }
 .fcard__best mark { margin-right: 6px; padding: 1px 7px; border-radius: 999px; background: rgba(45, 212, 191, 0.16); color: var(--ch-teal); font-size: 0.68rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; vertical-align: 1px; }

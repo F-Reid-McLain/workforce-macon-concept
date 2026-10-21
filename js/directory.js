@@ -150,6 +150,8 @@ function openAssetModal(assetId, opts) {
     // at the one place it's actually rendered to real site visitors.
     let html = '';
     if (asset && asset.bestFor) html += `<p class="info-best"><span>Best known for</span><strong>${escapeHtmlDir(asset.bestFor)}</strong>${asset.bestForWhy ? `<small>${escapeHtmlDir(asset.bestForWhy)}</small>` : ''}</p>`;
+    const EARN_LABELS = { degree: 'Degree', certificate: 'Certificate', apprenticeship: 'Apprenticeship', diploma: 'GED or diploma', services: 'Help & services' };
+    if (asset && asset.earn && asset.earn.length) html += `<p class="info-earn"><span>What you'll earn</span>${Object.keys(EARN_LABELS).filter(e => asset.earn.includes(e)).map(e => `<b class="earn earn--${escapeHtmlDir(e)}">${escapeHtmlDir(EARN_LABELS[e] || e)}</b>`).join('')}</p>`;
     html += `<p>${asset ? escapeHtmlDir(asset.description || '') : 'Information coming soon...'}</p>`;
     if (asset && asset.impact)   html += `<p><strong>Community Impact:</strong> ${escapeHtmlDir(asset.impact)}</p>`;
     if (asset && asset.links && asset.links.length) {

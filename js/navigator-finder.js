@@ -40,6 +40,15 @@
         { id: 'employer', label: 'Hire or train workers',         tags: ['Economic Development'], cats: ['community-dev'] },
         { id: 'support',  label: 'Re-entry & disability support', tags: ['Reentry', 'Disability Services'], cats: ['special-population'] },
     ];
+    // What someone walks away with (content/assets.json "earn")
+    const EARN = [
+        { id: 'degree',         label: 'Degree',          tip: "Associate's, bachelor's or higher" },
+        { id: 'certificate',    label: 'Certificate',     tip: 'Technical certificates and diplomas, and short-term industry certifications' },
+        { id: 'apprenticeship', label: 'Apprenticeship',  tip: 'Paid on-the-job training toward a license' },
+        { id: 'diploma',        label: 'GED or diploma',  tip: 'High school equivalency or diploma' },
+        { id: 'services',       label: 'Help & services', tip: 'Support, funding or referrals, without a credential' },
+    ];
+    const earnLabel = id => (EARN.find(e => e.id === id) || { label: id }).label;
     const meetsNeed = (a, n) => (n.tags || []).some(t => a.tags.includes(t)) || (n.cats || []).includes(a.category);
 
     // ----- State, kept in the address -----
@@ -48,19 +57,21 @@
         need: params.get('need') || '',
         tags: new Set(params.getAll('tag')),
         cats: new Set(params.getAll('type')),
+        earn: new Set(params.getAll('earn')),
         q: params.get('q') || '',
     };
     function saveState() {
         const p = new URLSearchParams(location.search);
-        ['need', 'tag', 'type', 'q'].forEach(k => p.delete(k));
+        ['need', 'tag', 'type', 'earn', 'q'].forEach(k => p.delete(k));
         if (state.need) p.set('need', state.need);
         state.tags.forEach(t => p.append('tag', t));
         state.cats.forEach(c => p.append('type', c));
+        state.earn.forEach(e => p.append('earn', e));
         if (state.q) p.set('q', state.q);
         const qs = p.toString();
         history.replaceState(null, '', location.pathname + (qs ? '?' + qs : '') + location.hash);
     }
-    const filtering = () => !!(state.need || state.tags.size || state.cats.size || state.q.trim());
+    const filtering = () => !!(state.need || state.tags.size || state.cats.size || state.earn.size || state.q.trim());
 
     let orgs = [];
     function matches(a) {
@@ -68,6 +79,7 @@
         if (need && !meetsNeed(a, need) && a.bestForNeed !== need.id) return false;   // a best fit always counts
         if (state.tags.size && !a.tags.some(t => state.tags.has(t))) return false;
         if (state.cats.size && !state.cats.has(a.category)) return false;
+        if (state.earn.size && !(a.earn || []).some(e => state.earn.has(e))) return false;
         const q = state.q.trim().toLowerCase();
         if (q && !a.haystack.includes(q)) return false;
         return true;
@@ -81,6 +93,7 @@
     const chip = (kind, value, label, on, color) => `<button type="button" class="fchip${on ? ' is-on' : ''}" data-kind="${kind}" data-value="${esc(value)}" aria-pressed="${on}">${color ? `<i style="background:${color}"></i>` : ''}${esc(label)}</button>`;
     function renderControls() {
         needsEl.innerHTML = NEEDS.map(n => chip('need', n.id, n.label, state.need === n.id)).join('');
+        document.getElementById('finder-earn').innerHTML = EARN.map(e => chip('earn', e.id, e.label, state.earn.has(e.id)).replace('<button', `<button title="${esc(e.tip)}"`)).join('');
         const tags = Array.from(new Set(orgs.flatMap(a => a.tags))).sort();
         document.getElementById('finder-tags').innerHTML = tags.map(t => chip('tag', t, t, state.tags.has(t))).join('');
         document.getElementById('finder-cats').innerHTML = CATEGORIES.map(c => chip('type', c.slug, c.label, state.cats.has(c.slug), colorOf(c.slug))).join('');
@@ -93,7 +106,7 @@
         if (!b) return;
         const { kind, value } = b.dataset;
         if (kind === 'need') state.need = state.need === value ? '' : value;
-        else { const set = kind === 'tag' ? state.tags : state.cats; set.has(value) ? set.delete(value) : set.add(value); }
+        else { const set = kind === 'tag' ? state.tags : kind === 'earn' ? state.earn : state.cats; set.has(value) ? set.delete(value) : set.add(value); }
         update();
     });
     let qt;
@@ -103,7 +116,7 @@
         filtersEl.hidden = !filtersEl.hidden;
         moreEl.setAttribute('aria-expanded', String(!filtersEl.hidden));
     });
-    const clearAll = () => { state.need = ''; state.tags.clear(); state.cats.clear(); state.q = ''; qEl.value = ''; update(); };
+    const clearAll = () => { state.need = ''; state.tags.clear(); state.cats.clear(); state.earn.clear(); state.q = ''; qEl.value = ''; update(); };
     clearEl.addEventListener('click', clearAll);
     document.getElementById('finder-empty-clear').addEventListener('click', clearAll);
 
@@ -117,6 +130,7 @@
             ${logo}
             <span class="fcard__text">
                 <span class="fcard__kind"><i style="background:${colorOf(a.category)}"></i>${esc(catOf(a.category).label)}</span>
+                ${(a.earn || []).length ? `<span class="fcard__earn">${EARN.filter(x => a.earn.includes(x.id)).map(x => `<b class="earn earn--${x.id}" title="${esc(x.tip)}">${esc(x.label)}</b>`).join('')}</span>` : ''}
                 <b class="fcard__name">${esc(a.name)}</b>
                 ${a.bestFor ? `<span class="fcard__best">${fitsNeed(a) ? '<mark>Best fit</mark>' : ''}Best known for: <strong>${esc(a.bestFor)}</strong></span>` : ''}
                 <span class="fcard__blurb">${esc(blurb(a.description))}</span>

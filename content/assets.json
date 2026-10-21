@@ -37,7 +37,10 @@
     "website": "https://www.mga.edu/center-career-leadership-development/index.php",
     "bestFor": "Four-year degrees in information technology",
     "bestForWhy": "Computing and IT is its most-awarded field; it also runs Georgia's only public four-year aviation school (at its Eastman campus).",
-    "bestForNeed": "train"
+    "bestForNeed": "train",
+    "earn": [
+      "degree"
+    ]
   },
   "mercer": {
     "name": "Mercer University",
@@ -80,7 +83,10 @@
     "website": "https://career.mercer.edu/",
     "bestFor": "Training doctors for Georgia",
     "bestForWhy": "Its School of Medicine was founded in Macon in 1982 to supply physicians to rural and underserved Georgia; its engineering school is its other standout.",
-    "bestForNeed": "train"
+    "bestForNeed": "train",
+    "earn": [
+      "degree"
+    ]
   },
   "wesleyan": {
     "name": "Wesleyan College",
@@ -95,7 +101,10 @@
     "website": "https://www.wesleyancollege.edu/studentlife/career/career-development.cfm",
     "bestFor": "Liberal arts degrees for women, including nursing",
     "bestForWhy": "A small women's college whose accredited BSN is its most direct path into a local job.",
-    "bestForNeed": "train"
+    "bestForNeed": "train",
+    "earn": [
+      "degree"
+    ]
   },
   "central-ga-tech": {
     "name": "Central Georgia Technical College",
@@ -111,7 +120,12 @@
     "website": "https://www.centralgatech.edu/",
     "bestFor": "Hands-on technical training for trades, health and industry",
     "bestForWhy": "Mechanic and repair technologies, welding and nursing are among its largest programs, alongside apprenticeships and Georgia Quick Start.",
-    "bestForNeed": "train"
+    "bestForNeed": "train",
+    "earn": [
+      "degree",
+      "certificate",
+      "apprenticeship"
+    ]
   },
   "hutchings": {
     "name": "W.S. Hutchings College & Career Academy",
@@ -127,7 +141,11 @@
     "website": "https://hutchings.bcsdk12.net/",
     "bestFor": "Career pathways for Bibb high schoolers",
     "bestForWhy": "The district's career academy, where students earn college credit through dual enrollment and certifications such as nursing assistant and EMR.",
-    "bestForNeed": "youth"
+    "bestForNeed": "youth",
+    "earn": [
+      "certificate",
+      "diploma"
+    ]
   },
   "bibb-schools": {
     "name": "Bibb County School District",
@@ -143,7 +161,11 @@
     "website": "https://www.bcsdk12.net/",
     "bestFor": "Career pathways at every public high school",
     "bestForWhy": "Over 30 career-technical pathways; its career-pathway students graduate at about 99%, far above the district overall.",
-    "bestForNeed": "youth"
+    "bestForNeed": "youth",
+    "earn": [
+      "diploma",
+      "certificate"
+    ]
   },
   "innovation-tech": {
     "name": "Macon-Bibb County Innovation & Technology Academy",
@@ -159,7 +181,10 @@
     "website": "https://www.bcsdk12.net/departments/career-technical-and-agricultural-education",
     "bestFor": "Future-tech courses for high schoolers",
     "bestForWhy": "Opened December 2024 with year-long courses in electric vehicles, aviation, AI, cybersecurity and advanced manufacturing.",
-    "bestForNeed": "youth"
+    "bestForNeed": "youth",
+    "earn": [
+      "diploma"
+    ]
   },
   "chamber": {
     "name": "Greater Macon Chamber of Commerce",
@@ -197,7 +222,10 @@
     "website": "https://maconchamber.com/",
     "bestFor": "Connecting employers to the workforce system",
     "bestForWhy": "The business network that convenes employers, schools and government, and runs Greater Career Works and Choose Macon.",
-    "bestForNeed": "employer"
+    "bestForNeed": "employer",
+    "earn": [
+      "services"
+    ]
   },
   "mbcia": {
     "name": "Macon-Bibb County Industrial Authority",
@@ -225,7 +253,10 @@
     "website": "https://mbcia.com/",
     "bestFor": "Bringing new employers and expansions to Macon-Bibb",
     "bestForWhy": "The county's lead recruiter of industry: 30 active projects worth $4.6 billion in FY25, including Irving Tissue and First Quality.",
-    "bestForNeed": "employer"
+    "bestForNeed": "employer",
+    "earn": [
+      "services"
+    ]
   },
   "choose-macon": {
     "name": "Choose Macon Initiative",
@@ -263,7 +294,10 @@
     "website": "https://choosemacon.com/",
     "bestFor": "Attracting talent to move to Macon",
     "bestForWhy": "The Chamber's campaign that markets Macon to job seekers, with a daily-updated local job board.",
-    "bestForNeed": "job"
+    "bestForNeed": "job",
+    "earn": [
+      "services"
+    ]
   },
   "library": {
     "name": "Middle Georgia Regional Library",
@@ -291,7 +325,10 @@
     "website": "https://bibblib.org/",
     "bestFor": "Free computer and job-search help",
     "bestForWhy": "Near-daily free computer and resume classes and job fairs, plus business and nonprofit research help at its BANC.",
-    "bestForNeed": "job"
+    "bestForNeed": "job",
+    "earn": [
+      "services"
+    ]
   },
   "newtown": {
     "name": "NewTown Macon",
@@ -329,7 +366,10 @@
     "website": "https://newtownmacon.com/",
     "bestFor": "Starting a business downtown",
     "bestForWhy": "Its Entrepreneur's Academy and NewTown Loans ($23 million portfolio, mostly to startups) are its core.",
-    "bestForNeed": "employer"
+    "bestForNeed": "employer",
+    "earn": [
+      "services"
+    ]
   },
   "mgrc": {
     "name": "Middle Georgia Regional Commission",
@@ -353,7 +393,10 @@
     "website": "https://www.middlegeorgiarc.org/",
     "bestFor": "Federal job-training funds for Macon-Bibb residents",
     "bestForWhy": "Administers Macon-Bibb's own federal workforce area (WIOA Area 10, WorkSource Macon-Bibb), which pays for training and youth programs.",
-    "bestForNeed": "train"
+    "bestForNeed": "train",
+    "earn": [
+      "services"
+    ]
   },
   "ga-dol": {
     "name": "Georgia Department of Labor",
@@ -369,7 +412,10 @@
     "website": "https://dol.georgia.gov/locations/macon",
     "bestFor": "Unemployment claims and job-search help",
     "bestForWhy": "The state career center on Mercer University Drive, serving Bibb, Jones, Monroe and Twiggs counties, with dedicated veterans staff.",
-    "bestForNeed": "job"
+    "bestForNeed": "job",
+    "earn": [
+      "services"
+    ]
   },
   "goodwill": {
     "name": "Goodwill Industries of Middle Georgia",
@@ -402,7 +448,12 @@
     "website": "https://www.goodwillworks.org/",
     "bestFor": "Short-term job certificates and Helms College",
     "bestForWhy": "Weeks-long credentials (phlebotomy, EKG, forklift) and accredited Helms College diplomas; 1,699 Helms graduates to date.",
-    "bestForNeed": "train"
+    "bestForNeed": "train",
+    "earn": [
+      "certificate",
+      "degree",
+      "diploma"
+    ]
   },
   "eckerd": {
     "name": "Eckerd Connects, Paxen Youth Program",
@@ -418,7 +469,11 @@
     "website": "https://eckerd.org/jobs-training/ga-middlega/",
     "bestFor": "GED plus job training for young adults out of school",
     "bestForWhy": "The local WIOA youth provider for ages 16 to 24: GED prep, certifications, paid work experience and placement.",
-    "bestForNeed": "youth"
+    "bestForNeed": "youth",
+    "earn": [
+      "diploma",
+      "certificate"
+    ]
   },
   "ibew": {
     "name": "IBEW Local 1316",
@@ -447,7 +502,10 @@
     "website": "https://www.ibew1316.org/",
     "bestFor": "Paid electrician apprenticeship",
     "bestForWhy": "Tuition-free: apprentices earn wages from day one, with benefits, while training at the Macon Electrical Training Center.",
-    "bestForNeed": "train"
+    "bestForNeed": "train",
+    "earn": [
+      "apprenticeship"
+    ]
   },
   "job-corps": {
     "name": "Job Corps Admissions Office",
@@ -463,7 +521,11 @@
     "website": "https://www.jobcorps.gov/",
     "bestFor": "Free live-in career training for ages 16 to 24",
     "bestForWhy": "Housing, meals, a diploma and a trade at no cost; centers reopened to new students after the 2025 shutdown was blocked.",
-    "bestForNeed": "youth"
+    "bestForNeed": "youth",
+    "earn": [
+      "diploma",
+      "certificate"
+    ]
   },
   "arc-macon": {
     "name": "The Arc Macon",
@@ -486,7 +548,10 @@
     "website": "https://thearc.org/",
     "bestFor": "Job coaching for adults with developmental disabilities",
     "bestForWhy": "Supported employment since 1998, and the first Customized Employment Provider in Central Georgia.",
-    "bestForNeed": "support"
+    "bestForNeed": "support",
+    "earn": [
+      "services"
+    ]
   },
   "greater-career-works": {
     "name": "Greater Career Works",
@@ -502,7 +567,10 @@
     "website": "https://www.greatercareerworks.org/",
     "bestFor": "Exploring careers online",
     "bestForWhy": "A free library of 900+ short video \"career cards\" with local pay, skills and training links.",
-    "bestForNeed": "job"
+    "bestForNeed": "job",
+    "earn": [
+      "services"
+    ]
   },
   "worksource": {
     "name": "WorkSource Middle Georgia",
@@ -535,7 +603,10 @@
     "website": "https://middlegaworks.com/",
     "bestFor": "Federal job-training funds for the counties around Macon-Bibb",
     "bestForWhy": "The WIOA workforce area for the ten surrounding counties; Macon-Bibb residents are served by WorkSource Macon-Bibb instead.",
-    "bestForNeed": "train"
+    "bestForNeed": "train",
+    "earn": [
+      "services"
+    ]
   },
   "gvra": {
     "name": "Georgia Vocational Rehabilitation Agency",
@@ -550,7 +621,10 @@
     "website": "https://gvs.georgia.gov/",
     "bestFor": "Job training and support for people with disabilities",
     "bestForWhy": "The state agency that funds training, job coaching, assistive technology and placement for eligible Georgians.",
-    "bestForNeed": "support"
+    "bestForNeed": "support",
+    "earn": [
+      "services"
+    ]
   },
   "adult-ed": {
     "name": "Adult Education Programs",
@@ -578,7 +652,10 @@
     "website": "https://www.centralgatech.edu/adult-education",
     "bestFor": "Free GED, HiSET and English classes",
     "bestForWhy": "Central Georgia Tech's free adult education, including a career-focused high school diploma path.",
-    "bestForNeed": "ged"
+    "bestForNeed": "ged",
+    "earn": [
+      "diploma"
+    ]
   },
   "workforce-dev": {
     "name": "Macon-Bibb County Office of Workforce Development",
@@ -594,7 +671,10 @@
     "website": "https://www.maconbibb.us/workforcetrainingprograms/",
     "bestFor": "A quick start into warehouse and manufacturing jobs",
     "bestForWhy": "E3 Career Jumpstart: four weeks, free, ending in Central Georgia Tech credentials such as forklift.",
-    "bestForNeed": "job"
+    "bestForNeed": "job",
+    "earn": [
+      "certificate"
+    ]
   },
   "salvation-army": {
     "name": "The Salvation Army of Macon",
@@ -622,7 +702,11 @@
     "website": "https://southernusa.salvationarmy.org/macon/",
     "bestFor": "Emergency shelter, with job training through Helms",
     "bestForWhy": "Shelter for men, women, children and veterans, plus a free six-to-eight-week certificate program with Goodwill's Helms.",
-    "bestForNeed": "support"
+    "bestForNeed": "support",
+    "earn": [
+      "certificate",
+      "services"
+    ]
   },
   "rescue-mission": {
     "name": "Rescue Mission of Middle Georgia",
@@ -638,7 +722,10 @@
     "website": "https://www.rescuemissionga.com/",
     "bestFor": "A year-long residential recovery program",
     "bestForWhy": "Free 12-month faith-based recovery with housing, counseling and work therapy, aimed at steady work and housing.",
-    "bestForNeed": "support"
+    "bestForNeed": "support",
+    "earn": [
+      "services"
+    ]
   },
   "other-faith": {
     "name": "Other Faith/Community Programs",
@@ -653,7 +740,10 @@
     "website": "https://maconchamber.com/",
     "bestFor": "Job readiness and job fairs through local churches",
     "bestForWhy": "Informal outreach by congregations and community groups.",
-    "bestForNeed": "job"
+    "bestForNeed": "job",
+    "earn": [
+      "services"
+    ]
   },
   "transitional-center": {
     "name": "Macon Transitional Center Work Release Program",
@@ -669,7 +759,11 @@
     "website": "https://gdc.georgia.gov/locations/macon-transitional-center",
     "bestFor": "Work release: paid jobs before release",
     "bestForWhy": "About 138 of its 156 beds are for men working daily jobs with local employers at the end of a prison sentence.",
-    "bestForNeed": "support"
+    "bestForNeed": "support",
+    "earn": [
+      "diploma",
+      "services"
+    ]
   },
   "drc": {
     "name": "Macon Day Reporting Center",
@@ -684,6 +778,9 @@
     "website": "https://dcs.georgia.gov/reentry-services/community-resources",
     "bestFor": "Probation and parole support with employment help",
     "bestForWhy": "A court-ordered day program combining treatment, counseling and dedicated employment and education specialists.",
-    "bestForNeed": "support"
+    "bestForNeed": "support",
+    "earn": [
+      "services"
+    ]
   }
 }
