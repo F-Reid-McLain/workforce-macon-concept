@@ -107,11 +107,7 @@ CGTC_DIVISIONS = {
     'Public Safety and Professional Services': 'public-safety-professional-services',
 }
 CGTC_CREDENTIAL = {'associate': 'Associate degree', 'diploma': 'Technical diploma', 'certificate': 'Technical Certificate of Credit'}
-CGTC_COST = {
-    'associate': '$107 per credit hour (2025–26) · HOPE and Pell eligible',
-    'diploma': '$107 per credit hour (2025–26) · the HOPE Grant can cover tuition',
-    'certificate': '$107 per credit hour (2025–26) · the HOPE Grant can cover tuition',
-}
+CGTC_COST = {k: '$107 per credit hour' for k in ('associate', 'diploma', 'certificate')}   # TCSG tuition, 2025–26
 CGTC_SOURCE = 'https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf'
 
 
@@ -207,7 +203,7 @@ def mga_programs():
             length, bucket = mga_length(earn, deg, name)
             out.append({
                 'org': 'middle-ga-state', 'name': name, 'earn': earn, 'credential': deg, 'length': length, 'bucket': bucket,
-                'field': field_of(name), 'cost': 'Public university tuition · HOPE and Pell eligible',
+                'field': field_of(name), 'cost': 'Public university tuition',
                 'campus': ', '.join(campuses) if campuses else 'See the program page',
                 'url': url, 'options': [], 'online': 'Online' in campuses, 'source': MGA_URL,
             })
