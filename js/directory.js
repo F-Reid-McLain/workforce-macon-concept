@@ -148,7 +148,9 @@ function openAssetModal(assetId, opts) {
     // approved and published as-is (see js/forms.js, admin/js/node-builder-core.js)
     // — nothing upstream strips HTML out of it, so it must be escaped here,
     // at the one place it's actually rendered to real site visitors.
-    let html = `<p>${asset ? escapeHtmlDir(asset.description || '') : 'Information coming soon...'}</p>`;
+    let html = '';
+    if (asset && asset.bestFor) html += `<p class="info-best"><span>Best known for</span><strong>${escapeHtmlDir(asset.bestFor)}</strong>${asset.bestForWhy ? `<small>${escapeHtmlDir(asset.bestForWhy)}</small>` : ''}</p>`;
+    html += `<p>${asset ? escapeHtmlDir(asset.description || '') : 'Information coming soon...'}</p>`;
     if (asset && asset.impact)   html += `<p><strong>Community Impact:</strong> ${escapeHtmlDir(asset.impact)}</p>`;
     if (asset && asset.links && asset.links.length) {
         html += `<p><strong>Related Programs:</strong></p><div class="related-links">`;

@@ -62,6 +62,15 @@
 .fcard__kind { display: inline-flex; align-items: center; gap: 6px; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-muted); }
 .fcard__kind i { width: 8px; height: 8px; border-radius: 50%; }
 .fcard__name { font-size: 1.04rem; line-height: 1.25; color: #fff; }
+.fcard__best { font-size: 0.84rem; line-height: 1.4; color: var(--color-text-secondary); }
+.fcard__best strong { color: var(--ch-gold); font-weight: 700; }
+.fcard__best mark { margin-right: 6px; padding: 1px 7px; border-radius: 999px; background: rgba(45, 212, 191, 0.16); color: var(--ch-teal); font-size: 0.68rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; vertical-align: 1px; }
+/* "Best known for" at the top of the details (map panel and phone sheet) */
+.info-best { display: grid; gap: 3px; margin: 0 0 14px; padding: 12px 14px; border-radius: 12px; background: rgba(242, 196, 107, 0.08); border: 1px solid rgba(242, 196, 107, 0.28); }
+.info-best span { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text-muted); }
+.info-best strong, #viz-info-body .info-best strong, #modal-content .info-best strong { display: block; margin: 0; font-size: 1rem; color: var(--ch-gold); text-align: left; text-transform: none; letter-spacing: normal; }
+.info-best, #viz-info-body .info-best { text-align: left; }
+.info-best small { font-size: 0.8rem; line-height: 1.45; color: var(--color-text-secondary); }
 .fcard__blurb { font-size: 0.86rem; line-height: 1.45; color: var(--color-text-secondary); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .fcard__tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 2px; }
 .fcard__tags em { font-style: normal; font-size: 0.7rem; font-weight: 600; padding: 2px 8px; border-radius: 999px; color: #c9d2e0; background: rgba(255, 255, 255, 0.06); }

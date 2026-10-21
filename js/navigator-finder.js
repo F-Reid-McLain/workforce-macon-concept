@@ -65,7 +65,7 @@
     let orgs = [];
     function matches(a) {
         const need = NEEDS.find(n => n.id === state.need);
-        if (need && !meetsNeed(a, need)) return false;
+        if (need && !meetsNeed(a, need) && a.bestForNeed !== need.id) return false;   // a best fit always counts
         if (state.tags.size && !a.tags.some(t => state.tags.has(t))) return false;
         if (state.cats.size && !state.cats.has(a.category)) return false;
         const q = state.q.trim().toLowerCase();
@@ -118,6 +118,7 @@
             <span class="fcard__text">
                 <span class="fcard__kind"><i style="background:${colorOf(a.category)}"></i>${esc(catOf(a.category).label)}</span>
                 <b class="fcard__name">${esc(a.name)}</b>
+                ${a.bestFor ? `<span class="fcard__best">${fitsNeed(a) ? '<mark>Best fit</mark>' : ''}Best known for: <strong>${esc(a.bestFor)}</strong></span>` : ''}
                 <span class="fcard__blurb">${esc(blurb(a.description))}</span>
                 <span class="fcard__tags">${a.tags.map(t => `<em>${esc(t)}</em>`).join('')}</span>
             </span></button></li>`;
@@ -136,9 +137,13 @@
         });
     }
 
+    // Within a "What do you need?" pick, the organizations whose main strength is that
+    // need come first (bestForNeed in content/assets.json), then everyone else who helps
+    const fitsNeed = a => !!state.need && a.bestForNeed === state.need;
     let shown = [], activeId = null;
     function update() {
         shown = orgs.filter(matches);
+        if (state.need) shown = shown.filter(fitsNeed).concat(shown.filter(a => !fitsNeed(a)));
         flip(() => { cardsEl.innerHTML = shown.map(cardHTML).join(''); });
         markActive(activeId);
         emptyEl.hidden = shown.length > 0;
@@ -197,7 +202,7 @@
     function start() {
         orgs = Object.entries(assetData).map(([id, a]) => ({
             id, ...a, tags: a.tags || [],
-            haystack: [a.name, a.description, a.impact, (a.tags || []).join(' '), catOf(a.category).label,
+            haystack: [a.name, a.bestFor, a.description, a.impact, (a.tags || []).join(' '), catOf(a.category).label,
                        (a.links || []).map(l => l.label + ' ' + (l.description || '')).join(' ')].join(' ').toLowerCase(),
         })).sort((x, y) => CATEGORIES.findIndex(c => c.slug === x.category) - CATEGORIES.findIndex(c => c.slug === y.category));
         document.getElementById('finder-total').textContent = orgs.length;
