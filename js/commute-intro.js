@@ -117,10 +117,11 @@
             });
             return m;
         }
-        // Dots in and out of a neighbor are timed independently; a county that loses
-        // people overall is held at its resident count rather than flashing a brief gain
-        const midday = rawPeople(12.5);
-        const capAtHome = new Set(counties.filter(c => c.fips !== BIBB && midday.get(c.fips) < pop.get(c.fips)).map(c => c.fips));
+        // Neighbors are held at or below their resident count. The story only follows commuting
+        // between Macon-Bibb and each neighbor, so a county like Butts (283 out to Macon-Bibb,
+        // 353 in from it) would otherwise show a small daytime gain, even though, counting
+        // commuters from everywhere, every neighbor loses workers (as the map at the end shows).
+        const capAtHome = new Set(counties.filter(c => c.fips !== BIBB).map(c => c.fips));
         let cache = { h: null, m: null };
         function peopleNow(h) {
             if (cache.h === h) return cache.m;
