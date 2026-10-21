@@ -53,8 +53,7 @@
             <div class="nav-hero__text">
                 <p class="chapter-kicker">Workforce Navigator</p>
                 <h2 class="finder-title">Find a program, get support, or find workers in Greater Macon.</h2>
-                <p class="nav-hero__stats" id="hero-stats" aria-label="29 organizations, 617 programs, 6 kinds of help"><span class="nw"><b data-n="29">29</b> organizations</span> <i>·</i> <span class="nw"><b data-n="617">617</b> programs</span> <i>·</i> <span class="nw"><b data-n="6">6</b> kinds of help</span></p>
-                <p class="nav-hero__note" id="minimap-note" aria-live="polite">Every organization in the Navigator, by the kind of help it offers.</p>
+                <p class="nav-hero__note" id="minimap-note" aria-live="polite">29 organizations and 617 programs across Greater Macon, by the kind of help they offer.</p>
                 <button type="button" class="nav-hero__explore" id="minimap-explore">Explore the whole ecosystem <span aria-hidden="true">⤢</span></button>
             </div>
             <div class="minimap" id="minimap">
@@ -128,42 +127,37 @@
           <div class="finder-main">
 
             <div class="doors" role="tablist" aria-label="What are you here for?">
-                <button type="button" class="door" role="tab" data-door="training" id="door-training" aria-controls="view-training">
-                    <b>Get trained or hired</b><span><em id="door-count-training">617</em> programs: certificates, apprenticeships, degrees</span>
-                </button>
-                <button type="button" class="door" role="tab" data-door="support" id="door-support" aria-controls="view-orgs">
-                    <b>Get support</b><span><em id="door-count-support">16</em> organizations: job help, disability, re-entry, shelter</span>
-                </button>
-                <button type="button" class="door" role="tab" data-door="employers" id="door-employers" aria-controls="view-orgs">
-                    <b>For employers</b><span><em id="door-count-employers">11</em> partners: hiring, training funds, growth</span>
-                </button>
+                <button type="button" class="door" role="tab" data-door="training" id="door-training" aria-controls="view-training">Programs <em id="door-count-training">617</em></button>
+                <button type="button" class="door" role="tab" data-door="support" id="door-support" aria-controls="view-orgs">Get support <em id="door-count-support">16</em></button>
+                <button type="button" class="door" role="tab" data-door="employers" id="door-employers" aria-controls="view-orgs">For employers <em id="door-count-employers">10</em></button>
             </div>
 
-            <!-- Programs -->
+            <!-- Programs: field tiles until someone searches or filters, then a list -->
             <section class="finder-view" id="view-training" role="tabpanel" aria-labelledby="door-training">
                 <div class="finder-bar">
                     <label class="tool-search finder-search">
                         <span class="sr-only">Search programs</span>
-                        <input id="finder-q" type="search" placeholder="Search programs, e.g. welding, nursing, CDL, cybersecurity" autocomplete="off">
+                        <input id="finder-q" type="search" placeholder="Search programs, e.g. welding, nursing, CDL" autocomplete="off">
                     </label>
-                    <label class="finder-select">
-                        <span class="sr-only">Field</span>
-                        <select id="finder-field"><option value="">All fields</option></select>
-                    </label>
+                    <button type="button" class="finder-filters-btn" id="finder-filters-btn" aria-expanded="false" aria-controls="finder-filters">Filters</button>
                 </div>
-                <div class="finder-filters">
+                <div class="finder-filters" id="finder-filters" hidden>
                     <div class="finder-row"><span class="finder-row__label">How long</span><div class="finder-chips" id="finder-length"></div></div>
                     <div class="finder-row"><span class="finder-row__label">You'll earn</span><div class="finder-chips" id="finder-earn"></div></div>
+                    <div class="finder-row"><span class="finder-row__label">Field</span>
+                        <label class="finder-select"><span class="sr-only">Field</span><select id="finder-field"><option value="">All fields</option></select></label>
+                        <label class="finder-toggle"><input type="checkbox" id="finder-online"> Online options only</label>
+                    </div>
                 </div>
-                <div class="finder-status">
+
+                <div class="finder-status" id="finder-status" hidden>
                     <p class="finder-count" id="finder-count" aria-live="polite"></p>
-                    <label class="finder-toggle"><input type="checkbox" id="finder-online"> Online options only</label>
-                    <button type="button" class="finder-clear" id="finder-clear" hidden>Clear all</button>
+                    <button type="button" class="finder-clear" id="finder-clear">Clear all</button>
                 </div>
-                <ol class="pcards" id="finder-programs"></ol>
+                <ol class="ftiles" id="finder-fields" aria-label="Browse programs by field"></ol>
+                <ol class="pcards" id="finder-programs" hidden></ol>
                 <button type="button" class="finder-more" id="finder-more" hidden></button>
                 <p class="finder-empty" id="finder-empty" hidden>No programs match all of those. Try fewer filters, or <button type="button" class="finder-linkbtn" id="finder-empty-clear">clear them</button>.</p>
-                <p class="finder-note">Lengths are typical full-time figures and costs are each school's published rates; confirm details with the school. Programs come from each organization's own lists (checked <span id="finder-checked"></span>).</p>
             </section>
 
             <!-- Organizations (support or employers) -->
@@ -172,9 +166,11 @@
                 <ol class="ocards" id="finder-orgs"></ol>
             </section>
 
-            <p class="finder-suggest">Know a program or organization that belongs here? <a href="submit-asset.html">Suggest it</a> · <a href="request-edit.html">Request an edit</a></p>
+            <footer class="finder-fine">
+                <p>Lengths are typical full-time figures and costs are each school's published tuition; confirm details with the school. Programs come from each organization's own lists (checked <span id="finder-checked"></span>).</p>
+                <p>Know a program or organization that belongs here? <a href="submit-asset.html">Suggest it</a> · <a href="request-edit.html">Request an edit</a></p>
+            </footer>
           </div>
-
         </div>
       </div>
     </main>
