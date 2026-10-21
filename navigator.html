@@ -104,6 +104,16 @@
 
           <!-- The corner map: lights up the organizations behind what you're looking at; click to explore it full size -->
           <aside class="finder-side">
+            <div class="corner-tabs" role="tablist" aria-label="Map view">
+                <button type="button" role="tab" data-pane="where" id="corner-where">Where</button>
+                <button type="button" role="tab" data-pane="eco" id="corner-eco">Ecosystem</button>
+            </div>
+            <div class="corner">
+            <div class="corner-pane wheremap" data-pane="where" id="wheremap">
+                <svg id="where-svg" role="group" aria-label="Map of where these programs are offered"></svg>
+                <div class="where-tip" aria-hidden="true"></div>
+            </div>
+            <div class="corner-pane" data-pane="eco">
             <div class="minimap" id="minimap">
               <button type="button" class="minimap__open" id="minimap-open" aria-label="Open the full map of how these organizations connect"></button>
               <button type="button" class="minimap__close" id="minimap-close" aria-label="Close the map">&times;</button>
@@ -170,6 +180,9 @@
             </div>
         </section>
             </div>
+            </div>
+            </div>
+            <p class="where-extra" id="where-extra"></p>
             <p class="minimap__note" id="minimap-note">The organizations behind these results light up. Click the map to explore it.</p>
           </aside>
         </div>
@@ -250,6 +263,7 @@
     <script src="js/search.js"></script>
     <script src="js/navigator-finder.js"></script>
     <script src="js/navigator-minimap.js"></script>
+    <script src="js/navigator-where.js"></script>
     <script src="js/nav.js"></script>
 </body>
 </html>

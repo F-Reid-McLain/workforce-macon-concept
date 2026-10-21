@@ -1,0 +1,2938 @@
+{
+ "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/catalog/catalog.pdf",
+ "programs": [
+  {
+   "code": "ACT2",
+   "name": "AIR CONDITIONING TECHNOLOGY",
+   "award": "Diploma",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon"
+   ],
+   "hours": 51
+  },
+  {
+   "code": "ACK1",
+   "name": "AIR CONDITIONING ELECTRICAL TECHNICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Dual Enrollment",
+    "VECTR"
+   ],
+   "hours": 12
+  },
+  {
+   "code": "AZ31",
+   "name": "AIR CONDITIONING TECHNICIAN ASSISTANT",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "GDC",
+    "VECTR"
+   ],
+   "hours": 12
+  },
+  {
+   "code": "RA21",
+   "name": "RESIDENTIAL AIR CONDITIONING TECHNICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon"
+   ],
+   "hours": 16
+  },
+  {
+   "code": "AST2",
+   "name": "AIRCRAFT STRUCTURAL TECHNOLOGY",
+   "award": "Diploma",
+   "sites": [
+    "ATC/Middle GA Regional Airport"
+   ],
+   "hours": 48
+  },
+  {
+   "code": "AA61",
+   "name": "AIRCRAFT ASSEMBLY TECHNICIAN I",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "ATC/Middle GA Regional Airport",
+    "Dual Enrollment"
+   ],
+   "hours": 11
+  },
+  {
+   "code": "AR71",
+   "name": "AIRCRAFT ASSEMBLY TECHNICIAN II",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "ATC/Middle GA Regional Airport",
+    "Dual Enrollment"
+   ],
+   "hours": 15
+  },
+  {
+   "code": "AT71",
+   "name": "AIRCRAFT COMPOSITES TECHNICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "ATC/Middle GA Regional Airport",
+    "Dual Enrollment"
+   ],
+   "hours": 15
+  },
+  {
+   "code": "IS13",
+   "name": "AUTOMATION TECHNOLOGY",
+   "award": "Associate Degree",
+   "sites": [
+    "Warner Robins",
+    "Macon"
+   ],
+   "hours": 63
+  },
+  {
+   "code": "IA13",
+   "name": "INSTRUMENTATION AND CONTROLS TECHNICIAN",
+   "award": "Associate Degree",
+   "sites": [
+    "Macon"
+   ],
+   "hours": 67
+  },
+  {
+   "code": "IST4",
+   "name": "AUTOMATION TECHNOLOGY",
+   "award": "Diploma",
+   "sites": [
+    "Warner Robins",
+    "Macon"
+   ],
+   "hours": 46
+  },
+  {
+   "code": "EC22",
+   "name": "ELECTRICAL CONTROL SYSTEMS",
+   "award": "Diploma",
+   "sites": [
+    "Warner Robins",
+    "Macon"
+   ],
+   "hours": 44
+  },
+  {
+   "code": "IMS2",
+   "name": "INDUSTRIAL MECHANICAL SYSTEMS",
+   "award": "Diploma",
+   "sites": [
+    "Warner Robins",
+    "Macon"
+   ],
+   "hours": 51
+  },
+  {
+   "code": "AE81",
+   "name": "SPECIALIST",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "VECTR"
+   ],
+   "hours": 17
+  },
+  {
+   "code": "EM81",
+   "name": "AUTOMATION AND ROBOTICS TECHNOLOGY I",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Macon"
+   ],
+   "hours": 17
+  },
+  {
+   "code": "IE41",
+   "name": "INDUSTRIAL ELECTRICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Macon",
+    "Dual Enrollment",
+    "VECTR"
+   ],
+   "hours": 10
+  },
+  {
+   "code": "IF11",
+   "name": "INDUSTRIAL FLUID POWER TECHNICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Macon"
+   ],
+   "hours": 11
+  },
+  {
+   "code": "IM11",
+   "name": "INDUSTRIAL MAINTENANCE ASSISTANT",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "GDC"
+   ],
+   "hours": 13
+  },
+  {
+   "code": "IM41",
+   "name": "INDUSTRIAL MOTOR CONTROL TECHNICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Macon",
+    "VECTR"
+   ],
+   "hours": 12
+  },
+  {
+   "code": "IA31",
+   "name": "INSTRUMENTATION AND CONTROLS TECHNICIAN I",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Macon"
+   ],
+   "hours": 22
+  },
+  {
+   "code": "IT61",
+   "name": "INTRODUCTION TO MOTOR CONTROLS",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Dual Enrollment"
+   ],
+   "hours": 10
+  },
+  {
+   "code": "MM31",
+   "name": "MECHANICAL MAINTENANCE TECHNICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Macon"
+   ],
+   "hours": 29
+  },
+  {
+   "code": "PC81",
+   "name": "PROGRAMMABLE CONTROL TECHNICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Macon"
+   ],
+   "hours": 12
+  },
+  {
+   "code": "RW41",
+   "name": "RESIDENTIAL/INDUSTRIAL WIRING TECHNICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Macon"
+   ],
+   "hours": 14
+  },
+  {
+   "code": "ACR2",
+   "name": "AUTOMOTIVE COLLISION REPAIR",
+   "award": "Diploma",
+   "sites": [
+    "Macon"
+   ],
+   "hours": 40
+  },
+  {
+   "code": "AB51",
+   "name": "AUTOMOTIVE COLLISION REPAIR ASSISTANT I",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Macon"
+   ],
+   "hours": 12
+  },
+  {
+   "code": "AF12",
+   "name": "AUTOMOTIVE FUNDAMENTALS",
+   "award": "Diploma",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon"
+   ],
+   "hours": 40
+  },
+  {
+   "code": "AT14",
+   "name": "AUTOMOTIVE TECHNOLOGY",
+   "award": "Diploma",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon"
+   ],
+   "hours": 55
+  },
+  {
+   "code": "ASG1",
+   "name": "AUTOMOTIVE CHASSIS TECHNICIAN SPECIALIST",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Dual Enrollment"
+   ],
+   "hours": 17
+  },
+  {
+   "code": "AH21",
+   "name": "AUTOMOTIVE CLIMATE CONTROL TECHNICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon"
+   ],
+   "hours": 14
+  },
+  {
+   "code": "AE41",
+   "name": "TECHNICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Dual Enrollment"
+   ],
+   "hours": 9
+  },
+  {
+   "code": "AE51",
+   "name": "AUTOMOTIVE ENGINE PERFORMANCE TECHNICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon"
+   ],
+   "hours": 16
+  },
+  {
+   "code": "AE61",
+   "name": "AUTOMOTIVE ENGINE REPAIR TECHNICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon"
+   ],
+   "hours": 15
+  },
+  {
+   "code": "ALR1",
+   "name": "TECHNICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "GDC"
+   ],
+   "hours": 20
+  },
+  {
+   "code": "AA71",
+   "name": "SPECIALIST",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon"
+   ],
+   "hours": 18
+  },
+  {
+   "code": "EVP1",
+   "name": "ELECTRICAL VEHICLE PROFESSIONAL",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Dual Enrollment"
+   ],
+   "hours": 8
+  },
+  {
+   "code": "HVR1",
+   "name": "HYBRID/ELECTRICAL VEHICLE REPAIR TECHNICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Milledgeville"
+   ],
+   "hours": 19
+  },
+  {
+   "code": "AM43",
+   "name": "AVIATION MAINTENANCE TECHNOLOGY",
+   "award": "Associate Degree",
+   "sites": [
+    "ATC/Middle GA Regional Airport"
+   ],
+   "hours": 96
+  },
+  {
+   "code": "AM34",
+   "name": "AVIATION MAINTENANCE TECHNOLOGY",
+   "award": "Diploma",
+   "sites": [
+    "ATC/Middle GA Regional Airport"
+   ],
+   "hours": 89
+  },
+  {
+   "code": "AM24",
+   "name": "AVIATION MAINTENANCE TECHNICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "ATC/Middle GA Regional Airport"
+   ],
+   "hours": 81
+  },
+  {
+   "code": "AMT1",
+   "name": "AVIATION MAINTENANCE TECHNICIAN \u2013 AIRFRAME",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "ATC/Middle GA Regional Airport"
+   ],
+   "hours": 54
+  },
+  {
+   "code": "AM61",
+   "name": "POWERPLANT",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "ATC/Middle GA Regional Airport"
+   ],
+   "hours": 48
+  },
+  {
+   "code": "CA23",
+   "name": "CARPENTRY",
+   "award": "Associate Degree",
+   "sites": [
+    "Macon"
+   ],
+   "hours": 64
+  },
+  {
+   "code": "CA22",
+   "name": "CARPENTRY",
+   "award": "Diploma",
+   "sites": [
+    "Macon"
+   ],
+   "hours": 39
+  },
+  {
+   "code": "CCW1",
+   "name": "CCERTIFIED CONSTRUCTION WORKER",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Dual Enrollment",
+    "GDC"
+   ],
+   "hours": 9
+  },
+  {
+   "code": "CCC1",
+   "name": "COMMERCIAL CARPENTER",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Macon"
+   ],
+   "hours": 12
+  },
+  {
+   "code": "CCL5",
+   "name": "CONSTRUCTION CAREER LAUNCH SAFETY",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Macon"
+   ],
+   "hours": 4
+  },
+  {
+   "code": "FC31",
+   "name": "FINISH CARPENTER",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Macon"
+   ],
+   "hours": 11
+  },
+  {
+   "code": "CT61",
+   "name": "COMMERCIAL DRIVING - CLASS A",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Macon",
+    "VECTR",
+    "Putnam",
+    "Peach",
+    "Hawkinsville"
+   ],
+   "hours": 9
+  },
+  {
+   "code": "CM13",
+   "name": "CONSTRUCTION MANAGEMENT",
+   "award": "Associate Degree",
+   "sites": [
+    "Macon"
+   ],
+   "hours": 62
+  },
+  {
+   "code": "CM12",
+   "name": "CONSTRUCTION MANAGEMENT TECHNOLOGY",
+   "award": "Diploma",
+   "sites": [
+    "Macon"
+   ],
+   "hours": 53
+  },
+  {
+   "code": "CM81",
+   "name": "CONSTRUCTION MANAGER",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Macon"
+   ],
+   "hours": 15
+  },
+  {
+   "code": "DE11",
+   "name": "TECHNICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins"
+   ],
+   "hours": 10
+  },
+  {
+   "code": "DE21",
+   "name": "DIESEL ENGINE SERVICE TECHNICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins"
+   ],
+   "hours": 16
+  },
+  {
+   "code": "DEF1",
+   "name": "DIESEL EQUIPMENT FUNDAMENTALS",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins"
+   ],
+   "hours": 14
+  },
+  {
+   "code": "DTM1",
+   "name": "DIESEL TRUCK MAINTENANCE TECHNICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins"
+   ],
+   "hours": 23
+  },
+  {
+   "code": "HD31",
+   "name": "HEAVY DIESEL SERVICE TECHNICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins"
+   ],
+   "hours": 32
+  },
+  {
+   "code": "ES12",
+   "name": "ELECTRICAL SYSTEMS TECHNOLOGY",
+   "award": "Diploma",
+   "sites": [
+    "Macon"
+   ],
+   "hours": 43
+  },
+  {
+   "code": "CEC1",
+   "name": "TECHNICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "VECTR"
+   ],
+   "hours": 19
+  },
+  {
+   "code": "RW21",
+   "name": "RESIDENTIAL WIRING TECHNICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Macon"
+   ],
+   "hours": 16
+  },
+  {
+   "code": "ET13",
+   "name": "ELECTRONICS TECHNOLOGY",
+   "award": "Associate Degree",
+   "sites": [
+    "Warner Robins",
+    "Macon"
+   ],
+   "hours": 63
+  },
+  {
+   "code": "EF12",
+   "name": "ELECTRONICS FUNDAMENTALS",
+   "award": "Diploma",
+   "sites": [
+    "Warner Robins",
+    "Macon"
+   ],
+   "hours": 40
+  },
+  {
+   "code": "ET14",
+   "name": "ELECTRONICS TECHNOLOGY",
+   "award": "Diploma",
+   "sites": [
+    "Warner Robins",
+    "Macon"
+   ],
+   "hours": 56
+  },
+  {
+   "code": "BE41",
+   "name": "BASIC ELECTRONIC ASSEMBLER",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "ATC/Middle GA Regional Airport",
+    "Warner Robins",
+    "Macon",
+    "Dual Enrollment"
+   ],
+   "hours": 9
+  },
+  {
+   "code": "BE81",
+   "name": "BASIC ELECTRONIC TECHNICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Macon",
+    "Dual Enrollment"
+   ],
+   "hours": 16
+  },
+  {
+   "code": "ET33",
+   "name": "ENGINEERING TECHNOLOGY",
+   "award": "Associate Degree",
+   "sites": [
+    "Warner Robins",
+    "Macon"
+   ],
+   "hours": 63
+  },
+  {
+   "code": "DA31",
+   "name": "DRAFTER\u2019S ASSISTANT",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Macon"
+   ],
+   "hours": 11
+  },
+  {
+   "code": "EE11",
+   "name": "ELECTRICAL ENGINEERING TECHNICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Macon"
+   ],
+   "hours": 21
+  },
+  {
+   "code": "EGT1",
+   "name": "ENGINEERING GRAPHICS TECHNICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Macon"
+   ],
+   "hours": 22
+  },
+  {
+   "code": "EBT1",
+   "name": "ENGINEERING TECHNOLOGY BASICS",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Macon"
+   ],
+   "hours": 20
+  },
+  {
+   "code": "ETE1",
+   "name": "ENGINEERING TECHNOLOGY ESSENTIALS",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Macon",
+    "Dual Enrollment"
+   ],
+   "hours": 9
+  },
+  {
+   "code": "IM51",
+   "name": "INDUSTRIAL ENGINEERING TECHNICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Macon"
+   ],
+   "hours": 22
+  },
+  {
+   "code": "MN71",
+   "name": "MECHANICAL ENGINEERING TECHNICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Macon"
+   ],
+   "hours": 23
+  },
+  {
+   "code": "MT23",
+   "name": "MECHATRONICS TECHNOLOGY",
+   "award": "Associate Degree",
+   "sites": [
+    "Milledgeville"
+   ],
+   "hours": 60
+  },
+  {
+   "code": "MTD2",
+   "name": "MECHATRONICS TECHNOLOGY",
+   "award": "Diploma",
+   "sites": [
+    "Milledgeville"
+   ],
+   "hours": 47
+  },
+  {
+   "code": "MS41",
+   "name": "BASIC MECHATRONICS SPECIALIST",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Milledgeville"
+   ],
+   "hours": 9
+  },
+  {
+   "code": "IM21",
+   "name": "INDUSTRIAL MECHATRONICS",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Milledgeville"
+   ],
+   "hours": 17
+  },
+  {
+   "code": "MT21",
+   "name": "MECHATRONICS TECHNICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Milledgeville"
+   ],
+   "hours": 12
+  },
+  {
+   "code": "ME13",
+   "name": "METROLOGY",
+   "award": "Associate Degree",
+   "sites": [
+    "Macon",
+    "Online"
+   ],
+   "hours": 61
+  },
+  {
+   "code": "ME24",
+   "name": "METROLOGY",
+   "award": "Diploma",
+   "sites": [
+    "Macon",
+    "Online"
+   ],
+   "hours": 54
+  },
+  {
+   "code": "CT41",
+   "name": "CALIBRATION TECHNICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Macon",
+    "Online"
+   ],
+   "hours": 22
+  },
+  {
+   "code": "EM91",
+   "name": "ELECTRONIC METROLOGY TECHNICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Macon",
+    "Online"
+   ],
+   "hours": 22
+  },
+  {
+   "code": "RP11",
+   "name": "TECHNICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "GDC"
+   ],
+   "hours": 21
+  },
+  {
+   "code": "MTT2",
+   "name": "PRECISION MACHINING AND MANUFACTURING",
+   "award": "Diploma",
+   "sites": [
+    "Warner Robins"
+   ],
+   "hours": 45
+  },
+  {
+   "code": "BMO1",
+   "name": "BASIC MACHINING OPERATOR",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Macon"
+   ],
+   "hours": 22
+  },
+  {
+   "code": "BM31",
+   "name": "BASIC MACHINIST",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins"
+   ],
+   "hours": 10
+  },
+  {
+   "code": "CS51",
+   "name": "CNC SPECIALIST",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins"
+   ],
+   "hours": 22
+  },
+  {
+   "code": "LP11",
+   "name": "LATHE OPERATOR",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Macon"
+   ],
+   "hours": 15
+  },
+  {
+   "code": "MP11",
+   "name": "MILL OPERATOR",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins"
+   ],
+   "hours": 15
+  },
+  {
+   "code": "WAJ2",
+   "name": "WELDING AND JOINING TECHNOLOGY",
+   "award": "Diploma",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Dual Enrollment",
+    "Putnam"
+   ],
+   "hours": 54
+  },
+  {
+   "code": "OSM1",
+   "name": "ADVANCED SHIELDED METAL ARC WELDER",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Dual Enrollment",
+    "VECTR",
+    "Putnam"
+   ],
+   "hours": 12
+  },
+  {
+   "code": "FS31",
+   "name": "BASIC SHIELDED METAL ARC WELDER",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Dual Enrollment",
+    "VECTR",
+    "Putnam"
+   ],
+   "hours": 12
+  },
+  {
+   "code": "FC61",
+   "name": "FLUX CORED ARC WELDER",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Dual Enrollment",
+    "GDC",
+    "Putnam"
+   ],
+   "hours": 15
+  },
+  {
+   "code": "GM31",
+   "name": "GAS METAL ARC WELDER",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Dual Enrollment",
+    "GDC",
+    "VECTR",
+    "Putnam"
+   ],
+   "hours": 15
+  },
+  {
+   "code": "GTA1",
+   "name": "GAS TUNGSTEN ARC WELDER",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Dual Enrollment",
+    "GDC",
+    "VECTR",
+    "Putnam"
+   ],
+   "hours": 15
+  },
+  {
+   "code": "MW21",
+   "name": "MASTER WELDER I",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "GDC"
+   ],
+   "hours": 24
+  },
+  {
+   "code": "MAW1",
+   "name": "MASTER ARC WELDER",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "GDC"
+   ],
+   "hours": 36
+  },
+  {
+   "code": "PW11",
+   "name": "PIPE WELDER",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Macon",
+    "Dual Enrollment",
+    "Putnam"
+   ],
+   "hours": 10
+  },
+  {
+   "code": "VSM1",
+   "name": "FABRICATOR",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Dual Enrollment",
+    "VECTR",
+    "Putnam"
+   ],
+   "hours": 11
+  },
+  {
+   "code": "WCL5",
+   "name": "WELDING CAREER LAUNCH BLUEPRINT READING",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Macon"
+   ],
+   "hours": 4
+  },
+  {
+   "code": "AS33",
+   "name": "AAS-APPLIED TECHNICAL MANAGEMENT",
+   "award": "Associate Degree",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon"
+   ],
+   "hours": 68
+  },
+  {
+   "code": "AC13",
+   "name": "ACCOUNTING",
+   "award": "Associate Degree",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online"
+   ],
+   "hours": 64
+  },
+  {
+   "code": "AC12",
+   "name": "ACCOUNTING",
+   "award": "Diploma",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online"
+   ],
+   "hours": 42
+  },
+  {
+   "code": "AAA1",
+   "name": "AUDITING AND ASSURANCES SPECIALIST",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Macon",
+    "Online"
+   ],
+   "hours": 18
+  },
+  {
+   "code": "CAY1",
+   "name": "COMPUTERIZED ACCOUNTING SPECIALIST",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Macon",
+    "Online"
+   ],
+   "hours": 21
+  },
+  {
+   "code": "OA31",
+   "name": "OFFICE ACCOUNTING SPECIALIST",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Macon",
+    "Online"
+   ],
+   "hours": 14
+  },
+  {
+   "code": "PA61",
+   "name": "PAYROLL ACCOUNTING SPECIALIST",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Macon",
+    "Online"
+   ],
+   "hours": 17
+  },
+  {
+   "code": "TPS1",
+   "name": "TAX PREPARATION SPECIALIST",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Macon",
+    "Online"
+   ],
+   "hours": 16
+  },
+  {
+   "code": "BAF3",
+   "name": "BANKING AND FINANCE",
+   "award": "Associate Degree",
+   "sites": [
+    "Warner Robins",
+    "Macon",
+    "Online"
+   ],
+   "hours": 64
+  },
+  {
+   "code": "BAF2",
+   "name": "BANKING AND FINANCE",
+   "award": "Diploma",
+   "sites": [
+    "Warner Robins",
+    "Macon",
+    "Online"
+   ],
+   "hours": 51
+  },
+  {
+   "code": "BC71",
+   "name": "BANKING AND FINANCE SPECIALIST",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Macon",
+    "Online"
+   ],
+   "hours": 16
+  },
+  {
+   "code": "BHT3",
+   "name": "BUSINESS HEALTHCARE TECHNOLOGY",
+   "award": "Associate Degree",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online"
+   ],
+   "hours": 60
+  },
+  {
+   "code": "BHT2",
+   "name": "BUSINESS HEALTHCARE TECHNOLOGY",
+   "award": "Diploma",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online"
+   ],
+   "hours": 45
+  },
+  {
+   "code": "HR21",
+   "name": "HEALTH RECORDS TECHNICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online"
+   ],
+   "hours": 20
+  },
+  {
+   "code": "HBC1",
+   "name": "HEALTHCARE BILLING AND CODING SPECIALIST",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online"
+   ],
+   "hours": 30
+  },
+  {
+   "code": "HBA1",
+   "name": "ASSISTANT",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online"
+   ],
+   "hours": 17
+  },
+  {
+   "code": "HFA1",
+   "name": "HEALTHCARE OFFICE ASSISTANT",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online"
+   ],
+   "hours": 26
+  },
+  {
+   "code": "MD13",
+   "name": "BUSINESS MANAGEMENT",
+   "award": "Associate Degree",
+   "sites": [
+    "Warner Robins",
+    "Macon",
+    "Online"
+   ],
+   "hours": 63
+  },
+  {
+   "code": "MD12",
+   "name": "BUSINESS MANAGEMENT",
+   "award": "Diploma",
+   "sites": [
+    "Warner Robins",
+    "Macon",
+    "Online"
+   ],
+   "hours": 47
+  },
+  {
+   "code": "HRM1",
+   "name": "HUMAN RESOURCE MANAGEMENT SPECIALIST",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Macon",
+    "Online"
+   ],
+   "hours": 18
+  },
+  {
+   "code": "MAL1",
+   "name": "MANAGEMENT AND LEADERSHIP SPECIALIST",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Macon",
+    "Online"
+   ],
+   "hours": 18
+  },
+  {
+   "code": "SSM1",
+   "name": "SERVICE SECTOR MANAGEMENT SPECIALIST",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Macon",
+    "Online"
+   ],
+   "hours": 18
+  },
+  {
+   "code": "SB41",
+   "name": "SMALL BUSINESS MANAGEMENT SPECIALIST",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Macon",
+    "Online"
+   ],
+   "hours": 19
+  },
+  {
+   "code": "TMS1",
+   "name": "TECHNICAL MANAGEMENT SPECIALIST",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Macon",
+    "Online"
+   ],
+   "hours": 24
+  },
+  {
+   "code": "BT23",
+   "name": "BUSINESS TECHNOLOGY",
+   "award": "Associate Degree",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online"
+   ],
+   "hours": 60
+  },
+  {
+   "code": "BT12",
+   "name": "BUSINESS TECHNOLOGY",
+   "award": "Diploma",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online"
+   ],
+   "hours": 42
+  },
+  {
+   "code": "AS81",
+   "name": "ADMINISTRATIVE SUPPORT ASSISTANT",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon"
+   ],
+   "hours": 20
+  },
+  {
+   "code": "AB11",
+   "name": "TECHNOLOGY",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "GDC"
+   ],
+   "hours": 11
+  },
+  {
+   "code": "AFM1",
+   "name": "ASSISTANT OFFICE MANAGER",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online"
+   ],
+   "hours": 22
+  },
+  {
+   "code": "BA21",
+   "name": "BUSINESS AND CUSTOMER SERVICE TECHNOLOGY",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "GDC"
+   ],
+   "hours": 9
+  },
+  {
+   "code": "LA11",
+   "name": "LEGAL ADMINISTRATIVE ASSISTANT",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online"
+   ],
+   "hours": 30
+  },
+  {
+   "code": "LBT1",
+   "name": "LITERARY BRAILLE TRANSCRIBER",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "GDC"
+   ],
+   "hours": 27
+  },
+  {
+   "code": "MB21",
+   "name": "MEDICAL BILLING CLERK",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Macon",
+    "Online"
+   ],
+   "hours": 20
+  },
+  {
+   "code": "MF21",
+   "name": "MEDICAL FRONT OFFICE ASSISTANT",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online"
+   ],
+   "hours": 22
+  },
+  {
+   "code": "MLS1",
+   "name": "MEDICAL LANGUAGE SPECIALIST",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Macon",
+    "Online"
+   ],
+   "hours": 30
+  },
+  {
+   "code": "MF81",
+   "name": "MICROSOFT OFFICE APPLICATIONS PROFESSIONAL",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online"
+   ],
+   "hours": 16
+  },
+  {
+   "code": "MWA1",
+   "name": "MICROSOFT WORD APPLICATION PROFESSIONAL",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon"
+   ],
+   "hours": 14
+  },
+  {
+   "code": "SMS1",
+   "name": "SOCIAL MEDIA SPECIALIST",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online"
+   ],
+   "hours": 17
+  },
+  {
+   "code": "CP23",
+   "name": "COMPUTER PROGRAMMING",
+   "award": "Associate Degree",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online"
+   ],
+   "hours": 63
+  },
+  {
+   "code": "CP24",
+   "name": "COMPUTER PROGRAMMING",
+   "award": "Diploma",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online"
+   ],
+   "hours": 53
+  },
+  {
+   "code": "CS23",
+   "name": "COMPUTER SUPPORT SPECIALIST",
+   "award": "Associate Degree",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon"
+   ],
+   "hours": 62
+  },
+  {
+   "code": "CS14",
+   "name": "COMPUTER SUPPORT SPECIALIST",
+   "award": "Diploma",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online"
+   ],
+   "hours": 55
+  },
+  {
+   "code": "CNB1",
+   "name": "CULINARY NUTRITION ASSISTANT",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Dual Enrollment"
+   ],
+   "hours": 17
+  },
+  {
+   "code": "FPW1",
+   "name": "FOOD PRODUCTION WORKER I",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Dual Enrollment"
+   ],
+   "hours": 16
+  },
+  {
+   "code": "PC51",
+   "name": "PREP COOK",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Dual Enrollment",
+    "GDC"
+   ],
+   "hours": 12
+  },
+  {
+   "code": "CY13",
+   "name": "CYBERSECURITY",
+   "award": "Associate Degree",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online"
+   ],
+   "hours": 60
+  },
+  {
+   "code": "DAM3",
+   "name": "DESIGN AND MEDIA PRODUCTION TECHNOLOGY",
+   "award": "Associate Degree",
+   "sites": [
+    "Macon"
+   ],
+   "hours": 61
+  },
+  {
+   "code": "DEM2",
+   "name": "DESIGN AND MEDIA PRODUCTION TECHNOLOGY",
+   "award": "Diploma",
+   "sites": [
+    "Macon"
+   ],
+   "hours": 46
+  },
+  {
+   "code": "DAM1",
+   "name": "DESIGN AND MEDIA PRODUCTION SPECIALIST",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Macon",
+    "Dual Enrollment",
+    "GDC"
+   ],
+   "hours": 15
+  },
+  {
+   "code": "MG21",
+   "name": "MOTION GRAPHICS ASSISTANT",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Macon"
+   ],
+   "hours": 31
+  },
+  {
+   "code": "FAV1",
+   "name": "VIDEO AND FILM EDITOR",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Macon"
+   ],
+   "hours": 19
+  },
+  {
+   "code": "HM13",
+   "name": "HOTEL/RESTAURANT/TOURISM MANAGEMENT",
+   "award": "Associate Degree",
+   "sites": [
+    "Macon"
+   ],
+   "hours": 60
+  },
+  {
+   "code": "HM12",
+   "name": "HOTEL/RESTAURANT/TOURISM MANAGEMENT",
+   "award": "Diploma",
+   "sites": [
+    "Macon"
+   ],
+   "hours": 44
+  },
+  {
+   "code": "HC31",
+   "name": "HOSPITALITY CUSTOMER SERVICE SPECIALIST",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "GDC"
+   ],
+   "hours": 9
+  },
+  {
+   "code": "HP31",
+   "name": "HOSPITALITY OPERATIONS ASSOCIATE",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online",
+    "GDC",
+    "Putnam"
+   ],
+   "hours": 12
+  },
+  {
+   "code": "TAT1",
+   "name": "TRAVEL AND TOURISM ASSOCIATE",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "GDC"
+   ],
+   "hours": 18
+  },
+  {
+   "code": "ITP3",
+   "name": "INFORMATION TECHNOLOGY PROFESSIONAL",
+   "award": "Associate Degree",
+   "sites": [
+    "Warner Robins",
+    "Macon"
+   ],
+   "hours": 65
+  },
+  {
+   "code": "ITP4",
+   "name": "INFORMATION TECHNOLOGY PROFESSIONAL",
+   "award": "Diploma",
+   "sites": [
+    "Warner Robins",
+    "Macon"
+   ],
+   "hours": 58
+  },
+  {
+   "code": "DM23",
+   "name": "LOGISTICS MANAGEMENT",
+   "award": "Associate Degree",
+   "sites": [
+    "Warner Robins",
+    "Macon",
+    "Online"
+   ],
+   "hours": 61
+  },
+  {
+   "code": "DM12",
+   "name": "LOGISTICS MANAGEMENT",
+   "award": "Diploma",
+   "sites": [
+    "Macon",
+    "Online"
+   ],
+   "hours": 49
+  },
+  {
+   "code": "CW11",
+   "name": "SPECIALIST",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Macon",
+    "Dual Enrollment",
+    "VECTR"
+   ],
+   "hours": 9
+  },
+  {
+   "code": "IC41",
+   "name": "INVENTORY CONTROL TECHNICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "VECTR",
+    "Putnam"
+   ],
+   "hours": 14
+  },
+  {
+   "code": "LM21",
+   "name": "LOGISTICS MANAGEMENT SPECIALIST",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Macon",
+    "Online",
+    "VECTR"
+   ],
+   "hours": 18
+  },
+  {
+   "code": "PT81",
+   "name": "PURCHASING TECHNICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Milledgeville",
+    "Macon",
+    "Putnam"
+   ],
+   "hours": 18
+  },
+  {
+   "code": "SCS1",
+   "name": "SUPPLY CHAIN SPECIALIST",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Macon",
+    "Online"
+   ],
+   "hours": 18
+  },
+  {
+   "code": "WA21",
+   "name": "WAREHOUSE AND DISTRIBUTION TECHNICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon"
+   ],
+   "hours": 20
+  },
+  {
+   "code": "MM13",
+   "name": "MARKETING",
+   "award": "Associate Degree",
+   "sites": [
+    "Macon"
+   ],
+   "hours": 62
+  },
+  {
+   "code": "MM12",
+   "name": "MARKETING",
+   "award": "Diploma",
+   "sites": [
+    "Macon"
+   ],
+   "hours": 42
+  },
+  {
+   "code": "CC61",
+   "name": "REPRESENTATIVE",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Dual Enrollment"
+   ],
+   "hours": 12
+  },
+  {
+   "code": "EN11",
+   "name": "ENTREPRENEURSHIP",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Macon",
+    "Online"
+   ],
+   "hours": 12
+  },
+  {
+   "code": "NS13",
+   "name": "NETWORKING SPECIALIST",
+   "award": "Associate Degree",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon"
+   ],
+   "hours": 66
+  },
+  {
+   "code": "NS14",
+   "name": "NETWORKING SPECIALIST",
+   "award": "Diploma",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon"
+   ],
+   "hours": 54
+  },
+  {
+   "code": "RA13",
+   "name": "SPORTS AND FITNESS MANAGEMENT",
+   "award": "Associate Degree",
+   "sites": [
+    "Warner Robins",
+    "Macon",
+    "Online"
+   ],
+   "hours": 60
+  },
+  {
+   "code": "RA12",
+   "name": "SPORTS AND FITNESS MANAGEMENT",
+   "award": "Diploma",
+   "sites": [
+    "Warner Robins",
+    "Macon",
+    "Online"
+   ],
+   "hours": 53
+  },
+  {
+   "code": "SAF1",
+   "name": "SPORTS AND FITNESS MANAGEMENT SPECIALIST",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Macon",
+    "Online"
+   ],
+   "hours": 18
+  },
+  {
+   "code": "IS53",
+   "name": "WEBSITE DESIGN/DEVELOPMENT",
+   "award": "Associate Degree",
+   "sites": [
+    "Warner Robins",
+    "Macon",
+    "Online"
+   ],
+   "hours": 63
+  },
+  {
+   "code": "IS64",
+   "name": "WEBSITE DESIGN/DEVELOPMENT",
+   "award": "Diploma",
+   "sites": [
+    "Warner Robins",
+    "Macon",
+    "Online"
+   ],
+   "hours": 53
+  },
+  {
+   "code": "AC91",
+   "name": "PREPARATION",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Dual Enrollment"
+   ],
+   "hours": 10
+  },
+  {
+   "code": "MO21",
+   "name": "TECHNICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Dual Enrollment"
+   ],
+   "hours": 13
+  },
+  {
+   "code": "AA91",
+   "name": "AWS CLOUD SOLUTIONS SPECIALIST",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Online"
+   ],
+   "hours": 16
+  },
+  {
+   "code": "CN71",
+   "name": "CISCO NETWORK SPECIALIST",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Macon",
+    "VECTR"
+   ],
+   "hours": 16
+  },
+  {
+   "code": "CA61",
+   "name": "COMPTIA A+ CERTIFIED PREPARATION",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online"
+   ],
+   "hours": 10
+  },
+  {
+   "code": "MC51",
+   "name": "COMPTIA A+ CERTIFIED PREPARATION",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Dual Enrollment"
+   ],
+   "hours": 13
+  },
+  {
+   "code": "CA71",
+   "name": "COMPTIA A+ CERTIFIED TECHNICIAN PREPARATION",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online"
+   ],
+   "hours": 18
+  },
+  {
+   "code": "CH11",
+   "name": "COMPUTER HARDWARE SPECIALIST",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online"
+   ],
+   "hours": 11
+  },
+  {
+   "code": "IS81",
+   "name": "CYBERSECURITY",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Online"
+   ],
+   "hours": 26
+  },
+  {
+   "code": "CW71",
+   "name": "CYBERSECURITY FUNDAMENTALS",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online"
+   ],
+   "hours": 18
+  },
+  {
+   "code": "FF41",
+   "name": "FOUNDATIONS OF COMPUTER PROGRAMMING",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Dual Enrollment"
+   ],
+   "hours": 15
+  },
+  {
+   "code": "GAP1",
+   "name": "GENERATIVE AI: PRINCIPLES AND PRACTICE",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online"
+   ],
+   "hours": 10
+  },
+  {
+   "code": "HD41",
+   "name": "HELP DESK SPECIALIST",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online"
+   ],
+   "hours": 26
+  },
+  {
+   "code": "ITW1",
+   "name": "INTRODUCTION TO WEB DESIGN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Dual Enrollment"
+   ],
+   "hours": 9
+  },
+  {
+   "code": "JP11",
+   "name": "JAVA PROGRAMMER",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online"
+   ],
+   "hours": 23
+  },
+  {
+   "code": "ME21",
+   "name": "MICROSOFT EXCEL APPLICATION SPECIALIST",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online",
+    "Dual Enrollment",
+    "YDC"
+   ],
+   "hours": 9
+  },
+  {
+   "code": "MS11",
+   "name": "MICROSOFT NETWORKING ADMINISTRATOR",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online"
+   ],
+   "hours": 16
+  },
+  {
+   "code": "MW11",
+   "name": "MICROSOFT WORD APPLICATION SPECIALIST",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online",
+    "Dual Enrollment",
+    "YDC"
+   ],
+   "hours": 9
+  },
+  {
+   "code": "NA21",
+   "name": "NETWORK ADMINISTRATOR",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online"
+   ],
+   "hours": 30
+  },
+  {
+   "code": "NT41",
+   "name": "NETWORK TECHNICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online"
+   ],
+   "hours": 14
+  },
+  {
+   "code": "PR21",
+   "name": "PC REPAIR AND NETWORK TECHNICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online"
+   ],
+   "hours": 18
+  },
+  {
+   "code": "IS41",
+   "name": "WEBSITE DESIGNER",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online"
+   ],
+   "hours": 25
+  },
+  {
+   "code": "ISE1",
+   "name": "WEBSITE DEVELOPER",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online"
+   ],
+   "hours": 35
+  },
+  {
+   "code": "BI23",
+   "name": "BIOTECHNOLOGY",
+   "award": "Associate Degree",
+   "sites": [
+    "Macon"
+   ],
+   "hours": 74
+  },
+  {
+   "code": "BLA1",
+   "name": "BIOTECHNOLOGY LABORATORY ASSISTANT",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Macon"
+   ],
+   "hours": 23
+  },
+  {
+   "code": "EC23",
+   "name": "ECHOCARDIOGRAPHY",
+   "award": "Associate Degree",
+   "sites": [
+    "Macon"
+   ],
+   "hours": 73
+  },
+  {
+   "code": "ET81",
+   "name": "ELECTROCARDIOGRAPHY TECHNOLOGY",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Macon"
+   ],
+   "hours": 26
+  },
+  {
+   "code": "DA12",
+   "name": "DENTAL ASSISTING",
+   "award": "Diploma",
+   "sites": [
+    "Macon"
+   ],
+   "hours": 50
+  },
+  {
+   "code": "DH13",
+   "name": "DENTAL HYGIENE",
+   "award": "Associate Degree",
+   "sites": [
+    "Warner Robins",
+    "Macon"
+   ],
+   "hours": 83
+  },
+  {
+   "code": "HT12",
+   "name": "HEMODIALYSIS TECHNOLOGIST",
+   "award": "Diploma",
+   "sites": [
+    "Warner Robins",
+    "Macon"
+   ],
+   "hours": 37
+  },
+  {
+   "code": "HPC1",
+   "name": "HEMODIALYSIS PATIENT CARE SPECIALIST",
+   "award": "Technical Certificate of Credit",
+   "sites": [],
+   "hours": 17
+  },
+  {
+   "code": "HRO1",
+   "name": "HEMODIALYSIS REUSE/REPROCESSING TECHNICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [],
+   "hours": 16
+  },
+  {
+   "code": "MA22",
+   "name": "MEDICAL ASSISTING",
+   "award": "Diploma",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon"
+   ],
+   "hours": 48
+  },
+  {
+   "code": "MAR1",
+   "name": "MEDICAL ASSISTING RECEPTIONIST",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Dual Enrollment"
+   ],
+   "hours": 11
+  },
+  {
+   "code": "MC41",
+   "name": "MEDICAL CODING",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Online"
+   ],
+   "hours": 24
+  },
+  {
+   "code": "CLT3",
+   "name": "MEDICAL LABORATORY TECHNOLOGY",
+   "award": "Associate Degree",
+   "sites": [
+    "Warner Robins"
+   ],
+   "hours": 74
+  },
+  {
+   "code": "AP81",
+   "name": "ACCELERATED PHLEBOTOMY TECHNICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins"
+   ],
+   "hours": 13
+  },
+  {
+   "code": "PT21",
+   "name": "PHLEBOTOMY TECHNICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Macon",
+    "Dual Enrollment"
+   ],
+   "hours": 23
+  },
+  {
+   "code": "PT71",
+   "name": "PHLEBOTOMY TECHNOLOGY",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Dual Enrollment"
+   ],
+   "hours": 17
+  },
+  {
+   "code": "AFA3",
+   "name": "PROFESSIONS",
+   "award": "Associate Degree",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon"
+   ],
+   "hours": 61
+  },
+  {
+   "code": "AN43",
+   "name": "ASSOCIATE OF SCIENCE IN NURSING",
+   "award": "Associate Degree",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville"
+   ],
+   "hours": 65
+  },
+  {
+   "code": "GC11",
+   "name": "GERIATRIC CARE ASSISTANT",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Dual Enrollment"
+   ],
+   "hours": 9
+  },
+  {
+   "code": "ME91",
+   "name": "PROGRAM",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "VECTR"
+   ],
+   "hours": 14
+  },
+  {
+   "code": "CN21",
+   "name": "NURSE AIDE",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Dual Enrollment",
+    "Putnam",
+    "Hawkinsville"
+   ],
+   "hours": 13
+  },
+  {
+   "code": "NAA1",
+   "name": "NURSE AIDE ACCELERATED",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins"
+   ],
+   "hours": 9
+  },
+  {
+   "code": "NAE1",
+   "name": "NURSE AIDE ESSENTIALS",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Dual Enrollment"
+   ],
+   "hours": 10
+  },
+  {
+   "code": "PN21",
+   "name": "PRACTICAL NURSING",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon"
+   ],
+   "hours": 49
+  },
+  {
+   "code": "PR31",
+   "name": "PRENURSING",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon"
+   ],
+   "hours": 16
+  },
+  {
+   "code": "OT13",
+   "name": "ORTHOPEDIC TECHNOLOGY",
+   "award": "Associate Degree",
+   "sites": [
+    "Macon"
+   ],
+   "hours": 69
+  },
+  {
+   "code": "AR51",
+   "name": "ACCELERATED ORTHOPEDIC TECHNICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Macon",
+    "VECTR"
+   ],
+   "hours": 25
+  },
+  {
+   "code": "PT13",
+   "name": "PARAMEDICINE",
+   "award": "Associate Degree",
+   "sites": [
+    "Macon"
+   ],
+   "hours": 66
+  },
+  {
+   "code": "EP12",
+   "name": "EMS PROFESSIONS",
+   "award": "Diploma",
+   "sites": [
+    "Warner Robins",
+    "Macon"
+   ],
+   "hours": 42
+  },
+  {
+   "code": "PT12",
+   "name": "PARAMEDICINE",
+   "award": "Diploma",
+   "sites": [
+    "Macon"
+   ],
+   "hours": 57
+  },
+  {
+   "code": "EMH1",
+   "name": "ADVANCED EMERGENCY MEDICAL TECHNICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Macon"
+   ],
+   "hours": 9
+  },
+  {
+   "code": "EB71",
+   "name": "EMERGENCY MEDICAL RESPONDER",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Dual Enrollment"
+   ],
+   "hours": 11
+  },
+  {
+   "code": "ED91",
+   "name": "EMERGENCY MEDICAL TECHNICIAN: EMT",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Macon",
+    "Dual Enrollment"
+   ],
+   "hours": 12
+  },
+  {
+   "code": "PEO1",
+   "name": "PREHOSPITAL EMS OPERATIONS",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Macon"
+   ],
+   "hours": 21
+  },
+  {
+   "code": "PT22",
+   "name": "PHARMACY TECHNOLOGY",
+   "award": "Diploma",
+   "sites": [
+    "Macon"
+   ],
+   "hours": 56
+  },
+  {
+   "code": "BP31",
+   "name": "BASIC PHARMACY TECHNOLOGY",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Macon"
+   ],
+   "hours": 15
+  },
+  {
+   "code": "PTA3",
+   "name": "PHYSICAL THERAPIST ASSISTANT",
+   "award": "Associate Degree",
+   "sites": [
+    "Warner Robins"
+   ],
+   "hours": 74
+  },
+  {
+   "code": "PT42",
+   "name": "POLYSOMNOGRAPHIC TECHNOLOGY",
+   "award": "Diploma",
+   "sites": [
+    "Macon"
+   ],
+   "hours": 54
+  },
+  {
+   "code": "AM13",
+   "name": "ADVANCED MEDICAL IMAGING",
+   "award": "Associate Degree",
+   "sites": [],
+   "hours": 64
+  },
+  {
+   "code": "RT23",
+   "name": "RADIOLOGIC TECHNOLOGY",
+   "award": "Associate Degree",
+   "sites": [
+    "Warner Robins",
+    "Macon"
+   ],
+   "hours": 77
+  },
+  {
+   "code": "CT91",
+   "name": "COMPUTED TOMOGRAPHY SPECIALIST",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Macon"
+   ],
+   "hours": 21
+  },
+  {
+   "code": "MRI1",
+   "name": "MAGNETIC RESONANCE IMAGING SPECIALIST",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Macon"
+   ],
+   "hours": 24
+  },
+  {
+   "code": "ST13",
+   "name": "SURGICAL TECHNOLOGY",
+   "award": "Associate Degree",
+   "sites": [
+    "Warner Robins"
+   ],
+   "hours": 72
+  },
+  {
+   "code": "AH31",
+   "name": "ANIMAL HEALTHCARE ASSISTANT",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "GDC"
+   ],
+   "hours": 13
+  },
+  {
+   "code": "CP81",
+   "name": "CERTIFIED PERSONAL TRAINER FAST TRACK",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins"
+   ],
+   "hours": 8
+  },
+  {
+   "code": "HA21",
+   "name": "HEALTH CARE ASSISTANT",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Putnam"
+   ],
+   "hours": 30
+  },
+  {
+   "code": "HP41",
+   "name": "HEALTHCARE PROFESSIONAL",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins"
+   ],
+   "hours": 36
+  },
+  {
+   "code": "BI31",
+   "name": "BARBER II",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon"
+   ],
+   "hours": 41
+  },
+  {
+   "code": "BA71",
+   "name": "BARBERING ASSISTANT",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Dual Enrollment"
+   ],
+   "hours": 17
+  },
+  {
+   "code": "BF21",
+   "name": "BARBERING FOR COSMETOLOGISTS",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon"
+   ],
+   "hours": 22
+  },
+  {
+   "code": "BF41",
+   "name": "BARBERING FUNDAMENTALS",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Dual Enrollment"
+   ],
+   "hours": 9
+  },
+  {
+   "code": "BA31",
+   "name": "MASTER BARBER",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon"
+   ],
+   "hours": 49
+  },
+  {
+   "code": "CGL1",
+   "name": "MASTER COSMETOLOGY",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "GDC"
+   ],
+   "hours": 44
+  },
+  {
+   "code": "HD21",
+   "name": "HAIR DESIGNER",
+   "award": "Technical Certificate of Credit",
+   "sites": [],
+   "hours": 36
+  },
+  {
+   "code": "ST11",
+   "name": "SALON AND SPA SUPPORT SPECIALIST",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Macon",
+    "Dual Enrollment",
+    "YDC"
+   ],
+   "hours": 10
+  },
+  {
+   "code": "AG93",
+   "name": "ASSOCIATE OF SCIENCE IN CRIMINAL JUSTICE",
+   "award": "Associate Degree",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online"
+   ],
+   "hours": 60
+  },
+  {
+   "code": "CJT3",
+   "name": "CRIMINAL JUSTICE TECHNOLOGY",
+   "award": "Associate Degree",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online"
+   ],
+   "hours": 60
+  },
+  {
+   "code": "CJT2",
+   "name": "CRIMINAL JUSTICE TECHNOLOGY",
+   "award": "Diploma",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online"
+   ],
+   "hours": 48
+  },
+  {
+   "code": "CZ31",
+   "name": "CRIME SCENE FUNDAMENTALS",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Dual Enrollment"
+   ],
+   "hours": 12
+  },
+  {
+   "code": "CJ71",
+   "name": "CRIMINAL JUSTICE FUNDAMENTALS",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Dual Enrollment"
+   ],
+   "hours": 12
+  },
+  {
+   "code": "CJ21",
+   "name": "CRIMINAL JUSTICE SPECIALIST",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Dual Enrollment"
+   ],
+   "hours": 15
+  },
+  {
+   "code": "IT51",
+   "name": "INTRODUCTION TO CRIMINAL JUSTICE",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Dual Enrollment"
+   ],
+   "hours": 12
+  },
+  {
+   "code": "STI1",
+   "name": "SELECTED TOPICS FOR CRIMINAL JUSTICE",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Dual Enrollment"
+   ],
+   "hours": 12
+  },
+  {
+   "code": "EC13",
+   "name": "EARLY CHILDHOOD CARE AND EDUCATION",
+   "award": "Associate Degree",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon"
+   ],
+   "hours": 72
+  },
+  {
+   "code": "ECC2",
+   "name": "EARLY CHILDHOOD CARE AND EDUCATION",
+   "award": "Diploma",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon"
+   ],
+   "hours": 53
+  },
+  {
+   "code": "EC31",
+   "name": "EARLY CHILDHOOD CARE AND EDUCATION BASICS",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online",
+    "Dual Enrollment",
+    "Putnam",
+    "Hawkinsville"
+   ],
+   "hours": 9
+  },
+  {
+   "code": "EC41",
+   "name": "EARLY CHILDHOOD EXCEPTIONALITIES",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon"
+   ],
+   "hours": 9
+  },
+  {
+   "code": "ECP1",
+   "name": "EARLY CHILDHOOD PROGRAM ADMINISTRATION",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon"
+   ],
+   "hours": 9
+  },
+  {
+   "code": "FC21",
+   "name": "FAMILY CHILD CARE SPECIALIST",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon"
+   ],
+   "hours": 15
+  },
+  {
+   "code": "IC31",
+   "name": "INFANT/TODDLER CHILD CARE SPECIALIST",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Putnam"
+   ],
+   "hours": 15
+  },
+  {
+   "code": "FF11",
+   "name": "FIREFIGHTER I",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Macon",
+    "Dual Enrollment"
+   ],
+   "hours": 15
+  },
+  {
+   "code": "PS13",
+   "name": "LEGAL STUDIES",
+   "award": "Associate Degree",
+   "sites": [
+    "Warner Robins",
+    "Macon"
+   ],
+   "hours": 69
+  },
+  {
+   "code": "AL41",
+   "name": "ADVANCED LEGAL ASSISTANT",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Macon"
+   ],
+   "hours": 27
+  },
+  {
+   "code": "EH11",
+   "name": "ENVIRONMENTAL HORTICULTURE TECHNICIAN",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "GDC"
+   ],
+   "hours": 18
+  },
+  {
+   "code": "GPF1",
+   "name": "GREENHOUSE PRODUCTION FUNDAMENTALS",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "GDC"
+   ],
+   "hours": 7
+  },
+  {
+   "code": "EC21",
+   "name": "EARLY COLLEGE ESSENTIALS",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Dual Enrollment"
+   ],
+   "hours": 18
+  },
+  {
+   "code": "AC93",
+   "name": "ASSOCIATE OF SCIENCE IN EDUCATION",
+   "award": "Associate Degree",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online"
+   ],
+   "hours": 60
+  },
+  {
+   "code": "AB73",
+   "name": "ASSOCIATE OF SCIENCE IN GENERAL STUDIES",
+   "award": "Associate Degree",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online"
+   ],
+   "hours": 60
+  },
+  {
+   "code": "AF53",
+   "name": "INTERDISCIPLINARY STUDIES",
+   "award": "Associate Degree",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon"
+   ],
+   "hours": 61
+  },
+  {
+   "code": "AE93",
+   "name": "ASSOCIATE OF SCIENCE IN PSYCHOLOGY",
+   "award": "Associate Degree",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online"
+   ],
+   "hours": 60
+  },
+  {
+   "code": "AD93",
+   "name": "ASSOCIATE OF SCIENCE IN SOCIAL WORK",
+   "award": "Associate Degree",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online"
+   ],
+   "hours": 60
+  },
+  {
+   "code": "TC31",
+   "name": "TECHNICAL SPECIALIST",
+   "award": "Technical Certificate of Credit",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online"
+   ],
+   "hours": 36
+  },
+  {
+   "code": "TS23",
+   "name": "TECHNICAL STUDIES",
+   "award": "Associate Degree",
+   "sites": [
+    "Warner Robins",
+    "Milledgeville",
+    "Macon",
+    "Online"
+   ],
+   "hours": 60
+  }
+ ]
+}

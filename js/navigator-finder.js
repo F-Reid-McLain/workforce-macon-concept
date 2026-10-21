@@ -52,22 +52,24 @@
         door: ['training', 'support', 'employers'].includes(params.get('for')) ? params.get('for') : 'training',
         q: params.get('q') || '', field: params.get('field') || '', online: params.get('online') === '1',
         len: new Set(params.getAll('len')), earn: new Set(params.getAll('earn')),
+        place: params.get('place') || '',   // a town picked on the Where map
     };
     function saveState() {
         const p = new URLSearchParams(location.search);
-        ['for', 'q', 'field', 'online', 'len', 'earn'].forEach(k => p.delete(k));
+        ['for', 'q', 'field', 'online', 'len', 'earn', 'place'].forEach(k => p.delete(k));
         if (state.door !== 'training') p.set('for', state.door);
         if (state.door === 'training') {
             if (state.q.trim()) p.set('q', state.q.trim());
             if (state.field) p.set('field', state.field);
             if (state.online) p.set('online', '1');
+            if (state.place) p.set('place', state.place);
             state.len.forEach(v => p.append('len', v));
             state.earn.forEach(v => p.append('earn', v));
         }
         const qs = p.toString();
         history.replaceState(null, '', location.pathname + (qs ? '?' + qs : '') + location.hash);
     }
-    const filtering = () => !!(state.q.trim() || state.field || state.online || state.len.size || state.earn.size);
+    const filtering = () => !!(state.q.trim() || state.field || state.online || state.len.size || state.earn.size || state.place);
 
     let programs = [], orgs = {}, shownPrograms = [], limit = PAGE;
     const orgName = id => (orgs[id] && orgs[id].name) || id;
@@ -94,6 +96,8 @@
         return s;
     }
     const BUCKET_ORDER = { weeks: 0, months: 1, '1to2': 2, '3plus': 3 };
+    // Everything but the town filter (the Where map counts each town from these), then the town
+    let beforePlace = [];
     function filterPrograms() {
         const words = state.q.trim().toLowerCase().split(/\s+/).filter(Boolean);
         const out = [];
@@ -108,7 +112,8 @@
         }
         // Best matches first when searching; otherwise quickest first, then by name
         out.sort((a, b) => (b[0] - a[0]) || (BUCKET_ORDER[a[1].bucket] - BUCKET_ORDER[b[1].bucket]) || a[1].name.localeCompare(b[1].name));
-        return out.map(x => x[1]);
+        beforePlace = out.map(x => x[1]);
+        return state.place ? beforePlace.filter(p => (p.places || []).includes(state.place)) : beforePlace;
     }
 
     // ----- Rendering -----
@@ -162,8 +167,9 @@
         more.textContent = `Show more (${(shownPrograms.length - limit).toLocaleString()} more)`;
         document.getElementById('finder-empty').hidden = shownPrograms.length > 0;
         const orgCount = new Set(shownPrograms.map(p => p.org)).size;
+        const inTown = state.place && window.WFWhere ? ` in ${WFWhere.label(state.place)}` : '';
         document.getElementById('finder-count').textContent = filtering()
-            ? `${shownPrograms.length.toLocaleString()} of ${programs.length.toLocaleString()} programs, from ${orgCount} organization${orgCount === 1 ? '' : 's'}`
+            ? `${shownPrograms.length.toLocaleString()} of ${programs.length.toLocaleString()} programs${inTown}, from ${orgCount} organization${orgCount === 1 ? '' : 's'}`
             : `All ${programs.length.toLocaleString()} programs, from ${orgCount} organizations`;
     }
     function orgHTML([id, a]) {
@@ -205,6 +211,7 @@
             lit = renderOrgs();
         }
         lightMap(lit);
+        document.dispatchEvent(new CustomEvent('finder:update', { detail: { door: state.door, programs: training ? beforePlace : [], place: state.place } }));
         const note = document.getElementById('minimap-note');
         if (note) note.textContent = lit ? `The ${lit.length} organization${lit.length === 1 ? '' : 's'} behind what's showing light up. Click the map to explore it.` : 'Every organization in the Navigator. Click the map to explore it.';
         saveState();
@@ -235,14 +242,25 @@
     fieldEl.addEventListener('change', () => { state.field = fieldEl.value; limit = PAGE; update(); });
     onlineEl.addEventListener('change', () => { state.online = onlineEl.checked; limit = PAGE; update(); });
     document.getElementById('finder-more').addEventListener('click', () => { limit += PAGE * 2; renderPrograms(); });
-    const clearAll = () => { state.q = ''; state.field = ''; state.online = false; state.len.clear(); state.earn.clear(); qEl.value = ''; fieldEl.value = ''; onlineEl.checked = false; limit = PAGE; update(); };
+    const clearAll = () => { state.q = ''; state.field = ''; state.online = false; state.place = ''; state.len.clear(); state.earn.clear(); qEl.value = ''; fieldEl.value = ''; onlineEl.checked = false; limit = PAGE; update(); };
     document.getElementById('finder-clear').addEventListener('click', clearAll);
     document.getElementById('finder-empty-clear').addEventListener('click', clearAll);
 
     // Hovering a program or organization picks out its organization on the map; its name opens the details
     const finder = document.querySelector('.finder-main');
-    finder.addEventListener('mouseover', e => { const li = e.target.closest('li[data-org]'); if (li && window.WFMap) WFMap.hover(li.dataset.org); });
-    finder.addEventListener('mouseleave', () => { if (window.WFMap) WFMap.hover(null); });
+    finder.addEventListener('mouseover', e => {
+        const li = e.target.closest('li[data-org]');
+        if (!li) return;
+        if (window.WFMap) WFMap.hover(li.dataset.org);
+        const prog = li.dataset.key && programs.find(p => p.id === li.dataset.key);
+        document.dispatchEvent(new CustomEvent('finder:hover', { detail: { places: prog ? prog.places || [] : [] } }));
+    });
+    finder.addEventListener('mouseleave', () => {
+        if (window.WFMap) WFMap.hover(null);
+        document.dispatchEvent(new CustomEvent('finder:hover', { detail: { places: [] } }));
+    });
+    // The Where map picks (or clears) a town
+    window.WFFinder = { setPlace(place) { state.place = state.place === place ? '' : (place || ''); limit = PAGE; update(); } };
     finder.addEventListener('click', e => {
         const b = e.target.closest('.pcard__org, .ocard__more');
         if (b) openAssetModal(b.dataset.org, { sheet: true });

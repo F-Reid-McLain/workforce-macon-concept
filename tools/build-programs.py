@@ -111,7 +111,61 @@ CGTC_COST = {k: '$107 per credit hour' for k in ('associate', 'diploma', 'certif
 CGTC_SOURCE = 'https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf'
 
 
+# ----- Where each CGTC program runs, and its credit hours, from its catalog (tools/parse-cgtc-catalog.py) -----
+CGTC_TUITION = 107   # per credit hour, 2025–26
+CGTC_SITE_PLACE = {   # catalog site -> the town it's in, for the Navigator's map
+    'Macon': 'macon', 'ATC/Middle GA Regional Airport': 'macon', 'Warner Robins': 'warner-robins', 'VECTR': 'warner-robins',
+    'Milledgeville': 'milledgeville', 'Putnam': 'eatonton', 'Peach': 'fort-valley', 'Hawkinsville': 'hawkinsville',
+}
+TOWN = {'macon': 'Macon', 'warner-robins': 'Warner Robins', 'milledgeville': 'Milledgeville', 'eatonton': 'Eatonton',
+        'fort-valley': 'Fort Valley', 'hawkinsville': 'Hawkinsville'}
+# Programs whose catalog entry is named differently, matched by program code
+CGTC_CODES = {
+    'Applied Technical Management': 'AS33', 'AAS in Allied Health Professions': 'AFA3',
+    'Associate of Science in General Studies with Healthcare Professional Pathway': 'AB73', 'Electrical Controls Systems': 'EC22',
+    'AI Enhanced Robotic Manufacturing Specialist': 'AE81', 'Automotive Electrical/Electronic Systems Technician': 'AE41',
+    'Automotive Transmission/Transaxle Technician Specialist': 'AA71', 'Aviation Maintenance Technician - Powerplant': 'AM61',
+    'Commercial Electrical Construction Technician': 'CEC1', 'Diesel Electrical/Electronic Systems Technician': 'DE11',
+    'Electric Vehicle Professional': 'EVP1', 'Hybrid/Electric Vehicle Repair Technician': 'HVR1',
+    'Vertical Shielded Metal Arc Welding Fabricator': 'VSM1', 'Certified Warehousing & Distribution Specialist': 'CW11',
+    'Healthcare Billing and Reimbursement Assistant': 'HBA1', 'Web Site Designer': 'IS41', 'Web Site Developer': 'ISE1',
+    'Certified Tomography Specialist': 'CT91', 'Military Medic Personnel to LPN Transition Program': 'ME91',
+}
+# Entries the parser can't read cleanly, taken from the catalog by hand
+CGTC_MANUAL = {'Commercial Driving - Class B': {'sites': ['Peach'], 'hours': 9},
+               'Emergency Medical Technician (EMT)': {'sites': ['Macon'], 'hours': None}}
+
+
+def cgtc_catalog():
+    path = os.path.join(SOURCES, 'cgtc-catalog.json')
+    if not os.path.exists(path):
+        return {}, {}
+    rows = json.load(open(path, encoding='utf-8'))['programs']
+    award = lambda a: 'certificate' if 'Certificate' in a else 'diploma' if a == 'Diploma' else 'associate'
+    by_name, by_code = {}, {}
+    for r in rows:
+        by_name.setdefault((cgtc_key(r['name']), award(r['award'])), r)
+        by_code.setdefault(r['code'], r)
+    return by_name, by_code
+
+
+def cgtc_key(name):
+    s = name.lower().replace('&', 'and').replace('–', '-')
+    s = re.sub(r'\bnccer\b|\(.*?\)|\btechnology\b|\btechnician\b|\bspecialist\b|\bprofessional\b|\bdegree\b|\bdiploma\b|'
+               r'\bcertificate\b|\bprep(aration)?\b|[^a-z0-9 ]', ' ', s)
+    return ' '.join(s.split())
+
+
+def cgtc_length_from_hours(hours, name):
+    semesters = max(1, -(-hours // 15))   # full time is 12–15 credit hours a semester
+    if re.search(r'accelerated|fast track|commercial driving|construction career launch', name, re.I):
+        return f'Accelerated: usually under 3 months ({hours} credit hours)', 'weeks'
+    text = f"About {semesters} semester{'s' if semesters > 1 else ''} full time ({hours} credit hours)"
+    return text, 'months' if semesters <= 2 else '1to2' if semesters <= 6 else '3plus'
+
+
 def cgtc_programs():
+    by_name, by_code = cgtc_catalog()
     out, earn, division, current = [], None, None, None
     for raw in open(os.path.join(SOURCES, 'cgtc-programs.txt'), encoding='utf-8'):
         line = raw.rstrip('\n')
@@ -126,10 +180,21 @@ def cgtc_programs():
         online = line.endswith('+')
         name = line.rstrip('+').strip()
         length, bucket = cgtc_length(earn, name)
+        cat = CGTC_MANUAL.get(name) or by_name.get((cgtc_key(name), earn)) or by_code.get(CGTC_CODES.get(name, ''))
+        cost, campus, places = CGTC_COST[earn], 'Macon, Warner Robins or other CGTC campuses', []
+        if cat:
+            public = [x for x in cat['sites'] if x in CGTC_SITE_PLACE]
+            if public:
+                places = list(dict.fromkeys(CGTC_SITE_PLACE[x] for x in public))
+                campus = ' · '.join(TOWN[p] for p in places)   # one entry per town
+            online = online or 'Online' in cat['sites']
+            if cat.get('hours'):
+                length, bucket = cgtc_length_from_hours(cat['hours'], name)
+                cost = f"About ${cat['hours'] * CGTC_TUITION:,} tuition (${CGTC_TUITION} per credit hour)"
         current = {
             'org': 'central-ga-tech', 'name': name, 'earn': earn, 'credential': CGTC_CREDENTIAL[earn],
-            'length': length, 'bucket': bucket, 'field': field_of(name), 'cost': CGTC_COST[earn],
-            'campus': 'Macon, Warner Robins or other CGTC campuses' + (' · also 100% online' if online else ''),
+            'length': length, 'bucket': bucket, 'field': field_of(name), 'cost': cost,
+            'campus': campus + (' · also online' if online else ''), 'places': places,
             'url': f'https://www.centralgatech.edu/programs-of-study/{CGTC_DIVISIONS[division]}/',
             'options': [], 'online': online, 'source': CGTC_SOURCE,
         }
@@ -139,6 +204,8 @@ def cgtc_programs():
 
 # ----- Middle Georgia State -----
 MGA_URL = 'https://www.mga.edu/degrees/index.php'
+MGA_PLACE = {'Macon': 'macon', 'Warner Robins': 'warner-robins', 'Cochran': 'cochran', 'Hybrid Cochran': 'cochran',
+             'Dublin': 'dublin', 'Eastman': 'eastman', 'Trilith Studio': 'fayetteville'}
 
 
 def mga_earn(deg):
@@ -205,6 +272,7 @@ def mga_programs():
                 'org': 'middle-ga-state', 'name': name, 'earn': earn, 'credential': deg, 'length': length, 'bucket': bucket,
                 'field': field_of(name), 'cost': 'Public university tuition',
                 'campus': ', '.join(campuses) if campuses else 'See the program page',
+                'places': list(dict.fromkeys(MGA_PLACE[c] for c in campuses if c in MGA_PLACE)),
                 'url': url, 'options': [], 'online': 'Online' in campuses, 'source': MGA_URL,
             })
     # The same program can be listed twice (e.g. a certificate under two headings)
@@ -274,6 +342,7 @@ def mercer_programs():
         })
         rec['campus'].update(l for l in locations if l in ('Macon', 'Online'))
         rec['online'] = rec['online'] or 'Online' in locations
+        rec['places'] = ['macon'] if 'Macon' in rec['campus'] else []
     out = []
     for rec in merged.values():
         rec['campus'] = ', '.join(sorted(rec['campus'])) or 'Macon'
@@ -293,6 +362,7 @@ def manual_programs():
         rec.setdefault('online', 'online' in rec.get('campus', '').lower())
         rec.setdefault('campus', '')
         rec.setdefault('source', rec['url'])
+        rec.setdefault('places', ['macon'])
         out.append(rec)
     return out
 
@@ -347,7 +417,7 @@ def main():
         p['checked'] = TODAY
         p.setdefault('verify', False)
         p.setdefault('leadsTo', '')
-    order = ['id', 'name', 'org', 'earn', 'credential', 'length', 'bucket', 'field', 'cost', 'campus', 'online',
+    order = ['id', 'name', 'org', 'earn', 'credential', 'length', 'bucket', 'field', 'cost', 'campus', 'places', 'online',
              'options', 'leadsTo', 'url', 'source', 'verify', 'checked']
     programs = [{k: p.get(k) for k in order} for p in programs]
     json.dump({'built': TODAY, 'count': len(programs), 'programs': programs}, open(OUT, 'w', encoding='utf-8'), indent=1, ensure_ascii=False)

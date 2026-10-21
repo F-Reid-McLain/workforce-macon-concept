@@ -100,9 +100,45 @@
 .ocard__actions { display: flex; gap: 14px; margin: 8px 0 0; font-size: 0.84rem; }
 .ocard__actions a, .ocard__more { padding: 0; border: 0; background: none; cursor: pointer; font: 600 0.84rem var(--font-body); color: var(--ch-gold); text-decoration: none; }
 
-/* ----- The corner map ----- */
+/* ----- The corner: Where (towns) or Ecosystem (organization network) ----- */
 .finder-side { position: sticky; top: 78px; }
-.minimap { position: relative; height: 240px; border-radius: 16px; overflow: hidden; border: 1px solid var(--color-border); background: var(--color-bg-surface-deep); }
+.corner-tabs { display: flex; gap: 4px; margin-bottom: 8px; padding: 3px; border-radius: 999px; background: rgba(255, 255, 255, 0.05); width: fit-content; }
+.corner-tabs button { padding: 0.32rem 0.85rem; border-radius: 999px; border: 0; cursor: pointer; font: 600 0.78rem var(--font-body); background: transparent; color: var(--color-text-secondary); }
+.corner-tabs button.is-on { background: var(--ch-gold); color: #1b1608; }
+.corner-tabs button:disabled { opacity: 0.35; cursor: default; }
+.corner { position: relative; height: 260px; }
+/* Both views stay built (the network needs a real size to lay itself out); only one shows */
+.corner-pane { position: absolute; inset: 0; visibility: hidden; opacity: 0; transition: opacity 0.25s; }
+.corner-pane.is-on { visibility: visible; opacity: 1; }
+.minimap { position: relative; height: 100%; border-radius: 16px; overflow: hidden; border: 1px solid var(--color-border); background: var(--color-bg-surface-deep); }
+.finder-side:not([data-pane="eco"]) .minimap__note { display: none; }
+.finder-side:not([data-pane="where"]) .where-extra { display: none; }
+
+/* Where: the region's counties, a dot on each town sized by how many programs are taught there */
+.wheremap { border-radius: 16px; overflow: hidden; border: 1px solid var(--color-border); background: radial-gradient(ellipse at 50% 45%, #18213a, #111827 75%); }
+#where-svg { display: block; width: 100%; height: 100%; }
+.where-counties path { fill: rgba(255, 255, 255, 0.04); stroke: rgba(255, 255, 255, 0.14); stroke-width: 0.8; }
+.where-counties path.is-bibb { fill: rgba(52, 211, 153, 0.12); stroke: rgba(52, 211, 153, 0.45); }
+.where-dot { cursor: pointer; outline: none; }
+.where-dot__fill { fill: var(--ch-gold); fill-opacity: 0.8; stroke: #1b1608; stroke-width: 1; }
+.where-dot__ring { fill: none; stroke: var(--ch-gold); stroke-opacity: 0; stroke-width: 2; transition: stroke-opacity 0.2s; }
+.where-dot__label { text-anchor: middle; font: 700 0.62rem var(--font-body); fill: #e6e9ee; paint-order: stroke; stroke: rgba(14, 20, 32, 0.85); stroke-width: 3px; pointer-events: none; }
+.where-dot.is-empty { cursor: default; }
+.where-dot.is-empty .where-dot__fill { fill: rgba(255, 255, 255, 0.25); stroke: none; }
+.where-dot:hover .where-dot__ring, .where-dot:focus-visible .where-dot__ring, .where-dot.is-hot .where-dot__ring { stroke-opacity: 0.9; }
+.where-dot.is-hot .where-dot__fill { fill: #ffd683; }
+.where-dot.is-picked .where-dot__fill { fill: var(--ch-teal); }
+.where-dot.is-picked .where-dot__ring { stroke: var(--ch-teal); stroke-opacity: 1; }
+.where-tip {
+    position: absolute; left: 0; top: 0; z-index: 5; display: flex; flex-direction: column; gap: 2px; padding: 7px 10px; border-radius: 9px;
+    background: #18212f; border: 1px solid rgba(255, 255, 255, 0.16); box-shadow: 0 8px 22px rgba(0, 0, 0, 0.45);
+    font-size: 0.76rem; color: var(--color-text-secondary); white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity 0.15s;
+}
+.where-tip.is-on { opacity: 1; }
+.where-tip b { color: #fff; }
+.where-extra { margin: 8px 2px 0; font-size: 0.78rem; line-height: 1.5; color: var(--color-text-muted); }
+.where-extra b { color: var(--color-text-secondary); }
+.where-clear { padding: 0; border: 0; background: none; cursor: pointer; font: 600 0.78rem var(--font-body); color: var(--ch-gold); }
 .minimap .visualization-section, .minimap .visualization-section .container { margin: 0; max-width: none; padding: 0; height: 100%; text-align: left; }
 .minimap .viz-header { display: none; }
 .minimap .viz-container, .minimap #network-visualization, .minimap #network-visualization svg { height: 100%; min-height: 0; margin: 0; border: 0; border-radius: 0; }
@@ -157,7 +193,7 @@ body:not(.embed-mode) .minimap .viz-search { display: none !important; }   /* th
 /* ----- Phones and tablets: one column; the map opens from a button ----- */
 @media (max-width: 1080px) {
     .finder-layout { grid-template-columns: minmax(0, 1fr) 260px; gap: 24px; }
-    .minimap { height: 200px; }
+    .corner { height: 220px; }
 }
 @media (max-width: 900px) {
     .finder { padding: 4px 16px 32px; }
@@ -167,8 +203,9 @@ body:not(.embed-mode) .minimap .viz-search { display: none !important; }   /* th
     .finder-row__label { width: 100%; }
     /* The map still builds (it needs a real size), just out of sight until opened */
     .finder-side { position: fixed; left: -10000px; top: 0; width: 360px; }
-    .finder-side .minimap { height: 300px; }
+    .finder-side .corner { height: 300px; }
     .finder-side .minimap.is-open { height: auto; }
+    .finder-side .corner-pane[data-pane="eco"] { visibility: visible; }   /* phones open the network from the button */
     .finder-side .minimap.is-open { left: 0; }
     body.minimap-open .finder-side { left: 0; width: auto; }
     .minimap.is-open { padding: 12px; }

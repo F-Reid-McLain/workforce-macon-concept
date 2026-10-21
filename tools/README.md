@@ -11,6 +11,8 @@ Builds `content/programs.json`, which lists every program the Navigator's organi
 | Central Georgia Tech | `sources/cgtc-programs.txt`, transcribed from its Programs of Study PDF |
 | Everyone else | `sources/manual-programs.json`, checked by hand |
 
+Central Georgia Tech's campuses and credit hours come from its catalog: run `python3 tools/parse-cgtc-catalog.py catalog.pdf` (needs `pip install pypdf`) to refresh `sources/cgtc-catalog.json`.
+
 Every program keeps its `source` and the date it was `checked`. The build also checks every program link and swaps any dead link (404) for the page it was listed on.
 
 **To refresh (about once a quarter):**
