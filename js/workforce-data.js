@@ -1,40 +1,20 @@
 (function () {
     'use strict';
 
-    // ===== THEME =====
-    // accent matches --color-accent (Chamber Gold) in theme.css — kept in
-    // sync manually since these charts are hand-rolled SVG/HTML, not CSS.
-    const C = {
-        accent:        '#afa66d',
-        teal:          '#2dd4bf',
-        orange:        '#fb923c',
-        bgSurface:     '#2d2d2d',
-        bgSurfaceDeep: '#252525',
-        textPrimary:   '#ffffff',
-        textSec:       '#cccccc',
-        textMuted:     '#888888',
-        border:        '#444444',
-    };
-
-    const BIBB      = '13021';
+    /* ===== INDUSTRIES (homepage stop 3) =====
+       The industries donut, what commuters come in for (LODES), and the
+       headlines computed from the data. The search, view switch and
+       specialties list live in js/lookups.js. */
+    const TEAL = '#2dd4bf';
 
     // ===== HELPERS =====
     function toNum(v) {
         const n = parseFloat(String(v || '').replace(/,/g, '').trim());
         return isNaN(n) ? 0 : n;
     }
-    function norm(s) {
-        return String(s || '').trim().replace(/\s+/g, ' ');
-    }
     function debounce(fn, ms) {
         let t;
         return function () { clearTimeout(t); t = setTimeout(fn, ms); };
-    }
-    function fips5(v) {
-        return String(v).padStart(5, '0');
-    }
-    function isMobile() {
-        return window.innerWidth <= 768;
     }
 
     // ===== INDUSTRY CONFIG (2-digit NAICS prefix -> sector) =====
@@ -73,38 +53,6 @@
         return null;
     }
 
-    // ===== HERO KPIs =====
-    function loadKPIs(dataRows, totalRow, popRows, commRows) {
-        if (totalRow) {
-            const jobsEl = document.getElementById('kpi-jobs');
-            const wageEl = document.getElementById('kpi-wage');
-            if (jobsEl) jobsEl.textContent = Math.round(toNum(totalRow['Empl'])).toLocaleString();
-            if (wageEl) wageEl.textContent = '$' + Math.round(toNum(totalRow['Avg Ann Wages'])).toLocaleString();
-        }
-
-        const bibbPop  = popRows.find(r => fips5(r.FIPS) === BIBB);
-        const bibbComm = commRows.find(r => fips5(r.FIPS) === BIBB);
-
-        if (bibbPop) {
-            const popEl = document.getElementById('kpi-pop');
-            if (popEl) popEl.textContent = Math.round(toNum(bibbPop.Population)).toLocaleString();
-        }
-        if (bibbComm) {
-            const commEl = document.getElementById('kpi-commute');
-            if (commEl) commEl.textContent = '+' + Math.round(toNum(bibbComm.NetCommuting)).toLocaleString();
-        }
-
-        const totals = {};
-        dataRows.forEach(row => {
-            const id = sectorFor((row['NAICS'] || '').trim());
-            if (!id) return;
-            totals[id] = (totals[id] || 0) + toNum(row['Empl']);
-        });
-        const topId = Object.entries(totals).sort((a, b) => b[1] - a[1])[0]?.[0];
-        const topEl = document.getElementById('kpi-top');
-        if (topEl) topEl.textContent = topId ? INDUSTRIES[topId].name : '—';
-    }
-
     // Sectors (2-digit NAICS) holding their 6-digit industries
     function buildHierarchy(rows) {
         const groups = {};
@@ -129,9 +77,9 @@
     }
 
     // ===== INDUSTRIES DONUT =====
-    // Sectors by jobs. It assembles (slices sweep in, largest first) as its section
-    // scrolls through (progress from js/chapters.js); clicking a slice or a legend
-    // row drills into that sector's industries (top 10 + "Other").
+    // Sectors by jobs. It assembles (slices sweep in, largest first) the first time it
+    // comes into view; clicking a slice or a legend row drills into that sector's
+    // industries (top 10 + "Other").
     let hierarchy = null, donutNode = null, donutBuilt = 0, donutAnim = null, officialJobs = 0;
     const DONUT_OTHER = '#4b5568';
 
@@ -236,19 +184,28 @@
     function animateTo(node) {
         if (donutAnim) donutAnim.stop();
         const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-        donutBuilt = 1;   // once someone has drilled, the ring is never scroll-assembled again
+        donutBuilt = 1;   // once someone has drilled, the first-view assembly is done
         renderDonut(node, { assemble: reduce ? 1 : 0 });
         if (reduce) return;
         donutAnim = d3.timer(t => { const a = Math.min(1, t / 750); renderDonut.draw(a); if (a >= 1) { donutAnim.stop(); donutAnim = null; } });
     }
-    // Scroll-driven assembly the first time through (js/chapters.js sets the progress)
-    document.addEventListener('chapter:progress', e => {
-        if (e.target.id !== 'donut-scrub' || donutBuilt >= 1) return;
-        const a = Math.max(donutBuilt, Math.min(1, e.detail.p / 0.6));
-        if (a === donutBuilt) return;
-        donutBuilt = a;
-        if (donutNode === hierarchy && renderDonut.draw && !donutAnim) renderDonut.draw(a);
-    });
+    // Assemble the first time the donut comes into view
+    function assembleOnView() {
+        const box = document.getElementById('donut');
+        if (!box || !('IntersectionObserver' in window)) { donutBuilt = 1; return; }
+        const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const io = new IntersectionObserver(entries => {
+            if (!entries.some(e => e.isIntersecting)) return;
+            io.disconnect();
+            if (reduce || donutBuilt >= 1) { donutBuilt = 1; if (renderDonut.draw) renderDonut.draw(1); return; }
+            const t0 = d3.timer(t => {
+                donutBuilt = Math.min(1, t / 1100);
+                if (donutNode === hierarchy && renderDonut.draw && !donutAnim) renderDonut.draw(donutBuilt);
+                if (donutBuilt >= 1) t0.stop();
+            });
+        }, { threshold: 0.35 });
+        io.observe(box);
+    }
 
     // ===== WHAT COMMUTERS COME IN FOR (LODES 2023, by industry) =====
     // data/commute-sectors.json: per industry, jobs located in Macon-Bibb and the minimum
@@ -262,7 +219,7 @@
         el.innerHTML = rows.map(r => `
             <div class="demo-bar-row">
                 <div class="demo-bar-label wide-label" title="${r.sector}">${r.sector}</div>
-                <div class="demo-bar-track"><div class="demo-bar-fill" style="width:${(r.commutersAtLeast / max * 100).toFixed(1)}%;background:${C.teal};"></div></div>
+                <div class="demo-bar-track"><div class="demo-bar-fill" style="width:${(r.commutersAtLeast / max * 100).toFixed(1)}%;background:${TEAL};"></div></div>
                 <div class="occ-bar-val sector-val">${r.commutersAtLeast.toLocaleString()}<span>${pct(r)}% of its jobs</span></div>
             </div>`).join('');
         // Headline: most commuters by count, and the most commuter-dependent sizeable industry
@@ -275,20 +232,13 @@
         const note = document.getElementById('occ-commute-note');
         if (note && hc) note.textContent = `Health care runs on commuters: at least ${pct(hc)}% of its jobs here are held by people who live outside Macon-Bibb.`;
     }
-
-    // ===== CHAPTER FINDINGS (headlines computed from the data) =====
-    function writeFindings(totalRow, occRows, demoRows) {
+    // ===== HEADLINES (computed from the data) =====
+    function writeFindings(totalRow, occRows) {
         const set = (id, html) => { const el = document.getElementById(id); if (el && html) el.innerHTML = html; };
-        if (totalRow) set('find-kpis', `<em>${Math.round(toNum(totalRow['Empl'])).toLocaleString()}</em> jobs. <em>$${Math.round(toNum(totalRow['Avg Ann Wages'])).toLocaleString()}</em> average pay.`);
+        if (totalRow) set('ind-totals', `<b>${Math.round(toNum(totalRow['Empl'])).toLocaleString()}</b> jobs in Macon-Bibb · <b>$${Math.round(toNum(totalRow['Avg Ann Wages'])).toLocaleString()}</b> average pay`);
         if (hierarchy) {
             const top = d3.greatest(hierarchy.children, sectorJobs), share = sectorJobs(top) / sectorJobsAll();
             set('find-industries', `<em>1 in ${Math.round(1 / share)}</em> jobs in Macon-Bibb is in <em>${top.name.toLowerCase().replace('&', 'and')}</em>.`);
-        }
-        const demo = {}; demoRows.forEach(r => { demo[norm(r.Metric)] = toNum(r.Value2024); });
-        // Education of working-age adults (ACS): the share with schooling past high school, and with a bachelor's or higher
-        const pg = demo['Postgraduate Degree'], ba = demo["Bachelor's Degree"], aa = demo["Associate's Degree"], sc = demo['Some College, No Degree'];
-        if ([pg, ba, aa, sc].every(v => v !== undefined)) {
-            set('find-demo', `<em>${Math.round((pg + ba + aa + sc) * 100)}%</em> of working-age adults in Macon-Bibb have education beyond high school. <em>${Math.round((pg + ba) * 100)}%</em> hold a bachelor's degree or higher.`);
         }
         const occ = occRows.filter(r => r['Occupation'] && r['SOC'] && r['SOC'].slice(-2) !== '00' && !r['Occupation'].toLowerCase().includes('total'));
         const topOcc = d3.greatest(occ, r => toNum(r['Empl']));
@@ -298,297 +248,18 @@
         }
     }
 
-    // ===== SHARED HORIZONTAL BAR ROWS (demographics + occupation intelligence) =====
-    // Labels are handed to the DOM in full and left to CSS's own
-    // white-space/ellipsis truncation (see .demo-bar-label) rather than
-    // pre-cut to a fixed character count — a fixed cutoff clips long names
-    // even in the wider label columns that have room to show them in full.
-    function renderBars(containerId, items, color, formatVal, labelClass) {
-        const el = document.getElementById(containerId);
-        if (!el || !items.length) { if (el) el.innerHTML = ''; return; }
-        const max = Math.max(...items.map(i => i.v));
-        const cls = 'demo-bar-label' + (labelClass ? ' ' + labelClass : '');
-        el.innerHTML = items.map(({ label, v }) => `
-            <div class="demo-bar-row">
-                <div class="${cls}" title="${label}">${label}</div>
-                <div class="demo-bar-track">
-                    <div class="demo-bar-fill" style="width:${max ? (v / max * 100).toFixed(1) : 0}%;background:${color};"></div>
-                </div>
-                <div class="${formatVal ? 'occ-bar-val' : 'demo-bar-pct'}">${formatVal ? formatVal(v) : (v * 100).toFixed(1) + '%'}</div>
-            </div>`).join('');
-    }
-
-    // ===== DEMOGRAPHICS =====
-    function renderDemographics(demoRows, popRows) {
-        const demoMap = {};
-        demoRows.forEach(r => { demoMap[norm(r.Metric)] = toNum(r.Value2024); });
-
-        const bibbPop = popRows.find(r => fips5(r.FIPS) === BIBB);
-        const popEl   = document.getElementById('demo-population');
-        if (popEl) popEl.textContent = bibbPop ? Math.round(toNum(bibbPop.Population)).toLocaleString() : '—';
-
-        const setPct = (id, key) => {
-            const el = document.getElementById(id);
-            if (el && demoMap[key] !== undefined) el.textContent = (demoMap[key] * 100).toFixed(1) + '%';
-        };
-        setPct('demo-lfpr',     'Labor Force Participation Rate and Size (civilian population 16 years and over)');
-        setPct('demo-primeage', 'Prime-Age Labor Force Participation Rate and Size (civilian population 25-54)');
-        setPct('demo-wfh',      'Work from Home');
-
-        renderBars('age-bars', [
-            { label: 'Under 18', v: demoMap['Under 18 Years']      || 0 },
-            { label: '18–24',    v: demoMap['18 to 24 Years']      || 0 },
-            { label: '25–34',    v: demoMap['25 to 34 Years']      || 0 },
-            { label: '35–44',    v: demoMap['35 to 44 Years']      || 0 },
-            { label: '45–54',    v: demoMap['45 to 54 Years']      || 0 },
-            { label: '55–64',    v: demoMap['55 to 64 Years']      || 0 },
-            { label: '65–74',    v: demoMap['65 to 74 Years']      || 0 },
-            { label: '75+',      v: demoMap['75 Years and Over']   || 0 },
-        ], C.orange);
-
-        const otherRace = (demoMap['Race: American Indian and Alaska Native'] || 0)
-            + (demoMap['Race: Native Hawaiian and Other Pacific Islander'] || 0)
-            + (demoMap['Race: Some Other Race'] || 0);
-
-        renderBars('race-bars', [
-            { label: 'Black / African Am.', v: demoMap['Race: Black or African American'] || 0 },
-            { label: 'White',               v: demoMap['Race: White']                     || 0 },
-            { label: 'Hispanic / Latino',   v: demoMap['Hispanic or Latino (of any race)'] || 0 },
-            { label: 'Two or More Races',   v: demoMap['Race: Two or More Races']          || 0 },
-            { label: 'Asian',               v: demoMap['Race: Asian']                      || 0 },
-            { label: 'Other',               v: otherRace },
-        ], C.accent);
-
-        renderBars('edu-bars', [
-            { label: 'Postgraduate', v: demoMap['Postgraduate Degree']       || 0 },
-            { label: "Bachelor's",   v: demoMap["Bachelor's Degree"]         || 0 },
-            { label: "Associate's",  v: demoMap["Associate's Degree"]        || 0 },
-            { label: 'Some College', v: demoMap['Some College, No Degree']   || 0 },
-            { label: 'High School',  v: demoMap['High School Graduate']      || 0 },
-            { label: 'No Diploma',   v: demoMap['No High School Diploma']    || 0 },
-        ], C.teal);
-    }
-
-    // ===== OCCUPATIONS TABLE =====
-    // Same top-N + "Show All" pattern already used for the Hiring Demand
-    // charts below (renderHiringChart/renderEmployersChart in charts.js) —
-    // 15 rows is a lot of table for a first view, especially on mobile.
-    let occAllRows = [];
-    let occExpanded = false;
-
-    function renderOccTable() {
-        const rows = occExpanded ? occAllRows : occAllRows.slice(0, 5);
-        const tbody = document.getElementById('occ-tbody');
-        if (!tbody) return;
-        tbody.innerHTML = rows.map((r, i) => {
-            const wage = toNum(r['Mean Ann Wages2']);
-            const wageStr = wage > 0 ? '$' + Math.round(wage).toLocaleString() : '—';
-            return `<tr>
-                <td class="occ-rank">${i + 1}</td>
-                <td style="font-weight:500">${r['Occupation']}</td>
-                <td>${Math.round(toNum(r['Empl'])).toLocaleString()}</td>
-                <td>${wageStr}</td>
-            </tr>`;
-        }).join('');
-
-        const btn = document.getElementById('occ-toggle');
-        if (btn) btn.textContent = occExpanded ? '▲ Show Less' : '▼ Show All Occupations';
-    }
-
-    function renderOccupations(occRows) {
-        occAllRows = occRows
-            .filter(r => toNum(r['Empl']) > 0 && r['Occupation'] && r['SOC'] !== '00-0000')
-            .sort((a, b) => toNum(b['Empl']) - toNum(a['Empl']))
-            .slice(0, 15);
-        renderOccTable();
-
-        const btn = document.getElementById('occ-toggle');
-        if (btn) {
-            btn.addEventListener('click', () => {
-                occExpanded = !occExpanded;
-                renderOccTable();
-            });
-        }
-    }
-
-    // ===== OCCUPATION INTELLIGENCE GRID =====
-    const SOC3_NAMES = {
-        '11-1': 'Top Executives', '11-2': 'Advertising & Marketing Managers',
-        '11-3': 'Operations Specialties Managers', '11-9': 'Other Managers',
-        '13-1': 'Business Operations Specialists', '13-2': 'Financial Specialists',
-        '15-1': 'Computer Occupations', '15-2': 'Mathematical Science Occupations',
-        '17-1': 'Architects & Surveyors', '17-2': 'Engineers', '17-3': 'Engineering Technicians',
-        '19-1': 'Life Scientists', '19-2': 'Physical Scientists', '19-3': 'Social Scientists',
-        '19-4': 'Science Technicians', '19-5': 'Occupational Health & Safety',
-        '21-1': 'Counselors & Social Workers', '21-2': 'Religious Workers',
-        '23-1': 'Lawyers & Judges', '23-2': 'Legal Support Workers',
-        '25-1': 'Postsecondary Teachers', '25-2': 'K-12 Teachers',
-        '25-3': 'Other Teachers', '25-4': 'Librarians & Archivists', '25-9': 'Other Education',
-        '27-1': 'Art & Design Workers', '27-2': 'Entertainers & Performers',
-        '27-3': 'Media & Communications', '27-4': 'Media Equipment Workers',
-        '29-1': 'Health Diagnosing & Treating', '29-2': 'Health Technologists',
-        '29-9': 'Other Healthcare Practitioners',
-        '31-1': 'Home Health & Personal Care Aides', '31-2': 'Therapy Assistants',
-        '31-9': 'Other Healthcare Support',
-        '33-1': 'Protective Service Supervisors', '33-2': 'Firefighting Workers',
-        '33-3': 'Law Enforcement', '33-9': 'Other Protective Services',
-        '35-1': 'Food Service Supervisors', '35-2': 'Cooks & Food Prep',
-        '35-3': 'Food & Beverage Servers', '35-9': 'Other Food Service',
-        '37-1': 'Grounds & Cleaning Supervisors', '37-2': 'Building Cleaning Workers',
-        '37-3': 'Grounds Maintenance',
-        '39-1': 'Personal Care Supervisors', '39-2': 'Animal Care Workers',
-        '39-3': 'Entertainment Attendants', '39-5': 'Personal Appearance Workers',
-        '39-9': 'Other Personal Care',
-        '41-1': 'Sales Supervisors', '41-2': 'Retail Sales Workers',
-        '41-3': 'Sales Reps, Services', '41-4': 'Sales Reps, Wholesale & Mfg',
-        '41-9': 'Other Sales',
-        '43-1': 'Admin Support Supervisors', '43-2': 'Communications Operators',
-        '43-3': 'Financial Clerks', '43-4': 'Information & Record Clerks',
-        '43-5': 'Material Recording & Dispatching', '43-6': 'Secretaries & Admin Assistants',
-        '43-9': 'Other Office & Admin Support',
-        '45-2': 'Agricultural Workers', '45-4': 'Forest & Logging Workers',
-        '47-1': 'Construction Supervisors', '47-2': 'Construction Trades',
-        '47-3': 'Construction Helpers', '47-4': 'Other Construction',
-        '47-5': 'Extraction Workers',
-        '49-1': 'Maintenance Supervisors', '49-2': 'Electrical & Electronic Repairers',
-        '49-3': 'Vehicle Mechanics', '49-9': 'Other Maintenance & Repair',
-        '51-1': 'Production Supervisors', '51-2': 'Assemblers & Fabricators',
-        '51-3': 'Food Processing Workers', '51-4': 'Metal & Plastic Workers',
-        '51-5': 'Printing Workers', '51-6': 'Textile & Apparel Workers',
-        '51-8': 'Plant & System Operators', '51-9': 'Other Production',
-        '53-1': 'Transportation Supervisors', '53-2': 'Air Transportation',
-        '53-3': 'Motor Vehicle Operators', '53-4': 'Rail Transportation',
-        '53-7': 'Material Moving Workers', '53-9': 'Other Transportation',
-    };
-
-    function buildSocGroups(rows, metric) {
-        const groups = {};
-        rows.forEach(r => {
-            const code = r['SOC'].slice(0, 6);
-            const empl = toNum(r['Empl']);
-            if (!groups[code]) groups[code] = { empl: 0, wsum: 0, firstName: r['Occupation'] };
-            groups[code].empl += empl;
-            groups[code].wsum += empl * toNum(r[metric]);
-        });
-        return Object.entries(groups)
-            .filter(([, g]) => g.empl >= 50)
-            .map(([code, g]) => ({
-                label: SOC3_NAMES[code] || g.firstName || code,
-                v: g.empl ? g.wsum / g.empl : 0,
-            }));
-    }
-
-    function renderOccupationIntelligence(occRows) {
-        const fmtPct  = v => (v >= 0 ? '+' : '') + (v * 100).toFixed(1) + '%';
-        const fmtNum  = v => Math.round(v).toLocaleString();
-        const fmtWage = v => '$' + Math.round(v / 1000) + 'K';
-
-        const base = occRows.filter(r => r['Occupation'] && r['SOC'] && r['SOC'].slice(-2) !== '00');
-        const noTotal = r => !r['Occupation'].toLowerCase().includes('total');
-
-        const projGroups = buildSocGroups(base, 'Ann % Growth');
-
-        // Both default to 5 on mobile instead of the desktop 8 — same idea
-        // as the Hiring Demand charts and the occupations table, just
-        // applied here too. The "Show More" toggle (mobile-only — see the
-        // #occ-growth-toggle/#occ-wage-toggle CSS) reveals the rest of the
-        // desktop-equivalent 8, it doesn't need its own separate full list.
-        const growthAllData = projGroups.filter(g => g.v > 0).sort((a, b) => b.v - a.v).slice(0, 8);
-        const wageAllData = base.filter(r => toNum(r['Mean Ann Wages2']) > 0)
-            .sort((a, b) => toNum(b['Mean Ann Wages2']) - toNum(a['Mean Ann Wages2'])).slice(0, 8)
-            .map(r => ({ label: r['Occupation'], v: toNum(r['Mean Ann Wages2']) }));
-
-        let growthExpanded = false;
-        let wageExpanded = false;
-
-        function renderGrowth() {
-            const count = growthExpanded || !isMobile() ? 8 : 5;
-            renderBars('occ-proj-growth', growthAllData.slice(0, count), C.teal, fmtPct, 'mid-label');
-            const btn = document.getElementById('occ-growth-toggle');
-            if (btn) btn.textContent = growthExpanded ? '▲ Show Less' : '▼ Show More';
-        }
-        function renderWage() {
-            const count = wageExpanded || !isMobile() ? 8 : 5;
-            renderBars('occ-wage-mean', wageAllData.slice(0, count), C.orange, fmtWage, 'mid-label');
-            const btn = document.getElementById('occ-wage-toggle');
-            if (btn) btn.textContent = wageExpanded ? '▲ Show Less' : '▼ Show More';
-        }
-
-        renderGrowth();
-        renderWage();
-
-        const growthBtn = document.getElementById('occ-growth-toggle');
-        if (growthBtn) growthBtn.addEventListener('click', () => { growthExpanded = !growthExpanded; renderGrowth(); });
-        const wageBtn = document.getElementById('occ-wage-toggle');
-        if (wageBtn) wageBtn.addEventListener('click', () => { wageExpanded = !wageExpanded; renderWage(); });
-
-        window.addEventListener('resize', debounce(() => { renderGrowth(); renderWage(); }, 250));
-
-        // Job Exits / Occupational Transfers / Net New Positions share one
-        // full-width chart behind a tab switcher instead of three stacked
-        // cards — same information, a fraction of the vertical space, and
-        // the full-width column gives labels room to not truncate as hard.
-        const DEMAND_METRICS = {
-            exits: {
-                sub: 'Workers permanently leaving the occupation annually', color: C.orange,
-                data: base.filter(noTotal).filter(r => toNum(r['Exits']) > 0)
-                    .sort((a, b) => toNum(b['Exits']) - toNum(a['Exits'])).slice(0, 5)
-                    .map(r => ({ label: r['Occupation'], v: toNum(r['Exits']) })),
-            },
-            transfers: {
-                sub: 'Workers moving into a different occupation annually', color: C.accent,
-                data: base.filter(noTotal).filter(r => toNum(r['Transfers']) > 0)
-                    .sort((a, b) => toNum(b['Transfers']) - toNum(a['Transfers'])).slice(0, 5)
-                    .map(r => ({ label: r['Occupation'], v: toNum(r['Transfers']) })),
-            },
-            netgrowth: {
-                sub: 'Projected net employment growth (absolute jobs added)', color: C.teal,
-                data: base.filter(noTotal).filter(r => toNum(r['Empl Growth']) > 0)
-                    .sort((a, b) => toNum(b['Empl Growth']) - toNum(a['Empl Growth'])).slice(0, 5)
-                    .map(r => ({ label: r['Occupation'], v: toNum(r['Empl Growth']) })),
-            },
-        };
-
-        const tabs  = document.querySelectorAll('.occ-tab');
-        const subEl = document.getElementById('occ-demand-sub');
-
-        function renderDemand(metric) {
-            const m = DEMAND_METRICS[metric];
-            if (!m) return;
-            if (subEl) subEl.textContent = m.sub;
-            renderBars('occ-demand-chart', m.data, m.color, fmtNum, 'wide-label');
-            tabs.forEach(t => {
-                const active = t.dataset.metric === metric;
-                t.classList.toggle('active', active);
-                t.setAttribute('aria-selected', String(active));
-            });
-        }
-
-        tabs.forEach(t => t.addEventListener('click', () => renderDemand(t.dataset.metric)));
-        renderDemand('exits');
-    }
-
     // ===== INIT =====
     Promise.all([
         d3.csv('data/Industry Snapshot.csv'),
         d3.csv('data/Occupation Snapshot.csv'),
-        d3.csv('data/Population By County.csv'),
-        d3.csv('data/Net Commuting LODES.csv'),   // LODES 2023: jobs located here minus employed residents
-        d3.csv('data/Demographics.csv'),
-    ]).then(([indRows, occRows, popRows, commRows, demoRows]) => {
+    ]).then(([indRows, occRows]) => {
         const dataRows = indRows.filter(r => (r['NAICS'] || '').trim() !== '');
         const totalRow = indRows.find(r => !(r['NAICS'] || '').trim());
-
-        loadKPIs(dataRows, totalRow, popRows, commRows);
-
         hierarchy = buildHierarchy(dataRows);
-        officialJobs = totalRow ? toNum(totalRow['Empl']) : 0;   // same total as the KPI (a few jobs sit outside the 20 sectors)
+        officialJobs = totalRow ? toNum(totalRow['Empl']) : 0;   // same total as the headline (a few jobs sit outside the 20 sectors)
         renderDonut(hierarchy);
-        writeFindings(totalRow, occRows, demoRows);
-
-        renderDemographics(demoRows, popRows);
-        renderOccupations(occRows);
-        renderOccupationIntelligence(occRows);
+        assembleOnView();
+        writeFindings(totalRow, occRows);
     }).catch(err => {
         console.error('Workforce data load error:', err);
     });
@@ -627,18 +298,6 @@
     document.addEventListener('click', closeAll);
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAll(); });
 })();
-
-/* ===== ADJUSTED PICTURE — supporting context toggle ===== */
-(function () {
-    const btn = document.getElementById('adj-context-toggle');
-    const box = document.getElementById('adj-context');
-    if (!btn || !box) return;
-    btn.addEventListener('click', () => {
-        const open = box.classList.toggle('open');
-        btn.textContent = open ? '▲ Hide Supporting Context' : '▼ Show Supporting Context';
-    });
-})();
-
 /* ===== IN-PAGE JUMP NAV — active section highlight ===== */
 (function () {
     const links = Array.from(document.querySelectorAll('.page-jumpnav a'));
@@ -685,185 +344,4 @@
     }, { rootMargin: '-140px 0px -70% 0px', threshold: 0 });
 
     sections.forEach(s => observer.observe(s));
-})();
-
-/* ===== MOBILE CAROUSELS (Fast Facts, Adjusted Picture, Demographics) =====
-   The card grids stack full-width on mobile (see viz.css), which is a lot
-   of vertical clutter for repeated-shape cards — swiped one at a time
-   instead, with dot indicators showing position/count. Card markup itself
-   is untouched; this only adds the dots and keeps them synced to scroll
-   position, and only runs below the same breakpoint the CSS switches on. */
-(function () {
-    const MOBILE_BREAKPOINT = 768;
-    const CAROUSELS = [
-        { selector: '.stats-grid', itemSelector: '.kpi-block' },
-        { selector: '.adj-metrics-grid', itemSelector: '.adj-card' },
-        { selector: '.demo-grid', itemSelector: '.demo-card' },
-    ];
-
-    function isMobile() { return window.innerWidth <= MOBILE_BREAKPOINT; }
-
-    let resizeTimer;
-    function debounced(fn, ms) { clearTimeout(resizeTimer); resizeTimer = setTimeout(fn, ms); }
-
-    function buildDots(container, items) {
-        const dots = document.createElement('div');
-        dots.className = 'carousel-dots';
-        const dotEls = items.map((item, i) => {
-            const dot = document.createElement('button');
-            dot.type = 'button';
-            dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
-            dot.setAttribute('aria-label', `Go to card ${i + 1} of ${items.length}`);
-            dot.addEventListener('click', () => {
-                item.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-            });
-            dots.appendChild(dot);
-            return dot;
-        });
-        container.insertAdjacentElement('afterend', dots);
-
-        // Whichever card is most visible in the scroll container gets the
-        // active dot — tracks both swipes and dot-click scrolls, since both
-        // just move the container's scroll position. With two-up carousels
-        // (Fast Facts) more than one card can cross the threshold in the
-        // same batch; naively setting the dot per-entry as the loop went
-        // let whichever entry happened to be processed last win, which was
-        // usually the second (right-hand) card even at the very start of
-        // the scroll. Taking the lowest index among everything currently
-        // visible picks the leading card of the page instead, correct for
-        // both one-up and two-up carousels.
-        const io = new IntersectionObserver((entries) => {
-            const visibleIdxs = entries
-                .filter(e => e.isIntersecting)
-                .map(e => items.indexOf(e.target))
-                .filter(i => i !== -1);
-            if (!visibleIdxs.length) return;
-            const idx = Math.min(...visibleIdxs);
-            dotEls.forEach((d, i) => d.classList.toggle('active', i === idx));
-        }, { root: container, threshold: 0.6 });
-        items.forEach(item => io.observe(item));
-    }
-
-    const ARROW_LEFT  = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>';
-    const ARROW_RIGHT = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>';
-
-    // A precise, clickable alternative to swiping — mainly for a desktop
-    // browser resized down to a mobile width, where there's a mouse but no
-    // touch/swipe gesture available at all.
-    function buildArrows(wrap, container) {
-        const prev = document.createElement('button');
-        prev.type = 'button';
-        prev.className = 'carousel-arrow carousel-arrow--prev';
-        prev.setAttribute('aria-label', 'Scroll to previous card');
-        prev.innerHTML = ARROW_LEFT;
-
-        const next = document.createElement('button');
-        next.type = 'button';
-        next.className = 'carousel-arrow carousel-arrow--next';
-        next.setAttribute('aria-label', 'Scroll to next card');
-        next.innerHTML = ARROW_RIGHT;
-
-        wrap.appendChild(prev);
-        wrap.appendChild(next);
-
-        prev.addEventListener('click', () => container.scrollBy({ left: -container.clientWidth * 0.9, behavior: 'smooth' }));
-        next.addEventListener('click', () => container.scrollBy({ left: container.clientWidth * 0.9, behavior: 'smooth' }));
-
-        // The container's own left padding (see the ≤768px carousel CSS)
-        // means a fresh, unscrolled carousel already sits at scrollLeft ≈
-        // that padding value, not 0 — scroll-snap-align: start snaps the
-        // first card's edge to the padding box, not the true edge of the
-        // scroll range. A slack of ~24px (comfortably past that natural
-        // resting point, well short of a real card-width scroll) is what
-        // "at the start" actually means here, not a strict ≤4.
-        const EDGE_SLACK = 24;
-        function updateArrows() {
-            const maxScroll = container.scrollWidth - container.clientWidth;
-            prev.classList.toggle('is-hidden', container.scrollLeft <= EDGE_SLACK);
-            next.classList.toggle('is-hidden', container.scrollLeft >= maxScroll - EDGE_SLACK);
-        }
-        container.addEventListener('scroll', updateArrows, { passive: true });
-        updateArrows();
-    }
-
-    function init() {
-        if (!isMobile()) return;
-        CAROUSELS.forEach(({ selector, itemSelector }) => {
-            const container = document.querySelector(selector);
-            if (!container || container.dataset.carouselInit) return;
-            const items = Array.from(container.querySelectorAll(itemSelector));
-            if (items.length < 2) return;
-            container.dataset.carouselInit = '1';
-
-            const wrap = document.createElement('div');
-            wrap.className = 'carousel-wrap';
-            container.parentNode.insertBefore(wrap, container);
-            wrap.appendChild(container);
-
-            buildDots(container, items);
-            buildArrows(wrap, container);
-        });
-    }
-
-    init();
-    window.addEventListener('resize', () => debounced(init, 250));
-})();
-
-/* ===== COLLAPSIBLE SECTIONS (mobile only) =====
-   Every .section on this page follows the same label -> title -> desc ->
-   content shape, so the content can be wrapped generically at runtime
-   instead of hand-editing seven different HTML blocks. Default stays
-   expanded (nothing hides on load, so chart width measurements taken at
-   render time are unaffected) — this just gives mobile users an easy way
-   to collapse a section closed after reading it. */
-(function () {
-    const MOBILE_BREAKPOINT = 768;
-    function isMobile() { return window.innerWidth <= MOBILE_BREAKPOINT; }
-
-    const CHEVRON_SVG = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>';
-
-    function wireSection(section) {
-        if (section.dataset.collapseInit) return;
-        const desc  = section.querySelector(':scope > .section-desc');
-        const title = section.querySelector(':scope > .section-title');
-        if (!desc || !title) return;
-        section.dataset.collapseInit = '1';
-
-        const body = document.createElement('div');
-        body.className = 'section-body';
-        let sib = desc.nextElementSibling;
-        while (sib) {
-            const next = sib.nextElementSibling;
-            body.appendChild(sib);
-            sib = next;
-        }
-        desc.insertAdjacentElement('afterend', body);
-
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'section-collapse-btn';
-        btn.setAttribute('aria-expanded', 'true');
-        btn.setAttribute('aria-label', 'Collapse section');
-        btn.innerHTML = CHEVRON_SVG;
-        title.appendChild(btn);
-
-        btn.addEventListener('click', () => {
-            const collapsed = body.classList.toggle('collapsed');
-            btn.classList.toggle('is-collapsed', collapsed);
-            btn.setAttribute('aria-expanded', String(!collapsed));
-            btn.setAttribute('aria-label', collapsed ? 'Expand section' : 'Collapse section');
-        });
-    }
-
-    function init() {
-        if (!isMobile()) return;
-        document.querySelectorAll('main .section').forEach(wireSection);
-    }
-
-    let resizeTimer;
-    init();
-    window.addEventListener('resize', () => {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(init, 250);
-    });
 })();

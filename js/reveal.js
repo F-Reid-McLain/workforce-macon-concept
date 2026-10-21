@@ -1,9 +1,8 @@
 /* ===== SCROLL REVEAL — Workforce Data page =====
-   Each chart and card group plays a short build-in the first time it
-   scrolls into view: bars grow from the left, table rows and cards fade
-   up in sequence, and numbers
-   count up from zero. Everything plays once; later re-renders (Show All,
-   tab switches, resizes) appear instantly, as before.
+   Each bar chart plays a short build-in the first time it scrolls into
+   view (bars grow from the left), and the hiring total counts up from zero.
+   Everything plays once; later re-renders (switches, filters, Show all,
+   resizes) appear instantly.
 
    The hidden "before" states live in css/reveal.css and only apply while
    <html> has .reveal-on, which the inline script in index.html's <head>
@@ -19,14 +18,10 @@
     window.WFReveal = true;
 
     // ----- Chart and card groups -----
-    const GROUPS = [
-        '.stats-grid', '.demo-stat-grid', '.demo-grid',
-        '#sector-commute-bars', '#age-bars', '#race-bars', '#edu-bars', '.occ-table',
-        '#occ-proj-growth', '#occ-wage-mean', '#occ-demand-chart', '#hiring-chart', '#employers-chart',
-    ];
+    const GROUPS = ['#sector-commute-bars', '#hiring-bars'];
     const STAGGER_MS = 1800;   // long enough for the last staggered item to finish
 
-    const ITEMS = '.demo-bar-row, tbody tr, .kpi-block, .demo-stat, .demo-card';
+    const ITEMS = '.demo-bar-row';
 
     const groupObserver = new IntersectionObserver(entries => {
         entries.forEach(e => {
@@ -59,10 +54,9 @@
     document.querySelectorAll(GROUPS.join(',')).forEach(el => groupObserver.observe(el));
 
     // ----- Count-up numbers -----
-    // Reads each number's own text (e.g. "$55,410", "+23,963", "77.3%", "~$50K"),
-    // so no data code has to change. Text that isn't a single number
-    // ("Health Care…", "60–70%") is left alone.
-    const NUMBERS = '.kpi-val, .demo-stat-val, .ticker__num';
+    // Reads the number's own text (e.g. "1,612"), so no data code has to
+    // change. Text that isn't a single number is left alone.
+    const NUMBERS = '.ticker__num';
     const NUM_RE = /^([^\d]*?)(\d[\d,]*(?:\.\d+)?)([^\d]*)$/;
     const DURATION = 1200;
     const easeOut = t => 1 - Math.pow(1 - t, 3);

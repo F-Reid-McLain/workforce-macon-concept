@@ -104,7 +104,7 @@
                         <a class="ci-scroll" href="#ci-dawn">Scroll to watch a workday
                             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
                         </a>
-                        <a class="ci-skip" href="#section-kpis">Skip to the data</a>
+                        <a class="ci-skip" href="#jobs">Skip to the tools</a>
                     </div>
                 </div>
                 <div class="ci-step" data-time="6" id="ci-dawn" data-moment="6am"><div class="ci-card">
@@ -160,217 +160,131 @@
 
         <!-- Section rail (right edge on wide screens; pill bar on phones) -->
         <nav class="page-jumpnav" aria-label="Page sections">
-            <a href="#section-region">Commuting</a>
-            <a href="#section-kpis">The jobs</a>
-            <a href="#section-industries">Industries</a>
-            <a href="#section-occupations">Occupations</a>
-            <a href="#section-hiring">Hiring</a>
-            <a href="#section-demographics">Talent</a>
+            <a href="#section-commute">Commute</a>
+            <a href="#jobs">Jobs</a>
+            <a href="#industries">Industries</a>
+            <a href="#hiring">Hiring</a>
             <a href="#custom-research">Custom research</a>
         </nav>
 
-        <!-- 01 · The jobs that pull them in -->
-        <section class="chapter" id="section-kpis">
-            <header class="chapter-head">
-                <p class="chapter-kicker"><span>01</span>The jobs that pull them in <span class="info-btn-wrap"><button type="button" class="info-btn" aria-label="About this data">i</button><span class="info-popover"><strong>What this shows</strong><span>Total jobs and average annual wage are payroll figures from the regional industry snapshot (QCEW-based). Population comes from ACS 2024 estimates.</span></span></span></p>
-                <h2 class="chapter-finding" id="find-kpis"><em>85,088</em> jobs. <em>$55,410</em> average pay.</h2>
-                <p class="chapter-dek">That's what draws the region in every morning: more jobs than Macon-Bibb's own workforce can fill.</p>
+        <!-- Stop 2 · Jobs -->
+        <section class="stop" id="jobs">
+            <header class="stop-head">
+                <p class="chapter-kicker">Jobs <span class="info-btn-wrap"><button type="button" class="info-btn" aria-label="About this data">i</button><span class="info-popover"><strong>What this shows</strong><span>Occupational Employment and Wage Statistics (OES) estimates for Macon-Bibb: jobs and average annual pay by occupation, with regional projections for growth and openings (new jobs plus people retiring or changing careers).</span></span></span></p>
+                <h2 class="chapter-finding" id="find-occ"><em>Registered nurses</em> are Macon-Bibb's most common job: <em>2,779</em> positions averaging <em>$87,600</em>.</h2>
+                <p class="chapter-dek">Look up what any job pays here, or browse the top ten. <span id="occ-commute-note"></span></p>
             </header>
-            <div class="stats-grid stats-grid--3">
-                <div class="kpi-block">
-                    <div class="kpi-val" id="kpi-jobs">—</div>
-                    <div class="kpi-label">Total Jobs</div>
-                    <div class="kpi-note">Payroll positions (QCEW) — counts jobs, not unique workers</div>
+            <div class="tool-panel">
+                <div class="tool-col">
+                    <label class="tool-search">
+                        <span class="sr-only">Search <span id="job-count">800</span> occupations</span>
+                        <input id="job-q" type="search" placeholder="Search any job, e.g. nurse, welder, teacher" autocomplete="off">
+                        <ul class="tool-matches" id="job-list" hidden></ul>
+                    </label>
+                    <div class="seg" id="job-sorts" role="group" aria-label="Rank jobs by">
+                        <button type="button" data-view="common">Most common</button>
+                        <button type="button" data-view="paid">Best paid</button>
+                        <button type="button" data-view="growing">Fastest growing</button>
+                        <button type="button" data-view="openings">Most openings</button>
+                    </div>
+                    <ol class="rank-list" id="job-rank"></ol>
+                    <p class="chart-note" id="job-rank-note"></p>
                 </div>
-                <div class="kpi-block">
-                    <div class="kpi-val" id="kpi-wage">—</div>
-                    <div class="kpi-label">Avg Annual Wage</div>
-                    <div class="kpi-note">Mean payroll wage per job · not household income</div>
-                </div>
-                <div class="kpi-block">
-                    <div class="kpi-val" id="kpi-pop">—</div>
-                    <div class="kpi-label">Residents</div>
-                    <div class="kpi-note">ACS 2024 estimate · people who live here</div>
+                <div class="tool-col tool-col--result">
+                    <div class="tool-result" id="job-result" aria-live="polite"></div>
+                    <p class="tool-upsell">Need entry-level vs. experienced pay, or how Macon compares to Atlanta and Savannah? <a href="#custom-research">Request custom research →</a></p>
                 </div>
             </div>
-            <h3 class="chapter-sub">What they come in for</h3>
-            <p class="sector-finding" id="find-sectors">Health care draws the most commuters, and finance and corporate offices lean on them most.</p>
-            <div class="chart-container sector-commute">
-                <div id="sector-commute-bars"></div>
-                <p class="chart-note">Jobs in Macon-Bibb held by people who live outside the county, by industry. These are minimums: jobs located here minus Macon-Bibb residents working in that industry anywhere (U.S. Census Bureau, LODES 2023). The true numbers are higher.</p>
-            </div>
-            <p class="chapter-bridge">And one industry accounts for more of those jobs than any other.</p>
         </section>
 
-        <!-- 02 · Health care runs it -->
-        <section class="chapter" id="section-industries">
-            <header class="chapter-head">
-                <p class="chapter-kicker"><span>02</span>Where Macon works <span class="info-btn-wrap"><button type="button" class="info-btn" aria-label="About this data">i</button><span class="info-popover"><strong>What this shows</strong><span>Regional labor market data (QCEW-based) for Bibb County, broken out by 6-digit NAICS industry — total employment and average annual wage, grouped into 2-digit NAICS sectors.</span></span></span></p>
+        <!-- Stop 3 · Industries -->
+        <section class="stop" id="industries">
+            <header class="stop-head">
+                <p class="chapter-kicker">Industries <span class="info-btn-wrap"><button type="button" class="info-btn" aria-label="About this data">i</button><span class="info-popover"><strong>What this shows</strong><span>Payroll jobs and average annual wage by industry (QCEW-based), grouped into sectors. Concentration compares each industry's share of jobs here with its share nationally (location quotient). What commuters come in for uses U.S. Census Bureau LODES 2023.</span></span></span></p>
                 <h2 class="chapter-finding" id="find-industries"><em>1 in 5</em> jobs in Macon-Bibb is in <em>health care</em>.</h2>
-                <p class="chapter-dek">Each slice is an industry sector, sized by the number of jobs in it. Click a slice, or a sector in the list, to see the industries inside it.</p>
+                <p class="stop-totals" id="ind-totals"><b>85,088</b> jobs in Macon-Bibb · <b>$55,410</b> average pay</p>
             </header>
-            <div class="donut-scrub" data-scrub id="donut-scrub">
-                <div class="donut-stage">
-                    <div class="donut" id="donut">
-                        <svg id="donut-svg" role="group" aria-label="Jobs by industry"></svg>
-                        <div class="donut-center" id="donut-center"></div>
+            <div class="tool-panel tool-panel--donut">
+                <div class="donut" id="donut">
+                    <svg id="donut-svg" role="group" aria-label="Jobs by industry"></svg>
+                    <div class="donut-center" id="donut-center"></div>
+                </div>
+                <div class="tool-col">
+                    <div class="seg" id="ind-views" role="group" aria-label="Show">
+                        <button type="button" data-view="biggest">Biggest</button>
+                        <button type="button" data-view="specialties">Specialties</button>
+                        <button type="button" data-view="commuters">What commuters come for</button>
                     </div>
-                    <div class="donut-side">
+                    <div class="donut-side" data-pane="biggest">
+                        <p class="pane-note">Click a sector to see the industries inside it.</p>
                         <button type="button" class="donut-back" id="donut-back" hidden>← All industries</button>
                         <ol class="donut-legend" id="donut-legend"></ol>
                     </div>
+                    <div data-pane="specialties" hidden>
+                        <p class="pane-note">Industries far more concentrated here than in the U.S. as a whole. Click one for detail.</p>
+                        <ol class="strength-list" id="strength-list"></ol>
+                    </div>
+                    <div data-pane="commuters" hidden>
+                        <p class="pane-note" id="find-sectors">Health care draws the most commuters.</p>
+                        <div id="sector-commute-bars"></div>
+                        <p class="chart-note">Jobs here held by people who live outside Macon-Bibb, at minimum: jobs located here minus Macon-Bibb residents working in that industry anywhere (LODES 2023). The true numbers are higher.</p>
+                    </div>
                 </div>
             </div>
-            <h3 class="chapter-sub">What Macon is strong in</h3>
-            <p class="sector-finding">Size isn't the only measure. These industries are far more concentrated in Macon-Bibb than in the U.S. as a whole, the kind of specialties that set a place apart.</p>
-            <div class="tool-split">
-                <ol class="strength-list" id="strength-list"></ol>
-                <div class="tool-card">
-                    <p class="tool-kicker">Look up any industry</p>
+            <div class="tool-panel tool-panel--search">
+                <div class="tool-col">
                     <label class="tool-search">
                         <span class="sr-only">Search any industry</span>
-                        <input id="strength-q" type="search" placeholder="e.g. hospitals, trucking, insurance" autocomplete="off">
+                        <input id="strength-q" type="search" placeholder="Look up any industry, e.g. hospitals, trucking, insurance" autocomplete="off">
                         <ul class="tool-matches" id="strength-qlist" hidden></ul>
                     </label>
                     <div class="tool-result" id="strength-result" aria-live="polite" hidden></div>
-                    <p class="tool-upsell">Want the full competitive profile for your industry? <a href="#custom-research">Request custom research →</a></p>
                 </div>
+                <p class="tool-upsell">Want the full competitive profile for your industry? <a href="#custom-research">Request custom research →</a></p>
             </div>
-            <p class="chapter-bridge">Inside the biggest of them, health care, one job stands out.</p>
         </section>
 
-        <!-- 03 · The work itself -->
-        <section class="chapter" id="section-occupations">
-            <header class="chapter-head">
-                <p class="chapter-kicker"><span>03</span>The work itself <span class="info-btn-wrap"><button type="button" class="info-btn" aria-label="About this data">i</button><span class="info-popover"><strong>What this shows</strong><span>Occupational Employment and Wage Statistics (OES) estimates for Macon-Bibb County — employment and mean annual wage by occupation (SOC code), plus regional projections: 1-year growth, exits, transfers and net new positions. Totals differ from the QCEW payroll count above due to classification methodology.</span></span></span></p>
-                <h2 class="chapter-finding" id="find-occ"><em>Registered nurses</em> are Macon-Bibb's most common job: <em>2,779</em> positions averaging <em>$87,600</em>.</h2>
-                <p class="chapter-dek">The occupations that employ the most people in Macon-Bibb. <span id="occ-commute-note"></span></p>
-            </header>
-            <div class="tool-card tool-card--wide">
-                <div class="tool-card__search">
-                    <p class="tool-kicker">Look up any job</p>
-                    <h4 class="tool-title">What does a job pay here?</h4>
-                    <label class="tool-search">
-                        <span class="sr-only">Search <span id="job-count">800</span> occupations</span>
-                        <input id="job-q" type="search" placeholder="e.g. nurse, welder, teacher" autocomplete="off">
-                        <ul class="tool-matches" id="job-list" hidden></ul>
-                    </label>
-                    <p class="tool-upsell">Need entry-level vs. experienced pay, or how Macon compares to Atlanta and Savannah? <a href="#custom-research">Request custom research →</a></p>
-                </div>
-                <div class="tool-result" id="job-result" aria-live="polite"></div>
-            </div>
-            <h3 class="chapter-sub">Top occupations</h3>
-            <div class="occ-table-wrap">
-                <table class="occ-table">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Occupation</th>
-                            <th><span class="th-full">Employment</span><span class="th-short">Empl.</span></th>
-                            <th><span class="th-full">Avg Annual Wage</span><span class="th-short">Avg Wage</span></th>
-                        </tr>
-                    </thead>
-                    <tbody id="occ-tbody"></tbody>
-                </table>
-            </div>
-            <div class="chart-expand-row">
-                <button class="chart-expand-btn" id="occ-toggle">▼ Show All Occupations</button>
-            </div>
-            <details class="chapter-more">
-                <summary>More labor market detail: fastest-growing and best-paying jobs, exits and transfers</summary>
-                <div class="occ-charts-grid">
-                    <div class="occ-chart-card">
-                        <div class="occ-chart-title">Top Growing Occupations</div>
-                        <div class="occ-chart-sub">1-year forecast growth rate · 3-digit SOC group · min. 50 employees</div>
-                        <div id="occ-proj-growth"></div>
-                        <div class="chart-expand-row"><button class="chart-expand-btn" id="occ-growth-toggle">▼ Show More</button></div>
-                    </div>
-                    <div class="occ-chart-card">
-                        <div class="occ-chart-title">Top Paying Jobs</div>
-                        <div class="occ-chart-sub">Mean annual wage</div>
-                        <div id="occ-wage-mean"></div>
-                        <div class="chart-expand-row"><button class="chart-expand-btn" id="occ-wage-toggle">▼ Show More</button></div>
-                    </div>
-                </div>
-                <div class="occ-chart-card occ-chart-card--wide">
-                    <div class="occ-tabs" role="tablist" aria-label="Occupation demand metric">
-                        <button class="occ-tab active" data-metric="exits" role="tab" aria-selected="true">Job Exits</button>
-                        <button class="occ-tab" data-metric="transfers" role="tab" aria-selected="false">Occupational Transfers</button>
-                        <button class="occ-tab" data-metric="netgrowth" role="tab" aria-selected="false">Net New Positions</button>
-                    </div>
-                    <div class="occ-chart-sub" id="occ-demand-sub">Workers permanently leaving the occupation annually</div>
-                    <div id="occ-demand-chart"></div>
-                </div>
-            </details>
-            <p class="chapter-bridge">And employers are still looking.</p>
-        </section>
-
-        <!-- 04 · Still hiring -->
-        <section class="chapter" id="section-hiring">
-            <header class="chapter-head">
-                <p class="chapter-kicker"><span>04</span>Still hiring <span class="info-btn-wrap"><button type="button" class="info-btn" aria-label="About this data">i</button><span class="info-popover"><strong>What this shows</strong><span>Active online job ads for Bibb County from the site's most recent snapshot (March 2026), grouped by industry and by employer. The headline total sums the industry counts. Ads measure hiring demand, not filled positions or total employment.</span></span></span></p>
+        <!-- Stop 4 · Hiring -->
+        <section class="stop" id="hiring">
+            <header class="stop-head">
+                <p class="chapter-kicker">Hiring <span class="info-btn-wrap"><button type="button" class="info-btn" aria-label="About this data">i</button><span class="info-popover"><strong>What this shows</strong><span>Active online job ads for Bibb County from the most recent snapshot (March 2026), by employer and by industry. The total sums the industry counts. Ads measure hiring demand, not filled positions.</span></span></span></p>
                 <div class="ticker">
                     <b class="ticker__num" id="hire-total">1,612</b>
                     <span class="ticker__label">active online job ads in Macon-Bibb</span>
-                    <span class="ticker__note">Latest job-ad snapshot (March 2026) · summed across industries</span>
+                    <span class="ticker__note">Latest job-ad snapshot (March 2026)</span>
                 </div>
                 <h2 class="chapter-finding chapter-finding--sm" id="find-hiring"><em>Health care</em> is hiring the most, with <em>480</em> openings.</h2>
             </header>
-            <div class="hiring-grid">
-                <div class="chart-container hiring-employers">
-                    <h3>Who's hiring</h3>
-                    <p class="chart-subtitle">Employers with the most active job listings</p>
-                    <div id="employers-chart" class="chart"></div>
-                    <div class="chart-expand-row"><button class="chart-expand-btn" id="employers-toggle">▼ Show All Employers</button></div>
-                </div>
-                <div class="chart-container">
-                    <h3>By industry</h3>
-                    <p class="chart-subtitle">Active job postings by industry sector</p>
-                    <div id="hiring-chart" class="chart"></div>
-                    <div class="chart-expand-row"><button class="chart-expand-btn" id="hiring-toggle">▼ Show All Industries</button></div>
+            <div class="tool-panel tool-panel--one">
+                <div class="tool-col">
+                    <div class="tool-row">
+                        <div class="seg" id="hire-views" role="group" aria-label="Show job ads by">
+                            <button type="button" data-view="employers">By employer</button>
+                            <button type="button" data-view="industries">By industry</button>
+                        </div>
+                        <label class="tool-search tool-search--sm">
+                            <span class="sr-only">Filter the list</span>
+                            <input id="hire-q" type="search" placeholder="Filter employers" autocomplete="off">
+                        </label>
+                    </div>
+                    <div id="hiring-bars" class="hiring-bars"></div>
+                    <button type="button" class="chart-expand-btn" id="hire-more" hidden></button>
+                    <p class="tool-upsell">Want to know what a job pays or how many open each year? <a href="#jobs">Look it up in Jobs →</a> Need hiring trends over time? <a href="#custom-research">Request custom research →</a></p>
                 </div>
             </div>
-            <p class="chapter-bridge">So who's here, at home, to fill them?</p>
         </section>
 
-        <!-- 05 · The talent at home -->
-        <section class="chapter" id="section-demographics">
-            <header class="chapter-head">
-                <p class="chapter-kicker"><span>05</span>The talent at home <span class="info-btn-wrap"><button type="button" class="info-btn" aria-label="About this data">i</button><span class="info-popover"><strong>What this shows</strong><span>American Community Survey (ACS) 2024 estimates for Macon-Bibb County residents — educational attainment, labor force participation, age, and race &amp; ethnicity.</span></span></span></p>
-                <h2 class="chapter-finding" id="find-demo"><em>58%</em> of working-age adults in Macon-Bibb have education beyond high school. <em>27%</em> hold a bachelor's degree or higher.</h2>
-                <p class="chapter-dek">Macon-Bibb's own residents: the local talent pool employers draw on before they look to the region.</p>
-            </header>
-            <div class="demo-stat-grid">
-                <div class="demo-stat"><div class="demo-stat-val" id="demo-population">—</div><div class="demo-stat-key">Residents</div></div>
-                <div class="demo-stat"><div class="demo-stat-val" id="demo-lfpr">—</div><div class="demo-stat-key">Labor Force Participation · Age 16+</div></div>
-                <div class="demo-stat"><div class="demo-stat-val" id="demo-primeage">—</div><div class="demo-stat-key">Prime-Age Participation · Ages 25–54</div></div>
-                <div class="demo-stat"><div class="demo-stat-val" id="demo-wfh">—</div><div class="demo-stat-key">Work From Home</div></div>
-            </div>
-            <div class="demo-grid demo-grid--1">
-                <div class="demo-card"><div class="demo-card-title">Educational Attainment (Age 25–64)</div><div id="edu-bars"></div></div>
-            </div>
-            <details class="chapter-more">
-                <summary>More about residents: age and race &amp; ethnicity</summary>
-                <div class="demo-grid demo-grid--2">
-                    <div class="demo-card"><div class="demo-card-title">Age Distribution</div><div id="age-bars"></div></div>
-                    <div class="demo-card"><div class="demo-card-title">Race &amp; Ethnicity</div><div id="race-bars"></div></div>
-                </div>
-            </details>
-        </section>
-
-        <!-- Closing: the thesis, then what custom research adds -->
-        <section class="chapter chapter--close" id="section-explore">
-            <p class="chapter-kicker chapter-kicker--center">The takeaway</p>
-            <h2 class="chapter-finding">Macon-Bibb is where Middle Georgia goes to work, and health care is why.</h2>
-
-            <div class="custom-pitch" id="custom-research">
+        <!-- Closing: what custom research adds -->
+        <section class="chapter chapter--close" id="custom-research">
+            <h2 class="chapter-finding">Macon-Bibb is where Middle Georgia goes to work.</h2>
+            <div class="custom-pitch">
                 <h3>What custom research adds</h3>
                 <p>Workforce Macon is free and updated every quarter. When you need more than what's here, the Greater Macon Chamber of Commerce builds custom research for employers, site selectors and partners.</p>
                 <ul>
                     <li><b>Pay ranges</b>, from entry-level to experienced, not just averages</li>
                     <li><b>Comparisons</b> with Atlanta, Savannah, Augusta, Columbus and peer metros</li>
                     <li><b>Trends</b> in jobs, pay and commuting over time</li>
-                    <li><b>Your focus</b>: a specific industry, occupation, or the labor shed around your site</li>
+                    <li><b>Your focus</b>: a specific industry, occupation, the local talent pool, or the labor shed around your site</li>
                 </ul>
                 <div class="close-actions">
                     <a class="close-btn close-btn--primary" href="about.html">Request custom research</a>
@@ -378,7 +292,7 @@
                     <a class="close-btn" href="navigator.html">Explore the Workforce Navigator</a>
                 </div>
             </div>
-            <p class="close-sources">Sources: commuting, U.S. Census Bureau LODES 2023 · residents and education, American Community Survey 2024 · jobs, wages, occupations and industry concentration, regional QCEW and OES snapshots · job ads, March 2026 snapshot.</p>
+            <p class="close-sources">Sources: commuting, U.S. Census Bureau LODES 2023 · residents, American Community Survey 2024 · jobs, wages, occupations and industry concentration, regional QCEW and OES snapshots · job ads, March 2026 snapshot.</p>
         </section>
     </main>
 
@@ -420,7 +334,6 @@
 
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://unpkg.com/deck.gl@9.0.38/dist.min.js"></script>
-    <script src="js/charts.js"></script>
     <script src="js/workforce-data.js"></script>
     <script src="js/nav.js"></script>
     <script src="js/reveal.js"></script>
