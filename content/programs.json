@@ -1,6 +1,6 @@
 {
  "built": "2026-10-21",
- "count": 616,
+ "count": 610,
  "programs": [
   {
    "id": "central-ga-tech-automation-technology-associate",
@@ -20,7 +20,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/ist/ai-enhanced-robotic-manufacturing-specialist",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -42,7 +42,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/amt",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -64,7 +64,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/carpentry",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -89,7 +89,7 @@
     "Residential"
    ],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/construction",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -116,7 +116,7 @@
     "Field Occupation"
    ],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/electronics",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -143,7 +143,7 @@
     "Mechanical Engineering"
    ],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/engineering",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -165,7 +165,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/ist",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -187,7 +187,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/mechatronics-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -209,7 +209,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/metrology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -233,7 +233,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/accounting",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -257,7 +257,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/technical-management",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -280,7 +280,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/banking-finance",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -309,7 +309,7 @@
     "Practice Management"
    ],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/business-healthcare-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -338,7 +338,7 @@
     "Small Business Management"
    ],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/business-management",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -367,7 +367,7 @@
     "Social Media"
    ],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/business-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -391,7 +391,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/computer-programming",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -415,7 +415,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/computer-support-specialist",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -439,7 +439,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/cybersecurity",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -463,7 +463,7 @@
     "Post Production"
    ],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/design-media-production",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -485,7 +485,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/hotel-restaurant-tourism-mgmt",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -508,7 +508,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/it-professional",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -531,7 +531,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/logistics-management",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -561,7 +561,7 @@
     "Sports Marketing"
    ],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/marketing-management",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -590,7 +590,7 @@
     "Microsoft"
    ],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/networking-specialist",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -613,7 +613,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/sports-and-fitness-management",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -636,7 +636,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/website-design-development",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -660,7 +660,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/general-studies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/general-studies",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -684,7 +684,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/general-studies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/general-studies",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -708,7 +708,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/general-studies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/general-studies",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -732,7 +732,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/general-studies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/general-studies",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -756,7 +756,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/general-studies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/general-studies",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -780,7 +780,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/general-studies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/general-studies",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -800,7 +800,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/",
+   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/radiologic-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -827,7 +827,7 @@
     "Practical Nursing"
    ],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/",
+   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/nursing",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -850,7 +850,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/",
+   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/nursing",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -872,7 +872,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/",
+   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/nursing",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -894,7 +894,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/",
+   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/biotechnology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -916,7 +916,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/",
+   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/cardiovascular-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -939,7 +939,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/",
+   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/dental-hygiene",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -961,7 +961,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/",
+   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/cardiovascular-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -983,7 +983,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/",
+   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/medical-laboratory-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -1005,7 +1005,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/",
+   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/orthopedic-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -1027,7 +1027,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/",
+   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/paramedicine",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -1049,7 +1049,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/",
+   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/physical-therapy",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -1072,7 +1072,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/",
+   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/radiologic-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -1094,7 +1094,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/",
+   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/surgical-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -1118,7 +1118,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/",
+   "url": "https://www.centralgatech.edu/programs-of-study/general-studies",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -1142,7 +1142,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/public-safety-professional-services/",
+   "url": "https://www.centralgatech.edu/programs-of-study/public-safety-professional-services/criminal-justice",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -1166,7 +1166,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/public-safety-professional-services/",
+   "url": "https://www.centralgatech.edu/programs-of-study/public-safety-professional-services/criminal-justice",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -1196,7 +1196,7 @@
     "Program Administrator"
    ],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/public-safety-professional-services/",
+   "url": "https://www.centralgatech.edu/programs-of-study/public-safety-professional-services/early-childhood",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -1219,7 +1219,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/public-safety-professional-services/",
+   "url": "https://www.centralgatech.edu/programs-of-study/public-safety-professional-services/paralegal-studies",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -1243,7 +1243,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/air-conditioning",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -1265,7 +1265,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/ast",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -1288,7 +1288,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/ist/ai-enhanced-robotic-manufacturing-specialist",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -1312,7 +1312,7 @@
     "Refinishing"
    ],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/automotive-collision",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -1336,7 +1336,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/automotive-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -1360,7 +1360,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/automotive-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -1382,7 +1382,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/amt",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -1404,7 +1404,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/carpentry",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -1426,7 +1426,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/construction",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -1449,7 +1449,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/ist",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -1471,7 +1471,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/est",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -1494,7 +1494,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/electronics",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -1521,7 +1521,7 @@
     "Field Occupation"
    ],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/electronics",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -1544,7 +1544,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/ist",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -1566,7 +1566,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/mechatronics-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -1588,7 +1588,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/metrology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -1610,7 +1610,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/precision-machining-manufacturing-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -1635,7 +1635,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/welding-joining",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -1659,7 +1659,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/accounting",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -1682,7 +1682,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/banking-finance",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -1706,7 +1706,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/business-healthcare-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -1729,7 +1729,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/business-management",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -1753,7 +1753,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/business-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -1777,7 +1777,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/computer-programming",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -1801,7 +1801,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/computer-support-specialist",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -1825,7 +1825,7 @@
     "Post Production"
    ],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/design-media-production",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -1847,7 +1847,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/hotel-restaurant-tourism-mgmt",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -1870,7 +1870,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/it-professional",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -1892,7 +1892,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/logistics-management",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -1922,7 +1922,7 @@
     "Sports Marketing"
    ],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/marketing-management",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -1951,7 +1951,7 @@
     "Microsoft"
    ],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/networking-specialist",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -1974,7 +1974,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/sports-and-fitness-management",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -1997,7 +1997,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/website-design-development",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -2019,7 +2019,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/",
+   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/dental-assisting",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -2042,7 +2042,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/",
+   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/paramedicine",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -2065,7 +2065,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/",
+   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/hemodialysis",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -2089,7 +2089,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/",
+   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/medical-assisting",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -2111,7 +2111,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/",
+   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/paramedicine",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -2133,7 +2133,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/",
+   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/pharmacy-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -2155,7 +2155,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/",
+   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/polysomnography",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -2179,7 +2179,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/public-safety-professional-services/",
+   "url": "https://www.centralgatech.edu/programs-of-study/public-safety-professional-services/criminal-justice",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -2203,7 +2203,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/public-safety-professional-services/",
+   "url": "https://www.centralgatech.edu/programs-of-study/public-safety-professional-services/early-childhood",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -2228,7 +2228,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/welding-joining",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -2250,7 +2250,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/ist/ai-enhanced-robotic-manufacturing-specialist",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -2274,7 +2274,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/air-conditioning",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -2298,7 +2298,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/air-conditioning",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -2320,7 +2320,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/ast",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -2342,7 +2342,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/ast",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -2364,7 +2364,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/ast",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -2387,7 +2387,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/ist",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -2411,7 +2411,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/automotive-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -2435,7 +2435,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/automotive-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -2457,7 +2457,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/automotive-collision",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -2481,7 +2481,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/automotive-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -2505,7 +2505,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/automotive-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -2529,7 +2529,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/automotive-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -2553,7 +2553,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/automotive-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -2575,7 +2575,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/amt",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -2597,7 +2597,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/amt",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -2619,7 +2619,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/amt",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -2642,7 +2642,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/electronics",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -2665,7 +2665,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/electronics",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -2688,7 +2688,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/precision-machining-manufacturing-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -2710,7 +2710,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/precision-machining-manufacturing-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -2732,7 +2732,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/mechatronics-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -2757,7 +2757,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/welding-joining",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -2779,7 +2779,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/metrology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -2799,7 +2799,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/carpentry",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -2819,7 +2819,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/carpentry",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -2841,7 +2841,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/precision-machining-manufacturing-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -2863,7 +2863,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -2889,7 +2889,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/ctd",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -2911,7 +2911,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/ctd",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -2933,30 +2933,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
-   "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
-   "verify": false,
-   "checked": "2026-10-21"
-  },
-  {
-   "id": "central-ga-tech-construction-career-launch-safety-certificate",
-   "name": "Construction Career Launch Safety",
-   "org": "central-ga-tech",
-   "earn": "certificate",
-   "credential": "Technical Certificate of Credit",
-   "length": "Accelerated: usually under 3 months (4 credit hours)",
-   "bucket": "weeks",
-   "field": "trades",
-   "cost": "About $428 tuition ($107 per credit hour)",
-   "campus": "Warner Robins · Macon",
-   "places": [
-    "warner-robins",
-    "macon"
-   ],
-   "online": false,
-   "options": [],
-   "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/est",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -2978,7 +2955,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/construction",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -3000,7 +2977,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/diesel-equipment-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -3022,7 +2999,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/diesel-equipment-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -3044,7 +3021,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/diesel-equipment-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -3066,7 +3043,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/diesel-equipment-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -3088,7 +3065,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/engineering",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -3112,7 +3089,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/automotive-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -3135,7 +3112,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/engineering",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -3157,7 +3134,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/metrology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -3180,7 +3157,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/engineering",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -3203,7 +3180,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/engineering",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -3225,29 +3202,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
-   "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
-   "verify": false,
-   "checked": "2026-10-21"
-  },
-  {
-   "id": "central-ga-tech-finish-carpenter-certificate",
-   "name": "Finish Carpenter",
-   "org": "central-ga-tech",
-   "earn": "certificate",
-   "credential": "Technical Certificate of Credit",
-   "length": "About 1 semester full time (11 credit hours)",
-   "bucket": "months",
-   "field": "trades",
-   "cost": "About $1,177 tuition ($107 per credit hour)",
-   "campus": "Macon",
-   "places": [
-    "macon"
-   ],
-   "online": false,
-   "options": [],
-   "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/engineering",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -3272,7 +3227,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/welding-joining",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -3297,7 +3252,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/welding-joining",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -3322,7 +3277,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/welding-joining",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -3344,7 +3299,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/diesel-equipment-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -3366,7 +3321,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/automotive-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -3389,7 +3344,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/mechatronics-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -3412,7 +3367,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/engineering",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -3435,7 +3390,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/ist",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -3457,7 +3412,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/mechatronics-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -3480,7 +3435,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/ist",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -3502,7 +3457,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/ist",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -3525,7 +3480,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/precision-machining-manufacturing-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -3549,7 +3504,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/welding-joining",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -3572,7 +3527,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/engineering",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -3594,7 +3549,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/ist",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -3616,7 +3571,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/mechatronics-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -3638,7 +3593,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/precision-machining-manufacturing-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -3661,7 +3616,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/welding-joining",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -3684,7 +3639,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/ist",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -3708,7 +3663,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/air-conditioning",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -3730,7 +3685,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/est",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -3753,7 +3708,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/ist",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -3778,7 +3733,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/",
+   "url": "https://www.centralgatech.edu/programs-of-study/aerospace-trade-industry/welding-joining",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -3802,7 +3757,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/business-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -3826,7 +3781,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/business-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -3849,7 +3804,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/accounting",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -3869,7 +3824,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/information-technology-tccs",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -3892,7 +3847,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/banking-finance",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -3915,7 +3870,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/logistics-management",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -3938,7 +3893,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/information-technology-tccs",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -3962,7 +3917,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/information-technology-tccs",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -3986,7 +3941,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/information-technology-tccs",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -4010,7 +3965,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/information-technology-tccs",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -4033,7 +3988,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/accounting",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -4053,7 +4008,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/cybersecurity",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -4077,7 +4032,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/information-technology-tccs",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -4099,7 +4054,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/design-media-production",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -4121,7 +4076,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/marketing-management",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -4145,7 +4100,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/information-technology-tccs",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -4169,7 +4124,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/business-healthcare-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -4193,7 +4148,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/business-healthcare-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -4217,7 +4172,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/business-healthcare-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -4241,7 +4196,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/business-healthcare-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -4265,7 +4220,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/information-technology-tccs",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -4290,7 +4245,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/hotel-restaurant-tourism-mgmt",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -4312,7 +4267,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/business-management",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -4337,7 +4292,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/logistics-management",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -4361,7 +4316,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/information-technology-tccs",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -4385,7 +4340,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/business-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -4408,7 +4363,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/logistics-management",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -4430,7 +4385,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/business-management",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -4453,7 +4408,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/business-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -4477,7 +4432,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/business-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -4500,7 +4455,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/business-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -4524,7 +4479,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/information-technology-tccs",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -4548,7 +4503,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/information-technology-tccs",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -4572,7 +4527,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/business-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -4596,7 +4551,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/business-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -4620,7 +4575,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/information-technology-tccs",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -4642,7 +4597,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/design-media-production",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -4666,7 +4621,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/information-technology-tccs",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -4690,7 +4645,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/information-technology-tccs",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -4713,7 +4668,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/accounting",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -4736,7 +4691,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/accounting",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -4760,7 +4715,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/information-technology-tccs",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -4784,7 +4739,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/logistics-management",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -4806,7 +4761,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/business-management",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -4829,7 +4784,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/business-management",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -4853,7 +4808,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/business-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -4876,7 +4831,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/sports-and-fitness-management",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -4898,7 +4853,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/logistics-management",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -4921,7 +4876,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/accounting",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -4944,7 +4899,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/business-management",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -4966,7 +4921,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/design-media-production",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -4990,7 +4945,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/logistics-management",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -5014,7 +4969,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/information-technology-tccs",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -5038,7 +4993,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/business-computer-technologies/information-technology-tccs",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -5062,7 +5017,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/general-studies/",
+   "url": "https://www.centralgatech.edu/programs-of-study/general-studies",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -5085,7 +5040,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/",
+   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/orthopedic-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -5107,7 +5062,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/",
+   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/medical-laboratory-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -5130,29 +5085,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/",
-   "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
-   "verify": false,
-   "checked": "2026-10-21"
-  },
-  {
-   "id": "central-ga-tech-basic-pharmacy-technology-certificate",
-   "name": "Basic Pharmacy Technology",
-   "org": "central-ga-tech",
-   "earn": "certificate",
-   "credential": "Technical Certificate of Credit",
-   "length": "About 1 semester full time (15 credit hours)",
-   "bucket": "months",
-   "field": "healthcare",
-   "cost": "About $1,605 tuition ($107 per credit hour)",
-   "campus": "Macon",
-   "places": [
-    "macon"
-   ],
-   "online": false,
-   "options": [],
-   "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/",
+   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/paramedicine",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -5174,7 +5107,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/",
+   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/biotechnology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -5196,7 +5129,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/",
+   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/physical-therapy",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -5218,7 +5151,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/",
+   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/radiologic-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -5240,7 +5173,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/",
+   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/radiologic-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -5262,7 +5195,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/",
+   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/cardiovascular-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -5284,7 +5217,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/",
+   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/paramedicine",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -5316,7 +5249,7 @@
     "Phlebotomy"
    ],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/",
+   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/health-sciences-tccs",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -5338,7 +5271,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/",
+   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/health-sciences-tccs",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -5360,7 +5293,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/",
+   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/radiologic-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -5380,7 +5313,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/",
+   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/medical-assisting",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -5402,7 +5335,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/",
+   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/nursing",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -5428,7 +5361,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/",
+   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/nursing",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -5450,7 +5383,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/",
+   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/nursing",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -5473,7 +5406,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/",
+   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/medical-laboratory-technology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -5497,7 +5430,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/",
+   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/nursing",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -5520,7 +5453,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/",
+   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/paramedicine",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -5544,7 +5477,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/",
+   "url": "https://www.centralgatech.edu/programs-of-study/health-sciences/nursing",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -5567,7 +5500,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/public-safety-professional-services/",
+   "url": "https://www.centralgatech.edu/programs-of-study/public-safety-professional-services/paralegal-studies",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -5591,7 +5524,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/public-safety-professional-services/",
+   "url": "https://www.centralgatech.edu/programs-of-study/public-safety-professional-services/barbering",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -5615,7 +5548,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/public-safety-professional-services/",
+   "url": "https://www.centralgatech.edu/programs-of-study/public-safety-professional-services/barbering",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -5639,7 +5572,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/public-safety-professional-services/",
+   "url": "https://www.centralgatech.edu/programs-of-study/public-safety-professional-services/cosmetology",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -5665,7 +5598,7 @@
    "online": true,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/public-safety-professional-services/",
+   "url": "https://www.centralgatech.edu/programs-of-study/public-safety-professional-services/early-childhood",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -5689,7 +5622,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/public-safety-professional-services/",
+   "url": "https://www.centralgatech.edu/programs-of-study/public-safety-professional-services/early-childhood",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -5713,7 +5646,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/public-safety-professional-services/",
+   "url": "https://www.centralgatech.edu/programs-of-study/public-safety-professional-services/early-childhood",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -5737,7 +5670,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/public-safety-professional-services/",
+   "url": "https://www.centralgatech.edu/programs-of-study/public-safety-professional-services/early-childhood",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -5762,7 +5695,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/public-safety-professional-services/",
+   "url": "https://www.centralgatech.edu/programs-of-study/public-safety-professional-services/early-childhood",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -5786,7 +5719,7 @@
    "online": false,
    "options": [],
    "leadsTo": "",
-   "url": "https://www.centralgatech.edu/programs-of-study/public-safety-professional-services/",
+   "url": "https://www.centralgatech.edu/programs-of-study/public-safety-professional-services/barbering",
    "source": "https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf",
    "verify": false,
    "checked": "2026-10-21"
@@ -8346,26 +8279,6 @@
    "checked": "2026-10-21"
   },
   {
-   "id": "middle-ga-state-live-production-streaming-esports-certificate",
-   "name": "Live Production, Streaming, Esports",
-   "org": "middle-ga-state",
-   "earn": "certificate",
-   "credential": "Cert",
-   "length": "Usually under a year",
-   "bucket": "months",
-   "field": "media",
-   "cost": "Public university tuition",
-   "campus": "See the program page",
-   "places": [],
-   "online": false,
-   "options": [],
-   "leadsTo": "",
-   "url": "https://www.mga.edu/degrees/index.php",
-   "source": "https://www.mga.edu/degrees/index.php",
-   "verify": false,
-   "checked": "2026-10-21"
-  },
-  {
    "id": "middle-ga-state-logistics-management-certificate",
    "name": "Logistics Management",
    "org": "middle-ga-state",
@@ -8882,48 +8795,6 @@
    "options": [],
    "leadsTo": "",
    "url": "https://liberalarts.mercer.edu/academic-programs/majors-and-minors/chemistry/",
-   "source": "https://www.mercer.edu/academics/program-finder/",
-   "verify": false,
-   "checked": "2026-10-21"
-  },
-  {
-   "id": "mercer-christian-ministry-m-a-graduate",
-   "name": "Christian Ministry, M.A.",
-   "org": "mercer",
-   "earn": "graduate",
-   "credential": "Master's Degree",
-   "length": "About 1–2 years",
-   "bucket": "1to2",
-   "field": "social",
-   "cost": "Private tuition · financial aid available",
-   "campus": "Online",
-   "places": [],
-   "online": true,
-   "options": [],
-   "leadsTo": "",
-   "url": "https://www.mercer.edu/academics/program-finder/",
-   "source": "https://www.mercer.edu/academics/program-finder/",
-   "verify": false,
-   "checked": "2026-10-21"
-  },
-  {
-   "id": "mercer-church-music-m-m-graduate",
-   "name": "Church Music, M.M.",
-   "org": "mercer",
-   "earn": "graduate",
-   "credential": "Master's Degree",
-   "length": "About 1–2 years",
-   "bucket": "1to2",
-   "field": "media",
-   "cost": "Private tuition · financial aid available",
-   "campus": "Macon",
-   "places": [
-    "macon"
-   ],
-   "online": false,
-   "options": [],
-   "leadsTo": "",
-   "url": "https://www.mercer.edu/academics/program-finder/",
    "source": "https://www.mercer.edu/academics/program-finder/",
    "verify": false,
    "checked": "2026-10-21"

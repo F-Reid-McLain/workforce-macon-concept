@@ -13,7 +13,11 @@ Builds `content/programs.json`, which lists every program the Navigator's organi
 
 Central Georgia Tech's campuses and credit hours come from its catalog: run `python3 tools/parse-cgtc-catalog.py catalog.pdf` (needs `pip install pypdf`) to refresh `sources/cgtc-catalog.json`.
 
-Every program keeps its `source` and the date it was `checked`. The build also checks every program link and swaps any dead link (404) for the page it was listed on.
+**The inclusion rule: a program is listed only if it appears on an active web page from the organization that offers it.**
+- Central Georgia Tech programs link to their own program page (or the division page that lists them). A program that no live CGTC page mentions is left out, and the build names it. The pages are saved to `sources/cgtc-pages.json` and used if the site is down.
+- For everyone else, a program whose page is gone (404) is left out and named in the build output.
+
+Every program keeps its `source` and the date it was `checked`. The build also checks every program link (see the inclusion rule below).
 
 **To refresh (about once a quarter):**
 1. Compare Central Georgia Tech's current Programs of Study PDF against `sources/cgtc-programs.txt` and update the list and the date at the top.

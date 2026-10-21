@@ -18,6 +18,8 @@ import json
 import os
 import re
 import sys
+import time
+import urllib.parse
 import urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -27,9 +29,15 @@ TODAY = datetime.date.today().isoformat()
 UA = {'User-Agent': 'Mozilla/5.0 (Workforce Macon catalog builder)'}
 
 
-def fetch(url):
-    with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=60) as r:
-        return r.read().decode('utf-8', 'ignore')
+def fetch(url, tries=3):
+    for attempt in range(tries):   # school sites occasionally drop a connection; try again before giving up
+        try:
+            with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=60) as r:
+                return r.read().decode('utf-8', 'ignore')
+        except Exception:
+            if attempt == tries - 1:
+                raise
+            time.sleep(2 * (attempt + 1))
 
 
 def slug(s):
@@ -174,8 +182,87 @@ def cgtc_length_from_hours(hours, name):
     return text, 'months' if semesters <= 2 else '1to2' if semesters <= 6 else '3plus'
 
 
+# ----- Each CGTC program's own live page (the inclusion rule: listed on an active web page) -----
+CGTC_PAGE_STOP = {'technician', 'technology', 'technologies', 'specialist', 'certificate', 'technical', 'associate', 'degree', 'diploma',
+                  'of', 'in', 'the', 'and', 'with', 'science', 'program', 'aas', 'professional', 'professionals', 'i', 'ii'}
+CGTC_PAGE_ALIAS = {'information technology professional': 'it professional', 'commercial driving': 'commercial truck driving',
+                   'website': 'web site', 'powerplant': 'power plant', 'associate of science in': 'as in'}
+
+
+CGTC_PAGES = os.path.join(SOURCES, 'cgtc-pages.json')
+
+
+def cgtc_pages():
+    """Every program page linked from CGTC's five division pages (plus the division pages, which list some
+    programs themselves), as each page's main content only (the sidebar lists every program on every page).
+    Fetched politely; saved to tools/sources/cgtc-pages.json, which is used instead if the site is down."""
+    divisions = ['aerospace-trade-industry', 'business-computer-technologies', 'general-studies', 'health-sciences',
+                 'public-safety-professional-services']
+    def main_text(page):
+        body = re.sub(r'<script.*?</script>|<style.*?</style>|<nav.*?</nav>|<footer.*?</footer>|<header.*?</header>', ' ', page, flags=re.S)
+        text = ' '.join(html.unescape(re.sub(r'<[^>]+>', ' ', body)).split())
+        i = text.find('Home » Programs of Study »')
+        text = text[i:] if i >= 0 else text
+        j = text.find('Programs of Study Aerospace, Trade & Industry', 50)
+        return text[:j] if j > 0 else text
+    try:
+        pages = {}
+        for d in divisions:
+            base = f'https://www.centralgatech.edu/programs-of-study/{d}'
+            page = fetch(base + '/')
+            pages[base] = main_text(page)
+            for u in sorted({h.rstrip('/') for h in re.findall(r'href="(' + re.escape(base) + r'/[^"#?]+)"', page)}):
+                if u not in pages:
+                    time.sleep(0.5)
+                    pages[u] = main_text(fetch(u))
+        json.dump({'fetched': TODAY, 'pages': pages}, open(CGTC_PAGES, 'w'), indent=0, ensure_ascii=False)
+        return pages
+    except Exception as err:
+        saved = json.load(open(CGTC_PAGES, encoding='utf-8'))
+        print(f"  Central Georgia Tech's site isn't responding ({err}); using its pages saved {saved['fetched']}")
+        return saved['pages']
+
+
+def cgtc_words(s):
+    s = s.lower().replace('&', 'and').replace('+', '').replace('.', '')
+    for a, b in CGTC_PAGE_ALIAS.items():
+        s = s.replace(a, b)
+    return re.sub(r'[^a-z0-9 ]', ' ', s).split()
+
+
+CGTC_PAGE_OVERRIDE = {'AAS in Allied Health Professions': 'health-sciences/nursing'}   # named differently on its page
+
+
+def cgtc_page_for(name, pages, earn=''):
+    """The program's page: one that names it outright, or one where all its key words appear within a
+    dozen words of each other ("Commercial Truck Driving – Class A" for "Commercial Driving - Class A").
+    Among pages that mention it, its own page wins (the address shares its words), then for certificates
+    the certificate listing pages, then program pages before division pages, then the shorter page."""
+    if name in CGTC_PAGE_OVERRIDE:
+        return next((u for u in pages if u.endswith(CGTC_PAGE_OVERRIDE[name])), None)
+    want = ' '.join(cgtc_words(name))
+    key = {w[:6] for w in cgtc_words(name) if w not in CGTC_PAGE_STOP}
+    hits = [u for u, t in pages.items() if want in ' '.join(cgtc_words(t))]
+    if not hits and key:
+        for u, t in pages.items():
+            words = [w[:6] for w in cgtc_words(t)]
+            if any(w in key and key <= set(words[i:i + 12]) for i, w in enumerate(words)):
+                hits.append(u)
+    if not hits:
+        return None
+    def rank(u):
+        slug = u.rstrip('/').rsplit('/', 1)[-1]
+        own = len(key & {w[:6] for w in slug.split('-')})
+        division = u.rstrip('/').endswith(tuple(CGTC_DIVISIONS.values()))
+        tcc = earn == 'certificate' and 'tccs' in slug
+        return (-own, not tcc, division, len(pages[u]))
+    return min(hits, key=rank)
+
+
 def cgtc_programs():
     by_name, by_code = cgtc_catalog()
+    pages = cgtc_pages()
+    dropped = []
     out, earn, division, current = [], None, None, None
     for raw in open(os.path.join(SOURCES, 'cgtc-programs.txt'), encoding='utf-8'):
         line = raw.rstrip('\n')
@@ -189,6 +276,11 @@ def cgtc_programs():
             continue
         online = line.endswith('+')
         name = line.rstrip('+').strip()
+        page = cgtc_page_for(name, pages, earn)
+        if not page:
+            dropped.append(f'{earn}: {name}')
+            current = {'options': []}   # options below it have nowhere to go
+            continue
         length, bucket = cgtc_length(earn, name)
         cat = CGTC_MANUAL.get(name) or by_name.get((cgtc_key(name), earn)) or by_code.get(CGTC_CODES.get(name, ''))
         cost, campus, places = CGTC_COST[earn], 'Macon, Warner Robins or other CGTC campuses', []
@@ -205,10 +297,11 @@ def cgtc_programs():
             'org': 'central-ga-tech', 'name': name, 'earn': earn, 'credential': CGTC_CREDENTIAL[earn],
             'length': length, 'bucket': bucket, 'field': field_of(name), 'cost': cost,
             'campus': campus + (' · also online' if online else ''), 'places': places,
-            'url': f'https://www.centralgatech.edu/programs-of-study/{CGTC_DIVISIONS[division]}/',
-            'options': [], 'online': online, 'source': CGTC_SOURCE,
+            'url': page, 'options': [], 'online': online, 'source': CGTC_SOURCE,
         }
         out.append(current)
+    if dropped:
+        print(f'  Central Georgia Tech: left out {len(dropped)} with no live program page: ' + '; '.join(dropped))
     return out
 
 
@@ -271,7 +364,7 @@ def mga_programs():
             parents.append(row)
     out = []
     for p in parents:
-        url = ('https://www.mga.edu' + p['url']) if p['url'] and p['url'].startswith('/') else (p['url'] or MGA_URL)
+        url = urllib.parse.urljoin(MGA_URL, p['url']) if p['url'] else MGA_URL
         for t in (p['tracks'] or [p]):
             name = f"{p['name']}: {t['name']}" if p['tracks'] else p['name']
             deg = t['deg'] or p['deg']
@@ -389,8 +482,9 @@ def manual_programs():
 
 
 def check_links(programs):
-    """Swap any program page that's gone (404/410, or not a web address) for the page it was listed on.
-    Some schools refuse automated requests (403); those pages work in a browser, so they're kept."""
+    """The inclusion rule: a program is listed only if its page is live. Drop any whose page is gone
+    (404/410, or not a web address). Some schools refuse automated requests (403); those pages work in a
+    browser, so they're kept."""
     import concurrent.futures
     import urllib.error
 
@@ -412,10 +506,10 @@ def check_links(programs):
     dead = {u for u, c in codes.items() if c in (404, 410, 'bad')}
     for p in programs:
         if p['url'] in dead:
-            print(f"  dead link replaced: {p['name']} ({p['url']})")
-            p['url'] = p['source']
+            print(f"  left out, its page is gone: {p['name']} ({p['url']})")
     blocked = sum(1 for c in codes.values() if c == 403)
-    print(f'Links: {len(urls)} checked, {len(dead)} dead and replaced, {blocked} refuse automated checks (kept)')
+    print(f'Links: {len(urls)} checked, {len(dead)} gone, {blocked} refuse automated checks (kept)')
+    return [p for p in programs if p['url'] not in dead]
 
 
 def main():
@@ -426,7 +520,7 @@ def main():
         print(f'{name}: {len(found)} programs')
         programs += found
     if '--no-links' not in sys.argv:
-        check_links(programs)
+        programs = check_links(programs)
     ids = set()
     for p in programs:
         base = slug(f"{p['org']} {p['name']} {p['earn']}")
