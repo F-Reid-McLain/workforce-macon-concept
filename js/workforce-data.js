@@ -276,11 +276,13 @@
     }
     // ===== HEADLINES (computed from the data) =====
     function writeFindings(totalRow, occRows) {
-        const set = (id, html) => { const el = document.getElementById(id); if (el && html) el.innerHTML = html; };
+        // "Macon-Bibb" never breaks at its hyphen in a headline
+        const set = (id, html) => { const el = document.getElementById(id); if (el && html) el.innerHTML = html.replace(/Macon-Bibb/g, '<span class="nw">Macon-Bibb</span>'); };
         if (totalRow) set('ind-totals', `<b>${Math.round(toNum(totalRow['Empl'])).toLocaleString()}</b> jobs in Macon-Bibb · <b>$${Math.round(toNum(totalRow['Avg Ann Wages'])).toLocaleString()}</b> average pay`);
         if (hierarchy) {
             const top = d3.greatest(hierarchy.children, sectorJobs), share = sectorJobs(top) / sectorJobsAll();
-            set('find-industries', `<em>1 in ${Math.round(1 / share)}</em> jobs in Macon-Bibb is in <em>${top.name.toLowerCase().replace('&', 'and')}</em>.`);
+            const plain = top.name.replace(' & Social Assistance', '').replace('&', 'and').toLowerCase();   // "health care", not the full category name
+            set('find-industries', `<em>1 in ${Math.round(1 / share)}</em> jobs in Macon-Bibb is in <em>${plain}</em>.`);
         }
         const occ = occRows.filter(r => r['Occupation'] && r['SOC'] && r['SOC'].slice(-2) !== '00' && !r['Occupation'].toLowerCase().includes('total'));
         const topOcc = d3.greatest(occ, r => toNum(r['Empl']));
@@ -383,8 +385,11 @@
         const visible = entries.filter(e => e.isIntersecting);
         if (!visible.length) return;
         visible.sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-        setActive(visible[0].target.id);
+        const el = visible[0].target;
+        // A section's title slide counts as the section
+        setActive(el.classList.contains('stop-intro') ? el.nextElementSibling.id : el.id);
     }, { rootMargin: '-140px 0px -70% 0px', threshold: 0 });
 
     sections.forEach(s => observer.observe(s));
+    document.querySelectorAll('.stop-intro').forEach(s => observer.observe(s));
 })();

@@ -355,7 +355,8 @@
 
         const totalEl = document.getElementById('hire-total'), findEl = document.getElementById('find-hiring');
         if (totalEl) totalEl.textContent = total.toLocaleString();
-        if (findEl && topInd) findEl.innerHTML = `<em>${esc(topInd.label.replace(' & Social Assistance', ''))}</em> is hiring the most, with <em>${topInd.value.toLocaleString()}</em> openings.`;
+        const plain = topInd ? topInd.label.replace(' & Social Assistance', '') : '';
+        if (findEl && topInd) findEl.innerHTML = `<em>${esc(plain.charAt(0) + plain.slice(1).toLowerCase())}</em> is hiring the most, with <em>${topInd.value.toLocaleString()}</em> openings.`;
         // Idle demo: the biggest employers light up in turn
         if (B) attract(document.getElementById('hiring'), [0, 1, 2, 3].map(k => () => { if (view === 'bubbles') B.pulse(k); }));
     }).catch(err => console.error('Hiring data failed to load', err));

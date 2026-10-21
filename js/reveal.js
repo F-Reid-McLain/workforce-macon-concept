@@ -112,8 +112,16 @@
             if (!e.isIntersecting) return;
             stopObserver.unobserve(e.target);
             e.target.classList.add('in-view');
-            e.target.querySelectorAll('.chapter-finding em').forEach(countUp);
         });
     }, { rootMargin: '0px 0px -15% 0px', threshold: 0.12 });
     document.querySelectorAll('.stop, .stop-intro').forEach(el => stopObserver.observe(el));
+    // The figures count up once the headline is near the middle of the screen and readable
+    const headObserver = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+            if (!e.isIntersecting) return;
+            headObserver.unobserve(e.target);
+            e.target.querySelectorAll('em').forEach(countUp);
+        });
+    }, { rootMargin: '-30% 0px -30% 0px', threshold: 0 });
+    document.querySelectorAll('.stop-intro .chapter-finding').forEach(el => headObserver.observe(el));
 })();

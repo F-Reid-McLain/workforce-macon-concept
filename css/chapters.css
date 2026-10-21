@@ -115,7 +115,8 @@ body.page-home .demo-bar-row { padding: 5px 0; font-size: 0.86rem; }
 
 /* ----- Hiring ----- */
 .ticker { display: flex; flex-direction: column; gap: 4px; margin: 0 0 1.4rem; }
-.ticker__num { font: 800 clamp(4.2rem, 13vw, 9.5rem)/0.9 var(--font-heading); letter-spacing: -0.04em; color: var(--ch-teal); font-variant-numeric: tabular-nums; }
+.nw { white-space: nowrap; }
+.ticker__num { margin-bottom: 0.14em; font: 800 clamp(4.2rem, 13vw, 9.5rem)/0.9 var(--font-heading); letter-spacing: -0.04em; color: var(--ch-teal); font-variant-numeric: tabular-nums; }
 .ticker__label { font-size: clamp(1.1rem, 2vw, 1.5rem); font-weight: 600; color: #fff; }
 .ticker__note { font-size: 0.8rem; color: var(--color-text-muted); }
 body.page-home .hiring-bars .demo-bar-track { height: 14px; }
@@ -339,17 +340,8 @@ body.page-home .hiring-bars .demo-bar-row { font-size: 0.95rem; padding: 7px 0; 
     .stop { padding-top: 68px; gap: 12px; }
 }
 
-/* ----- Snapping (desktop and laptop) -----
-   Gentle "proximity" snapping: when scrolling stops near the finished regional map, a
-   section's title slide or its tool, the page settles onto it; elsewhere it scrolls freely.
-   The 3D story before the map has no snap points, so its day plays out under continuous
-   scroll. The map card snaps to center because that's exactly where the story reaches its
-   last moment (js/commute-intro.js times each card by its center). */
-@media (min-width: 901px) and (min-height: 600px) {
-    html:has(body.page-home) { scroll-snap-type: y proximity; }
-    body.page-home :is(.ci-step--map, .stop-intro) { scroll-snap-align: center; }
-    body.page-home :is(.stop, .chapter--close) { scroll-snap-align: start; }
-}
+/* Snapping (desktop and laptop) is done in js/chapters.js: it settles in the direction you
+   were scrolling, which CSS scroll-snap can't do (a small nudge would snap back). */
 
 /* Title slides: the headline fades and rises in as it arrives, holds at the center, then
    fades up and away as its tool comes in. Tied directly to scroll where the browser
