@@ -232,3 +232,7 @@ body.embed-mode .finder-layout { flex: 1; min-height: 0; display: flex; align-it
 body.embed-mode .finder-side { flex: 1; min-height: 0; display: flex; position: static; }
 body.embed-mode .minimap { flex: 1; min-height: 0; height: auto; display: flex; border: 0; border-radius: 0; }
 body.embed-mode .minimap .visualization-section { flex: 1; display: flex; }
+body.embed-mode :is(.corner-tabs, .where-extra, .corner-pane[data-pane="where"]) { display: none !important; }
+body.embed-mode .finder-side { flex-direction: column; }
+body.embed-mode .corner { flex: 1; min-height: 0; height: auto; position: static; display: flex; }
+body.embed-mode .corner-pane[data-pane="eco"] { position: static; flex: 1; min-height: 0; display: flex; visibility: visible; opacity: 1; }
