@@ -47,50 +47,72 @@
 
     <main class="main-content">
       <div class="finder">
-        <header class="finder-head">
-            <p class="chapter-kicker">Workforce Navigator</p>
-            <h2 class="finder-title">Find the right program, school or partner in Greater Macon.</h2>
-            <p class="finder-dek"><span id="finder-total">29</span> organizations that train, place and support workers in <span class="nw">Macon-Bibb</span> and the region. Start with what you need, search, or explore the map.</p>
-        </header>
+        <div class="finder-layout">
+          <div class="finder-main">
+            <header class="finder-head">
+                <p class="chapter-kicker">Workforce Navigator</p>
+                <h2 class="finder-title">Find a program, get support, or find workers in Greater Macon.</h2>
+            </header>
 
-        <div class="finder-needs" role="group" aria-labelledby="finder-needs-label">
-            <span class="finder-needs__label" id="finder-needs-label">What do you need?</span>
-            <div class="finder-needs__chips" id="finder-needs"></div>
-        </div>
-        <div class="finder-needs finder-earn" role="group" aria-labelledby="finder-earn-label">
-            <span class="finder-needs__label" id="finder-earn-label">What you'll earn</span>
-            <div class="finder-needs__chips" id="finder-earn"></div>
-        </div>
+            <div class="doors" role="tablist" aria-label="What are you here for?">
+                <button type="button" class="door" role="tab" data-door="training" id="door-training" aria-controls="view-training">
+                    <b>Get trained or hired</b><span><em id="door-count-training">617</em> programs: certificates, apprenticeships, degrees</span>
+                </button>
+                <button type="button" class="door" role="tab" data-door="support" id="door-support" aria-controls="view-orgs">
+                    <b>Get support</b><span><em id="door-count-support">16</em> organizations: job help, disability, re-entry, shelter</span>
+                </button>
+                <button type="button" class="door" role="tab" data-door="employers" id="door-employers" aria-controls="view-orgs">
+                    <b>For employers</b><span><em id="door-count-employers">11</em> partners: hiring, training funds, growth</span>
+                </button>
+            </div>
 
-        <div class="finder-bar">
-            <label class="tool-search finder-search">
-                <span class="sr-only">Search organizations</span>
-                <input id="finder-q" type="search" placeholder="Search organizations, programs or topics" autocomplete="off">
-            </label>
-            <button type="button" class="finder-more" id="finder-more" aria-expanded="false" aria-controls="finder-filters">More filters</button>
-            <p class="finder-count" id="finder-count" aria-live="polite"></p>
-            <button type="button" class="finder-clear" id="finder-clear" hidden>Clear all</button>
-        </div>
-        <div class="finder-filters" id="finder-filters" hidden>
-            <div class="finder-filters__row"><span>Topics</span><div id="finder-tags"></div></div>
-            <div class="finder-filters__row"><span>Kinds of organization</span><div id="finder-cats"></div></div>
-        </div>
+            <!-- Programs -->
+            <section class="finder-view" id="view-training" role="tabpanel" aria-labelledby="door-training">
+                <div class="finder-bar">
+                    <label class="tool-search finder-search">
+                        <span class="sr-only">Search programs</span>
+                        <input id="finder-q" type="search" placeholder="Search programs, e.g. welding, nursing, CDL, cybersecurity" autocomplete="off">
+                    </label>
+                    <label class="finder-select">
+                        <span class="sr-only">Field</span>
+                        <select id="finder-field"><option value="">All fields</option></select>
+                    </label>
+                </div>
+                <div class="finder-filters">
+                    <div class="finder-row"><span class="finder-row__label">How long</span><div class="finder-chips" id="finder-length"></div></div>
+                    <div class="finder-row"><span class="finder-row__label">You'll earn</span><div class="finder-chips" id="finder-earn"></div></div>
+                </div>
+                <div class="finder-status">
+                    <p class="finder-count" id="finder-count" aria-live="polite"></p>
+                    <label class="finder-toggle"><input type="checkbox" id="finder-online"> Online options only</label>
+                    <button type="button" class="finder-clear" id="finder-clear" hidden>Clear all</button>
+                </div>
+                <ol class="pcards" id="finder-programs"></ol>
+                <button type="button" class="finder-more" id="finder-more" hidden></button>
+                <p class="finder-empty" id="finder-empty" hidden>No programs match all of those. Try fewer filters, or <button type="button" class="finder-linkbtn" id="finder-empty-clear">clear them</button>.</p>
+                <p class="finder-note">Lengths are typical full-time figures and costs are each school's published rates; confirm details with the school. Programs come from each organization's own lists (checked <span id="finder-checked"></span>).</p>
+            </section>
 
-        <div class="finder-body">
-          <div class="finder-list">
-            <a class="finder-tomap" href="#finder-map">See them on the map ↓</a>
-            <ol class="finder-cards" id="finder-cards"></ol>
-            <p class="finder-empty" id="finder-empty" hidden>Nothing matches all of those. Try fewer filters, or <button type="button" class="finder-linkbtn" id="finder-empty-clear">clear them</button>.</p>
-            <p class="finder-suggest">Know an organization that belongs here? <a href="submit-asset.html">Suggest it</a> · <a href="request-edit.html">Request an edit</a></p>
+            <!-- Organizations (support or employers) -->
+            <section class="finder-view" id="view-orgs" role="tabpanel" hidden>
+                <p class="finder-dek" id="orgs-dek"></p>
+                <ol class="ocards" id="finder-orgs"></ol>
+            </section>
+
+            <p class="finder-suggest">Know a program or organization that belongs here? <a href="submit-asset.html">Suggest it</a> · <a href="request-edit.html">Request an edit</a></p>
           </div>
-          <div class="finder-map" id="finder-map">
+
+          <!-- The corner map: lights up the organizations behind what you're looking at; click to explore it full size -->
+          <aside class="finder-side">
+            <div class="minimap" id="minimap">
+              <button type="button" class="minimap__open" id="minimap-open" aria-label="Open the full map of how these organizations connect"></button>
+              <button type="button" class="minimap__close" id="minimap-close" aria-label="Close the map">&times;</button>
         <section class="visualization-section">
             <div class="container">
                 <div class="viz-header">
                     <h2>Workforce Navigator</h2>
                     <p>Explore the interconnected workforce ecosystem that drives Macon's economy</p>
                 </div>
-                <p class="finder-map-note">Every organization, by the kind of help it offers. Click a dot for details.</p>
                 <div id="network-visualization" class="viz-container">
                     <!-- Network visualization will be created by JavaScript -->
                     <div class="viz-search" id="viz-search">
@@ -147,8 +169,11 @@
                 </div>
             </div>
         </section>
-          </div>
+            </div>
+            <p class="minimap__note" id="minimap-note">The organizations behind these results light up. Click the map to explore it.</p>
+          </aside>
         </div>
+        <button type="button" class="minimap-button" id="minimap-button">See how it all connects</button>
       </div>
     </main>
 
@@ -224,6 +249,7 @@
     <script src="js/directory.js"></script>
     <script src="js/search.js"></script>
     <script src="js/navigator-finder.js"></script>
+    <script src="js/navigator-minimap.js"></script>
     <script src="js/nav.js"></script>
 </body>
 </html>

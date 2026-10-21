@@ -1,228 +1,279 @@
 /* ===== FINDER — Workforce Navigator =====
-   The page's front door: "What do you need?" picks, a search box and topic and
-   organization-type filters narrow the organizations in content/assets.json
-   (loaded by js/directory.js) to cards beside the network map. The same filters
-   light up the matching dots on the map (window.WFMap, js/search.js); hovering a
-   card picks out its dot, and clicking a card opens its details the way clicking
-   its dot does. On phones, cards open their details as a sheet.
-
-   The state lives in the address (?need=train&tag=Healthcare&type=colleges&q=…),
-   so any view can be shared. Map-only embeds (?embed=1) skip all of this. */
+   Three front doors:
+   - Get trained or hired: every program the organizations offer (content/programs.json,
+     built by tools/build-programs.py), searchable and filtered by how long it takes,
+     what you earn, field and online availability.
+   - Get support / For employers: the organizations for that audience
+     (content/assets.json "doors", loaded by js/directory.js).
+   The corner map (js/navigator-minimap.js) lights up the organizations behind whatever
+   is showing (window.WFMap, js/search.js). The view lives in the address
+   (?for=support, ?q=welding&len=weeks&earn=certificate&field=healthcare&online=1).
+   Map-only embeds (?embed=1) skip all of this. */
 (function () {
     'use strict';
     if (document.body.classList.contains('embed-mode')) return;
-    const cardsEl = document.getElementById('finder-cards');
-    if (!cardsEl) return;
+    const progEl = document.getElementById('finder-programs');
+    if (!progEl) return;
     const reduce = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
-    const phone = () => window.innerWidth <= 900;
     const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const PAGE = 40;
 
-    // The six kinds of organization, in the order the old Directory listed them
-    const CATEGORIES = [
-        { slug: 'colleges',           label: 'Colleges & universities' },
-        { slug: 'k12-secondary',      label: 'K-12 & career academies' },
-        { slug: 'community-dev',      label: 'Community & economic development' },
-        { slug: 'job-training',       label: 'Job training & career services' },
-        { slug: 'faith-based',        label: 'Faith-based & community' },
-        { slug: 'special-population', label: 'Special populations & re-entry' },
+    const LENGTHS = [
+        { id: 'weeks',  label: 'Weeks',     tip: 'Under 3 months' },
+        { id: 'months', label: 'Months',    tip: '3 to 12 months' },
+        { id: '1to2',   label: '1–2 years', tip: 'One to two years' },
+        { id: '3plus',  label: '3+ years',  tip: 'Three years or more' },
     ];
-    const catOf = slug => CATEGORIES.find(c => c.slug === slug) || { label: slug };
-    const colorOf = slug => (typeof CATEGORY_COLORS !== 'undefined' && CATEGORY_COLORS[slug]) || '#8a94a6';
-
-    // "What do you need?" — each pick is a set of topics and/or kinds of organization
-    // (an organization matches if it has any of them). Nearly every organization
-    // lists Career Services, so "Find a job" goes by kind of organization instead.
-    const NEEDS = [
-        { id: 'job',      label: 'Find a job',                    cats: ['job-training', 'faith-based', 'special-population'] },
-        { id: 'train',    label: 'Train for a career',            tags: ['Trades', 'Healthcare', 'Technology'], cats: ['colleges'] },
-        { id: 'ged',      label: 'Finish school or a GED',        tags: ['Adult Education'] },
-        { id: 'youth',    label: 'Youth & students',              tags: ['Youth'], cats: ['k12-secondary'] },
-        { id: 'employer', label: 'Hire or train workers',         tags: ['Economic Development'], cats: ['community-dev'] },
-        { id: 'support',  label: 'Re-entry & disability support', tags: ['Reentry', 'Disability Services'], cats: ['special-population'] },
-    ];
-    // What someone walks away with (content/assets.json "earn")
     const EARN = [
-        { id: 'degree',         label: 'Degree',          tip: "Associate's, bachelor's or higher" },
-        { id: 'certificate',    label: 'Certificate',     tip: 'Technical certificates and diplomas, and short-term industry certifications' },
-        { id: 'apprenticeship', label: 'Apprenticeship',  tip: 'Paid on-the-job training toward a license' },
-        { id: 'diploma',        label: 'GED or diploma',  tip: 'High school equivalency or diploma' },
-        { id: 'services',       label: 'Help & services', tip: 'Support, funding or referrals, without a credential' },
+        { id: 'certificate',    label: 'Certificate' },
+        { id: 'diploma',        label: 'Technical diploma' },
+        { id: 'apprenticeship', label: 'Apprenticeship' },
+        { id: 'associate',      label: 'Associate' },
+        { id: 'bachelor',       label: "Bachelor's" },
+        { id: 'graduate',       label: 'Graduate' },
+        { id: 'ged',            label: 'GED or diploma' },
+        { id: 'highschool',     label: 'High school pathway' },
     ];
-    const earnLabel = id => (EARN.find(e => e.id === id) || { label: id }).label;
-    const meetsNeed = (a, n) => (n.tags || []).some(t => a.tags.includes(t)) || (n.cats || []).includes(a.category);
+    const FIELDS = {
+        healthcare: 'Healthcare', trades: 'Skilled trades', manufacturing: 'Manufacturing & engineering', logistics: 'Logistics & driving',
+        it: 'IT & cybersecurity', business: 'Business', education: 'Education', publicsafety: 'Public safety', aviation: 'Aviation',
+        hospitality: 'Hospitality & culinary', personal: 'Barbering & cosmetology', media: 'Arts, design & media', science: 'Science & math',
+        social: 'Social services, law & humanities', basic: 'GED, English & job readiness', general: 'General studies',
+    };
+    const earnLabel = id => (EARN.find(e => e.id === id) || { label: id === 'none' ? 'Skills' : id }).label;
+    const DOOR_TEXT = {
+        support: 'Help getting a job or keeping one: unemployment and job search, disability services, re-entry, shelter and recovery, and help paying for training.',
+        employers: 'Partners for hiring and growing a workforce: recruiting help, training funds, apprenticeships, work-release hiring, and business growth.',
+    };
 
     // ----- State, kept in the address -----
     const params = new URLSearchParams(location.search);
     const state = {
-        need: params.get('need') || '',
-        tags: new Set(params.getAll('tag')),
-        cats: new Set(params.getAll('type')),
-        earn: new Set(params.getAll('earn')),
-        q: params.get('q') || '',
+        door: ['training', 'support', 'employers'].includes(params.get('for')) ? params.get('for') : 'training',
+        q: params.get('q') || '', field: params.get('field') || '', online: params.get('online') === '1',
+        len: new Set(params.getAll('len')), earn: new Set(params.getAll('earn')),
     };
     function saveState() {
         const p = new URLSearchParams(location.search);
-        ['need', 'tag', 'type', 'earn', 'q'].forEach(k => p.delete(k));
-        if (state.need) p.set('need', state.need);
-        state.tags.forEach(t => p.append('tag', t));
-        state.cats.forEach(c => p.append('type', c));
-        state.earn.forEach(e => p.append('earn', e));
-        if (state.q) p.set('q', state.q);
+        ['for', 'q', 'field', 'online', 'len', 'earn'].forEach(k => p.delete(k));
+        if (state.door !== 'training') p.set('for', state.door);
+        if (state.door === 'training') {
+            if (state.q.trim()) p.set('q', state.q.trim());
+            if (state.field) p.set('field', state.field);
+            if (state.online) p.set('online', '1');
+            state.len.forEach(v => p.append('len', v));
+            state.earn.forEach(v => p.append('earn', v));
+        }
         const qs = p.toString();
         history.replaceState(null, '', location.pathname + (qs ? '?' + qs : '') + location.hash);
     }
-    const filtering = () => !!(state.need || state.tags.size || state.cats.size || state.earn.size || state.q.trim());
+    const filtering = () => !!(state.q.trim() || state.field || state.online || state.len.size || state.earn.size);
 
-    let orgs = [];
-    function matches(a) {
-        const need = NEEDS.find(n => n.id === state.need);
-        if (need && !meetsNeed(a, need) && a.bestForNeed !== need.id) return false;   // a best fit always counts
-        if (state.tags.size && !a.tags.some(t => state.tags.has(t))) return false;
-        if (state.cats.size && !state.cats.has(a.category)) return false;
-        if (state.earn.size && !(a.earn || []).some(e => state.earn.has(e))) return false;
-        const q = state.q.trim().toLowerCase();
-        if (q && !a.haystack.includes(q)) return false;
-        return true;
+    let programs = [], orgs = {}, shownPrograms = [], limit = PAGE;
+    const orgName = id => (orgs[id] && orgs[id].name) || id;
+
+    // ----- Search: every word must appear somewhere; names count most -----
+    // The shorthand people actually type, mapped to how programs are named
+    const SYNONYMS = {
+        cdl: ['commercial driving'], truck: ['commercial driving', 'diesel'], trucking: ['commercial driving', 'diesel'], driver: ['commercial driving'],
+        cna: ['nurse aide'], lpn: ['practical nursing'], rn: ['nursing'], nurse: ['nurs'], hvac: ['air conditioning', 'hvac'],
+        ekg: ['electrocardiography', 'ekg'], emt: ['emergency medical'], it: ['information technology', 'computer', 'network'],
+        electrician: ['electric', 'wiring'], mechanic: ['automotive', 'diesel', 'mechanic'], forklift: ['forklift', 'warehous'],
+        medic: ['medic', 'paramedic'], coding: ['coding', 'programm'], teacher: ['teach', 'educat'], cosmetology: ['cosmetolog'],
+        welder: ['weld'], welding: ['weld'], plumber: ['plumb'], plumbing: ['plumb'], cyber: ['cyber'], ai: ['artificial intelligence', 'generative ai', ' ai'],
+    };
+    function score(p, words) {
+        let s = 0;
+        for (const w of words) {
+            // Very short words (it, ai, rn) would match inside other words, so they use only their synonyms
+            const alts = SYNONYMS[w] ? (w.length <= 3 ? SYNONYMS[w] : [w].concat(SYNONYMS[w])) : [w];
+            if (alts.some(a => p.nameL.includes(a))) s += 3;
+            else if (alts.some(a => p.hay.includes(a))) s += 1;
+            else return -1;
+        }
+        return s;
+    }
+    const BUCKET_ORDER = { weeks: 0, months: 1, '1to2': 2, '3plus': 3 };
+    function filterPrograms() {
+        const words = state.q.trim().toLowerCase().split(/\s+/).filter(Boolean);
+        const out = [];
+        for (const p of programs) {
+            if (state.field && p.field !== state.field) continue;
+            if (state.online && !p.online) continue;
+            if (state.len.size && !state.len.has(p.bucket)) continue;
+            if (state.earn.size && !state.earn.has(p.earn)) continue;
+            const s = words.length ? score(p, words) : 0;
+            if (s < 0) continue;
+            out.push([s, p]);
+        }
+        // Best matches first when searching; otherwise quickest first, then by name
+        out.sort((a, b) => (b[0] - a[0]) || (BUCKET_ORDER[a[1].bucket] - BUCKET_ORDER[b[1].bucket]) || a[1].name.localeCompare(b[1].name));
+        return out.map(x => x[1]);
     }
 
-    // ----- Controls -----
-    const needsEl = document.getElementById('finder-needs'), qEl = document.getElementById('finder-q');
-    const countEl = document.getElementById('finder-count'), clearEl = document.getElementById('finder-clear');
-    const moreEl = document.getElementById('finder-more'), filtersEl = document.getElementById('finder-filters');
-    const emptyEl = document.getElementById('finder-empty');
-    const chip = (kind, value, label, on, color) => `<button type="button" class="fchip${on ? ' is-on' : ''}" data-kind="${kind}" data-value="${esc(value)}" aria-pressed="${on}">${color ? `<i style="background:${color}"></i>` : ''}${esc(label)}</button>`;
+    // ----- Rendering -----
+    const chip = (kind, value, label, on, tip) => `<button type="button" class="fchip${on ? ' is-on' : ''}" data-kind="${kind}" data-value="${esc(value)}" aria-pressed="${on}"${tip ? ` title="${esc(tip)}"` : ''}>${esc(label)}</button>`;
     function renderControls() {
-        needsEl.innerHTML = NEEDS.map(n => chip('need', n.id, n.label, state.need === n.id)).join('');
-        document.getElementById('finder-earn').innerHTML = EARN.map(e => chip('earn', e.id, e.label, state.earn.has(e.id)).replace('<button', `<button title="${esc(e.tip)}"`)).join('');
-        const tags = Array.from(new Set(orgs.flatMap(a => a.tags))).sort();
-        document.getElementById('finder-tags').innerHTML = tags.map(t => chip('tag', t, t, state.tags.has(t))).join('');
-        document.getElementById('finder-cats').innerHTML = CATEGORIES.map(c => chip('type', c.slug, c.label, state.cats.has(c.slug), colorOf(c.slug))).join('');
-        const extra = state.tags.size + state.cats.size;
-        moreEl.textContent = extra ? `More filters (${extra})` : 'More filters';
-        clearEl.hidden = !filtering();
-    }
-    document.querySelector('.finder').addEventListener('click', e => {
-        const b = e.target.closest('.fchip');
-        if (!b) return;
-        const { kind, value } = b.dataset;
-        if (kind === 'need') state.need = state.need === value ? '' : value;
-        else { const set = kind === 'tag' ? state.tags : kind === 'earn' ? state.earn : state.cats; set.has(value) ? set.delete(value) : set.add(value); }
-        update();
-    });
-    let qt;
-    qEl.value = state.q;
-    qEl.addEventListener('input', () => { clearTimeout(qt); qt = setTimeout(() => { state.q = qEl.value; update(); }, 120); });
-    moreEl.addEventListener('click', () => {
-        filtersEl.hidden = !filtersEl.hidden;
-        moreEl.setAttribute('aria-expanded', String(!filtersEl.hidden));
-    });
-    const clearAll = () => { state.need = ''; state.tags.clear(); state.cats.clear(); state.earn.clear(); state.q = ''; qEl.value = ''; update(); };
-    clearEl.addEventListener('click', clearAll);
-    document.getElementById('finder-empty-clear').addEventListener('click', clearAll);
-
-    // ----- Cards -----
-    const blurb = s => { s = String(s || ''); const cut = s.length > 170 ? s.slice(0, 170).replace(/\s+\S*$/, '') + '…' : s; return cut; };
-    function cardHTML(a) {
-        const logo = a.image
-            ? `<span class="fcard__logo${a.logoFit === 'contain' ? ' is-contain' : ''}"${a.logoBg ? ` style="background:${esc(a.logoBg)}"` : ''}><img src="${esc(a.image)}" alt="" loading="lazy"></span>`
-            : `<span class="fcard__logo is-blank" style="background:${colorOf(a.category)}"></span>`;
-        return `<li data-key="${esc(a.id)}"><button type="button" class="fcard" data-id="${esc(a.id)}">
-            ${logo}
-            <span class="fcard__text">
-                <span class="fcard__kind"><i style="background:${colorOf(a.category)}"></i>${esc(catOf(a.category).label)}</span>
-                ${(a.earn || []).length ? `<span class="fcard__earn">${EARN.filter(x => a.earn.includes(x.id)).map(x => `<b class="earn earn--${x.id}" title="${esc(x.tip)}">${esc(x.label)}</b>`).join('')}</span>` : ''}
-                <b class="fcard__name">${esc(a.name)}</b>
-                ${a.bestFor ? `<span class="fcard__best">${fitsNeed(a) ? '<mark>Best fit</mark>' : ''}Best known for: <strong>${esc(a.bestFor)}</strong></span>` : ''}
-                <span class="fcard__blurb">${esc(blurb(a.description))}</span>
-                <span class="fcard__tags">${a.tags.map(t => `<em>${esc(t)}</em>`).join('')}</span>
-            </span></button></li>`;
-    }
-    // Re-render, sliding cards that stay from where they were and fading in new ones
-    function flip(render) {
-        const before = new Map(Array.from(cardsEl.children).map(el => [el.dataset.key, el.getBoundingClientRect().top]));
-        render();
-        if (reduce) return;
-        Array.from(cardsEl.children).forEach((el, i) => {
-            if (!el.animate) return;
-            const was = before.get(el.dataset.key), top = el.getBoundingClientRect().top;
-            el.animate(was !== undefined ? [{ transform: `translateY(${was - top}px)` }, { transform: 'none' }]
-                                         : [{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'none' }],
-                       { duration: 420, delay: Math.min(i, 12) * 18, easing: 'cubic-bezier(0.2, 0.7, 0.2, 1)', fill: 'backwards' });
+        document.getElementById('finder-length').innerHTML = LENGTHS.map(l => chip('len', l.id, l.label, state.len.has(l.id), l.tip)).join('');
+        // Only the kinds of credential that exist in the catalog
+        const have = new Set(programs.map(p => p.earn));
+        document.getElementById('finder-earn').innerHTML = EARN.filter(e => have.has(e.id)).map(e => chip('earn', e.id, e.label, state.earn.has(e.id))).join('');
+        document.getElementById('finder-clear').hidden = !filtering();
+        document.querySelectorAll('.door').forEach(d => {
+            const on = d.dataset.door === state.door;
+            d.classList.toggle('is-on', on); d.setAttribute('aria-selected', String(on));
         });
     }
-
-    // Within a "What do you need?" pick, the organizations whose main strength is that
-    // need come first (bestForNeed in content/assets.json), then everyone else who helps
-    const fitsNeed = a => !!state.need && a.bestForNeed === state.need;
-    let shown = [], activeId = null;
-    function update() {
-        shown = orgs.filter(matches);
-        if (state.need) shown = shown.filter(fitsNeed).concat(shown.filter(a => !fitsNeed(a)));
-        flip(() => { cardsEl.innerHTML = shown.map(cardHTML).join(''); });
-        markActive(activeId);
-        emptyEl.hidden = shown.length > 0;
-        countEl.textContent = filtering() ? `${shown.length} of ${orgs.length} organizations` : `All ${orgs.length} organizations`;
-        renderControls();
-        saveState();
-        lightMap();
+    function logo(org) {
+        const a = orgs[org] || {};
+        return a.image ? `<img src="${esc(a.image)}" alt="" loading="lazy"${a.logoFit === 'contain' ? ' class="is-contain"' : ''}${a.logoBg ? ` style="background:${esc(a.logoBg)}"` : ''}>` : '<i></i>';
+    }
+    function programHTML(p) {
+        const opts = p.options && p.options.length ? `<p class="pcard__opts">Options: ${esc(p.options.slice(0, 5).join(', '))}${p.options.length > 5 ? ` and ${p.options.length - 5} more` : ''}</p>` : '';
+        return `<li data-key="${esc(p.id)}" data-org="${esc(p.org)}"><article class="pcard">
+            <div class="pcard__top">
+                <h3 class="pcard__name">${esc(p.name)}</h3>
+                <a class="pcard__link" href="${esc(p.url)}" target="_blank" rel="noopener">Program page <span aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></a>
+            </div>
+            <p class="pcard__facts"><b class="earn earn--${esc(p.earn)}">${esc(earnLabel(p.earn))}</b><span>${esc(p.length)}</span><span>${esc(p.cost)}</span></p>
+            ${p.leadsTo ? `<p class="pcard__lead">${esc(p.leadsTo)}</p>` : ''}
+            ${opts}
+            <p class="pcard__by"><button type="button" class="pcard__org" data-org="${esc(p.org)}">${logo(p.org)}<span>${esc(orgName(p.org))}</span></button>${p.campus ? `<span class="pcard__campus">${esc(p.campus)}</span>` : ''}${p.verify ? '<span class="pcard__verify" title="Some details couldn\'t be confirmed from published sources">Call to confirm current classes</span>' : ''}</p>
+        </article></li>`;
+    }
+    function flip(list, render) {
+        const before = new Map(Array.from(list.children).map(el => [el.dataset.key, el.getBoundingClientRect().top]));
+        render();
+        if (reduce) return;
+        Array.from(list.children).forEach((el, i) => {
+            if (!el.animate || i > 20) return;
+            const was = before.get(el.dataset.key), top = el.getBoundingClientRect().top;
+            el.animate(was !== undefined ? [{ transform: `translateY(${was - top}px)` }, { transform: 'none' }]
+                                         : [{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }],
+                       { duration: 360, delay: Math.min(i, 10) * 15, easing: 'cubic-bezier(0.2, 0.7, 0.2, 1)', fill: 'backwards' });
+        });
+    }
+    function renderPrograms() {
+        shownPrograms = filterPrograms();
+        const page = shownPrograms.slice(0, limit);
+        flip(progEl, () => { progEl.innerHTML = page.map(programHTML).join(''); });
+        const more = document.getElementById('finder-more');
+        more.hidden = shownPrograms.length <= limit;
+        more.textContent = `Show more (${(shownPrograms.length - limit).toLocaleString()} more)`;
+        document.getElementById('finder-empty').hidden = shownPrograms.length > 0;
+        const orgCount = new Set(shownPrograms.map(p => p.org)).size;
+        document.getElementById('finder-count').textContent = filtering()
+            ? `${shownPrograms.length.toLocaleString()} of ${programs.length.toLocaleString()} programs, from ${orgCount} organization${orgCount === 1 ? '' : 's'}`
+            : `All ${programs.length.toLocaleString()} programs, from ${orgCount} organizations`;
+    }
+    function orgHTML([id, a]) {
+        return `<li data-key="${esc(id)}" data-org="${esc(id)}"><article class="ocard">
+            <span class="ocard__logo">${logo(id)}</span>
+            <div class="ocard__text">
+                <h3 class="ocard__name">${esc(a.name)}</h3>
+                ${a.bestFor ? `<p class="ocard__best">${esc(a.bestFor)}</p>` : ''}
+                ${a.bestForWhy ? `<p class="ocard__why">${esc(a.bestForWhy)}</p>` : ''}
+                <p class="ocard__actions"><button type="button" class="ocard__more" data-org="${esc(id)}">Details</button>${a.website ? `<a href="${esc(a.website)}" target="_blank" rel="noopener">Website <span aria-hidden="true">↗</span></a>` : ''}</p>
+            </div>
+        </article></li>`;
+    }
+    function renderOrgs() {
+        const list = Object.entries(orgs).filter(([, a]) => (a.doors || []).includes(state.door));
+        document.getElementById('orgs-dek').textContent = DOOR_TEXT[state.door] || '';
+        const el = document.getElementById('finder-orgs');
+        flip(el, () => { el.innerHTML = list.map(orgHTML).join(''); });
+        return list.map(([id]) => id);
     }
 
-    // ----- The map -----
-    function lightMap() {
+    // ----- The corner map -----
+    function lightMap(ids) {
         if (!window.WFMap || !WFMap.ready()) return;
-        if (!filtering()) { WFMap.highlight(null); return; }
-        // the matching organizations, plus their kinds and the hub, so the shape still reads
-        const ids = shown.map(a => a.id).concat(Array.from(new Set(shown.map(a => a.category))), ['hub']);
-        WFMap.highlight(ids);
+        if (!ids) { WFMap.highlight(null); return; }
+        const cats = ids.map(id => orgs[id] && orgs[id].category).filter(Boolean);
+        WFMap.highlight(ids.concat(cats, ['hub']));
     }
-    // The map builds itself asynchronously; light it once it's there
-    const waitForMap = setInterval(() => { if (window.WFMap && WFMap.ready()) { clearInterval(waitForMap); lightMap(); } }, 150);
+    let lit = null;
+    function update() {
+        const training = state.door === 'training';
+        document.getElementById('view-training').hidden = !training;
+        document.getElementById('view-orgs').hidden = training;
+        renderControls();
+        if (training) {
+            renderPrograms();
+            lit = filtering() ? Array.from(new Set(shownPrograms.map(p => p.org))) : null;
+        } else {
+            lit = renderOrgs();
+        }
+        lightMap(lit);
+        const note = document.getElementById('minimap-note');
+        if (note) note.textContent = lit ? `The ${lit.length} organization${lit.length === 1 ? '' : 's'} behind what's showing light up. Click the map to explore it.` : 'Every organization in the Navigator. Click the map to explore it.';
+        saveState();
+    }
+    const waitForMap = setInterval(() => { if (window.WFMap && WFMap.ready()) { clearInterval(waitForMap); lightMap(lit); } }, 150);
     setTimeout(() => clearInterval(waitForMap), 15000);
-    // Closing a map panel resets the map's own focus dimming; put the filter's back
+    document.addEventListener('minimap:toggle', () => setTimeout(() => lightMap(lit), 80));
     const panel = document.getElementById('viz-info-panel');
-    if (panel) new MutationObserver(() => { if (!panel.classList.contains('open')) setTimeout(lightMap, 60); })
+    if (panel) new MutationObserver(() => { if (!panel.classList.contains('open')) setTimeout(() => lightMap(lit), 60); })
         .observe(panel, { attributes: true, attributeFilter: ['class'] });
 
-    cardsEl.addEventListener('mouseover', e => { const c = e.target.closest('.fcard'); if (c && window.WFMap) WFMap.hover(c.dataset.id); });
-    cardsEl.addEventListener('mouseleave', () => { if (window.WFMap) WFMap.hover(null); });
-    cardsEl.addEventListener('click', e => {
-        const c = e.target.closest('.fcard');
-        if (!c) return;
-        const id = c.dataset.id;
-        if (phone() || !window.WFMap || !WFMap.ready()) openAssetModal(id, { sheet: true });
-        else WFMap.open(id);   // exactly what clicking its dot does: details, plus its programs fanned out
-        markActive(id);
+    // ----- Events -----
+    document.querySelector('.doors').addEventListener('click', e => {
+        const d = e.target.closest('.door');
+        if (!d || d.dataset.door === state.door) return;
+        state.door = d.dataset.door; limit = PAGE; update();
+    });
+    document.querySelector('.finder-filters').addEventListener('click', e => {
+        const b = e.target.closest('.fchip');
+        if (!b) return;
+        const set = b.dataset.kind === 'len' ? state.len : state.earn;
+        set.has(b.dataset.value) ? set.delete(b.dataset.value) : set.add(b.dataset.value);
+        limit = PAGE; update();
+    });
+    const qEl = document.getElementById('finder-q'), fieldEl = document.getElementById('finder-field'), onlineEl = document.getElementById('finder-online');
+    let qt;
+    qEl.addEventListener('input', () => { clearTimeout(qt); qt = setTimeout(() => { state.q = qEl.value; limit = PAGE; update(); }, 140); });
+    fieldEl.addEventListener('change', () => { state.field = fieldEl.value; limit = PAGE; update(); });
+    onlineEl.addEventListener('change', () => { state.online = onlineEl.checked; limit = PAGE; update(); });
+    document.getElementById('finder-more').addEventListener('click', () => { limit += PAGE * 2; renderPrograms(); });
+    const clearAll = () => { state.q = ''; state.field = ''; state.online = false; state.len.clear(); state.earn.clear(); qEl.value = ''; fieldEl.value = ''; onlineEl.checked = false; limit = PAGE; update(); };
+    document.getElementById('finder-clear').addEventListener('click', clearAll);
+    document.getElementById('finder-empty-clear').addEventListener('click', clearAll);
+
+    // Hovering a program or organization picks out its organization on the map; its name opens the details
+    const finder = document.querySelector('.finder-main');
+    finder.addEventListener('mouseover', e => { const li = e.target.closest('li[data-org]'); if (li && window.WFMap) WFMap.hover(li.dataset.org); });
+    finder.addEventListener('mouseleave', () => { if (window.WFMap) WFMap.hover(null); });
+    finder.addEventListener('click', e => {
+        const b = e.target.closest('.pcard__org, .ocard__more');
+        if (b) openAssetModal(b.dataset.org, { sheet: true });
     });
 
-    // Whichever way details open (card, dot, ?asset=), mark that card
-    function markActive(id) {
-        activeId = id;
-        cardsEl.querySelectorAll('.fcard').forEach(c => c.classList.toggle('is-active', c.dataset.id === id));
-    }
-    if (typeof window.openAssetModal === 'function') {
-        const open = window.openAssetModal;
-        window.openAssetModal = function (id, opts) {
-            open(id, opts);
-            markActive(id);
-            const card = cardsEl.querySelector(`.fcard[data-id="${CSS.escape(id)}"]`);
-            if (card && !phone()) {
-                const r = card.getBoundingClientRect();
-                if (r.top < 80 || r.bottom > innerHeight) card.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
-            }
-        };
-    }
-
-    // ----- Start once the organizations are loaded -----
+    // ----- Start once both the programs and the organizations are loaded -----
+    let gotAssets = typeof assetData !== 'undefined' && Object.keys(assetData).length > 0;
+    let gotPrograms = false;
     function start() {
-        orgs = Object.entries(assetData).map(([id, a]) => ({
-            id, ...a, tags: a.tags || [],
-            haystack: [a.name, a.bestFor, a.description, a.impact, (a.tags || []).join(' '), catOf(a.category).label,
-                       (a.links || []).map(l => l.label + ' ' + (l.description || '')).join(' ')].join(' ').toLowerCase(),
-        })).sort((x, y) => CATEGORIES.findIndex(c => c.slug === x.category) - CATEGORIES.findIndex(c => c.slug === y.category));
-        document.getElementById('finder-total').textContent = orgs.length;
-        if (state.tags.size || state.cats.size) { filtersEl.hidden = false; moreEl.setAttribute('aria-expanded', 'true'); }
+        if (!gotAssets || !gotPrograms) return;
+        orgs = assetData;
+        const counts = { support: 0, employers: 0 };
+        Object.values(orgs).forEach(a => (a.doors || []).forEach(d => { if (d in counts) counts[d]++; }));
+        document.getElementById('door-count-training').textContent = programs.length.toLocaleString();
+        document.getElementById('door-count-support').textContent = counts.support;
+        document.getElementById('door-count-employers').textContent = counts.employers;
+        programs.forEach(p => {
+            p.nameL = p.name.toLowerCase();
+            p.hay = [p.name, p.credential, p.leadsTo, (p.options || []).join(' '), orgName(p.org), FIELDS[p.field], earnLabel(p.earn), p.campus].join(' ').toLowerCase();
+        });
+        const used = new Set(programs.map(p => p.field));
+        fieldEl.innerHTML = '<option value="">All fields</option>' + Object.entries(FIELDS).filter(([k]) => used.has(k))
+            .map(([k, v]) => `<option value="${k}">${esc(v)} (${programs.filter(p => p.field === k).length})</option>`).join('');
+        qEl.value = state.q; fieldEl.value = state.field; onlineEl.checked = state.online;
         update();
     }
-    if (typeof assetData !== 'undefined' && Object.keys(assetData).length) start();
-    else document.addEventListener('assets:loaded', start, { once: true });
+    if (!gotAssets) document.addEventListener('assets:loaded', () => { gotAssets = true; start(); }, { once: true });
+    fetch('content/programs.json').then(r => r.json()).then(d => {
+        programs = d.programs || [];
+        const checked = document.getElementById('finder-checked');
+        if (checked && d.built) checked.textContent = new Date(d.built + 'T12:00:00').toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+        gotPrograms = true; start();
+    }).catch(err => console.error('Program catalog failed to load', err));
 })();

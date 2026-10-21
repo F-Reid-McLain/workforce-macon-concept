@@ -95,7 +95,7 @@ def cgtc_length(earn, name):
     if earn == 'diploma':
         return 'About 18 months full time', '1to2'
     if re.search(r'accelerated|fast track|commercial driving|construction career launch', name, re.I):
-        return 'A few weeks', 'weeks'
+        return 'Accelerated: usually under 3 months', 'weeks'
     return 'Under a year full time', 'months'
 
 
