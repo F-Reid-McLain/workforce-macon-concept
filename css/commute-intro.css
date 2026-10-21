@@ -99,6 +99,11 @@ body.ci-presenting .ci-present-hint { display: block; }
     font: 600 0.75rem var(--font-body); color: #9fb1c9; text-decoration: underline; text-underline-offset: 3px;
 }
 .ci-linkbtn:hover { color: #f2c46b; }
+.ci-method { margin-top: 0.8rem; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 0.6rem; }
+.ci-method summary { cursor: pointer; font-size: 0.8rem; font-weight: 600; color: #9fb1c9; }
+.ci-method summary:hover { color: #f2c46b; }
+.ci-method ul { margin: 0.6rem 0 0; padding-left: 1rem; display: grid; gap: 0.45rem; font-size: 0.78rem; line-height: 1.45; color: #b9c2d0; }
+.ci-method b { color: #e6e9ee; }
 @media (max-width: 768px) { .ci-present, .ci-present-hint { display: none !important; } }
 
 /* ----- The finished map's controls, stats box and key ----- */

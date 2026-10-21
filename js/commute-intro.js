@@ -150,7 +150,6 @@
             topSources: topSources.slice(0, -1).join(', ') + ' and ' + topSources[topSources.length - 1],
             bibbNet: fmt(net.get(BIBB) || 0),
             statRegion: fmtK(regionPop), statBibb: fmtK(bibbPop),
-            rushGain: fmt(Math.round((peopleNow(8).get(BIBB) - bibbPop) / 100) * 100),
             neighborPop: fmt(regionPop - bibbPop),
             payIn: Math.round(100 * d3.sum(region.flows.filter(f => f.to === BIBB), f => f.pay[2]) / inFromRegion) + '%',
             payLocal: Math.round(100 * region.localPay[2] / d3.sum(region.localPay)) + '%',
