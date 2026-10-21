@@ -33,14 +33,16 @@
         nodes = rows.map((r, i) => ({ ...r, i, kind: kindOf(r.label), phase: i * 1.7 }));
         layout();
         new IntersectionObserver(es => { onScreen = es.some(e => e.isIntersecting); wake(); }, { threshold: 0.2 }).observe(wrap);
-        let t; addEventListener('resize', () => { clearTimeout(t); t = setTimeout(() => { if (Math.abs(wrap.clientWidth - W) > 40) layout(); }, 250); });
+        let t, lastH = innerHeight;
+        addEventListener('resize', () => { clearTimeout(t); t = setTimeout(() => { if (Math.abs(wrap.clientWidth - W) > 40 || Math.abs(innerHeight - lastH) > 40) { lastH = innerHeight; layout(); } }, 250); });
     }
 
     // Size the bubbles so they fill about half the box: area stays proportional to job ads
     function layout() {
-        W = Math.max(280, wrapEl.clientWidth); H = W < 560 ? Math.round(W * 1.05) : Math.min(480, Math.round(W * 0.55));
+        // On wide screens the field takes what's left of one screen under the controls
+        W = Math.max(280, wrapEl.clientWidth); H = W < 560 ? Math.round(W * 1.05) : Math.round(Math.max(260, Math.min(520, W * 0.55, innerHeight - 380)));
         svg.attr('viewBox', `0 0 ${W} ${H}`).attr('width', W).attr('height', H);
-        const k = Math.sqrt(0.46 * W * H / (Math.PI * d3.sum(nodes, d => d.value)));
+        const k = Math.sqrt(0.4 * W * H / (Math.PI * d3.sum(nodes, d => d.value)));
         nodes.forEach(d => {
             d.r = Math.sqrt(d.value) * k;
             if (d.x === undefined) { const a = d.i * 2.4, s = 12 + d.i * 3; d.x = W / 2 + Math.cos(a) * s; d.y = H / 2 + Math.sin(a) * s; }
@@ -71,12 +73,16 @@
             .force('y', d3.forceY(H / 2).strength(W < 560 ? 0.05 : 0.09))
             .force('collide', d3.forceCollide(d => d.r + 2).iterations(3))
             .alphaDecay(0.03).on('tick', tick).stop();
-        if (reduce || W < 560) { for (let i = 0; i < 260; i++) sim.tick(); tick(); built = true; svg.classed('is-built', true); return; }
+        // Settle the layout before anyone sees it, so the bubbles pop in already in place
+        for (let i = 0; i < (reduce || W < 560 ? 260 : 160); i++) sim.tick();
+        tick();
+        if (reduce || W < 560) { built = true; svg.classed('is-built', true); return; }
+        sim.alpha(0.05);
         wake();
     }
 
     const fit = (name, r) => {
-        const max = Math.max(4, Math.floor(r * 2 / (Math.min(14, r / 3.1) * 0.56)));
+        const max = Math.max(4, Math.floor(r * 1.8 / (Math.min(14, r / 3.1) * 0.62)));
         const clean = name.replace(/, Inc\.$/, '').replace(/^Education, Georgia Department of - /, '');
         return clean.length <= max ? clean : clean.slice(0, max - 1).trim() + '…';
     };
@@ -96,7 +102,7 @@
     function wake() {
         if (!sim || reduce || W < 560) return;
         if (visible && onScreen) {
-            if (!built) { built = true; svg.classed('is-built', true); sim.alpha(1); }
+            if (!built) { built = true; svg.classed('is-built', true); }
             sim.alphaTarget(0.012).restart();
         } else sim.stop();
     }

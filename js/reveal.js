@@ -105,9 +105,8 @@
     document.querySelectorAll(NUMBERS).forEach(el => numberObserver.observe(el));
 
     // ----- Stops build in -----
-    // Each tool stop's kicker, headline and panel rise in as it arrives, and the
-    // headline's gold figures count up (read when it arrives, after the data has
-    // rewritten them)
+    // Each title slide and tool rises in as it arrives, and the headline's gold
+    // figures count up (read when it arrives, after the data has rewritten them)
     const stopObserver = new IntersectionObserver(entries => {
         entries.forEach(e => {
             if (!e.isIntersecting) return;
@@ -116,5 +115,5 @@
             e.target.querySelectorAll('.chapter-finding em').forEach(countUp);
         });
     }, { rootMargin: '0px 0px -15% 0px', threshold: 0.12 });
-    document.querySelectorAll('.stop').forEach(el => stopObserver.observe(el));
+    document.querySelectorAll('.stop, .stop-intro').forEach(el => stopObserver.observe(el));
 })();

@@ -29,14 +29,12 @@ html.reveal-on .revealing .demo-bar-row:nth-child(13) .demo-bar-fill { transitio
 html.reveal-on .revealing .demo-bar-row:nth-child(14) .demo-bar-fill { transition-delay: 780ms; }
 html.reveal-on .revealing .demo-bar-row:nth-child(15) .demo-bar-fill { transition-delay: 840ms; }
 
-/* Tool stops: kicker, headline, then the panel rise in */
-html.reveal-on .stop :is(.chapter-kicker, .chapter-finding, .chapter-dek, .stop-totals, .ticker, .tool-panel) {
+/* Tool stops: the label, then the panel rise in. Title slides fade in once here too; where
+   the browser supports scroll-linked animation, css/chapters.css takes them over. */
+html.reveal-on :is(.stop-label, .tool-panel, .stop-intro__inner) {
     transition: opacity 0.7s ease, transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
-html.reveal-on .stop:not(.in-view) :is(.chapter-kicker, .chapter-finding, .chapter-dek, .stop-totals, .ticker, .tool-panel) {
+html.reveal-on :is(.stop, .stop-intro):not(.in-view) :is(.stop-label, .tool-panel, .stop-intro__inner) {
     opacity: 0; transform: translateY(18px);
 }
-html.reveal-on .stop.in-view :is(.chapter-finding, .ticker) { transition-delay: 0.08s; }
-html.reveal-on .stop.in-view :is(.chapter-dek, .stop-totals) { transition-delay: 0.16s; }
-html.reveal-on .stop.in-view .tool-panel { transition-delay: 0.24s; }
-html.reveal-on .stop.in-view .tool-panel + .tool-panel { transition-delay: 0.34s; }
+html.reveal-on .stop.in-view .tool-panel { transition-delay: 0.12s; }

@@ -167,14 +167,20 @@
             <a href="#custom-research">Custom research</a>
         </nav>
 
-        <!-- Stop 2 · Jobs -->
+        <!-- Stop 2 · Jobs: a title slide, then the tool -->
+        <div class="stop-intro">
+            <div class="stop-intro__inner">
+                <p class="chapter-kicker">Jobs</p>
+                <h2 class="chapter-finding" id="find-occ"><em>Registered nurses</em> are Macon-Bibb's most common job: <em>2,779</em> positions averaging <em>$87,600</em>.</h2>
+                <p class="chapter-dek" id="occ-commute-note"></p>
+            </div>
+        </div>
         <section class="stop" id="jobs">
             <p class="stop-hint" aria-hidden="true">Click anything to explore</p>
-            <header class="stop-head">
+            <div class="stop-label">
                 <p class="chapter-kicker">Jobs <span class="info-btn-wrap"><button type="button" class="info-btn" aria-label="About this data">i</button><span class="info-popover"><strong>What this shows</strong><span>Occupational Employment and Wage Statistics (OES) estimates for Macon-Bibb: jobs and average annual pay by occupation, with regional projections for growth and openings (new jobs plus people retiring or changing careers).</span></span></span></p>
-                <h2 class="chapter-finding" id="find-occ"><em>Registered nurses</em> are Macon-Bibb's most common job: <em>2,779</em> positions averaging <em>$87,600</em>.</h2>
-                <p class="chapter-dek">Look up what any job pays here, or browse the top ten. <span id="occ-commute-note"></span></p>
-            </header>
+                <p class="stop-label__text">Look up what any job pays in Macon-Bibb, or browse the top jobs.</p>
+            </div>
             <div class="tool-panel">
                 <div class="tool-col">
                     <label class="tool-search">
@@ -198,20 +204,32 @@
             </div>
         </section>
 
-        <!-- Stop 3 · Industries -->
-        <section class="stop" id="industries">
-            <p class="stop-hint" aria-hidden="true">Click anything to explore</p>
-            <header class="stop-head">
-                <p class="chapter-kicker">Industries <span class="info-btn-wrap"><button type="button" class="info-btn" aria-label="About this data">i</button><span class="info-popover"><strong>What this shows</strong><span>Payroll jobs and average annual wage by industry (QCEW-based), grouped into sectors. Concentration compares each industry's share of jobs here with its share nationally (location quotient). What commuters come in for uses U.S. Census Bureau LODES 2023.</span></span></span></p>
+        <!-- Stop 3 · Industries: a title slide, then the tool -->
+        <div class="stop-intro">
+            <div class="stop-intro__inner">
+                <p class="chapter-kicker">Industries</p>
                 <h2 class="chapter-finding" id="find-industries"><em>1 in 5</em> jobs in Macon-Bibb is in <em>health care</em>.</h2>
                 <p class="stop-totals" id="ind-totals"><b>85,088</b> jobs in Macon-Bibb · <b>$55,410</b> average pay</p>
-            </header>
+            </div>
+        </div>
+        <section class="stop" id="industries">
+            <p class="stop-hint" aria-hidden="true">Click anything to explore</p>
+            <div class="stop-label">
+                <p class="chapter-kicker">Industries <span class="info-btn-wrap"><button type="button" class="info-btn" aria-label="About this data">i</button><span class="info-popover"><strong>What this shows</strong><span>Payroll jobs and average annual wage by industry (QCEW-based), grouped into sectors. Concentration compares each industry's share of jobs here with its share nationally (location quotient). What commuters come in for uses U.S. Census Bureau LODES 2023.</span></span></span></p>
+                <p class="stop-label__text">Click into the donut, switch views, or look up any industry.</p>
+            </div>
             <div class="tool-panel tool-panel--donut">
                 <div class="donut" id="donut">
                     <svg id="donut-svg" role="group" aria-label="Jobs by industry"></svg>
                     <div class="donut-center" id="donut-center"></div>
                 </div>
-                <div class="tool-col">
+                <div class="tool-col tool-col--fit">
+                    <label class="tool-search">
+                        <span class="sr-only">Search any industry</span>
+                        <input id="strength-q" type="search" placeholder="Look up any industry, e.g. hospitals, trucking" autocomplete="off">
+                        <ul class="tool-matches" id="strength-qlist" hidden></ul>
+                    </label>
+                    <div class="tool-result tool-result--compact" id="strength-result" aria-live="polite" hidden></div>
                     <div class="seg" id="ind-views" role="group" aria-label="Show">
                         <button type="button" data-view="biggest">Biggest</button>
                         <button type="button" data-view="specialties">Specialties</button>
@@ -231,33 +249,29 @@
                         <div id="sector-commute-bars"></div>
                         <p class="chart-note">Jobs here held by people who live outside Macon-Bibb, at minimum: jobs located here minus Macon-Bibb residents working in that industry anywhere (LODES 2023). The true numbers are higher.</p>
                     </div>
+                    <p class="tool-upsell">Want the full competitive profile for your industry? <a href="#custom-research">Request custom research →</a></p>
                 </div>
-            </div>
-            <div class="tool-panel tool-panel--search">
-                <div class="tool-col">
-                    <label class="tool-search">
-                        <span class="sr-only">Search any industry</span>
-                        <input id="strength-q" type="search" placeholder="Look up any industry, e.g. hospitals, trucking, insurance" autocomplete="off">
-                        <ul class="tool-matches" id="strength-qlist" hidden></ul>
-                    </label>
-                    <div class="tool-result" id="strength-result" aria-live="polite" hidden></div>
-                </div>
-                <p class="tool-upsell">Want the full competitive profile for your industry? <a href="#custom-research">Request custom research →</a></p>
             </div>
         </section>
 
-        <!-- Stop 4 · Hiring -->
-        <section class="stop" id="hiring">
-            <p class="stop-hint" aria-hidden="true">Click anything to explore</p>
-            <header class="stop-head">
-                <p class="chapter-kicker">Hiring <span class="info-btn-wrap"><button type="button" class="info-btn" aria-label="About this data">i</button><span class="info-popover"><strong>What this shows</strong><span>Active online job ads for Bibb County from the most recent snapshot (March 2026), by employer and by industry. The total sums the industry counts. Ads measure hiring demand, not filled positions.</span></span></span></p>
+        <!-- Stop 4 · Hiring: a title slide, then the tool -->
+        <div class="stop-intro">
+            <div class="stop-intro__inner">
+                <p class="chapter-kicker">Hiring</p>
                 <div class="ticker">
                     <b class="ticker__num" id="hire-total">1,612</b>
                     <span class="ticker__label">active online job ads in Macon-Bibb</span>
                     <span class="ticker__note">Latest job-ad snapshot (March 2026)</span>
                 </div>
                 <h2 class="chapter-finding chapter-finding--sm" id="find-hiring"><em>Health care</em> is hiring the most, with <em>480</em> openings.</h2>
-            </header>
+            </div>
+        </div>
+        <section class="stop" id="hiring">
+            <p class="stop-hint" aria-hidden="true">Click anything to explore</p>
+            <div class="stop-label">
+                <p class="chapter-kicker">Hiring <span class="info-btn-wrap"><button type="button" class="info-btn" aria-label="About this data">i</button><span class="info-popover"><strong>What this shows</strong><span>Active online job ads for Bibb County from the most recent snapshot (March 2026), by employer and by industry. The total sums the industry counts. Ads measure hiring demand, not filled positions.</span></span></span></p>
+                <p class="stop-label__text">Active online job ads by employer and industry (March 2026 snapshot).</p>
+            </div>
             <div class="tool-panel tool-panel--one">
                 <div class="tool-col">
                     <div class="tool-row">
