@@ -45,8 +45,8 @@
 .ci-maplabel b { font-size: 12px; font-weight: 700; color: #fff; }
 .ci-maplabel--bibb b { font-size: 14px; }
 /* Dark text on the gold (Macon-Bibb) and teal (other gainer) tiles */
-.ci-maplabel--bibb, .ci-maplabel--pale { text-shadow: none; color: #3b2e0c; }
-.ci-maplabel--bibb b, .ci-maplabel--pale b { color: #1b1608; }
+/* Macon-Bibb and any other gaining county sit on green tiles: figures in pale green */
+.ci-maplabel--bibb, .ci-maplabel--pale { color: #d1fae5; }
 .ci-hwybadge {
     position: absolute; transform: translate(-50%, -50%); white-space: nowrap;
     padding: 2px 6px; border-radius: 3px; font: 700 9px/1.2 var(--font-body);
@@ -125,7 +125,7 @@ body.ci-presenting .ci-present-hint { display: block; }
 }
 .ci-stats { left: 12px; display: grid; grid-template-columns: auto; gap: 0; }
 .ci-stats b { font: 700 1.1rem/1.1 var(--font-body); color: #fff; font-variant-numeric: tabular-nums; }
-.ci-stats b.ci-stats__bibb { color: #f2c46b; margin-top: 0.45rem; }
+.ci-stats b.ci-stats__bibb { color: #34d399; margin-top: 0.45rem; }
 .ci-stats span, .ci-key__title { font-size: 0.56rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #9aa3b2; }
 .ci-key { right: 12px; display: grid; gap: 0.3rem; font-size: 0.72rem; color: #e6e9ee; }
 .ci-key i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 0.45rem; vertical-align: -1px; }
