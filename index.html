@@ -69,6 +69,9 @@
                 <div id="ci-map" aria-hidden="true"></div>
                 <div class="ci-time" aria-hidden="true"><span id="ci-time-icon">☾</span><span id="ci-time-label">5:00 AM</span></div>
                 <div class="ci-tip" id="ci-tip"></div>
+                <!-- Present mode: fullscreen, arrow keys step through the cards (js/commute-intro.js) -->
+                <button type="button" class="ci-pill ci-present" id="ci-present" title="Present this story (P)">▶ Present</button>
+                <div class="ci-present-hint" aria-hidden="true">← → to step · Esc to exit</div>
                 <!-- Live pulse: Macon-Bibb's head count through the day -->
                 <div class="ci-pulse">
                     <span class="ci-pulse__label">People in Macon-Bibb right now</span>
@@ -104,37 +107,37 @@
                         <a class="ci-skip" href="#section-kpis">Skip to the data</a>
                     </div>
                 </div>
-                <div class="ci-step" data-time="6" id="ci-dawn"><div class="ci-card">
+                <div class="ci-step" data-time="6" id="ci-dawn" data-moment="6am"><div class="ci-card">
                     <div class="ci-when">6:00 AM</div>
                     <h3>Macon and its neighbors</h3>
                     <p>Macon-Bibb sits at the center of 16 neighboring counties. At 6 AM they all stand level: everyone is still at home.</p>
                 </div></div>
-                <div class="ci-step" data-time="7.5"><div class="ci-card">
+                <div class="ci-step" data-time="7.5" data-moment="8am"><div class="ci-card">
                     <div class="ci-when">7:30 AM</div>
                     <h3>Rush hour</h3>
                     <p>By 8 AM, Macon-Bibb has already gained <strong data-ci="rushGain"></strong> people as its neighbors empty out.</p>
                     <p class="ci-note"><span class="ci-swatch" style="background:#f2c46b"></span>Gold dots head into Macon-Bibb, <span class="ci-swatch" style="background:#fff"></span>white dots head out; each is <span data-ci="perDot"></span> commuters. A county drops as its dots leave and rises as they land. Heights exaggerate the change 2.5×; labels show the real change. Timing is illustrative.</p>
                 </div></div>
-                <div class="ci-step" data-time="8.5"><div class="ci-card">
+                <div class="ci-step" data-time="8.5" data-moment="pay"><div class="ci-card">
                     <div class="ci-when">8:30 AM</div>
                     <h3>Who's coming in</h3>
                     <p>Now the dots show what each commuter earns. <strong data-ci="payIn"></strong> of neighbors who work in Macon-Bibb earn more than $3,333 a month, compared with <strong data-ci="payLocal"></strong> of people who live and work here.</p>
                     <p class="ci-paykey"><span><i style="background:rgb(45,212,191)"></i>More than $3,333/mo</span><span><i style="background:rgb(242,196,107)"></i>$1,251–3,333</span><span><i style="background:rgb(160,170,190)"></i>$1,250 or less</span></p>
                     <p class="ci-note">Monthly earnings bands from LODES 2023.</p>
                 </div></div>
-                <div class="ci-step" data-time="12.5"><div class="ci-card">
+                <div class="ci-step" data-time="12.5" data-moment="noon"><div class="ci-card">
                     <div class="ci-when">12:30 PM</div>
                     <h3>The workday</h3>
                     <p>By midday, Macon-Bibb holds about <strong data-ci="bibbDay"></strong> people (<span data-ci="bibbPct"></span>), drawn most from <span data-ci="topSources"></span>.</p>
                     <p><strong data-ci="oneIn"></strong> jobs here is held by someone from a neighboring county.</p>
                 </div></div>
-                <div class="ci-step" data-time="17.75"><div class="ci-card">
+                <div class="ci-step" data-time="17.75" data-moment="evening"><div class="ci-card">
                     <div class="ci-when">5:45 PM</div>
                     <h3>Heading home</h3>
                     <p>The dots reverse, and most of those higher paychecks head home with them. By evening the region settles back into its night-time shape, ready to do it all again tomorrow.</p>
                     <p class="ci-note">Commuting: U.S. Census Bureau LODES 2023, between Macon-Bibb and its 16 neighbors. Residents: ACS 2024.</p>
                 </div></div>
-                <div class="ci-step ci-step--map" data-time="21" id="section-region"><div class="ci-card">
+                <div class="ci-step ci-step--map" data-time="21" id="section-region" data-moment="map"><div class="ci-card">
                     <div class="ci-when">The whole picture</div>
                     <h3>The region's commuting balance</h3>
                     <p>Counting commuters from everywhere, not just next door, the pattern holds: every county around Macon-Bibb sends out more workers than it takes in. Only Macon-Bibb gains.</p>
@@ -152,6 +155,7 @@
             <a href="#section-occupations">Occupations</a>
             <a href="#section-hiring">Hiring</a>
             <a href="#section-demographics">Talent</a>
+            <a href="#section-explore">Explore</a>
         </nav>
 
         <!-- 01 · The jobs that pull them in -->
@@ -314,17 +318,67 @@
             </details>
         </section>
 
-        <!-- Closing: the thesis, then what to do next -->
-        <section class="chapter chapter--close">
+        <!-- Closing: the thesis, three tools to come back to, and what custom research adds -->
+        <section class="chapter chapter--close" id="section-explore">
             <p class="chapter-kicker chapter-kicker--center">The takeaway</p>
             <h2 class="chapter-finding">Macon-Bibb is where Middle Georgia goes to work, and health care is why.</h2>
-            <p class="chapter-dek">Workforce Macon is updated every quarter by the Greater Macon Chamber of Commerce. Need numbers like these for your organization? We can build them for you.</p>
-            <div class="close-actions">
-                <a class="close-btn close-btn--primary" href="reports/macon-overview.pdf" download>Download the Regional Overview (PDF)</a>
-                <a class="close-btn" href="navigator.html">Explore the Workforce Navigator</a>
-                <a class="close-btn" href="about.html">Contact the Chamber</a>
+
+            <h3 class="explore-title">Explore it yourself</h3>
+            <div class="tools-grid">
+                <article class="tool-card">
+                    <p class="tool-kicker">The commute</p>
+                    <h4 class="tool-title">Replay the story</h4>
+                    <p class="tool-dek">Show how Middle Georgia comes to work in Macon. Present it full screen at your next meeting, or link straight to a moment.</p>
+                    <div class="tool-actions">
+                        <button type="button" class="close-btn close-btn--primary" data-commute="present">▶ Present it</button>
+                        <button type="button" class="close-btn" data-commute="replay">Watch again</button>
+                    </div>
+                    <p class="tool-moments">Jump to: <a href="#6am">6 AM</a><a href="#8am">Rush hour</a><a href="#pay">Who's coming in</a><a href="#noon">Midday</a><a href="#evening">Evening</a><a href="#map">The map</a></p>
+                </article>
+
+                <article class="tool-card">
+                    <p class="tool-kicker">Job lookup</p>
+                    <h4 class="tool-title">What does a job pay here?</h4>
+                    <label class="tool-search">
+                        <span class="sr-only">Search <span id="job-count">800</span> occupations</span>
+                        <input id="job-q" type="search" placeholder="Search a job, e.g. nurse, welder, teacher" autocomplete="off">
+                        <ul class="tool-matches" id="job-list" hidden></ul>
+                    </label>
+                    <div class="tool-result" id="job-result" aria-live="polite"></div>
+                    <p class="tool-upsell">Need entry-level vs. experienced pay, or how Macon compares to Atlanta and Savannah? <a href="#custom-research">Request custom research →</a></p>
+                </article>
+
+                <article class="tool-card">
+                    <p class="tool-kicker">Industry strengths</p>
+                    <h4 class="tool-title">What is Macon strong in?</h4>
+                    <p class="tool-dek">Industries far more concentrated in Macon-Bibb than in the U.S. as a whole.</p>
+                    <ol class="strength-list" id="strength-list"></ol>
+                    <label class="tool-search">
+                        <span class="sr-only">Search any industry</span>
+                        <input id="strength-q" type="search" placeholder="Look up any industry" autocomplete="off">
+                        <ul class="tool-matches" id="strength-qlist" hidden></ul>
+                    </label>
+                    <div class="tool-result" id="strength-result" aria-live="polite" hidden></div>
+                    <p class="tool-upsell">Want the full competitive profile for your industry? <a href="#custom-research">Request custom research →</a></p>
+                </article>
             </div>
-            <p class="close-sources">Sources: commuting, U.S. Census Bureau LODES 2023 · residents and education, American Community Survey 2024 · jobs, wages and occupations, regional QCEW and OES snapshots · job ads, March 2026 snapshot.</p>
+
+            <div class="custom-pitch" id="custom-research">
+                <h3>What custom research adds</h3>
+                <p>Workforce Macon is free and updated every quarter. When you need more than what's here, the Greater Macon Chamber of Commerce builds custom research for employers, site selectors and partners.</p>
+                <ul>
+                    <li><b>Pay ranges</b>, from entry-level to experienced, not just averages</li>
+                    <li><b>Comparisons</b> with Atlanta, Savannah, Augusta, Columbus and peer metros</li>
+                    <li><b>Trends</b> in jobs, pay and commuting over time</li>
+                    <li><b>Your focus</b>: a specific industry, occupation, or the labor shed around your site</li>
+                </ul>
+                <div class="close-actions">
+                    <a class="close-btn close-btn--primary" href="about.html">Request custom research</a>
+                    <a class="close-btn" href="reports/macon-overview.pdf" download>Download the Regional Overview (PDF)</a>
+                    <a class="close-btn" href="navigator.html">Explore the Workforce Navigator</a>
+                </div>
+            </div>
+            <p class="close-sources">Sources: commuting, U.S. Census Bureau LODES 2023 · residents and education, American Community Survey 2024 · jobs, wages, occupations and industry concentration, regional QCEW and OES snapshots · job ads, March 2026 snapshot.</p>
         </section>
     </main>
 
@@ -371,6 +425,7 @@
     <script src="js/nav.js"></script>
     <script src="js/reveal.js"></script>
     <script src="js/chapters.js"></script>
+    <script src="js/lookups.js"></script>
     <script src="js/commute-intro.js"></script>
 </body>
 </html>

@@ -615,8 +615,65 @@
             a.download = 'macon-regional-map.png'; a.href = out.toDataURL('image/png'); a.click();
         });
 
+        // ----- Moments: links into the story (#6am, #8am, #pay, #noon, #evening, #map), a copy-link
+        // button on each card, and present mode (fullscreen; arrow keys step card by card) -----
+        const goToStep = (el, smooth) => {
+            measure();
+            const a = anchors.find(x => x.el === el);
+            if (a) scrollTo({ top: Math.max(0, a.y), behavior: smooth ? 'smooth' : 'instant' });
+        };
+        const momentStep = name => steps.find(el => el.dataset.moment === name);
+        const goToHash = () => { const el = momentStep(location.hash.slice(1)); if (el) goToStep(el, false); };
+        addEventListener('hashchange', goToHash);
+        steps.filter(el => el.dataset.moment).forEach(el => {
+            const card = el.querySelector('.ci-card');
+            if (!card) return;
+            const btn = document.createElement('button');
+            btn.type = 'button'; btn.className = 'ci-linkbtn'; btn.textContent = 'Link to this moment';
+            btn.addEventListener('click', () => {
+                const url = location.origin + location.pathname + '#' + el.dataset.moment;
+                const reset = () => setTimeout(() => { btn.textContent = 'Link to this moment'; }, 1800);
+                const copied = () => { btn.textContent = 'Link copied'; reset(); };
+                const fallback = () => { history.replaceState(null, '', '#' + el.dataset.moment); btn.textContent = 'Link is in the address bar'; reset(); };
+                if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(url).then(copied, fallback); else fallback();
+            });
+            card.appendChild(btn);
+        });
+
+        let presenting = false;
+        function setPresenting(on) {
+            if (on === presenting) return;
+            presenting = on;
+            const at = steps[Math.max(0, step)];
+            document.body.classList.toggle('ci-presenting', on);
+            if (on && !document.fullscreenElement && document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(() => {});
+            if (!on && document.fullscreenElement) document.exitFullscreen().catch(() => {});
+            // The header hides while presenting, so the stage moves up: re-measure, then land on the same card
+            requestAnimationFrame(() => { computeFlat(); lastScene = ''; goToStep(at, false); onScroll(); });
+        }
+        document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement && presenting) setPresenting(false); });
+        document.getElementById('ci-present').addEventListener('click', () => setPresenting(true));
+        addEventListener('keydown', e => {
+            if (e.target.closest && e.target.closest('input, textarea, select, [contenteditable]')) return;
+            if (!presenting) {
+                if ((e.key === 'p' || e.key === 'P') && onScreen && !e.metaKey && !e.ctrlKey) { e.preventDefault(); setPresenting(true); }
+                return;
+            }
+            if (e.key === 'Escape') { setPresenting(false); return; }
+            const dir = ['ArrowRight', 'ArrowDown', 'PageDown', ' '].includes(e.key) ? 1 : ['ArrowLeft', 'ArrowUp', 'PageUp'].includes(e.key) ? -1 : 0;
+            if (!dir) return;
+            e.preventDefault();
+            goToStep(steps[Math.max(0, Math.min(steps.length - 1, step + dir))], true);
+        });
+        // For the takeaway section's "Replay the commute" card
+        window.WFCommute = {
+            replay: () => goToStep(steps[0], false),
+            present: () => { goToStep(steps[0], false); setPresenting(true); },
+        };
+
         measure(); onScroll();
         if (reducedMotion) hour = target;
+        if (location.hash) goToHash();
         section.classList.add('is-ready');
     }).catch(err => console.error('Commuting intro failed to load', err));
 })();

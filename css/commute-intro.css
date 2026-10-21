@@ -85,6 +85,22 @@
 .ci-paykey { display: flex; flex-wrap: wrap; gap: 0.35rem 0.8rem; font-size: 0.78rem; }
 .ci-paykey i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 0.35rem; }
 
+/* ----- Present mode and moment links ----- */
+.ci-present { position: absolute; z-index: 3; top: 18px; left: 18px; opacity: calc(1 - var(--ci-map)); }
+.ci.is-map .ci-present { pointer-events: none; }
+.ci-present-hint {
+    position: absolute; z-index: 3; left: 50%; bottom: 18px; transform: translateX(-50%); display: none;
+    padding: 0.35rem 0.8rem; border-radius: 999px; background: rgba(0, 0, 0, 0.55); color: #cfd6e2; font-size: 0.75rem;
+}
+body.ci-presenting .main-header, body.ci-presenting .page-jumpnav, body.ci-presenting .ci-present, body.ci-presenting .ci-linkbtn { display: none !important; }
+body.ci-presenting .ci-present-hint { display: block; }
+.ci-linkbtn {
+    margin-top: 0.7rem; padding: 0; border: 0; background: none; cursor: pointer;
+    font: 600 0.75rem var(--font-body); color: #9fb1c9; text-decoration: underline; text-underline-offset: 3px;
+}
+.ci-linkbtn:hover { color: #f2c46b; }
+@media (max-width: 768px) { .ci-present, .ci-present-hint { display: none !important; } }
+
 /* ----- The finished map's controls, stats box and key ----- */
 .ci-overlay {
     position: absolute; z-index: 3;
