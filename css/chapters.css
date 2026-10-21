@@ -307,6 +307,33 @@ body.page-home .hiring-bars .demo-bar-row { font-size: 0.95rem; padding: 7px 0; 
     .tool-result.is-swap, .stop-hint.is-on { animation: none; }
 }
 
+/* ----- Snapping (desktop and laptop) -----
+   Gentle "proximity" snapping: when scrolling stops near the finished regional map or
+   one of the stops, the page settles onto it; elsewhere it scrolls freely. The 3D story
+   before the map has no snap points, so its day plays out under continuous scroll. The
+   map card snaps to center because that's exactly where the story reaches its last
+   moment (js/commute-intro.js times each card by its center). */
+@media (min-width: 901px) and (min-height: 700px) {
+    html:has(body.page-home) { scroll-snap-type: y proximity; }
+    body.page-home .ci-step--map { scroll-snap-align: center; }
+    body.page-home :is(.stop, .chapter--close) { scroll-snap-align: start; }
+}
+
+/* Headlines fade up as their stop arrives and fade away as it scrolls off, so only one
+   is ever in view; the tool panels stay solid. Tied directly to scroll where the browser
+   supports it (elsewhere the headline just fades in once, css/reveal.css). */
+@supports (animation-timeline: view()) {
+    @media (min-width: 901px) and (prefers-reduced-motion: no-preference) {
+        body.page-home .stop-head {
+            animation: head-in linear both, head-out linear forwards;   /* the fade-out only takes over once it starts */
+            animation-timeline: view(), view();
+            animation-range: cover 8% cover 34%, cover 76% cover 96%;
+        }
+    }
+}
+@keyframes head-in { from { opacity: 0; transform: translateY(36px); } to { opacity: 1; transform: none; } }
+@keyframes head-out { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(-28px); } }
+
 /* ----- Tablets and phones: stack ----- */
 @media (max-width: 900px) {
     .tool-panel, .tool-panel--donut, .tool-panel--search { grid-template-columns: minmax(0, 1fr); gap: 24px; }
