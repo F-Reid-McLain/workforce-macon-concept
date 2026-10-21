@@ -44,7 +44,7 @@ FIELDS = [
                       r'laboratory|biotech|rehabilitation|coding|personal trainer|nurse aide|patient'),
     ('it',            r'cyber|network|comput|programm|software|\bweb|cloud|comptia|help desk|information tech|\bdata\b|data science|'
                       r'artificial intelligence|\bai\b|java|linux|cisco|\baws\b|generative|game design|informatics|fintech|financial technology'),
-    ('logistics',     r'logist|supply chain|warehous|inventory|purchasing|commercial driving|distribution|transportation'),
+    ('logistics',     r'\blogist|supply chain|warehous|inventory|purchasing|commercial driving|distribution|transportation'),
     ('manufacturing', r'mechatron|automation|robot|machin|\bcnc\b|lathe|mill operator|metrolog|calibration|instrument|industrial|engineer|'
                       r'electronic|drafter|fluid power|motor control|programmable|manufactur|mechanic|maintenance'),
     ('trades',        r'weld|carpent|construct|electric|wiring|hvac|air condition|plumb|automotive|diesel|collision|vehicle|arc welder'),
@@ -65,6 +65,14 @@ FIELDS = [
 
 # Names that the general rules would misfile
 OVERRIDES = [
+    ('general',    r'core curriculum'),
+    ('education',  r'b\.s\.ed|\bm\.ed\b|\bed\.s\b|\bm\.a\.t\b|school leadership|instructional design'),
+    ('media',      r'esports|streaming|broadcast'),
+    ('it',         r'database|information design'),
+    ('manufacturing', r'robotic manufacturing|programmable control|biomedical engineering'),
+    ('trades',     r'residential/industrial wiring'),
+    ('social',     r'mental health and human services|philosophy, politics'),
+    ('personal',   r'barber|cosmetolog'),
     ('business',   r'accounting|microsoft (excel|word|office)|\bm\.?b\.?a\b'),
     ('social',     r'political science|juris|family therapy|international affairs|behavior analysis|victim|latin|classic|humanities'),
     ('it',         r'information science'),
@@ -133,6 +141,8 @@ CGTC_CODES = {
 }
 # Entries the parser can't read cleanly, taken from the catalog by hand
 CGTC_MANUAL = {'Commercial Driving - Class B': {'sites': ['Peach'], 'hours': 9},
+               'Associate of Science in Nursing (ASN) Bridge': {'sites': ['Macon'], 'hours': 62},
+               'Cardiovascular Technology': {'sites': ['Macon'], 'hours': 70},
                'Emergency Medical Technician (EMT)': {'sites': ['Macon'], 'hours': None}}
 
 
@@ -277,6 +287,13 @@ def mga_programs():
                 'places': list(dict.fromkeys(MGA_PLACE[c] for c in campuses if c in MGA_PLACE)),
                 'url': url, 'options': [], 'online': 'Online' in campuses, 'source': MGA_URL,
             })
+    # Same name, different degree (Core Curriculum is both an A.A. and an A.S.): name the degree
+    names = {}
+    for p in out:
+        names.setdefault((p['name'], p['earn']), set()).add(p['credential'])
+    for p in out:
+        if len(names[(p['name'], p['earn'])]) > 1:
+            p['name'] = f"{p['name']} ({p['credential']})"
     # The same program can be listed twice (e.g. a certificate under two headings)
     seen, unique = set(), []
     for p in out:
