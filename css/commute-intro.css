@@ -71,7 +71,7 @@
 .ci-pulse__row { display: flex; align-items: baseline; gap: 0.6rem; }
 .ci-pulse__row b { font: var(--font-heading-weight) 1.7rem/1.1 var(--font-heading); color: #fff; font-variant-numeric: tabular-nums; min-width: 6.2ch; }
 .ci-pulse__chg { font-size: 0.78rem; color: #9fb1c9; font-variant-numeric: tabular-nums; }
-.ci-pulse__chg.is-up { color: #f2c46b; }
+.ci-pulse__chg.is-up { color: #34d399; }
 .ci-pulse { will-change: opacity; contain: layout paint; }   /* its own layer: updates don't repaint the map */
 .ci-pulse__plot { position: relative; display: block; margin-top: 0.2rem; }
 .ci-pulse__chart { display: block; overflow: visible; }

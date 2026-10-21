@@ -48,6 +48,9 @@
 
     // Story colors, and the regional map's (same values the old 2D map used)
     const BLUE = [123, 143, 209], GOLD = [242, 196, 107];
+    // The day's change on the blocks: Macon-Bibb's gain in see-through green; what each
+    // neighbor loses as a faint red ghost of its night-time height
+    const GAIN = [52, 211, 153], LOSS = [248, 113, 113];
     const PAY = [[160, 170, 190], [242, 196, 107], [45, 212, 191]];   // ≤ $1,250 · $1,251–3,333 · > $3,333 a month
     // The finished map in the homepage's night palette: Macon-Bibb in gold, counties that
     // lose workers in the story's blue (brighter = bigger loss), any other gainer in teal,
@@ -375,14 +378,19 @@
                     getElevation: r => homeTop(r.fips), getFillColor: r => fill(r.fips, BLUE).concat(Math.round(255 * smooth(0, 0.4, arr(r.fips)))),
                     updateTriggers: { getElevation: geoKey, getFillColor: colorKey + '|' + (hour < 6 ? hour.toFixed(3) : 'in') } }),
             ];
-            // Gold: the extra people who came in to work, stacked on each gaining county.
-            // One small layer per county, lifted with modelMatrix so its outline is never re-tessellated.
+            // Green: the extra people who came in to work, stacked on each gaining county.
+            // Red ghost: the part of a county's night-time height that has left for work.
+            // One small layer per county, lifted with modelMatrix so its outline is never re-tessellated;
+            // both are see-through, so they don't write depth (the blocks beneath stay visible).
+            const seeThrough = { depthWriteEnabled: false };
             rings.forEach((r, i) => {
-                const lo = homeTop(r.fips), hi = fullTop(r.fips);
-                if (hi - lo < 1) return;
-                out.push(new deck.SolidPolygonLayer({ id: 'gain-' + i, data: [r], extruded: true, pickable: true, material,
-                    getPolygon: d => d.ring, modelMatrix: translateZ(lo), getElevation: hi - lo, getFillColor: fill(r.fips, GOLD),
-                    updateTriggers: { getFillColor: colorKey } }));
+                const lo = homeTop(r.fips), hi = fullTop(r.fips), night = arr(r.fips) * p * BLOCK_H;
+                if (hi - lo >= 1) out.push(new deck.SolidPolygonLayer({ id: 'gain-' + i, data: [r], extruded: true, pickable: true, material,
+                    getPolygon: d => d.ring, modelMatrix: translateZ(lo), getElevation: hi - lo, getFillColor: GAIN.concat(150),
+                    parameters: seeThrough }));
+                if (night - hi >= 1) out.push(new deck.SolidPolygonLayer({ id: 'loss-' + i, data: [r], extruded: true, pickable: false, material,
+                    getPolygon: d => d.ring, modelMatrix: translateZ(hi), getElevation: night - hi, getFillColor: LOSS.concat(42),
+                    parameters: seeThrough }));
             });
             out.push(
                 // County edges: story outlines on the block tops, ending as the map's borders
@@ -393,7 +401,7 @@
                     updateTriggers: { getPath: geoKey, getColor: colorKey + '|' + (hour < 6 ? hour.toFixed(3) : 'in') } }),
                 // Night-time height of counties that emptied out
                 new deck.PathLayer({ id: 'night', data: rings.filter(r => k(r.fips) < 0.998), visible: S.settle < 0.99, opacity: 1 - S.settle,
-                    getPath: r => lift(r.ring, p * BLOCK_H), widthUnits: 'pixels', getWidth: 1.2, getColor: [255, 255, 255, 150], updateTriggers: { getPath: geoKey } }),
+                    getPath: r => lift(r.ring, p * BLOCK_H), widthUnits: 'pixels', getWidth: 1.2, getColor: LOSS.concat(150), updateTriggers: { getPath: geoKey } }),
             );
             // Commuters on the road right now, each trailing a short comet tail
             const onRoad = (d, h) => (h > d.t0 && h < d.t0 + TRAVEL) || (h > d.t1 && h < d.t1 + TRAVEL);
@@ -462,7 +470,7 @@
         const line = d3.line(d => px(d[0]), d => py(d[1]))(series);
         const area = d3.area(d => px(d[0]), () => py(bibbPop), d => py(Math.max(bibbPop, d[1])))(series);
         section.querySelector('.ci-pulse__chart').innerHTML =
-            `<path d="${area}" fill="rgba(242,196,107,0.28)"/><line x1="0" x2="${PW}" y1="${py(bibbPop)}" y2="${py(bibbPop)}" stroke="rgba(255,255,255,0.35)" stroke-dasharray="3 3"/>` +
+            `<path d="${area}" fill="rgba(52,211,153,0.28)"/><line x1="0" x2="${PW}" y1="${py(bibbPop)}" y2="${py(bibbPop)}" stroke="rgba(255,255,255,0.35)" stroke-dasharray="3 3"/>` +
             `<path d="${line}" fill="none" stroke="#f2c46b" stroke-width="1.6"/>`;
         // The playhead is an HTML dot moved with a transform (compositor-only, no SVG repaint)
         const pulseDot = section.querySelector('.ci-pulse__dot');
