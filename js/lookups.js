@@ -1,10 +1,10 @@
-/* ===== TAKEAWAY TOOLS — homepage =====
+/* ===== LOOKUPS — homepage chapters =====
    Two small lookups people can come back to, each deliberately limited to
    the essentials (the depth is what custom research is for):
 
-   - Job lookup: average pay, jobs in Macon-Bibb, openings a year and outlook
-     for any of ~800 occupations (data/Occupation Snapshot.csv, OES-based).
-   - What Macon is strong in: industries where Macon-Bibb is far more
+   - Job lookup (chapter 03): average pay, jobs in Macon-Bibb, openings a year
+     and outlook for any of ~800 occupations (data/Occupation Snapshot.csv, OES-based).
+   - What Macon is strong in (chapter 02): industries where Macon-Bibb is far more
      specialized than the U.S. (location quotient), plus a search across
      all industries (data/Industry Snapshot.csv, QCEW-based). */
 (function () {
@@ -84,8 +84,4 @@
         typeahead({ input: document.getElementById('strength-q'), list: document.getElementById('strength-qlist'), items: inds, label: i => i.name, onPick: show });
     }).catch(err => console.error('Industry lookup failed to load', err));
 
-    // ----- Replay / present the commuting story -----
-    document.querySelectorAll('[data-commute]').forEach(b => b.addEventListener('click', () => {
-        if (window.WFCommute) window.WFCommute[b.dataset.commute]();
-    }));
 })();

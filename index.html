@@ -142,6 +142,7 @@
                     <h3>The region's commuting balance</h3>
                     <p>Counting commuters from everywhere, not just next door, the pattern holds: every county around Macon-Bibb sends out more workers than it takes in. Only Macon-Bibb gains.</p>
                     <p>Hover any county for detail, or click the map to show the region's major highways.</p>
+                    <p class="ci-note">Presenting this story? Press <b>P</b> or <b>▶ Present</b> for full screen, and use each card's "Link to this moment" to jump straight to a point in the day.</p>
                     <p class="ci-note">Net commuting = jobs located in the county minus employed residents (LODES 2023). Population: ACS 2024.</p>
                     <details class="ci-method">
                         <summary>How this story works</summary>
@@ -164,7 +165,7 @@
             <a href="#section-occupations">Occupations</a>
             <a href="#section-hiring">Hiring</a>
             <a href="#section-demographics">Talent</a>
-            <a href="#section-explore">Explore</a>
+            <a href="#custom-research">Custom research</a>
         </nav>
 
         <!-- 01 · The jobs that pull them in -->
@@ -219,7 +220,22 @@
                     </div>
                 </div>
             </div>
-            <p class="chapter-bridge">Inside that industry, one job stands out.</p>
+            <h3 class="chapter-sub">What Macon is strong in</h3>
+            <p class="sector-finding">Size isn't the only measure. These industries are far more concentrated in Macon-Bibb than in the U.S. as a whole, the kind of specialties that set a place apart.</p>
+            <div class="tool-split">
+                <ol class="strength-list" id="strength-list"></ol>
+                <div class="tool-card">
+                    <p class="tool-kicker">Look up any industry</p>
+                    <label class="tool-search">
+                        <span class="sr-only">Search any industry</span>
+                        <input id="strength-q" type="search" placeholder="e.g. hospitals, trucking, insurance" autocomplete="off">
+                        <ul class="tool-matches" id="strength-qlist" hidden></ul>
+                    </label>
+                    <div class="tool-result" id="strength-result" aria-live="polite" hidden></div>
+                    <p class="tool-upsell">Want the full competitive profile for your industry? <a href="#custom-research">Request custom research →</a></p>
+                </div>
+            </div>
+            <p class="chapter-bridge">Inside the biggest of them, health care, one job stands out.</p>
         </section>
 
         <!-- 03 · The work itself -->
@@ -229,6 +245,20 @@
                 <h2 class="chapter-finding" id="find-occ"><em>Registered nurses</em> are Macon-Bibb's most common job: <em>2,779</em> positions averaging <em>$87,600</em>.</h2>
                 <p class="chapter-dek">The occupations that employ the most people in Macon-Bibb. <span id="occ-commute-note"></span></p>
             </header>
+            <div class="tool-card tool-card--wide">
+                <div class="tool-card__search">
+                    <p class="tool-kicker">Look up any job</p>
+                    <h4 class="tool-title">What does a job pay here?</h4>
+                    <label class="tool-search">
+                        <span class="sr-only">Search <span id="job-count">800</span> occupations</span>
+                        <input id="job-q" type="search" placeholder="e.g. nurse, welder, teacher" autocomplete="off">
+                        <ul class="tool-matches" id="job-list" hidden></ul>
+                    </label>
+                    <p class="tool-upsell">Need entry-level vs. experienced pay, or how Macon compares to Atlanta and Savannah? <a href="#custom-research">Request custom research →</a></p>
+                </div>
+                <div class="tool-result" id="job-result" aria-live="polite"></div>
+            </div>
+            <h3 class="chapter-sub">Top occupations</h3>
             <div class="occ-table-wrap">
                 <table class="occ-table">
                     <thead>
@@ -327,50 +357,10 @@
             </details>
         </section>
 
-        <!-- Closing: the thesis, three tools to come back to, and what custom research adds -->
+        <!-- Closing: the thesis, then what custom research adds -->
         <section class="chapter chapter--close" id="section-explore">
             <p class="chapter-kicker chapter-kicker--center">The takeaway</p>
             <h2 class="chapter-finding">Macon-Bibb is where Middle Georgia goes to work, and health care is why.</h2>
-
-            <h3 class="explore-title">Explore it yourself</h3>
-            <div class="tools-grid">
-                <article class="tool-card">
-                    <p class="tool-kicker">The commute</p>
-                    <h4 class="tool-title">Replay the story</h4>
-                    <p class="tool-dek">Show how Middle Georgia comes to work in Macon. Present it full screen at your next meeting, or link straight to a moment.</p>
-                    <div class="tool-actions">
-                        <button type="button" class="close-btn close-btn--primary" data-commute="present">▶ Present it</button>
-                        <button type="button" class="close-btn" data-commute="replay">Watch again</button>
-                    </div>
-                    <p class="tool-moments">Jump to: <a href="#6am">6 AM</a><a href="#8am">Rush hour</a><a href="#pay">Who's coming in</a><a href="#noon">Midday</a><a href="#evening">Evening</a><a href="#map">The map</a></p>
-                </article>
-
-                <article class="tool-card">
-                    <p class="tool-kicker">Job lookup</p>
-                    <h4 class="tool-title">What does a job pay here?</h4>
-                    <label class="tool-search">
-                        <span class="sr-only">Search <span id="job-count">800</span> occupations</span>
-                        <input id="job-q" type="search" placeholder="Search a job, e.g. nurse, welder, teacher" autocomplete="off">
-                        <ul class="tool-matches" id="job-list" hidden></ul>
-                    </label>
-                    <div class="tool-result" id="job-result" aria-live="polite"></div>
-                    <p class="tool-upsell">Need entry-level vs. experienced pay, or how Macon compares to Atlanta and Savannah? <a href="#custom-research">Request custom research →</a></p>
-                </article>
-
-                <article class="tool-card">
-                    <p class="tool-kicker">Industry strengths</p>
-                    <h4 class="tool-title">What is Macon strong in?</h4>
-                    <p class="tool-dek">Industries far more concentrated in Macon-Bibb than in the U.S. as a whole.</p>
-                    <ol class="strength-list" id="strength-list"></ol>
-                    <label class="tool-search">
-                        <span class="sr-only">Search any industry</span>
-                        <input id="strength-q" type="search" placeholder="Look up any industry" autocomplete="off">
-                        <ul class="tool-matches" id="strength-qlist" hidden></ul>
-                    </label>
-                    <div class="tool-result" id="strength-result" aria-live="polite" hidden></div>
-                    <p class="tool-upsell">Want the full competitive profile for your industry? <a href="#custom-research">Request custom research →</a></p>
-                </article>
-            </div>
 
             <div class="custom-pitch" id="custom-research">
                 <h3>What custom research adds</h3>

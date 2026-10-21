@@ -676,11 +676,6 @@
             e.preventDefault();
             goToStep(steps[Math.max(0, Math.min(steps.length - 1, step + dir))], true);
         });
-        // For the takeaway section's "Replay the commute" card
-        window.WFCommute = {
-            replay: () => goToStep(steps[0], false),
-            present: () => { goToStep(steps[0], false); setPresenting(true); },
-        };
 
         measure(); onScroll();
         if (reducedMotion) hour = target;
