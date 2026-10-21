@@ -211,7 +211,7 @@
             lit = renderOrgs();
         }
         lightMap(lit);
-        document.dispatchEvent(new CustomEvent('finder:update', { detail: { door: state.door, programs: training ? beforePlace : [], place: state.place } }));
+        document.dispatchEvent(new CustomEvent('finder:update', { detail: { door: state.door, programs: training ? beforePlace : [], place: state.place, filtering: filtering() } }));
         const note = document.getElementById('minimap-note');
         if (note) note.textContent = lit ? `Lit up: the ${lit.length} organization${lit.length === 1 ? '' : 's'} behind what's showing below.` : 'Every organization in the Navigator, by the kind of help it offers.';
         saveState();

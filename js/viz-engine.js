@@ -1289,7 +1289,12 @@ const structuralLinks = [
   // category-collapse, which fade to 0 (i.e. stay invisible) instead of 1,
   // so they don't flash into view before immediately being hidden again.
   // Skipped under reduced-motion, but still needs the same final opacity.
-  if (!prefersReducedMotion) {
+  // The Navigator's hero banner (js/navigator-hero.js) plays its own, slower build-in once
+  // the banner is on screen; it just needs everything to start hidden.
+  if (window.WFHeroReveal && !prefersReducedMotion) {
+    node.style("opacity", 0);
+    link.style("opacity", 0);
+  } else if (!prefersReducedMotion) {
     node.style("opacity", 0).transition().delay(d => depthOf(d) * 220 + Math.random() * 150).duration(500).style("opacity", d => isNodeVisible(d) ? 1 : 0);
     link.style("opacity", 0).transition().delay(d => Math.max(depthOf(d.source), depthOf(d.target)) * 220 + Math.random() * 150 - 80).duration(400).style("opacity", d => (isNodeVisible(d.source) && isNodeVisible(d.target)) ? 1 : 0);
   } else {
@@ -1304,6 +1309,7 @@ const structuralLinks = [
   // registered so it fires correctly whenever that next happens.
   simulation.on("tick", renderTick);
   if (particle) d3.timer(updateParticles);
+  document.dispatchEvent(new CustomEvent("viz:ready"));   // for js/navigator-hero.js
 
   // Nothing is freely draggable on mobile, full stop — the layout is fixed
   // there (no more "Show Full Map" escape hatch to a freely-arranged
