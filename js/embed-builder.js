@@ -94,7 +94,7 @@
         snippetEl.textContent =
             '<iframe\n' +
             '    src="' + src + '"\n' +
-            '    title="Macon Workforce Navigator"\n' +
+            '    title="Workforce Navigator · Workforce Macon"\n' +
             '    style="width: 100%; height: ' + height + 'px; border: 0;"\n' +
             '    loading="lazy"' + allowAttr + '>\n' +
             '</iframe>';

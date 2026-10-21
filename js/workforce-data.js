@@ -250,6 +250,32 @@
         if (donutNode === hierarchy && renderDonut.draw && !donutAnim) renderDonut.draw(a);
     });
 
+    // ===== WHAT COMMUTERS COME IN FOR (LODES 2023, by industry) =====
+    // data/commute-sectors.json: per industry, jobs located in Macon-Bibb and the minimum
+    // filled by people who live elsewhere (jobs here minus residents working in it anywhere)
+    function renderCommuteSectors(data) {
+        const el = document.getElementById('sector-commute-bars');
+        if (!el || !data) return;
+        const rows = data.sectors.filter(r => r.commutersAtLeast > 0).slice(0, 10);
+        const max = rows[0].commutersAtLeast;
+        const pct = r => Math.round(100 * r.commutersAtLeast / r.jobs);
+        el.innerHTML = rows.map(r => `
+            <div class="demo-bar-row">
+                <div class="demo-bar-label wide-label" title="${r.sector}">${r.sector}</div>
+                <div class="demo-bar-track"><div class="demo-bar-fill" style="width:${(r.commutersAtLeast / max * 100).toFixed(1)}%;background:${C.teal};"></div></div>
+                <div class="occ-bar-val sector-val">${r.commutersAtLeast.toLocaleString()}<span>${pct(r)}% of its jobs</span></div>
+            </div>`).join('');
+        // Headline: most commuters by count, and the most commuter-dependent sizeable industry
+        const top = rows[0];
+        const lean = data.sectors.filter(r => r.jobs >= 1500).sort((a, b) => b.commutersAtLeast / b.jobs - a.commutersAtLeast / a.jobs)[0];
+        const find = document.getElementById('find-sectors');
+        if (find) find.innerHTML = `<em>${top.sector}</em> draws the most commuters: at least <em>${top.commutersAtLeast.toLocaleString()}</em> of its jobs. ` +
+            `<em>${lean.sector}</em> leans on them most, with at least <em>${pct(lean)}%</em> of its jobs held by people from outside Macon-Bibb.`;
+        const hc = data.sectors.find(r => r.sector.startsWith('Health care'));
+        const note = document.getElementById('occ-commute-note');
+        if (note && hc) note.textContent = `Health care runs on commuters: at least ${pct(hc)}% of its jobs here are held by people who live outside Macon-Bibb.`;
+    }
+
     // ===== CHAPTER FINDINGS (headlines computed from the data) =====
     function writeFindings(totalRow, occRows, demoRows) {
         const set = (id, html) => { const el = document.getElementById(id); if (el && html) el.innerHTML = html; };
@@ -566,6 +592,7 @@
     }).catch(err => {
         console.error('Workforce data load error:', err);
     });
+    d3.json('data/commute-sectors.json').then(renderCommuteSectors).catch(err => console.error('Commuting-by-industry load error:', err));
 
     window.addEventListener('resize', debounce(function () {
         if (donutNode) renderDonut(donutNode, { assemble: donutBuilt });

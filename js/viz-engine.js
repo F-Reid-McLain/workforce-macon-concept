@@ -152,7 +152,7 @@ function setMapInteractionFrozen(frozen) {
 
 // 1. STRUCTURAL DATA — hub and category nodes stay hardcoded
 const structuralNodes = [
-  { id: "hub",                name: "Macon Workforce Navigator",          type: "hub",         size: 30, image: "" },
+  { id: "hub",                name: "Workforce Macon",          type: "hub",         size: 30, image: "" },
   { id: "colleges",           name: "Colleges",                           type: "major-group", size: 23, image: "", icon: "graduation-cap" },
   { id: "faith-based",        name: "Faith Based",                        type: "major-group", size: 23, image: "", icon: "heart" },
   { id: "special-population", name: "Special Population and Re Entry",    type: "major-group", size: 23, image: "", icon: "users" },

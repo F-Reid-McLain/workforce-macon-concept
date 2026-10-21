@@ -21,7 +21,7 @@
     // ----- Chart and card groups -----
     const GROUPS = [
         '.stats-grid', '.demo-stat-grid', '.demo-grid',
-        '#age-bars', '#race-bars', '#edu-bars', '.occ-table',
+        '#sector-commute-bars', '#age-bars', '#race-bars', '#edu-bars', '.occ-table',
         '#occ-proj-growth', '#occ-wage-mean', '#occ-demand-chart', '#hiring-chart', '#employers-chart',
     ];
     const STAGGER_MS = 1800;   // long enough for the last staggered item to finish

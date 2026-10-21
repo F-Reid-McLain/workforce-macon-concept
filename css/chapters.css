@@ -47,6 +47,12 @@ body.page-home .main-content { padding-bottom: 0; }
 .chapter-finding em.is-muted { color: #8f9bb0; }
 .chapter-finding--sm { font-size: clamp(1.5rem, 2.6vw, 2.2rem); max-width: 30ch; }
 .chapter-dek { font-size: 1.12rem; line-height: 1.6; color: var(--color-text-secondary); max-width: 62ch; margin: 0; }
+.sector-finding { font-size: 1.15rem; line-height: 1.55; color: var(--color-text-secondary); max-width: 62ch; margin: 0 0 20px; }
+.sector-finding em { font-style: normal; font-weight: 700; color: #fff; }
+body.page-home .sector-commute { padding: 24px 26px; }
+.sector-val { display: flex; flex-direction: column; align-items: flex-end; min-width: 7.5rem; font-weight: 700; color: #fff; }
+.sector-val span { font-size: 0.72rem; font-weight: 500; color: var(--color-text-muted); }
+.chart-note { margin: 16px 0 0; font-size: 0.78rem; line-height: 1.5; color: var(--color-text-muted); }
 .chapter-sub {
     margin: 64px 0 18px; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: #9fb1c9;
 }
