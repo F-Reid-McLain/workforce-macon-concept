@@ -49,12 +49,17 @@
 
     // from: where the page last came to rest. A glide only moves it once it lands, so a
     // gesture that interrupts a glide is still measured from the stop it started at.
-    let from = scrollY, glideTo = null, pending = null;
+    let from = scrollY, glideTo = null, pending = null, quietUntil = 0, lastInput = 0;
+    const STILL = 260;   // ms without wheel or touch input before the page settles
+    const land = y => { from = y; glideTo = null; quietUntil = performance.now() + 450; };
     function settle() {
+        const wait = STILL - (performance.now() - lastInput);
+        if (wait > 0) { pending = setTimeout(settle, wait); return; }   // the wheel is still turning
         const y = scrollY;
         if (glideTo !== null) {
-            if (Math.abs(y - glideTo) <= 3) { from = y; glideTo = null; return; }
-            glideTo = null;   // interrupted: measure from the last resting place
+            // Landed, or close enough that the leftover drift is just momentum
+            if (Math.abs(y - glideTo) < NUDGE) { if (Math.abs(y - glideTo) > 2) scrollTo({ top: glideTo, behavior: 'instant' }); land(glideTo); return; }
+            glideTo = null;   // a real new gesture: measure from the last resting place
         }
         if (!enabled()) { from = y; return; }
         const pts = points(), first = pts[0], last = pts[pts.length - 1], moved = y - from;
@@ -68,12 +73,35 @@
             else target = pts.slice().reverse().find(p => p <= y + 1);
         }
         if (target === null || Math.abs(target - y) <= 2) { from = y; return; }
+        // Settling back after a tiny nudge doesn't hold the wheel: the nudge may be the
+        // slow start of a real swipe, which should carry on through
+        if (target === from) { scrollTo({ top: target, behavior: reduce ? 'instant' : 'smooth' }); return; }
         glideTo = target;
         scrollTo({ top: target, behavior: reduce ? 'instant' : 'smooth' });
     }
-    // Wait a beat after a scroll ends, in case the wheel is still turning
-    const soon = () => { clearTimeout(pending); pending = setTimeout(settle, 120); };
-    ['wheel', 'touchmove'].forEach(ev => addEventListener(ev, () => clearTimeout(pending), { passive: true }));
+    // A trackpad keeps sending small "momentum" wheel events for a second or so after the
+    // fingers lift. While a glide runs, and just after it lands, those are swallowed, so
+    // the tail of one swipe can't carry the page on past the stop it chose. A real new
+    // swipe starts with a bigger delta and gets through.
+    addEventListener('wheel', e => {
+        const settling = glideTo !== null || performance.now() < quietUntil;
+        if (settling && enabled() && Math.abs(e.deltaY) < 40 && scrollY >= points()[0] - 2) {
+            e.preventDefault();
+            if (glideTo === null) quietUntil = Math.min(performance.now() + 250, quietUntil + 250);   // let the tail run out
+            return;
+        }
+        lastInput = performance.now();
+        clearTimeout(pending);
+    }, { passive: false });
+    addEventListener('touchmove', () => { lastInput = performance.now(); clearTimeout(pending); }, { passive: true });
+    // Settle once scrolling has ended and the wheel has been still for a moment (slow
+    // wheels and gentle swipes send input in a trickle); a glide that reaches its stop
+    // is recorded straight away
+    const soon = () => {
+        clearTimeout(pending);
+        if (glideTo !== null && Math.abs(scrollY - glideTo) <= 2) { land(glideTo); return; }
+        pending = setTimeout(settle, 60);
+    };
     if ('onscrollend' in window) addEventListener('scrollend', soon);
     else { let t; addEventListener('scroll', () => { clearTimeout(t); t = setTimeout(soon, 100); }, { passive: true }); }
 })();
