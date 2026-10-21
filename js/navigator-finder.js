@@ -5,8 +5,8 @@
      what you earn, field and online availability.
    - Get support / For employers: the organizations for that audience
      (content/assets.json "doors", loaded by js/directory.js).
-   The corner map (js/navigator-minimap.js) lights up the organizations behind whatever
-   is showing (window.WFMap, js/search.js). The view lives in the address
+   The ecosystem map in the hero banner (js/navigator-minimap.js) lights up the
+   organizations behind whatever is showing (window.WFMap, js/search.js). The view lives in the address
    (?for=support, ?q=welding&len=weeks&earn=certificate&field=healthcare&online=1).
    Map-only embeds (?embed=1) skip all of this. */
 (function () {
@@ -213,7 +213,7 @@
         lightMap(lit);
         document.dispatchEvent(new CustomEvent('finder:update', { detail: { door: state.door, programs: training ? beforePlace : [], place: state.place } }));
         const note = document.getElementById('minimap-note');
-        if (note) note.textContent = lit ? `The ${lit.length} organization${lit.length === 1 ? '' : 's'} behind what's showing light up. Click the map to explore it.` : 'Every organization in the Navigator. Click the map to explore it.';
+        if (note) note.textContent = lit ? `Lit up: the ${lit.length} organization${lit.length === 1 ? '' : 's'} behind what's showing below.` : 'Every organization in the Navigator, by the kind of help it offers.';
         saveState();
     }
     const waitForMap = setInterval(() => { if (window.WFMap && WFMap.ready()) { clearInterval(waitForMap); lightMap(lit); } }, 150);

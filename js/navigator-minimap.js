@@ -1,10 +1,10 @@
-/* ===== CORNER MAP — Workforce Navigator =====
-   The network map (js/viz-engine.js) lives in a small frame in the top-right
-   corner, where the finder lights up the organizations behind what's showing.
-   Clicking it opens the same map full size as an overlay (one map, resized:
-   js/main.js re-fits it whenever its container changes size); × or Esc closes
-   it. On phones the frame is replaced by a "See how it all connects" button.
-   Fires 'minimap:toggle' on document so the finder can re-apply its lighting. */
+/* ===== HERO MAP — Workforce Navigator =====
+   The network map (js/viz-engine.js) is the page's opening banner, where the
+   finder lights up the organizations behind what's showing below. Clicking it,
+   or "Explore the whole ecosystem", opens the same map full size as an overlay
+   (one map, resized: js/main.js re-fits it whenever its container changes size);
+   × or Esc closes it. Fires 'minimap:toggle' on document so the finder can
+   re-apply its lighting. */
 (function () {
     'use strict';
     if (document.body.classList.contains('embed-mode')) return;
@@ -12,7 +12,7 @@
     if (!frame) return;
     const openBtn = document.getElementById('minimap-open');
     const closeBtn = document.getElementById('minimap-close');
-    const phoneBtn = document.getElementById('minimap-button');
+    const exploreBtn = document.getElementById('minimap-explore');
     let lastFocus = null;
 
     function setOpen(open) {
@@ -34,7 +34,7 @@
 
     openBtn.addEventListener('click', () => setOpen(true));
     closeBtn.addEventListener('click', () => setOpen(false));
-    if (phoneBtn) phoneBtn.addEventListener('click', () => setOpen(true));
+    if (exploreBtn) exploreBtn.addEventListener('click', () => setOpen(true));
     document.addEventListener('keydown', e => {
         // The map's own Esc handling (details panel) goes first; a second Esc closes the overlay
         if (e.key !== 'Escape' || !frame.classList.contains('is-open')) return;

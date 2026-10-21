@@ -1,15 +1,12 @@
 /* ===== WORKFORCE NAVIGATOR (navigator.html) =====
-   Three doors (programs, support, employers) on the left; the network map small in
-   the top-right corner, lighting up the organizations behind what's showing, and
-   opening full size on click (js/navigator-finder.js, js/navigator-minimap.js).
+   A hero banner with the live ecosystem map (lighting up the organizations behind
+   what's showing, opening full size on click), then three doors: programs, support,
+   employers (js/navigator-finder.js, js/navigator-minimap.js).
    Colors come from the shared night palette in css/theme.css (:root.theme-night).
    Map-only embeds (?embed=1) hide everything but the map. */
 
 .finder { max-width: 1320px; margin: 0 auto; padding: 8px 24px 48px; }
-.finder-layout { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 32px; align-items: start; }
-.finder-head { margin: 8px 0 18px; }
-.finder-head .chapter-kicker { margin-bottom: 0.6rem; }
-.finder-title { margin: 0; max-width: 24ch; font: 700 clamp(1.7rem, 3vw, 2.5rem)/1.12 var(--font-heading); letter-spacing: -0.02em; color: #fff; text-wrap: balance; }
+.finder-title { margin: 0; max-width: 18ch; font: 700 clamp(1.7rem, 3vw, 2.5rem)/1.12 var(--font-heading); letter-spacing: -0.02em; color: #fff; text-wrap: balance; }
 .finder-dek { margin: 0 0 16px; max-width: 70ch; font-size: 1rem; line-height: 1.55; color: var(--color-text-secondary); }
 
 /* ----- The three doors ----- */
@@ -100,65 +97,39 @@
 .ocard__actions { display: flex; gap: 14px; margin: 8px 0 0; font-size: 0.84rem; }
 .ocard__actions a, .ocard__more { padding: 0; border: 0; background: none; cursor: pointer; font: 600 0.84rem var(--font-body); color: var(--ch-gold); text-decoration: none; }
 
-/* ----- The corner: Where (towns) or Ecosystem (organization network) ----- */
-.finder-side { position: sticky; top: 78px; }
-.corner-tabs { display: flex; gap: 4px; margin-bottom: 8px; padding: 3px; border-radius: 999px; background: rgba(255, 255, 255, 0.05); width: fit-content; }
-.corner-tabs button { padding: 0.32rem 0.85rem; border-radius: 999px; border: 0; cursor: pointer; font: 600 0.78rem var(--font-body); background: transparent; color: var(--color-text-secondary); }
-.corner-tabs button.is-on { background: var(--ch-gold); color: #1b1608; }
-.corner-tabs button:disabled { opacity: 0.35; cursor: default; }
-.corner { position: relative; height: 260px; }
-/* Both views stay built (the network needs a real size to lay itself out); only one shows */
-.corner-pane { position: absolute; inset: 0; visibility: hidden; opacity: 0; transition: opacity 0.25s; }
-.corner-pane.is-on { visibility: visible; opacity: 1; }
-.minimap { position: relative; height: 100%; border-radius: 16px; overflow: hidden; border: 1px solid var(--color-border); background: var(--color-bg-surface-deep); }
-.finder-side:not([data-pane="eco"]) .minimap__note { display: none; }
-.finder-side:not([data-pane="where"]) .where-extra { display: none; }
-
-/* Where: the region's counties, a dot on each town sized by how many programs are taught there */
-.wheremap { border-radius: 16px; overflow: hidden; border: 1px solid var(--color-border); background: radial-gradient(ellipse at 50% 45%, #18213a, #111827 75%); }
-#where-svg { display: block; width: 100%; height: 100%; }
-.where-counties path { fill: rgba(255, 255, 255, 0.04); stroke: rgba(255, 255, 255, 0.14); stroke-width: 0.8; }
-.where-counties path.is-bibb { fill: rgba(52, 211, 153, 0.12); stroke: rgba(52, 211, 153, 0.45); }
-.where-dot { cursor: pointer; outline: none; }
-.where-dot__fill { fill: var(--ch-gold); fill-opacity: 0.8; stroke: #1b1608; stroke-width: 1; }
-.where-dot__ring { fill: none; stroke: var(--ch-gold); stroke-opacity: 0; stroke-width: 2; transition: stroke-opacity 0.2s; }
-.where-dot__label { text-anchor: middle; font: 700 0.62rem var(--font-body); fill: #e6e9ee; paint-order: stroke; stroke: rgba(14, 20, 32, 0.85); stroke-width: 3px; pointer-events: none; }
-.where-dot.is-empty { cursor: default; }
-.where-dot.is-empty .where-dot__fill { fill: rgba(255, 255, 255, 0.25); stroke: none; }
-.where-dot:hover .where-dot__ring, .where-dot:focus-visible .where-dot__ring, .where-dot.is-hot .where-dot__ring { stroke-opacity: 0.9; }
-.where-dot.is-hot .where-dot__fill { fill: #ffd683; }
-.where-dot.is-picked .where-dot__fill { fill: var(--ch-teal); }
-.where-dot.is-picked .where-dot__ring { stroke: var(--ch-teal); stroke-opacity: 1; }
-.where-tip {
-    position: absolute; left: 0; top: 0; z-index: 5; display: flex; flex-direction: column; gap: 2px; padding: 7px 10px; border-radius: 9px;
-    background: #18212f; border: 1px solid rgba(255, 255, 255, 0.16); box-shadow: 0 8px 22px rgba(0, 0, 0, 0.45);
-    font-size: 0.76rem; color: var(--color-text-secondary); white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity 0.15s;
+/* ----- Hero: the headline beside the live ecosystem map ----- */
+.nav-hero {
+    position: relative; display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr); align-items: stretch;
+    height: clamp(300px, 40vh, 400px); margin: 8px 0 22px; border-radius: 20px; overflow: hidden;
+    border: 1px solid var(--color-border); background: radial-gradient(ellipse 70% 90% at 70% 50%, #1b2640, #111827 70%);
 }
-.where-tip.is-on { opacity: 1; }
-.where-tip b { color: #fff; }
-.where-extra { margin: 8px 2px 0; font-size: 0.78rem; line-height: 1.5; color: var(--color-text-muted); }
-.where-extra b { color: var(--color-text-secondary); }
-.where-clear { padding: 0; border: 0; background: none; cursor: pointer; font: 600 0.78rem var(--font-body); color: var(--ch-gold); }
+.nav-hero__text { position: relative; z-index: 2; display: flex; flex-direction: column; justify-content: center; gap: 10px; padding: 28px 8px 28px 32px; }
+.nav-hero__text .chapter-kicker { margin: 0; }
+.nav-hero__note { margin: 4px 0 0; max-width: 34ch; font-size: 0.88rem; line-height: 1.5; color: var(--color-text-secondary); min-height: 2.6em; }
+.nav-hero__explore {
+    align-self: flex-start; margin-top: 4px; padding: 0.55rem 1rem; border-radius: 999px; cursor: pointer; font: 600 0.86rem var(--font-body);
+    background: rgba(242, 196, 107, 0.12); color: var(--ch-gold); border: 1px solid rgba(242, 196, 107, 0.5); transition: background 0.2s;
+}
+.nav-hero__explore:hover { background: rgba(242, 196, 107, 0.22); }
+.minimap { position: relative; height: 100%; min-height: 0; }
 .minimap .visualization-section, .minimap .visualization-section .container { margin: 0; max-width: none; padding: 0; height: 100%; text-align: left; }
 .minimap .viz-header { display: none; }
 .minimap .viz-container, .minimap #network-visualization, .minimap #network-visualization svg { height: 100%; min-height: 0; margin: 0; border: 0; border-radius: 0; }
+body:not(.embed-mode) .nav-hero .minimap:not(.is-open) :is(.viz-container, #network-visualization svg) { background: transparent; }
 body:not(.embed-mode) .minimap:not(.is-open) :is(.viz-zoom-controls, .viz-search, .viz-controls, .viz-fs-controls, .viz-info-panel) { display: none !important; }
 body:not(.embed-mode) .minimap:not(.is-open) #network-visualization { pointer-events: none; }
-.minimap__open { position: absolute; inset: 0; z-index: 5; border: 0; background: transparent; cursor: zoom-in; }
-.minimap__open:hover { box-shadow: inset 0 0 0 2px rgba(242, 196, 107, 0.6); border-radius: 16px; }
-.minimap__open:focus-visible { outline: 2px solid var(--ch-gold); outline-offset: -2px; }
+.minimap__open { position: absolute; inset: 0; z-index: 4; border: 0; background: transparent; cursor: zoom-in; }
+.minimap__open:focus-visible { outline: 2px solid var(--ch-gold); outline-offset: -4px; }
 .minimap__close { display: none; }
-.minimap__note { margin: 8px 2px 0; font-size: 0.78rem; line-height: 1.45; color: var(--color-text-muted); }
-.minimap-button { display: none; }
 /* The finder's hovered organization picks out its dot */
 #network-visualization circle.is-pulse { stroke: var(--ch-gold) !important; stroke-width: 5px !important; filter: drop-shadow(0 0 8px rgba(242, 196, 107, 0.9)); }
 
 /* Opened: the same map, full size, over a dimmed page */
 .minimap.is-open {
-    position: fixed; inset: 0; z-index: 2000; height: auto; padding: 28px; border: 0; border-radius: 0;
+    position: fixed; inset: 0; z-index: 3000; height: auto; padding: 28px; border: 0; border-radius: 0;
     background: rgba(6, 10, 18, 0.78); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); animation: map-open 0.25s ease;
 }
-.minimap.is-open .visualization-section { border-radius: 16px; overflow: hidden; border: 1px solid var(--color-border-subtle); }
+.minimap.is-open .visualization-section { border-radius: 16px; overflow: hidden; border: 1px solid var(--color-border-subtle); background: var(--color-bg-surface-deep); }
 .minimap.is-open .visualization-section .container { display: flex; flex-direction: column; }
 .minimap.is-open .viz-container { flex: 1; }
 .minimap.is-open .viz-controls { flex: none; margin: 0; padding: 10px 14px; background: var(--color-bg-surface-deep); border-top: 1px solid var(--color-border); }
@@ -170,8 +141,8 @@ body:not(.embed-mode) .minimap:not(.is-open) #network-visualization { pointer-ev
 }
 .minimap.is-open .viz-zoom-controls { right: 60px; }
 body.minimap-open { overflow: hidden; }
-/* Sticky makes its own layer; lift the whole side column above the site header while open */
-body.minimap-open .finder-side { z-index: 3000; }
+/* The banner clips its contents; let the opened map out */
+body.minimap-open .nav-hero { overflow: visible; z-index: 3000; }
 .minimap .controls-row--actions { justify-content: flex-end; gap: 8px; }
 .minimap .control-btn {
     padding: 0.45rem 0.95rem; border-radius: 999px; font: 600 0.82rem var(--font-body); width: auto; min-width: 0;
@@ -191,29 +162,13 @@ body:not(.embed-mode) .minimap .viz-search { display: none !important; }   /* th
 @keyframes sheet-up { from { transform: translateY(100%); } to { transform: none; } }
 
 /* ----- Phones and tablets: one column; the map opens from a button ----- */
-@media (max-width: 1080px) {
-    .finder-layout { grid-template-columns: minmax(0, 1fr) 260px; gap: 24px; }
-    .corner { height: 220px; }
-}
 @media (max-width: 900px) {
     .finder { padding: 4px 16px 32px; }
-    .finder-layout { grid-template-columns: minmax(0, 1fr); }
+    .nav-hero { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 220px; height: auto; }
+    .nav-hero__text { padding: 22px 20px 6px; }
     .doors { grid-template-columns: minmax(0, 1fr); }
     .door { grid-template-columns: auto 1fr; align-items: baseline; gap: 8px; padding: 12px 14px; }
     .finder-row__label { width: 100%; }
-    /* The map still builds (it needs a real size), just out of sight until opened */
-    .finder-side { position: fixed; left: -10000px; top: 0; width: 360px; }
-    .finder-side .corner { height: 300px; }
-    .finder-side .minimap.is-open { height: auto; }
-    .finder-side .corner-pane[data-pane="eco"] { visibility: visible; }   /* phones open the network from the button */
-    .finder-side .minimap.is-open { left: 0; }
-    body.minimap-open .finder-side { left: 0; width: auto; }
-    .minimap.is-open { padding: 12px; }
-    .minimap__note { display: none; }
-    .minimap-button {
-        display: block; width: 100%; margin: 20px 0 0; padding: 0.75rem 1rem; border-radius: 12px; cursor: pointer; font: 600 0.92rem var(--font-body);
-        background: transparent; color: var(--ch-gold); border: 1px solid rgba(242, 196, 107, 0.5);
-    }
     .pcard__top { flex-direction: column; gap: 4px; }
     #asset-modal .modal-content {
         position: fixed; left: 0; right: 0; bottom: 0; width: 100%; max-width: none; max-height: 82vh; margin: 0;
@@ -226,13 +181,8 @@ body:not(.embed-mode) .minimap .viz-search { display: none !important; }   /* th
 }
 
 /* ----- Map-only embeds: just the map, filling the frame ----- */
-body.embed-mode :is(.finder-main, .minimap__note, .minimap__open, .minimap__close, .minimap-button) { display: none !important; }
+body.embed-mode :is(.finder-layout, .nav-hero__text, .minimap__open, .minimap__close) { display: none !important; }
 body.embed-mode .finder { flex: 1; min-height: 0; display: flex; max-width: none; padding: 0; margin: 0; }
-body.embed-mode .finder-layout { flex: 1; min-height: 0; display: flex; align-items: stretch; }
-body.embed-mode .finder-side { flex: 1; min-height: 0; display: flex; position: static; }
-body.embed-mode .minimap { flex: 1; min-height: 0; height: auto; display: flex; border: 0; border-radius: 0; }
+body.embed-mode .nav-hero { flex: 1; min-height: 0; height: auto; display: flex; margin: 0; border: 0; border-radius: 0; background: none; }
+body.embed-mode .minimap { flex: 1; min-height: 0; height: auto; display: flex; }
 body.embed-mode .minimap .visualization-section { flex: 1; display: flex; }
-body.embed-mode :is(.corner-tabs, .where-extra, .corner-pane[data-pane="where"]) { display: none !important; }
-body.embed-mode .finder-side { flex-direction: column; }
-body.embed-mode .corner { flex: 1; min-height: 0; height: auto; position: static; display: flex; }
-body.embed-mode .corner-pane[data-pane="eco"] { position: static; flex: 1; min-height: 0; display: flex; visibility: visible; opacity: 1; }
