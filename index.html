@@ -74,7 +74,7 @@
                 <div class="ci-present-hint" aria-hidden="true">← → to step · Esc to exit</div>
                 <!-- Live pulse: Macon-Bibb's head count through the day -->
                 <div class="ci-pulse">
-                    <span class="ci-pulse__label">In Macon-Bibb now · residents ± neighbor commuters</span>
+                    <span class="ci-pulse__label">In Macon-Bibb now · residents ± commuters</span>
                     <span class="ci-pulse__row"><b id="ci-pulse-num">156,580</b><span class="ci-pulse__chg" id="ci-pulse-chg">all residents home</span></span>
                     <span class="ci-pulse__plot"><svg class="ci-pulse__chart" viewBox="0 0 260 48" width="260" height="48" aria-hidden="true"></svg><i class="ci-pulse__dot" aria-hidden="true"></i></span>
                     <span class="ci-pulse__axis" aria-hidden="true"><span>5 AM</span><span>Noon</span><span>9 PM</span></span>
@@ -116,7 +116,7 @@
                     <div class="ci-when">7:30 AM</div>
                     <h3>Rush hour</h3>
                     <p>By 8 AM, Macon-Bibb is filling up as its neighbors empty out.</p>
-                    <p class="ci-note"><span class="ci-swatch" style="background:#f2c46b"></span>Gold dots head into Macon-Bibb, <span class="ci-swatch" style="background:#fff"></span>white dots head out; each is <span data-ci="perDot"></span> commuters. A county drops as its dots leave and rises as they land: <span class="ci-swatch" style="background:rgba(52,211,153,0.75)"></span>green is Macon-Bibb's gain, <span class="ci-swatch" style="background:rgba(248,113,113,0.45)"></span>faint red is what each neighbor has lost. Heights exaggerate the change 2.5×; labels show the real change. Timing is illustrative.</p>
+                    <p class="ci-note"><span class="ci-swatch" style="background:#f2c46b"></span>Gold dots head into Macon-Bibb, <span class="ci-swatch" style="background:#fff"></span>white dots head out; each is <span data-ci="perDot"></span> commuters. Smaller, fainter dots come from or go beyond the map: people who commute farther. A county drops as its dots leave and rises as they land: <span class="ci-swatch" style="background:rgba(52,211,153,0.75)"></span>green is Macon-Bibb's gain, <span class="ci-swatch" style="background:rgba(248,113,113,0.45)"></span>faint red is what each neighbor has lost. Heights exaggerate the change 2.5×; labels show the real change. Timing is illustrative.</p>
                 </div></div>
                 <div class="ci-step" data-time="8.5" data-moment="pay"><div class="ci-card">
                     <div class="ci-when">8:30 AM</div>
@@ -128,19 +128,19 @@
                 <div class="ci-step" data-time="12.5" data-moment="noon"><div class="ci-card">
                     <div class="ci-when">12:30 PM</div>
                     <h3>The workday</h3>
-                    <p>Counting commuters to and from its 16 neighbors, Macon-Bibb holds about <strong data-ci="bibbDay"></strong> people by midday (<span data-ci="bibbPct"></span>), drawn most from <span data-ci="topSources"></span>.</p>
-                    <p><strong data-ci="oneIn"></strong> jobs here is held by someone from a neighboring county.</p>
+                    <p>Counting commuters from everywhere, Macon-Bibb holds about <strong data-ci="bibbDay"></strong> people by midday (<span data-ci="bibbPct"></span>), drawn most from <span data-ci="topSources"></span>.</p>
+                    <p><strong data-ci="oneIn"></strong> jobs here is held by someone from a neighboring county, and about <strong data-ci="farIn"></strong> more are filled by people from farther away.</p>
                 </div></div>
                 <div class="ci-step" data-time="17.75" data-moment="evening"><div class="ci-card">
                     <div class="ci-when">5:45 PM</div>
                     <h3>Heading home</h3>
                     <p>The dots reverse, and most of those higher paychecks head home with them. By evening the region settles back into its night-time shape, ready to do it all again tomorrow.</p>
-                    <p class="ci-note">Commuting: U.S. Census Bureau LODES 2023, between Macon-Bibb and its 16 neighbors. Residents: ACS 2024.</p>
+                    <p class="ci-note">Commuting: U.S. Census Bureau LODES 2023. Residents: ACS 2024.</p>
                 </div></div>
                 <div class="ci-step ci-step--map" data-time="21" id="section-region" data-moment="map"><div class="ci-card">
                     <div class="ci-when">The whole picture</div>
                     <h3>The region's commuting balance</h3>
-                    <p>Counting commuters from everywhere, not just next door, the pattern holds: every county around Macon-Bibb sends out more workers than it takes in. Only Macon-Bibb gains.</p>
+                    <p>This is the balance the day just played out: every county around Macon-Bibb sends out more workers than it takes in. Only Macon-Bibb gains.</p>
                     <p>Hover any county for detail, or click the map to show the region's major highways.</p>
                     <p class="ci-note">Presenting this story? Press <b>P</b> or <b>▶ Present</b> for full screen, and use each card's "Link to this moment" to jump straight to a point in the day.</p>
                     <p class="ci-note">Net commuting = jobs located in the county minus employed residents (LODES 2023). Population: ACS 2024.</p>
@@ -148,9 +148,10 @@
                         <summary>How this story works</summary>
                         <ul>
                             <li><b>Real data.</b> Commuting comes from the U.S. Census Bureau's LODES 2023, which counts jobs, not people: someone with two jobs counts twice. Residents come from the American Community Survey 2024.</li>
-                            <li><b>Just the neighbors.</b> The story follows commuting between Macon-Bibb and its 16 neighbors. Commuters from farther away aren't shown, so Macon-Bibb's real workday swing is larger. Neighbors are held at their resident count, so none shows a daytime gain (the map above counts commuters from everywhere).</li>
+                            <li><b>From everywhere.</b> Dots between counties are real flows between Macon-Bibb and each neighbor. Dots to and from the edge of the map stand for everyone else: all of Macon-Bibb's commuting with places beyond its neighbors, and each neighbor's net exchange with places other than Macon-Bibb. Together, each county's midday change equals its net commuting on the map.</li>
+                            <li><b>Farther is fuzzier.</b> LODES sometimes places a job at a company's reporting address rather than where the work happens, which mostly inflates long-distance flows. That's why those dots are fainter.</li>
                             <li><b>Illustrative.</b> Departure and return times, straight-line routes, and every job filled at once. Real days include shift work, part-time jobs and people working from home.</li>
-                            <li><b>Drawn to be seen.</b> Heights exaggerate each county's change 2.5×, and each dot stands for about 150 jobs. The labels and the counter show the real figures.</li>
+                            <li><b>Drawn to be seen.</b> Heights exaggerate each county's change 2.5×, and each dot stands for about <span data-ci="perDot"></span> jobs. The labels and the counter show the real figures.</li>
                         </ul>
                     </details>
                 </div></div>

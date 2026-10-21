@@ -96,31 +96,40 @@
         };
         const returnAt = q => 16.5 + 2 * (Math.acos(1 - 2 * q) / Math.PI);   // everyone is home by 7 PM
         const TRAVEL = 0.5;
-        const PER_DOT = d3.sum(region.flows, f => f.jobs) / (mobile ? 140 : 230);
+        // Commuting with everywhere else (LODES county totals), drawn as dots to and from the edge of
+        // the map: all of Macon-Bibb's, and each neighbor's net exchange with places other than
+        // Macon-Bibb. With these, every county's daytime change equals its LODES net (the map's figure).
+        const EDGE = 'edge';
+        const edgeFlows = Object.entries(region.elsewhere || {}).filter(([fips]) => pop.has(fips)).flatMap(([fips, e]) => {
+            if (fips === BIBB) return [{ from: EDGE, to: fips, jobs: e.in }, { from: fips, to: EDGE, jobs: e.out }];
+            const net = e.in - e.out;
+            return net > 0 ? [{ from: EDGE, to: fips, jobs: net }] : net < 0 ? [{ from: fips, to: EDGE, jobs: -net }] : [];
+        });
+        const allFlows = region.flows.concat(edgeFlows);
+        const PER_DOT = d3.sum(allFlows, f => f.jobs) / (mobile ? 260 : 480);
         let seed = 3; const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296;
         // Each dot also carries a pay band (LODES earnings), split in proportion to its flow's mix
         const bandAt = (pay, q) => { const tot = d3.sum(pay); let acc = 0; for (let b = 0; b < pay.length; b++) { acc += pay[b] / tot; if (q < acc) return b; } return pay.length - 1; };
-        const commuters = region.flows.flatMap(f => {
+        const commuters = allFlows.flatMap(f => {
             const n = Math.max(1, Math.round(f.jobs / PER_DOT));
             return d3.range(n).map(i => {
                 const t0 = departAt((i + rnd()) / n);
                 const j = () => (rnd() - 0.5) * 0.06;
                 return { from: f.from, to: f.to, people: f.jobs / n, t0, t1: Math.max(t0 + TRAVEL + 1, returnAt(rnd())), a: [j(), j()], b: [j(), j()],
-                         band: f.pay ? bandAt(f.pay, (i + 0.5) / n) : 1 };
+                         band: f.pay ? bandAt(f.pay, (i + 0.5) / n) : -1, edge: f.from === EDGE || f.to === EDGE };
             });
         });
         function rawPeople(h) {
             const m = new Map(pop);
             commuters.forEach(d => {
-                if (h >= d.t0 && h < d.t1 + TRAVEL) m.set(d.from, m.get(d.from) - d.people);   // left home
-                if (h >= d.t0 + TRAVEL && h < d.t1) m.set(d.to, m.get(d.to) + d.people);      // at work
+                if (d.from !== EDGE && h >= d.t0 && h < d.t1 + TRAVEL) m.set(d.from, m.get(d.from) - d.people);   // left home
+                if (d.to !== EDGE && h >= d.t0 + TRAVEL && h < d.t1) m.set(d.to, m.get(d.to) + d.people);        // at work
             });
             return m;
         }
-        // Neighbors are held at or below their resident count. The story only follows commuting
-        // between Macon-Bibb and each neighbor, so a county like Butts (283 out to Macon-Bibb,
-        // 353 in from it) would otherwise show a small daytime gain, even though, counting
-        // commuters from everywhere, every neighbor loses workers (as the map at the end shows).
+        // Every neighbor loses workers on net (LODES), but dots in and out of it are timed
+        // independently, so early arrivals could briefly lift it above its residents. Hold it at
+        // or below its resident count; by midday this never binds.
         const capAtHome = new Set(counties.filter(c => c.fips !== BIBB).map(c => c.fips));
         let cache = { h: null, m: null };
         function peopleNow(h) {
@@ -143,6 +152,7 @@
         const values = {
             regionPop: fmt(regionPop),
             inFromRegion: fmt(inFromRegion),
+            farIn: fmt(Math.round(((region.elsewhere || {})[BIBB] || { in: 0 }).in / 100) * 100),
             perDot: '~' + fmt(Math.round(PER_DOT / 10) * 10),
             bibbDay: fmt(Math.round(bibbDay / 100) * 100),
             bibbPct: '+' + Math.round(100 * (bibbDay - bibbPop) / bibbPop) + '%',
@@ -157,9 +167,20 @@
         section.querySelectorAll('[data-ci]').forEach(el => { if (values[el.dataset.ci] !== undefined) el.textContent = values[el.dataset.ci]; });
 
         // Each dot's start and end points (county center plus a little jitter), computed once
+        // Dots from or to "elsewhere" start or end beyond the region: from every direction for
+        // Macon-Bibb, and outward past each neighbor for its exchange with the wider world
+        const allPtsR = rings.flatMap(r => r.ring);
+        const [ex0, ex1] = d3.extent(allPtsR, p => p[0]), [ey0, ey1] = d3.extent(allPtsR, p => p[1]);
+        const rc = [(ex0 + ex1) / 2, (ey0 + ey1) / 2], rx = (ex1 - ex0) * 0.78, ry = (ey1 - ey0) * 0.78;
+        const edgePoint = d => {
+            const home = d.from === EDGE ? d.to : d.from, c = center.get(home);
+            const ang = home === BIBB ? rnd() * 2 * Math.PI : Math.atan2(c[1] - rc[1], c[0] - rc[0]) + (rnd() - 0.5);
+            return [rc[0] + Math.cos(ang) * rx, rc[1] + Math.sin(ang) * ry];
+        };
         commuters.forEach(d => {
-            const a = center.get(d.from), b = center.get(d.to);
-            d.ax = a[0] + d.a[0]; d.ay = a[1] + d.a[1]; d.bx = b[0] + d.b[0]; d.by = b[1] + d.b[1];
+            const a = d.from === EDGE ? edgePoint(d) : center.get(d.from).map((v, i) => v + d.a[i]);
+            const b = d.to === EDGE ? edgePoint(d) : center.get(d.to).map((v, i) => v + d.b[i]);
+            d.ax = a[0]; d.ay = a[1]; d.bx = b[0]; d.by = b[1];
         });
 
         // ----- Opening: Macon-Bibb alone, then its neighbors rise in, largest commuter flow first -----
@@ -412,25 +433,29 @@
             const tops = new Map(counties.map(c => [c.fips, fullTop(c.fips)]));   // once per frame, not per dot
             const dotPosAt = (d, h) => {
                 const u = clamp01(h < d.t1 ? (h - d.t0) / TRAVEL : 1 - (h - d.t1) / TRAVEL);   // 0 = home, 1 = work
-                const za = tops.get(d.from), zb = tops.get(d.to);
+                const za = d.from === EDGE ? 0 : tops.get(d.from), zb = d.to === EDGE ? 0 : tops.get(d.to);
                 return [d.ax + (d.bx - d.ax) * u, d.ay + (d.by - d.ay) * u, za + (zb - za) * u + Math.sin(Math.PI * u) * ARC];
             };
             // "Who's coming in": from 8:10 AM the dots take their pay colors and keep them
             const payMix = smooth(8.1, 8.45, hour);
-            const dotColor = d => mixRGB(d.to === BIBB ? GOLD : [255, 255, 255], PAY[d.band], payMix);
+            // (dots from farther away have no pay data, so they keep their in/out color)
+            const dotColor = d => { const c = d.to === BIBB ? GOLD : [255, 255, 255]; return d.band < 0 ? c : mixRGB(c, PAY[d.band], payMix); };
+            // Farther-away dots are a little smaller and fainter: LODES sometimes places jobs at a
+            // company's reporting address, so long-distance flows are less certain than local ones
+            const dotAlpha = d => d.edge ? 165 : 245, dotSize = d => (mobile ? 2.4 : 3) * (d.edge ? 0.8 : 1);
             const moving = m < 0.15 ? commuters.filter(d => onRoad(d, hour)) : [];
             if (moving.length && rise > 0.9) {
                 const TRAIL = 4, STEP = 0.014;
                 const trail = moving.flatMap(d => d3.range(1, TRAIL + 1).filter(k => onRoad(d, hour - k * STEP)).map(k => ({ d, k })));
                 out.push(
                     new deck.ScatterplotLayer({ id: 'trails', data: trail, getPosition: t => dotPosAt(t.d, hour - t.k * STEP),
-                        getFillColor: t => dotColor(t.d).concat(Math.round(200 * (1 - t.k / (TRAIL + 1)))),
-                        radiusUnits: 'pixels', getRadius: t => (mobile ? 2.2 : 2.7) * (1 - 0.1 * t.k), billboard: true,
+                        getFillColor: t => dotColor(t.d).concat(Math.round((t.d.edge ? 120 : 200) * (1 - t.k / (TRAIL + 1)))),
+                        radiusUnits: 'pixels', getRadius: t => dotSize(t.d) * 0.9 * (1 - 0.1 * t.k), billboard: true,
                         parameters: { depthCompare: 'always' }, updateTriggers: { getPosition: geoKey, getFillColor: payMix } }),
                     new deck.ScatterplotLayer({ id: 'dots', data: moving, getPosition: d => dotPosAt(d, hour),
-                        getFillColor: d => dotColor(d).concat(245),
+                        getFillColor: d => dotColor(d).concat(dotAlpha(d)),
                         stroked: true, getLineColor: [40, 35, 25, 200], lineWidthUnits: 'pixels', getLineWidth: 0.6,
-                        radiusUnits: 'pixels', getRadius: mobile ? 2.4 : 3, billboard: true,
+                        radiusUnits: 'pixels', getRadius: dotSize, billboard: true,
                         parameters: { depthCompare: 'always' }, updateTriggers: { getPosition: geoKey, getFillColor: payMix } }),
                 );
             }
