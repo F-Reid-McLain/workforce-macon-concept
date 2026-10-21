@@ -1,0 +1,344 @@
+# Central Georgia Technical College: programs of study open to the public
+# Source: https://www.centralgatech.edu/wp-content/uploads/pdfs/academics/ProgramsOfStudy.pdf (updated 9/16/2026, checked 2026-10-21)
+# "+" = offered 100% online. Indented lines are options (specializations) of the program above them.
+# Left out: the "Offered only to Dual Enrollment and/or Department of Corrections students" list.
+# Typical length per the PDF: associate degrees about 2 years, diplomas about 18 months,
+# technical certificates under a year (full-time).
+
+== associate | Aerospace, Trade and Industry
+Automation Technology
+Aviation Maintenance Technology
+Carpentry
+Construction Management
+  Commercial Specialization
+  Residential Specialization
+Electronics Technology
+  Biomedical Instrumentation Specialization
+  Communication Electronics Specialization
+  Field Occupation Specialization
+Engineering Technology
+  Electrical Engineering Specialization
+  Industrial Engineering Specialization
+  Mechanical Engineering Specialization
+Instrumentation and Controls Technician
+Mechatronics Technology
+Metrology+
+
+== associate | Business and Computer Technologies
+Accounting+
+Applied Technical Management
+Banking and Finance+
+Business Healthcare Technology+
+  Business Healthcare Specialization
+  Compliance & Reimbursement Specialization
+  Health Informatics Specialization
+  Practice Management Specialization
+Business Management+
+  General Management Specialization
+  Human Resources Management Specialization
+  Operations Management Specialization
+  Service Sector Management Specialization
+  Small Business Management Specialization
+Business Technology+
+  Human Resources Management Specialization
+  Office Management Specialization
+  Project Management Specialization
+  Social Media Specialization
+Computer Programming+
+Computer Support Specialist
+Cybersecurity+
+Design and Media Production Technology
+  Post Production Specialization
+Hotel/Restaurant/Tourism Management
+Information Technology Professional
+Logistics Management+
+Marketing
+  E-Business Specialization
+  Entrepreneurship Specialization
+  Marketing Management Specialization
+  Professional Selling Specialization
+  Retail Management Specialization
+  Social Media Marketing Specialization
+  Sports Marketing Specialization
+Networking Specialist
+  Cisco Exploration Specialization
+  Cloud Computing Specialization
+  Linux/Unix Networking Specialization
+  Microsoft Specialization
+Sports and Fitness Management+
+Website Design/Development+
+
+== associate | General Studies
+Associate of Science in Education+
+Associate of Science in General Studies+
+Associate of Science in Psychology+
+Associate of Science in Social Work+
+Interdisciplinary Studies
+Technical Studies+
+
+== associate | Health Sciences
+Advanced Medical Imaging
+AAS in Allied Health Professions
+  Medical Assisting Specialization
+  Practical Nursing Specialization
+Associate of Science in Nursing
+Associate of Science in Nursing (ASN) Bridge
+Biotechnology
+Cardiovascular Technology
+Dental Hygiene
+Echocardiography
+Medical Laboratory Technology
+Orthopedic Technology
+Paramedicine
+Physical Therapist Assistant
+Radiologic Technology
+Surgical Technology
+Associate of Science in General Studies with Healthcare Professional Pathway
+
+== associate | Public Safety and Professional Services
+Associate of Science in Criminal Justice+
+Criminal Justice Technology
+Early Childhood Care and Education
+  Exceptionalities Specialization
+  Family Child Care Specialization
+  Infant/Toddler Development Specialization
+  Paraprofessional Specialization
+  Program Administrator Specialization
+Legal Studies
+
+== diploma | Aerospace, Trade and Industry
+Air Conditioning Technology
+Aircraft Structural Technology
+Automation Technology
+Automotive Collision Repair
+  Refinishing Specialization
+Automotive Fundamentals
+Automotive Technology
+Aviation Maintenance Technology
+Carpentry Technology
+Construction Management
+Electrical Controls Systems
+Electrical Systems Technology
+Electronics Fundamentals
+Electronics Technology
+  Biomedical Instrumentation Specialization
+  Communication Electronics Specialization
+  Field Occupation Specialization
+Industrial Mechanical Systems
+Mechatronics Technology
+Metrology+
+Precision Machining and Manufacturing
+Welding and Joining Technology
+
+== diploma | Business and Computer Technologies
+Accounting+
+Banking and Finance+
+Business Healthcare Technology+
+Business Management+
+Business Technology+
+Computer Programming+
+Computer Support Specialist+
+Design and Media Production Technology
+  Post Production Specialization
+Hotel/Restaurant/Tourism Management
+Information Technology Professional
+Logistics Management+
+Marketing
+  E-Business Specialization
+  Entrepreneurship Specialization
+  Marketing Management Specialization
+  Professional Selling Specialization
+  Retail Management Specialization
+  Social Media Marketing Specialization
+  Sports Marketing Specialization
+Networking Specialist
+  Cisco Exploration Specialization
+  Cloud Computing Specialization
+  Linux/Unix Specialization
+  Microsoft Specialization
+Sports and Fitness Management+
+Website Design/Development+
+
+== diploma | Health Sciences
+Dental Assisting
+EMS Professions
+Hemodialysis Technologist
+Medical Assisting
+Paramedicine
+Pharmacy Technology
+Polysomnographic Technology
+
+== diploma | Public Safety and Professional Services
+Criminal Justice Technology+
+Early Childhood Care and Education
+
+== certificate | Aerospace, Trade and Industry
+Advanced Shielded Metal Arc Welder
+AI Enhanced Robotic Manufacturing Specialist
+Air Conditioning Electrical Technician
+Air Conditioning Technician Assistant
+Aircraft Assembly Technician I
+Aircraft Assembly Technician II
+Aircraft Composites Technician
+Automation and Robotics Technology I
+Automotive Chassis Technician Specialist
+Automotive Climate Control Technician
+Automotive Collision Repair Assistant I
+Automotive Electrical/Electronic Systems Technician
+Automotive Engine Performance Technician
+Automotive Engine Repair Technician
+Automotive Transmission/Transaxle Technician Specialist
+Aviation Maintenance Technician
+Aviation Maintenance Technician - Airframe
+Aviation Maintenance Technician - Powerplant
+Basic Electronic Assembler
+Basic Electronic Technician
+Basic Machining Operator
+Basic Machinist
+Basic Mechatronics Specialist
+Basic Shielded Metal Arc Welder
+Calibration Technician+
+Carpentry Fundamentals
+Carpentry Technology
+CNC Specialist
+Commercial Carpenter
+Commercial Driving - Class A
+Commercial Driving - Class B
+Commercial Electrical Construction Technician
+Construction Career Launch Safety
+Construction Manager
+Diesel Electrical/Electronic Systems Technician
+Diesel Engine Service Technician
+Diesel Equipment Fundamentals
+Diesel Truck Maintenance Technician
+Drafter's Assistant
+Electric Vehicle Professional
+Electrical Engineering Technician
+Electronic Metrology Technician+
+Engineering Graphics Technician
+Engineering Technology Basics
+Engineering Technology Essentials
+Finish Carpenter
+Flux Cored Arc Welder
+Gas Metal Arc Welder
+Gas Tungsten Arc Welder
+Heavy Diesel Service Technician
+Hybrid/Electric Vehicle Repair Technician
+Industrial Electrician
+Industrial Engineering Technician
+Industrial Fluid Power Technician
+Industrial Mechatronics
+Industrial Motor Control Technician
+Instrumentation and Controls Technician I
+Lathe Operator
+Master Arc Welder
+Mechanical Engineering Technician
+Mechanical Maintenance Technician
+Mechatronics Technician
+Mill Operator
+Pipe Welder
+Programmable Control Technician
+Residential Air Conditioning Technician
+Residential Wiring Technician
+Residential/Industrial Wiring Technician
+Vertical Shielded Metal Arc Welding Fabricator
+
+== certificate | Business and Computer Technologies
+Administrative Support Assistant+
+Assistant Office Manager+
+Auditing and Assurances Specialist+
+AWS Cloud Solutions Specialist+
+Banking and Finance Specialist+
+Certified Warehousing & Distribution Specialist
+Cisco Network Specialist
+CompTIA A+ Certified Prep+
+CompTIA A+ Certified Technician Prep+
+Computer Hardware Specialist+
+Computerized Accounting Specialist+
+Cybersecurity+
+Cybersecurity Fundamentals+
+Design and Media Production Specialist
+Entrepreneurship+
+Generative AI: Principles and Practice+
+Health Records Technician+
+Healthcare Billing and Coding Specialist+
+Healthcare Billing and Reimbursement Assistant+
+Healthcare Office Assistant+
+Help Desk Specialist+
+Hospitality Operations Associate+
+Human Resource Management Specialist+
+Inventory Control Technician
+Java Programmer+
+Legal Administrative Assistant+
+Logistics Management Specialist+
+Management and Leadership Specialist+
+Medical Billing Clerk+
+Medical Front Office Assistant+
+Medical Language Specialist+
+Microsoft Excel Application Specialist+
+Microsoft Networking Administrator+
+Microsoft Office Applications Professional+
+Microsoft Word Application Professional
+Microsoft Word Application Specialist+
+Motion Graphics Assistant
+Network Administrator+
+Network Technician+
+Office Accounting Specialist+
+Payroll Accounting Specialist+
+PC Repair and Network Technician+
+Purchasing Technician
+Service Sector Management Specialist+
+Small Business Management Specialist+
+Social Media Specialist+
+Sports and Fitness Management Specialist+
+Supply Chain Specialist+
+Tax Preparation Specialist+
+Technical Management Specialist+
+Video and Film Editor
+Warehouse and Distribution Technician
+Web Site Designer+
+Web Site Developer+
+
+== certificate | General Studies
+Technical Specialist+
+
+== certificate | Health Sciences
+Accelerated Orthopedic Technician
+Accelerated Phlebotomy Technician
+Advanced Emergency Medical Technician
+Basic Pharmacy Technology
+Biotechnology Laboratory Assistant
+Certified Personal Trainer Fast Track
+Certified Tomography Specialist
+Computed Tomography Specialist
+Electrocardiography Technology
+Emergency Medical Technician (EMT)
+Health Care Assistant
+  Certified Personal Trainer Specialization
+  Electrocardiography Specialization
+  Medical Coding Specialization
+  Medical Front Office Specialization
+  Nurse Aide Specialization
+  Phlebotomy Specialization
+Healthcare Professional
+Magnetic Resonance Imaging Specialist
+Medical Coding+
+Military Medic Personnel to LPN Transition Program
+Nurse Aide
+Nurse Aide Accelerated
+Phlebotomy Technician
+Practical Nursing Certificate
+Prehospital EMS Operations
+PreNursing
+
+== certificate | Public Safety and Professional Services
+Advanced Legal Assistant
+Barber II
+Barbering for Cosmetologists
+Master Cosmetology
+Early Childhood Care and Education Basics+
+Early Childhood Exceptionalities
+Early Childhood Program Administration
+Family Child Care Specialist
+Infant/Toddler Child Care Specialist
+Master Barber

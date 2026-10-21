@@ -1,0 +1,76 @@
+{
+  "_about": "Programs that aren't in a machine-readable list, checked by hand on 2026-10-21. Each has its source. 'verify' marks something the source couldn't confirm (shown on the card as 'Call to confirm').",
+  "programs": [
+    { "org": "wesleyan", "name": "Nursing (BSN)", "earn": "bachelor", "credential": "Bachelor of Science in Nursing", "length": "About 4 years (apply sophomore year)", "bucket": "3plus", "field": "healthcare", "cost": "Private tuition · financial aid available", "url": "https://www.wesleyancollege.edu/academics/undergraduate/majorsminors/nursing-degree.cfm", "leadsTo": "Qualifies graduates to take the NCLEX and work as a registered nurse." },
+    { "org": "wesleyan", "name": "Accounting", "earn": "bachelor", "field": "business", "leadsTo": "Preparation for CPA, CMA and CFP credentials." },
+    { "org": "wesleyan", "name": "Business Administration", "earn": "bachelor", "field": "business", "options": ["Accounting", "Digital Marketing", "Economics", "Healthcare Administration", "Organizational Behavior", "Strategic Management"] },
+    { "org": "wesleyan", "name": "Advertising, Marketing and Communications", "earn": "bachelor", "field": "media" },
+    { "org": "wesleyan", "name": "Arts Management", "earn": "bachelor", "field": "media", "options": ["Art", "Music", "Theatre"] },
+    { "org": "wesleyan", "name": "Creative Arts", "earn": "bachelor", "field": "media", "options": ["Art", "Music", "Theater"] },
+    { "org": "wesleyan", "name": "Culture, Literature & Media", "earn": "bachelor", "field": "general", "options": ["Literature and Creative Writing", "Cross-Cultural Communication", "Media and Society", "Women, Gender, and Sexuality"] },
+    { "org": "wesleyan", "name": "Applied Mathematical Sciences", "earn": "bachelor", "field": "science" },
+    { "org": "wesleyan", "name": "Biology (BS)", "earn": "bachelor", "field": "science" },
+    { "org": "wesleyan", "name": "Environmental Studies and Sustainability", "earn": "bachelor", "field": "science" },
+    { "org": "wesleyan", "name": "Neuroscience", "earn": "bachelor", "field": "science" },
+    { "org": "wesleyan", "name": "Psychology", "earn": "bachelor", "field": "social" },
+    { "org": "wesleyan", "name": "Elementary Education", "earn": "bachelor", "field": "education", "leadsTo": "State teaching certification, with a built-in Reading minor." },
+    { "org": "wesleyan", "name": "Secondary Education", "earn": "bachelor", "field": "education", "options": ["Biology", "English", "History", "Math"] },
+    { "org": "wesleyan", "name": "Global Business, Economics and Culture", "earn": "bachelor", "field": "business" },
+    { "org": "wesleyan", "name": "History, Politics and Global Affairs", "earn": "bachelor", "field": "social", "options": ["Comparative Worldviews", "Global Systems", "History and Cultural Heritage", "Politics, Governance and Policy"] },
+    { "org": "wesleyan", "name": "MBA", "earn": "graduate", "credential": "Master of Business Administration", "length": "About 2 years", "bucket": "1to2", "field": "business", "verify": true },
+    { "org": "wesleyan", "name": "Master of Education (M.Ed.)", "earn": "graduate", "length": "About 2 years", "bucket": "1to2", "field": "education", "verify": true },
+
+    { "org": "goodwill", "name": "Culinary Arts (Helms College)", "earn": "diploma", "credential": "Diploma (an AAS is also offered)", "length": "About 12 months", "bucket": "months", "field": "hospitality", "cost": "Tuition · financial aid for those who qualify", "url": "https://www.helms.edu/programs/culinary-arts-training-program/", "campus": "Macon and Augusta" },
+    { "org": "goodwill", "name": "HVAC/R (Helms College)", "earn": "diploma", "length": "About 12 months", "bucket": "months", "field": "trades", "cost": "Tuition · financial aid for those who qualify", "url": "https://www.helms.edu/programs/hvacr-training-program/", "campus": "Macon (mornings and evenings) and Augusta", "verify": true },
+    { "org": "goodwill", "name": "Medical Assistant (Helms College)", "earn": "diploma", "length": "About 12 months", "bucket": "months", "field": "healthcare", "cost": "Tuition · financial aid for those who qualify", "url": "https://www.helms.edu/programs/medical-assistant-training/", "campus": "Macon and Augusta, days or evenings", "leadsTo": "Prepares for the national Certified Medical Assistant (CMA) exam.", "verify": true },
+    { "org": "goodwill", "name": "Retail Operations Management (Helms College)", "earn": "associate", "credential": "Associate degree", "length": "About 2 years", "bucket": "1to2", "field": "business", "cost": "Tuition · financial aid for those who qualify", "url": "https://www.helms.edu/programs/retail-operations-management/", "campus": "Online" },
+    { "org": "goodwill", "name": "GED Program", "earn": "ged", "credential": "GED", "length": "6 to 12 months, about 8 hours a week", "bucket": "months", "field": "basic", "cost": "Free (you pay the $25 assessment and the GED exam fees)", "url": "https://www.goodwillworks.org/careers-and-education/ged-program/", "campus": "Macon and Augusta, plus virtual tutoring" },
+
+    { "org": "adult-ed", "name": "GED and HiSET test prep", "earn": "ged", "credential": "High school equivalency (GED or HiSET)", "length": "At your own pace", "bucket": "months", "field": "basic", "cost": "Free classes", "url": "https://www.centralgatech.edu/adult-education/programs" },
+    { "org": "adult-ed", "name": "Career Plus High School Diploma", "earn": "ged", "credential": "High school diploma", "length": "Varies with credits needed", "bucket": "months", "field": "basic", "cost": "Free", "url": "https://www.centralgatech.edu/adult-education/programs", "verify": true },
+    { "org": "adult-ed", "name": "Integrated Education & Training (Accelerating Opportunity)", "earn": "certificate", "credential": "GED plus an industry certificate (welding, industrial maintenance, early childhood and others)", "length": "Varies", "bucket": "months", "field": "basic", "cost": "Free or low cost for eligible adults", "url": "https://www.centralgatech.edu/adult-education/programs", "verify": true },
+    { "org": "adult-ed", "name": "English Literacy & Civics (ESL)", "earn": "none", "credential": "English language skills", "length": "At your own pace", "bucket": "months", "field": "basic", "cost": "Free", "url": "https://www.centralgatech.edu/adult-education/esl-program" },
+
+    { "org": "ibew", "name": "Electrical apprenticeship (Macon Electrical JATC)", "earn": "apprenticeship", "credential": "Journeyman electrician", "length": "Several years (IBEW inside apprenticeships typically run about 5)", "bucket": "3plus", "field": "trades", "cost": "Paid wages from day one · $30 application fee", "url": "https://www.ibew1316.org/apprenticeship", "leadsTo": "Needs a diploma or GED, one year of algebra, and an aptitude test." },
+
+    { "org": "workforce-dev", "name": "E3 Career Jumpstart", "earn": "certificate", "credential": "Central Georgia Tech credentials such as forklift and CPR/First Aid", "length": "4 weeks", "bucket": "weeks", "field": "logistics", "cost": "Free for eligible residents", "url": "https://www.maconbibb.us/workforcetrainingprograms/", "leadsTo": "Entry-level advanced manufacturing and warehouse jobs. Info sessions Tuesdays: 478-751-6160.", "verify": true },
+
+    { "org": "eckerd", "name": "Paxen youth career pathways (ages 16–24)", "earn": "certificate", "credential": "GED plus industry certifications", "length": "Months, with follow-up support", "bucket": "months", "field": "basic", "cost": "Free for eligible young adults", "url": "https://eckerd.org/jobs-training/ga-middlega/", "leadsTo": "Paid work experience and job placement for out-of-school young adults." },
+
+    { "org": "job-corps", "name": "Job Corps residential career training (ages 16–24)", "earn": "certificate", "credential": "Trade credentials, plus a high school diploma or equivalent", "length": "Typically 8 months to 2 years", "bucket": "1to2", "field": "trades", "cost": "Free, with housing, meals and a living allowance", "url": "https://www.jobcorps.gov/", "campus": "Live-in centers in Atlanta, Brunswick and Albany (Turner)", "verify": true },
+
+    { "org": "salvation-army", "name": "Job training for shelter residents (with Helms Career Education)", "earn": "certificate", "credential": "Industry certifications (health services, trades, business)", "length": "About 90 days of coaching, then 6–8 week courses", "bucket": "months", "field": "basic", "cost": "Free for eligible clients", "url": "https://southernusa.salvationarmy.org/uss/news/goodwill-and-the-salvation-army-join-forces-in-macon-georgia", "leadsTo": "Requires at least a high school diploma.", "verify": true },
+
+    { "org": "innovation-tech", "name": "Electric Vehicles", "earn": "highschool", "field": "trades" },
+    { "org": "innovation-tech", "name": "Advanced Manufacturing", "earn": "highschool", "field": "manufacturing" },
+    { "org": "innovation-tech", "name": "Artificial Intelligence", "earn": "highschool", "field": "it" },
+    { "org": "innovation-tech", "name": "Aviation", "earn": "highschool", "field": "aviation" },
+    { "org": "innovation-tech", "name": "Cybersecurity", "earn": "highschool", "field": "it" },
+
+    { "org": "hutchings", "name": "Aircraft", "earn": "highschool", "field": "aviation" },
+    { "org": "hutchings", "name": "Audio, Video & Film", "earn": "highschool", "field": "media" },
+    { "org": "hutchings", "name": "Call Center/Customer Service", "earn": "highschool", "field": "business" },
+    { "org": "hutchings", "name": "Automotive", "earn": "highschool", "field": "trades" },
+    { "org": "hutchings", "name": "Barbering", "earn": "highschool", "field": "personal" },
+    { "org": "hutchings", "name": "Certified Warehouse & Distribution", "earn": "highschool", "field": "logistics" },
+    { "org": "hutchings", "name": "Construction", "earn": "highschool", "field": "trades" },
+    { "org": "hutchings", "name": "Cosmetology", "earn": "highschool", "field": "personal" },
+    { "org": "hutchings", "name": "Culinary Arts", "earn": "highschool", "field": "hospitality" },
+    { "org": "hutchings", "name": "Cyber Security", "earn": "highschool", "field": "it" },
+    { "org": "hutchings", "name": "Emergency Medical Responder", "earn": "highschool", "field": "publicsafety" },
+    { "org": "hutchings", "name": "Engineering", "earn": "highschool", "field": "manufacturing" },
+    { "org": "hutchings", "name": "Firefighting", "earn": "highschool", "field": "publicsafety" },
+    { "org": "hutchings", "name": "Graphic Design & Communication", "earn": "highschool", "field": "media" },
+    { "org": "hutchings", "name": "Health Science", "earn": "highschool", "field": "healthcare" },
+    { "org": "hutchings", "name": "Industrial Systems Technician", "earn": "highschool", "field": "manufacturing" },
+    { "org": "hutchings", "name": "Phlebotomy", "earn": "highschool", "field": "healthcare" },
+    { "org": "hutchings", "name": "Sports Medicine", "earn": "highschool", "field": "healthcare" },
+    { "org": "hutchings", "name": "Teaching as a Profession", "earn": "highschool", "field": "education" },
+    { "org": "hutchings", "name": "Welding", "earn": "highschool", "field": "trades" }
+  ],
+  "defaults": {
+    "wesleyan": { "length": "About 4 years", "bucket": "3plus", "cost": "Private tuition · financial aid available", "url": "https://www.wesleyancollege.edu/academics/undergraduate/majorsminors/majors-minors.cfm", "campus": "Macon" },
+    "innovation-tech": { "credential": "Year-long high school course (part of a career pathway)", "length": "One school year", "bucket": "1to2", "cost": "Free for Bibb high school students", "url": "https://www.bcsdk12.net/departments/career-technical-and-agricultural-education", "campus": "Innovation & Technology Academy, Macon" },
+    "hutchings": { "credential": "High school career pathway; many offer industry certifications and dual-enrollment college credit", "length": "Through high school", "bucket": "1to2", "cost": "Free for Bibb high school students", "url": "https://hutchings.bcsdk12.net/", "campus": "Hutchings College & Career Academy, Macon" }
+  }
+}
