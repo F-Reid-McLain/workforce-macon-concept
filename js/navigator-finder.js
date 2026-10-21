@@ -30,7 +30,8 @@
         { id: 'apprenticeship', label: 'Apprenticeship' },
         { id: 'associate',      label: 'Associate' },
         { id: 'bachelor',       label: "Bachelor's" },
-        { id: 'graduate',       label: 'Graduate' },
+        { id: 'gradcert',       label: 'Graduate certificate' },
+        { id: 'graduate',       label: 'Graduate degree' },
         { id: 'ged',            label: 'GED or diploma' },
         { id: 'highschool',     label: 'High school pathway' },
     ];

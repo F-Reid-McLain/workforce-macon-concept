@@ -1,6 +1,6 @@
 {
  "built": "2026-10-21",
- "count": 617,
+ "count": 616,
  "programs": [
   {
    "id": "central-ga-tech-automation-technology-associate",
@@ -7448,10 +7448,10 @@
    "checked": "2026-10-21"
   },
   {
-   "id": "middle-ga-state-adult-gerontology-acute-care-nurse-practitioner-graduate",
+   "id": "middle-ga-state-adult-gerontology-acute-care-nurse-practitioner-gradcert",
    "name": "Adult Gerontology Acute Care Nurse Practitioner",
    "org": "middle-ga-state",
-   "earn": "graduate",
+   "earn": "gradcert",
    "credential": "Post-Master's Cert",
    "length": "Usually under a year",
    "bucket": "months",
@@ -7468,10 +7468,10 @@
    "checked": "2026-10-21"
   },
   {
-   "id": "middle-ga-state-creative-writing-graduate",
+   "id": "middle-ga-state-creative-writing-gradcert",
    "name": "Creative Writing",
    "org": "middle-ga-state",
-   "earn": "graduate",
+   "earn": "gradcert",
    "credential": "Post-Bachelor Cert",
    "length": "Usually under a year",
    "bucket": "months",
@@ -7918,10 +7918,10 @@
    "checked": "2026-10-21"
   },
   {
-   "id": "middle-ga-state-strategic-business-communication-graduate",
+   "id": "middle-ga-state-strategic-business-communication-gradcert",
    "name": "Strategic Business Communication",
    "org": "middle-ga-state",
-   "earn": "graduate",
+   "earn": "gradcert",
    "credential": "Grad Cert",
    "length": "Usually under a year",
    "bucket": "months",
@@ -7958,10 +7958,10 @@
    "checked": "2026-10-21"
   },
   {
-   "id": "middle-ga-state-teaching-college-writing-graduate",
+   "id": "middle-ga-state-teaching-college-writing-gradcert",
    "name": "Teaching College Writing",
    "org": "middle-ga-state",
-   "earn": "graduate",
+   "earn": "gradcert",
    "credential": "Grad Cert",
    "length": "Usually under a year",
    "bucket": "months",
@@ -7998,10 +7998,10 @@
    "checked": "2026-10-21"
   },
   {
-   "id": "middle-ga-state-technical-writing-and-digital-communication-graduate",
+   "id": "middle-ga-state-technical-writing-and-digital-communication-gradcert",
    "name": "Technical Writing and Digital Communication",
    "org": "middle-ga-state",
-   "earn": "graduate",
+   "earn": "gradcert",
    "credential": "Grad Cert",
    "length": "Usually under a year",
    "bucket": "months",
@@ -8322,31 +8322,6 @@
    "checked": "2026-10-21"
   },
   {
-   "id": "middle-ga-state-honors-pathway-certificate",
-   "name": "Honors Pathway",
-   "org": "middle-ga-state",
-   "earn": "certificate",
-   "credential": "Cert",
-   "length": "Usually under a year",
-   "bucket": "months",
-   "field": "general",
-   "cost": "Public university tuition",
-   "campus": "Cochran, Dublin, Macon, Warner Robins",
-   "places": [
-    "cochran",
-    "dublin",
-    "macon",
-    "warner-robins"
-   ],
-   "online": false,
-   "options": [],
-   "leadsTo": "",
-   "url": "https://www.mga.edu/academics/honors.php",
-   "source": "https://www.mga.edu/degrees/index.php",
-   "verify": false,
-   "checked": "2026-10-21"
-  },
-  {
    "id": "middle-ga-state-information-technology-certificate",
    "name": "Information Technology",
    "org": "middle-ga-state",
@@ -8582,10 +8557,10 @@
    "checked": "2026-10-21"
   },
   {
-   "id": "mercer-autism-endorsement-graduate",
+   "id": "mercer-autism-endorsement-gradcert",
    "name": "Autism Endorsement",
    "org": "mercer",
-   "earn": "graduate",
+   "earn": "gradcert",
    "credential": "Non-degree, Graduate",
    "length": "Usually under a year",
    "bucket": "months",
@@ -8994,10 +8969,10 @@
    "checked": "2026-10-21"
   },
   {
-   "id": "mercer-coaching-endorsement-graduate",
+   "id": "mercer-coaching-endorsement-gradcert",
    "name": "Coaching Endorsement",
    "org": "mercer",
-   "earn": "graduate",
+   "earn": "gradcert",
    "credential": "Non-degree, Graduate",
    "length": "Usually under a year",
    "bucket": "months",
@@ -9080,10 +9055,10 @@
    "checked": "2026-10-21"
   },
   {
-   "id": "mercer-compliance-regulation-and-analytics-in-fintech-graduate-certificate-graduate",
+   "id": "mercer-compliance-regulation-and-analytics-in-fintech-graduate-certificate-gradcert",
    "name": "Compliance, Regulation, and Analytics in Fintech Graduate Certificate",
    "org": "mercer",
-   "earn": "graduate",
+   "earn": "gradcert",
    "credential": "Graduate Certificate",
    "length": "Usually under a year",
    "bucket": "months",
@@ -9186,10 +9161,10 @@
    "checked": "2026-10-21"
   },
   {
-   "id": "mercer-computer-science-endorsement-graduate",
+   "id": "mercer-computer-science-endorsement-gradcert",
    "name": "Computer Science Endorsement",
    "org": "mercer",
-   "earn": "graduate",
+   "earn": "gradcert",
    "credential": "Non-degree, Graduate",
    "length": "Usually under a year",
    "bucket": "months",
@@ -9684,10 +9659,10 @@
    "checked": "2026-10-21"
   },
   {
-   "id": "mercer-educational-leadership-tier-i-certification-only-graduate-graduate",
+   "id": "mercer-educational-leadership-tier-i-certification-only-graduate-gradcert",
    "name": "Educational Leadership Tier I Certification Only (Graduate)",
    "org": "mercer",
-   "earn": "graduate",
+   "earn": "gradcert",
    "credential": "Non-degree, Graduate",
    "length": "Usually under a year",
    "bucket": "months",
@@ -9724,10 +9699,10 @@
    "checked": "2026-10-21"
   },
   {
-   "id": "mercer-educational-leadership-tier-ii-certification-only-graduate-graduate",
+   "id": "mercer-educational-leadership-tier-ii-certification-only-graduate-gradcert",
    "name": "Educational Leadership Tier II Certification Only (Graduate)",
    "org": "mercer",
-   "earn": "graduate",
+   "earn": "gradcert",
    "credential": "Non-degree, Graduate",
    "length": "Usually under a year",
    "bucket": "months",
@@ -9910,10 +9885,10 @@
    "checked": "2026-10-21"
   },
   {
-   "id": "mercer-english-to-speakers-of-other-lanaguages-esol-endorsement-graduate",
+   "id": "mercer-english-to-speakers-of-other-lanaguages-esol-endorsement-gradcert",
    "name": "English to Speakers of Other Lanaguages (ESOL) Endorsement",
    "org": "mercer",
-   "earn": "graduate",
+   "earn": "gradcert",
    "credential": "Non-degree, Graduate",
    "length": "Usually under a year",
    "bucket": "months",
@@ -9952,10 +9927,10 @@
    "checked": "2026-10-21"
   },
   {
-   "id": "mercer-entrepreneurship-and-innovation-graduate-certificate-graduate",
+   "id": "mercer-entrepreneurship-and-innovation-graduate-certificate-gradcert",
    "name": "Entrepreneurship and Innovation Graduate Certificate",
    "org": "mercer",
-   "earn": "graduate",
+   "earn": "gradcert",
    "credential": "Graduate Certificate",
    "length": "Usually under a year",
    "bucket": "months",
@@ -10148,10 +10123,10 @@
    "checked": "2026-10-21"
   },
   {
-   "id": "mercer-gifted-endorsement-graduate",
+   "id": "mercer-gifted-endorsement-gradcert",
    "name": "Gifted Endorsement",
    "org": "mercer",
-   "earn": "graduate",
+   "earn": "gradcert",
    "credential": "Non-degree, Graduate",
    "length": "Usually under a year",
    "bucket": "months",
@@ -10212,10 +10187,10 @@
    "checked": "2026-10-21"
   },
   {
-   "id": "mercer-graduate-certificate-in-communication-for-engineers-and-technical-professionals-graduate",
+   "id": "mercer-graduate-certificate-in-communication-for-engineers-and-technical-professionals-gradcert",
    "name": "Graduate Certificate in Communication for Engineers and Technical Professionals",
    "org": "mercer",
-   "earn": "graduate",
+   "earn": "gradcert",
    "credential": "Graduate Certificate",
    "length": "Usually under a year",
    "bucket": "months",
@@ -10276,10 +10251,10 @@
    "checked": "2026-10-21"
   },
   {
-   "id": "mercer-health-informatics-graduate-certificate-graduate",
+   "id": "mercer-health-informatics-graduate-certificate-gradcert",
    "name": "Health Informatics Graduate Certificate",
    "org": "mercer",
-   "earn": "graduate",
+   "earn": "gradcert",
    "credential": "Graduate Certificate",
    "length": "Usually under a year",
    "bucket": "months",
@@ -10376,10 +10351,10 @@
    "checked": "2026-10-21"
   },
   {
-   "id": "mercer-healthcare-management-and-analytics-graduate-certificate-graduate",
+   "id": "mercer-healthcare-management-and-analytics-graduate-certificate-gradcert",
    "name": "Healthcare Management and Analytics Graduate Certificate",
    "org": "mercer",
-   "earn": "graduate",
+   "earn": "gradcert",
    "credential": "Graduate Certificate",
    "length": "Usually under a year",
    "bucket": "months",
@@ -10734,10 +10709,10 @@
    "checked": "2026-10-21"
   },
   {
-   "id": "mercer-k-5-math-endorsement-graduate",
+   "id": "mercer-k-5-math-endorsement-gradcert",
    "name": "K-5 Math Endorsement",
    "org": "mercer",
-   "earn": "graduate",
+   "earn": "gradcert",
    "credential": "Non-degree, Graduate",
    "length": "Usually under a year",
    "bucket": "months",
@@ -10754,10 +10729,10 @@
    "checked": "2026-10-21"
   },
   {
-   "id": "mercer-k-5-science-endorsement-graduate",
+   "id": "mercer-k-5-science-endorsement-gradcert",
    "name": "K-5 Science Endorsement",
    "org": "mercer",
-   "earn": "graduate",
+   "earn": "gradcert",
    "credential": "Non-degree, Graduate",
    "length": "Usually under a year",
    "bucket": "months",
@@ -10840,10 +10815,10 @@
    "checked": "2026-10-21"
   },
   {
-   "id": "mercer-leadership-graduate-certificate-graduate",
+   "id": "mercer-leadership-graduate-certificate-gradcert",
    "name": "Leadership Graduate Certificate",
    "org": "mercer",
-   "earn": "graduate",
+   "earn": "gradcert",
    "credential": "Graduate Certificate",
    "length": "Usually under a year",
    "bucket": "months",
@@ -11430,10 +11405,10 @@
    "checked": "2026-10-21"
   },
   {
-   "id": "mercer-online-teaching-endorsement-graduate",
+   "id": "mercer-online-teaching-endorsement-gradcert",
    "name": "Online Teaching Endorsement",
    "org": "mercer",
-   "earn": "graduate",
+   "earn": "gradcert",
    "credential": "Non-degree, Graduate",
    "length": "Usually under a year",
    "bucket": "months",
@@ -11810,10 +11785,10 @@
    "checked": "2026-10-21"
   },
   {
-   "id": "mercer-reading-endorsement-graduate",
+   "id": "mercer-reading-endorsement-gradcert",
    "name": "Reading Endorsement",
    "org": "mercer",
-   "earn": "graduate",
+   "earn": "gradcert",
    "credential": "Non-degree, Graduate",
    "length": "Usually under a year",
    "bucket": "months",
@@ -12190,10 +12165,10 @@
    "checked": "2026-10-21"
   },
   {
-   "id": "mercer-stem-endorsement-graduate",
+   "id": "mercer-stem-endorsement-gradcert",
    "name": "STEM Endorsement",
    "org": "mercer",
-   "earn": "graduate",
+   "earn": "gradcert",
    "credential": "Non-degree, Graduate",
    "length": "Usually under a year",
    "bucket": "months",
@@ -12230,10 +12205,10 @@
    "checked": "2026-10-21"
   },
   {
-   "id": "mercer-supply-chain-management-certificate-graduate",
+   "id": "mercer-supply-chain-management-certificate-gradcert",
    "name": "Supply Chain Management Certificate",
    "org": "mercer",
-   "earn": "graduate",
+   "earn": "gradcert",
    "credential": "Graduate Certificate",
    "length": "Usually under a year",
    "bucket": "months",
@@ -12848,7 +12823,7 @@
    "name": "Master of Education (M.Ed.)",
    "org": "wesleyan",
    "earn": "graduate",
-   "credential": "",
+   "credential": "Master of Education",
    "length": "About 2 years",
    "bucket": "1to2",
    "field": "education",

@@ -158,7 +158,8 @@
       "length": "About 2 years",
       "bucket": "1to2",
       "field": "education",
-      "verify": true
+      "verify": true,
+      "credential": "Master of Education"
     },
     {
       "org": "goodwill",

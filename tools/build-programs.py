@@ -218,7 +218,9 @@ def mga_earn(deg):
         return 'associate'
     if d.startswith('B.'):
         return 'bachelor'
-    return 'graduate'   # M.*, D.S., graduate and post-degree certificates
+    if 'Cert' in d:
+        return 'gradcert'   # graduate, post-bachelor's and post-master's certificates
+    return 'graduate'   # master's and doctoral degrees
 
 
 def mga_length(earn, deg, name):
@@ -233,7 +235,7 @@ def mga_length(earn, deg, name):
         if 'accelerated' in n:
             return 'About 12–16 months for those with a bachelor\'s degree', '1to2'
         return 'About 4 years full time', '3plus'
-    if 'Cert' in deg:
+    if earn == 'gradcert':
         return 'Usually under a year', 'months'
     if deg.startswith('D'):
         return '3 years or more', '3plus'
@@ -264,7 +266,7 @@ def mga_programs():
             name = f"{p['name']}: {t['name']}" if p['tracks'] else p['name']
             deg = t['deg'] or p['deg']
             earn = mga_earn(deg)
-            if not earn:
+            if not earn or 'honors' in name.lower():   # the Honors Pathway is a program within a degree, not a credential
                 continue
             campuses = t['campuses'] or p['campuses']
             length, bucket = mga_length(earn, deg, name)
@@ -296,6 +298,8 @@ def mercer_earn(level):
         return 'bachelor'
     if 'undergraduate' in l:
         return 'certificate'
+    if 'graduate certificate' in l or 'non-degree, graduate' in l:
+        return 'gradcert'   # graduate certificates and teacher endorsements
     return 'graduate'
 
 
@@ -324,7 +328,7 @@ def mercer_programs():
         earn = mercer_earn(level)
         if earn == 'bachelor':
             length, bucket = 'About 4 years full time', '3plus'
-        elif earn == 'certificate':
+        elif earn in ('certificate', 'gradcert'):
             length, bucket = 'Usually under a year', 'months'
         elif 'Doctoral' in level:
             length, bucket = '3 years or more', '3plus'
