@@ -1,5 +1,5 @@
 {
-  "about": "Manufacturers that opened, expanded or modernized in Macon-Bibb since 2015, and plants announced but not yet open (status 'coming'). Shown on the homepage's Industries title slide (js/growth-intro-map.js): each rises on the map in its first year, and hovering (or tapping) it shows its milestones. Jobs are as announced or as last reported, not counted. Sites are approximate (geocoded from the address, road or park named in the announcement with OpenStreetMap), close enough for a county map. Not on the map: Agile Cold Storage (2024, refrigerated warehousing, not manufacturing). Also not on the map: Coca-Cola UNITED's Macon expansion (warehouse and distribution), Radius Recycling's aluminum separation plant and Complete Resources Management (recycling and waste), BrightFarms (greenhouse farming), Embraer, Stevens Aerospace and Dean Baldwin Painting (aircraft maintenance), and plants that opened before 2015, such as Aspen Products (announced 2013) and Johns Manville (1998).",
+  "about": "Manufacturers that opened, expanded or modernized in Macon-Bibb since 2015, and plants announced but not yet open (status 'coming'). Shown on the homepage's Industries title slide (js/growth-intro-map.js): each rises on the map in its first year, and hovering (or tapping) it shows its milestones. Jobs are as announced or as last reported, not counted. Each pin is checked against a physical address ('address'; 'located' says how): street numbers are geocoded with OpenStreetMap, and where the geocoder doesn't know a plant's private road, the plant's own building outline in OpenStreetMap is used. ArcelorMittal's site has no street number yet, so it sits at the end of Airport South Drive, where reports place it. Not on the map: Agile Cold Storage (2024, refrigerated warehousing, not manufacturing). Also not on the map: Coca-Cola UNITED's Macon expansion (warehouse and distribution), Radius Recycling's aluminum separation plant and Complete Resources Management (recycling and waste), BrightFarms (greenhouse farming), Embraer, Stevens Aerospace and Dean Baldwin Painting (aircraft maintenance), and plants that opened before 2015, such as Aspen Products (announced 2013) and Johns Manville (1998).",
   "checked": "2026-10-22",
   "plants": [
     {
@@ -11,8 +11,10 @@
       "jobs": 715,
       "jobsLabel": "715 new jobs",
       "site": "Avondale Mill Road and Industrial Highway, near the airport",
-      "lat": 32.6917,
-      "lon": -83.6687,
+      "address": "2108 Avondale Mill Road, Macon, GA 31216",
+      "lat": 32.6916,
+      "lon": -83.6659,
+      "located": "street address geocoded with OpenStreetMap",
       "events": [
         {
           "year": 2015,
@@ -38,8 +40,10 @@
       "jobs": 50,
       "jobsLabel": "50+ jobs",
       "site": "Lillian Drive, Ocmulgee East Industrial Park (the former Plastican building)",
+      "address": "101 Lillian Drive, Macon, GA 31217",
       "lat": 32.8033,
       "lon": -83.5548,
+      "located": "street address geocoded with OpenStreetMap; address from the company and the Chamber directory",
       "events": [
         {
           "year": 2015,
@@ -61,8 +65,10 @@
       "jobs": 450,
       "jobsLabel": "450 jobs",
       "site": "Kumho Parkway, Sofkee Industrial Park",
-      "lat": 32.7435,
-      "lon": -83.6511,
+      "address": "3051 Kumho Parkway, Macon, GA 31216",
+      "lat": 32.7452,
+      "lon": -83.6494,
+      "located": "plant outline in OpenStreetMap on Kumho Parkway; address from the Chamber directory",
       "events": [
         {
           "year": 2016,
@@ -75,7 +81,8 @@
       ],
       "sources": [
         "https://www.moderntiredealer.com/articles/4219-kumho-tire-production-begins-in-georgia",
-        "https://mbcia.com/industry/kumho-tire-of-georgia-expansion/"
+        "https://mbcia.com/industry/kumho-tire-of-georgia-expansion/",
+        "https://vpic.nhtsa.dot.gov/mid/equipplant/details/18445"
       ]
     },
     {
@@ -87,8 +94,10 @@
       "jobs": 100,
       "jobsLabel": "100 new jobs",
       "site": "660 Allied Industrial Boulevard",
+      "address": "660 Allied Industrial Boulevard, Macon, GA 31206",
       "lat": 32.776,
       "lon": -83.6456,
+      "located": "street address geocoded with OpenStreetMap; address from Freudenberg",
       "events": [
         {
           "year": 1983,
@@ -118,8 +127,10 @@
       "jobs": 460,
       "jobsLabel": "460+ jobs kept",
       "site": "Macon paperboard mill",
+      "address": "100 Graphic Packaging International Way, Macon, GA 31206",
       "lat": 32.7731,
       "lon": -83.6298,
+      "located": "Graphic Packaging plant outline in OpenStreetMap; address from the Chamber directory",
       "events": [
         {
           "year": 2017,
@@ -139,8 +150,10 @@
       "jobs": 174,
       "jobsLabel": "174 new jobs",
       "site": "3150 Avondale Mill Road",
+      "address": "3150 Avondale Mill Road, Macon, GA 31216",
       "lat": 32.6917,
       "lon": -83.677,
+      "located": "street address geocoded with OpenStreetMap",
       "events": [
         {
           "year": 2018,
@@ -165,8 +178,10 @@
       "jobs": 400,
       "jobsLabel": "400+ jobs",
       "site": "Allen Road, Sofkee Industrial Park",
-      "lat": 32.7401,
-      "lon": -83.6402,
+      "address": "1897 Allen Road, Macon, GA 31216",
+      "lat": 32.7412,
+      "lon": -83.6438,
+      "located": "street address geocoded with OpenStreetMap; address from the Chamber directory",
       "events": [
         {
           "year": 2019,
@@ -192,8 +207,10 @@
       "jobs": 80,
       "jobsLabel": "80 jobs",
       "site": "Weaver Road, the former Brown & Williamson plant",
-      "lat": 32.8119,
-      "lon": -83.5579,
+      "address": "2600 Weaver Road, Macon, GA 31217",
+      "lat": 32.8154,
+      "lon": -83.5602,
+      "located": "street address geocoded with OpenStreetMap; address from the MBCIA",
       "events": [
         {
           "year": 2023,
@@ -216,9 +233,11 @@
       "status": "open",
       "jobs": 100,
       "jobsLabel": "100 new jobs",
-      "site": "Interstate 75 Business Park, Frank Amerson Parkway",
-      "lat": 32.7289,
-      "lon": -83.7264,
+      "site": "I-75 Industrial Park, behind the Tractor Supply distribution center",
+      "address": "100 YKK AP Way, Macon, GA 31216",
+      "lat": 32.7302,
+      "lon": -83.7323,
+      "located": "the plant building in OpenStreetMap (operator YKK AP, I-75 Industrial Park); address from YKK AP and the Chamber directory",
       "events": [
         {
           "year": 2022,
@@ -242,8 +261,10 @@
       "jobs": 500,
       "jobsLabel": "500 jobs",
       "site": "2255 Barnes Ferry Road, next to Prince Service & Manufacturing on Hawkinsville Road",
+      "address": "2255 Barnes Ferry Road, Macon, GA",
       "lat": 32.7321,
-      "lon": -83.6537,
+      "lon": -83.6538,
+      "located": "street address geocoded with OpenStreetMap",
       "events": [
         {
           "year": 1965,
@@ -274,9 +295,11 @@
       "status": "coming",
       "jobs": 140,
       "jobsLabel": "up to 140 jobs",
-      "site": "Airport South site",
-      "lat": 32.683,
-      "lon": -83.646,
+      "site": "Airport South site, at the end of Airport South Drive",
+      "address": "End of Airport South Drive (Airport South site), Macon, GA 31216",
+      "lat": 32.6857,
+      "lon": -83.6745,
+      "located": "south end of Airport South Drive in OpenStreetMap; no street number yet",
       "events": [
         {
           "year": 2026,
