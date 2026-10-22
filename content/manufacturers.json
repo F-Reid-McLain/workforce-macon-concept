@@ -1,84 +1,91 @@
 {
-  "about": "Manufacturers that opened or expanded in Macon-Bibb since 2015, and plants announced but not yet open (status 'coming'). Shown on the homepage's Industries title slide (js/growth-intro-map.js). Jobs are as announced or as last reported, not counted. Sites are approximate (geocoded from the road or park named in the announcement with OpenStreetMap), close enough for a county map.",
+  "about": "Manufacturers that opened, expanded or modernized in Macon-Bibb since 2015, and plants announced but not yet open (status 'coming'). Shown on the homepage's Industries title slide (js/growth-intro-map.js): each rises on the map in its first year, and hovering (or tapping) it shows its milestones. Jobs are as announced or as last reported, not counted. Sites are approximate (geocoded from the address, road or park named in the announcement with OpenStreetMap), close enough for a county map. Left out until confirmed: Mr. Chips (pickles, planned around 2015) and Freudenberg (undated investment).",
   "checked": "2026-10-22",
   "plants": [
     {
-      "name": "Kumho Tire Georgia",
-      "short": "Kumho Tire",
-      "year": 2016,
-      "event": "opened",
-      "status": "open",
-      "makes": "tires",
-      "jobs": 450,
-      "jobsLabel": "450 jobs",
-      "site": "Kumho Parkway, Sofkee Industrial Park",
-      "lat": 32.7435, "lon": -83.6511,
-      "source": "https://www.moderntiredealer.com/articles/4219-kumho-tire-production-begins-in-georgia"
+      "name": "Kumho Tire Georgia", "short": "Kumho Tire", "makes": "tires",
+      "year": 2016, "status": "open", "jobs": 450, "jobsLabel": "450 jobs",
+      "site": "Kumho Parkway, Sofkee Industrial Park", "lat": 32.7435, "lon": -83.6511,
+      "events": [
+        { "year": 2016, "text": "Opened its first U.S. plant, a $450 million factory, with about 450 jobs" }
+      ],
+      "sources": ["https://www.moderntiredealer.com/articles/4219-kumho-tire-production-begins-in-georgia"]
     },
     {
-      "name": "Irving Consumer Products",
-      "short": "Irving",
-      "year": 2019,
-      "event": "opened",
-      "status": "open",
-      "makes": "paper towels & tissue",
-      "jobs": 400,
-      "jobsLabel": "400+ jobs",
-      "site": "Allen Road, Sofkee Industrial Park",
-      "lat": 32.7401, "lon": -83.6402,
-      "source": "https://annualreport.mbcia.com/wp-content/uploads/2025/10/MBCIA-2025-Annual-Report-WEB-1-up.pdf"
+      "name": "Graphic Packaging International", "short": "Graphic Packaging", "makes": "paperboard",
+      "year": 2017, "status": "open", "jobs": 460, "jobsLabel": "460+ jobs kept",
+      "site": "Macon paperboard mill", "lat": 32.7731, "lon": -83.6298,
+      "events": [
+        { "year": 2017, "text": "$136 million to modernize the Macon mill, keeping more than 460 jobs" }
+      ],
+      "sources": ["https://georgia.org/he/node/28191"]
     },
     {
-      "name": "YKK AP America",
-      "short": "YKK AP",
-      "year": 2024,
-      "event": "opened",
-      "status": "open",
-      "makes": "windows & doors",
-      "jobs": 100,
-      "jobsLabel": "100 new jobs",
-      "site": "Interstate 75 Business Park, Frank Amerson Parkway",
-      "lat": 32.7289, "lon": -83.7264,
-      "source": "https://www.ykkap.com/commercial/2024/05/ykk-ap-holds-ribbon-cutting-ceremony-for-new-residential-manufacturing-facility-in-macon/"
+      "name": "Nichiha USA", "short": "Nichiha", "makes": "fiber cement wall panels",
+      "year": 2018, "status": "open", "jobs": 174, "jobsLabel": "174 new jobs",
+      "site": "3150 Avondale Mill Road", "lat": 32.6917, "lon": -83.6770,
+      "events": [
+        { "year": 2018, "text": "$120 million expansion with 74 new jobs" },
+        { "year": 2022, "text": "$150 million, 500,000 more square feet and 100 new jobs" }
+      ],
+      "sources": ["https://nathandeal.georgia.gov/press-releases/2018-08-01/deal-nichiha-corporation-invest-120-million-macon-bibb-county-expansion/", "https://mbcia.com/?p=2497"]
     },
     {
-      "name": "First Quality Baby Products",
-      "short": "First Quality",
-      "year": 2024,
-      "event": "expanded",
-      "status": "open",
-      "makes": "diapers",
-      "jobs": 600,
-      "jobsLabel": "600 new jobs",
-      "site": "2108 Avondale Mill Road, near the airport",
-      "lat": 32.6917, "lon": -83.6687,
-      "source": "https://www.gpb.org/news/2024/05/23/macon-lands-600-jobs-in-418m-industry-expansion"
+      "name": "Irving Consumer Products", "short": "Irving", "makes": "paper towels & tissue",
+      "year": 2019, "status": "open", "jobs": 400, "jobsLabel": "400+ jobs",
+      "site": "Allen Road, Sofkee Industrial Park", "lat": 32.7401, "lon": -83.6402,
+      "events": [
+        { "year": 2019, "text": "Opened its first U.S. plant, a $470 million mill, and announced 150 more jobs" },
+        { "year": 2024, "text": "$600 million expansion with 100 more jobs; now more than 400 employees" }
+      ],
+      "sources": ["https://gov.georgia.gov/press-releases/2019-11-13/irving-tissue-expand-create-150-jobs-macon", "https://gov.georgia.gov/press-releases/2024-11-21/gov-kemp-irving-tissue-expand-invest-600-million", "https://annualreport.mbcia.com/wp-content/uploads/2025/10/MBCIA-2025-Annual-Report-WEB-1-up.pdf"]
     },
     {
-      "name": "Unified Legacy",
-      "short": "Unified Legacy",
-      "year": 2026,
-      "event": "announced",
-      "status": "coming",
-      "makes": "precision metal parts",
-      "jobs": 500,
-      "jobsLabel": "500 jobs",
-      "site": "Barnes Ferry Road",
-      "lat": 32.7321, "lon": -83.6355,
-      "source": "https://georgia.org/press-releases/2026/georgia-based-unified-legacy-create-500-new-jobs-macon-bibb-county"
+      "name": "Boogook Georgia", "short": "Boogook", "makes": "fluid lines for cars",
+      "year": 2023, "status": "open", "jobs": 80, "jobsLabel": "80 jobs",
+      "site": "Weaver Road, the former Brown & Williamson plant", "lat": 32.8119, "lon": -83.5579,
+      "events": [
+        { "year": 2023, "text": "Chose Macon for its first U.S. plant, reviving the former Brown & Williamson factory" },
+        { "year": 2024, "text": "Opened with 80 jobs, supplying Hyundai and Kia" }
+      ],
+      "sources": ["https://mbcia.com/boogook-georgia-llc/"]
     },
     {
-      "name": "ArcelorMittal Building Solutions",
-      "short": "ArcelorMittal",
-      "year": 2026,
-      "event": "announced",
-      "status": "coming",
-      "makes": "insulated building panels",
-      "jobs": 140,
-      "jobsLabel": "up to 140 jobs",
-      "site": "Airport South site",
-      "lat": 32.6830, "lon": -83.6460,
-      "source": "https://mbcia.com/announcements/arcelormittal-building-solutions-brings-north-american-hq-to-macon-bibb/"
+      "name": "YKK AP America", "short": "YKK AP", "makes": "windows & doors",
+      "year": 2024, "status": "open", "jobs": 100, "jobsLabel": "100 new jobs",
+      "site": "Interstate 75 Business Park, Frank Amerson Parkway", "lat": 32.7289, "lon": -83.7264,
+      "events": [
+        { "year": 2022, "text": "Announced a $125 million residential plant with 100 new jobs" },
+        { "year": 2024, "text": "Opened; more than 250 employees" }
+      ],
+      "sources": ["https://www.ykkap.com/commercial/2024/05/ykk-ap-holds-ribbon-cutting-ceremony-for-new-residential-manufacturing-facility-in-macon/"]
+    },
+    {
+      "name": "First Quality Baby Products", "short": "First Quality", "makes": "diapers",
+      "year": 2024, "status": "open", "jobs": 600, "jobsLabel": "600 new jobs",
+      "site": "2108 Avondale Mill Road, near the airport", "lat": 32.6917, "lon": -83.6687,
+      "events": [
+        { "year": 2024, "text": "$418 million expansion with 600 new jobs, in Macon since 2008" }
+      ],
+      "sources": ["https://www.gpb.org/news/2024/05/23/macon-lands-600-jobs-in-418m-industry-expansion"]
+    },
+    {
+      "name": "Unified Legacy", "short": "Unified Legacy", "makes": "precision metal parts",
+      "year": 2026, "status": "coming", "jobs": 500, "jobsLabel": "500 jobs",
+      "site": "Barnes Ferry Road", "lat": 32.7321, "lon": -83.6355,
+      "events": [
+        { "year": 2026, "text": "Announced a $125 million plant with 500 jobs over several years" }
+      ],
+      "sources": ["https://georgia.org/press-releases/2026/georgia-based-unified-legacy-create-500-new-jobs-macon-bibb-county"]
+    },
+    {
+      "name": "ArcelorMittal Building Solutions", "short": "ArcelorMittal", "makes": "insulated building panels",
+      "year": 2026, "status": "coming", "jobs": 140, "jobsLabel": "up to 140 jobs",
+      "site": "Airport South site", "lat": 32.6830, "lon": -83.6460,
+      "events": [
+        { "year": 2026, "text": "Announced its North American headquarters and a $57 million plant, opening in 2027 with up to 140 jobs" }
+      ],
+      "sources": ["https://mbcia.com/announcements/arcelormittal-building-solutions-brings-north-american-hq-to-macon-bibb/"]
     }
   ]
 }
