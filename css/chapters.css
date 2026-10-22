@@ -66,9 +66,57 @@ body.page-home .main-content { padding-bottom: 0; }
 .intro-map.is-drawn .im-halo { animation: im-pulse 2.4s ease-in-out infinite; }
 @keyframes im-pulse { 0%, 100% { transform: scale(0.9); opacity: 0.7; } 50% { transform: scale(1.25); opacity: 1; } }
 .intro-source { margin: 14px auto 0; max-width: 60ch; font-size: 0.74rem; color: var(--color-text-muted); }
+
+/* The Industries title slide's map (js/growth-intro-map.js): new manufacturers rising year by year */
+.gm-spot { fill: #f2c46b; stroke: #0e1420; stroke-width: 1; }
+.gm-leader { stroke: rgba(242, 196, 107, 0.55); stroke-width: 1; }
+.gm-wall { fill: #d9dfe8; stroke: rgba(14, 20, 32, 0.6); stroke-width: 1; }
+.gm-roof { fill: #aebccd; stroke: rgba(14, 20, 32, 0.6); stroke-width: 1; stroke-linejoin: round; }
+.gm-chimney { fill: #8e9db0; }
+.gm-win { fill: #f2c46b; }
+.gm-badge circle { fill: #f2c46b; stroke: #0e1420; stroke-width: 1.2; }
+.gm-badge text { font: 800 9px var(--font-body); fill: #0e1420; }
+/* Announced, not yet open: dashed outlines that breathe once the build is complete */
+.gm-pin.is-coming :is(.gm-wall, .gm-roof) { fill: rgba(242, 196, 107, 0.08); stroke: #f2c46b; stroke-dasharray: 2.5 2; }
+.gm-pin.is-coming .gm-chimney { fill: none; stroke: #f2c46b; stroke-dasharray: 2 2; }
+.gm-pin.is-coming .gm-win { fill: rgba(242, 196, 107, 0.4); }
+.gm-pin.is-coming .gm-badge circle { fill: #0e1420; stroke: #f2c46b; }
+.gm-pin.is-coming .gm-badge text { fill: #f2c46b; }
+.intro-map.is-drawn .gm-pin.is-coming .gm-factory { animation: gm-breathe 2.2s ease-in-out infinite; }
+@keyframes gm-breathe { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+.gm-ticker text { paint-order: stroke; stroke: #0e1420; stroke-width: 5px; stroke-linejoin: round; }
+.gm-year { font: 800 34px var(--font-body); fill: var(--ch-gold); }
+.gm-year-cap { font: 700 9.5px var(--font-body); letter-spacing: 0.12em; text-transform: uppercase; fill: var(--color-text-muted, #9aa3b2); }
+.gm-downtown circle { fill: none; stroke: rgba(255, 255, 255, 0.7); stroke-width: 1.5; }
+.gm-downtown text { font: 600 11px var(--font-body); fill: rgba(255, 255, 255, 0.75); paint-order: stroke; stroke: #0e1420; stroke-width: 4px; }
+.grow-bars { margin: 18px auto 0; max-width: 420px; text-align: left; }
+.grow-bars__title { margin: 0 0 8px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-text-muted); }
+.grow-bar { display: grid; grid-template-columns: 7.2rem 1fr 3.6rem; align-items: center; gap: 10px; margin: 6px 0; font-size: 0.86rem; }
+.grow-bar__track { height: 10px; border-radius: 5px; background: rgba(255, 255, 255, 0.06); overflow: hidden; }
+.grow-bar__fill { display: block; height: 100%; border-radius: 5px; background: rgba(255, 255, 255, 0.35); transform-origin: left; }
+.grow-bar.is-mfg .grow-bar__fill { background: var(--ch-gold); }
+.grow-bar__val { font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; }
+.grow-bar.is-mfg :is(.grow-bar__val, .grow-bar__label) { color: var(--ch-gold); font-weight: 700; }
+.grow-list { list-style: none; margin: 0; padding: 0; position: absolute; z-index: 1; left: 54%; right: 3%; bottom: 7%;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 7px 20px; text-align: left; font-size: 0.8rem; line-height: 1.35; color: var(--color-text-muted); }
+.grow-list li { display: grid; grid-template-columns: 18px 2.5rem 1fr; gap: 6px; align-items: baseline; opacity: 0; }
+.gl-n { align-self: center; display: inline-grid; place-items: center; width: 16px; height: 16px; border-radius: 50%; background: var(--ch-gold); color: #0e1420; font-size: 0.62rem; font-weight: 800; }
+.grow-list .is-coming .gl-n { background: transparent; border: 1px dashed var(--ch-gold); color: var(--ch-gold); box-sizing: border-box; }
+.gl-y { font-weight: 700; color: var(--ch-gold); font-variant-numeric: tabular-nums; }
+.gl-what b { color: #fff; font-weight: 700; }
+.gl-tag { margin-left: 4px; padding: 0 4px; border: 1px solid rgba(242, 196, 107, 0.6); border-radius: 4px; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ch-gold); }
+.gl-tag--x { border-color: rgba(255, 255, 255, 0.3); color: var(--color-text-muted); }
+@media (min-width: 901px) {
+    .stop-intro--grow .grow-bars { margin-left: 0; }
+    /* the list sits under the map, so the lines fade out above it */
+    .stop-intro--grow .intro-map {
+        -webkit-mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 64%, transparent 78%), linear-gradient(to right, transparent 34%, #000 58%);
+                mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 64%, transparent 78%), linear-gradient(to right, transparent 34%, #000 58%);
+    }
+}
 .stop-intro .chapter-dek b { color: #fff; }
 @media (prefers-reduced-motion: reduce) {
-    .intro-map.is-drawn .im-halo { animation: none; }
+    .intro-map.is-drawn :is(.im-halo, .gm-factory) { animation: none; }
 }
 .stop {
     max-width: 1200px; margin: 0 auto; padding: 76px 24px 22px; box-sizing: border-box;
@@ -441,6 +489,13 @@ body.page-home .demo-bar-row { padding: 5px 0; font-size: 0.86rem; }
     .stop-intro { min-height: 0; padding: 96px 16px 8px; }
     .stop-intro--map { min-height: 92vh; padding-bottom: 38vh; }
     .im-hlabel { font-size: 11px; }
+    /* Phones: text, then the map in the gap the list leaves above it, then the list */
+    .stop-intro--grow { flex-direction: column; justify-content: flex-start; min-height: 0; padding-bottom: 28px; }
+    .stop-intro--grow .grow-list { position: static; margin: 50vh auto 0; width: 100%; max-width: 420px; grid-template-columns: 1fr; }
+    .stop-intro--grow .intro-map {
+        -webkit-mask-image: linear-gradient(to bottom, transparent var(--gm-top, 40%), #000 calc(var(--gm-top, 40%) + 48px), #000 calc(var(--gm-bottom, 90%) - 24px), transparent var(--gm-bottom, 90%));
+                mask-image: linear-gradient(to bottom, transparent var(--gm-top, 40%), #000 calc(var(--gm-top, 40%) + 48px), #000 calc(var(--gm-bottom, 90%) - 24px), transparent var(--gm-bottom, 90%));
+    }
     .stop { min-height: 0; padding: 16px 16px 24px; scroll-margin-top: 70px; }
 }
 @media (max-width: 700px) {

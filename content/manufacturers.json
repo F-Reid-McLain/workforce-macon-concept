@@ -1,0 +1,84 @@
+{
+  "about": "Manufacturers that opened or expanded in Macon-Bibb since 2015, and plants announced but not yet open (status 'coming'). Shown on the homepage's Industries title slide (js/growth-intro-map.js). Jobs are as announced or as last reported, not counted. Sites are approximate (geocoded from the road or park named in the announcement with OpenStreetMap), close enough for a county map.",
+  "checked": "2026-10-22",
+  "plants": [
+    {
+      "name": "Kumho Tire Georgia",
+      "short": "Kumho Tire",
+      "year": 2016,
+      "event": "opened",
+      "status": "open",
+      "makes": "tires",
+      "jobs": 450,
+      "jobsLabel": "450 jobs",
+      "site": "Kumho Parkway, Sofkee Industrial Park",
+      "lat": 32.7435, "lon": -83.6511,
+      "source": "https://www.moderntiredealer.com/articles/4219-kumho-tire-production-begins-in-georgia"
+    },
+    {
+      "name": "Irving Consumer Products",
+      "short": "Irving",
+      "year": 2019,
+      "event": "opened",
+      "status": "open",
+      "makes": "paper towels & tissue",
+      "jobs": 400,
+      "jobsLabel": "400+ jobs",
+      "site": "Allen Road, Sofkee Industrial Park",
+      "lat": 32.7401, "lon": -83.6402,
+      "source": "https://annualreport.mbcia.com/wp-content/uploads/2025/10/MBCIA-2025-Annual-Report-WEB-1-up.pdf"
+    },
+    {
+      "name": "YKK AP America",
+      "short": "YKK AP",
+      "year": 2024,
+      "event": "opened",
+      "status": "open",
+      "makes": "windows & doors",
+      "jobs": 100,
+      "jobsLabel": "100 new jobs",
+      "site": "Interstate 75 Business Park, Frank Amerson Parkway",
+      "lat": 32.7289, "lon": -83.7264,
+      "source": "https://www.ykkap.com/commercial/2024/05/ykk-ap-holds-ribbon-cutting-ceremony-for-new-residential-manufacturing-facility-in-macon/"
+    },
+    {
+      "name": "First Quality Baby Products",
+      "short": "First Quality",
+      "year": 2024,
+      "event": "expanded",
+      "status": "open",
+      "makes": "diapers",
+      "jobs": 600,
+      "jobsLabel": "600 new jobs",
+      "site": "2108 Avondale Mill Road, near the airport",
+      "lat": 32.6917, "lon": -83.6687,
+      "source": "https://www.gpb.org/news/2024/05/23/macon-lands-600-jobs-in-418m-industry-expansion"
+    },
+    {
+      "name": "Unified Legacy",
+      "short": "Unified Legacy",
+      "year": 2026,
+      "event": "announced",
+      "status": "coming",
+      "makes": "precision metal parts",
+      "jobs": 500,
+      "jobsLabel": "500 jobs",
+      "site": "Barnes Ferry Road",
+      "lat": 32.7321, "lon": -83.6355,
+      "source": "https://georgia.org/press-releases/2026/georgia-based-unified-legacy-create-500-new-jobs-macon-bibb-county"
+    },
+    {
+      "name": "ArcelorMittal Building Solutions",
+      "short": "ArcelorMittal",
+      "year": 2026,
+      "event": "announced",
+      "status": "coming",
+      "makes": "insulated building panels",
+      "jobs": 140,
+      "jobsLabel": "up to 140 jobs",
+      "site": "Airport South site",
+      "lat": 32.6830, "lon": -83.6460,
+      "source": "https://mbcia.com/announcements/arcelormittal-building-solutions-brings-north-american-hq-to-macon-bibb/"
+    }
+  ]
+}

@@ -280,11 +280,7 @@
         // "Macon-Bibb" never breaks at its hyphen in a headline
         const set = (id, html) => { const el = document.getElementById(id); if (el && html) el.innerHTML = html.replace(/Macon-Bibb/g, '<span class="nw">Macon-Bibb</span>'); };
         if (totalRow) set('ind-totals', `<b>${Math.round(toNum(totalRow['Empl'])).toLocaleString()}</b> jobs in Macon-Bibb · <b>$${Math.round(toNum(totalRow['Avg Ann Wages'])).toLocaleString()}</b> average pay`);
-        if (hierarchy) {
-            const top = d3.greatest(hierarchy.children, sectorJobs), share = sectorJobs(top) / sectorJobsAll();
-            const plain = top.name.replace(' & Social Assistance', '').replace('&', 'and').toLowerCase();   // "health care", not the full category name
-            set('find-industries', `<em>1 in ${Math.round(1 / share)}</em> jobs in Macon-Bibb is in <em>${plain}</em>.`);
-        }
+        // (The Industries title slide's headline, what's growing, is js/growth-intro-map.js's)
         const occ = occRows.filter(r => r['Occupation'] && r['SOC'] && r['SOC'].slice(-2) !== '00' && !r['Occupation'].toLowerCase().includes('total'));
         const topOcc = d3.greatest(occ, r => toNum(r['Empl']));
         if (topOcc) {

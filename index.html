@@ -207,12 +207,17 @@
         </section>
 
         <!-- Stop 3 · Industries: a title slide, then the tool -->
-        <div class="stop-intro">
+        <div class="stop-intro stop-intro--map stop-intro--grow">
+            <!-- Drawn by js/growth-intro-map.js: Macon-Bibb, its interstates, and the new manufacturers rising year by year -->
+            <svg class="intro-map" id="grow-intro-map" aria-hidden="true"></svg>
             <div class="stop-intro__inner">
-                <p class="chapter-kicker">Industries</p>
-                <h2 class="chapter-finding" id="find-industries"><em>1 in 5</em> jobs in <span class="nw">Macon-Bibb</span> is in <em>health care</em>.</h2>
-                <p class="stop-totals" id="ind-totals"><b>85,088</b> jobs in Macon-Bibb · <b>$55,410</b> average pay</p>
+                <p class="chapter-kicker">Industries · What's growing</p>
+                <h2 class="chapter-finding" id="find-industries"><em>Manufacturing</em> is growing <em>three times</em> as fast as health care in <span class="nw">Macon-Bibb</span>.</h2>
+                <p class="chapter-dek" id="grow-dek"><span class="nw">Macon-Bibb</span> added <b>1,100</b> factory jobs in the past five years, paying <b>$65,800</b> on average, about $10,000 more than the county average. And <b>640</b> more were announced in 2026 alone.</p>
+                <div class="grow-bars" id="grow-bars" aria-label="Job growth over the past five years"></div>
+                <p class="intro-source">Jobs and pay: JobsEQ (QCEW-based), past five years. Plants: company, Georgia Department of Economic Development and Macon-Bibb County Industrial Authority announcements.</p>
             </div>
+            <ol class="grow-list" id="grow-list" aria-label="New and expanding manufacturers"></ol>
         </div>
         <section class="stop" id="industries">
             <p class="stop-hint" aria-hidden="true">Click anything to explore</p>
@@ -355,7 +360,9 @@
     <script src="js/chapters.js"></script>
     <script src="js/lookups.js"></script>
     <script src="js/county-explorer.js"></script>
+    <script src="js/intro-map.js"></script>
     <script src="js/jobs-intro-map.js"></script>
+    <script src="js/growth-intro-map.js"></script>
     <script src="js/commute-intro.js"></script>
 </body>
 </html>
