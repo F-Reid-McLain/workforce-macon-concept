@@ -11,10 +11,11 @@
    it's drawing finishes it, like a slide build (slide.wfFinishBuild, called by
    window.WFStops). Drawn and still with reduced motion.
 
-   Data: data/counties.geojson, data/major-highways.geojson (a coarse, regional file,
-   so interstate ends that stop just short of the interstate they join are snapped
-   onto it, the US routes, which the file stops a few miles short of town, are
-   carried in to downtown where they meet, and roads are drawn as smooth curves).
+   Data: data/counties.geojson; data/major-highways.geojson for the interstates (a
+   coarse, regional file, so interstate ends that stop just short of the interstate
+   they join are snapped onto it); data/us-routes-macon.geojson for the US routes,
+   their real paths through Macon from OpenStreetMap (tools/fetch-us-routes.py).
+   Roads are drawn as smooth curves.
 
    WFIntroMap.create({
      svg,              the <svg> inside the .stop-intro
@@ -33,7 +34,7 @@ window.WFIntroMap = (function () {
     'use strict';
     if (!window.d3) return null;
     const reduce = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
-    const DOWNTOWN = [-83.6290, 32.8380];   // where the US routes meet
+    const DOWNTOWN = [-83.6290, 32.8380];   // downtown Macon, for slides that mark it
     const INTERSTATES = new Set(['I-75', 'I-16', 'I-475']);
     const US_ROUTES = new Set(['US-41', 'US-80', 'US-129', 'US-23']);
     const LAT0 = 32.8 * Math.PI / 180;
@@ -44,7 +45,8 @@ window.WFIntroMap = (function () {
     const rings = g => g.type === 'Polygon' ? g.coordinates : g.coordinates.flat();
     const dist = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
     let data = null;
-    const load = () => data || (data = Promise.all([d3.json('data/counties.geojson'), d3.json('data/major-highways.geojson')]));
+    const load = () => data || (data = Promise.all([d3.json('data/counties.geojson'), d3.json('data/major-highways.geojson'),
+        d3.json('data/us-routes-macon.geojson').catch(() => null)]));
 
     // Nearest point on a polyline to p
     function nearestOn(line, p) {
@@ -61,7 +63,7 @@ window.WFIntroMap = (function () {
     function create(opts) {
         const svgEl = opts.svg, slide = svgEl.closest('.stop-intro'), svg = d3.select(svgEl);
         const base = opts.base;
-        let counties = null, roads = null, parts = null, renderLayer = null;
+        let counties = null, roads = null, usRoutes = null, parts = null, renderLayer = null;
 
         function draw() {
             if (!counties || !roads) return;
@@ -85,20 +87,11 @@ window.WFIntroMap = (function () {
 
             // Roads in screen space; interstate ends within ~28px of another interstate are joined onto it
             const lines = [];
-            roads.features.forEach(f => {
-                const route = f.properties.route;
-                const cls = INTERSTATES.has(route) ? 'im-interstate' : US_ROUTES.has(route) && base.us ? 'im-us' : null;
-                if (!cls) return;
-                (f.geometry.type === 'LineString' ? [f.geometry.coordinates] : f.geometry.coordinates).forEach(part => {
-                    part = part.slice();
-                    if (cls === 'im-us') {   // carry the end nearer town on in to downtown (if it stops within ~12 km)
-                        const km = q => Math.hypot((q[0] - DOWNTOWN[0]) * 93.5, (q[1] - DOWNTOWN[1]) * 111);
-                        const [a, b] = [km(part[0]), km(part[part.length - 1])];
-                        if (Math.min(a, b) < 12 && Math.min(a, b) > 0.2) { if (a < b) part.unshift(DOWNTOWN); else part.push(DOWNTOWN); }
-                    }
-                    lines.push({ route, cls, pts: part.map(proj) });
-                });
-            });
+            const add = (f, cls) => (f.geometry.type === 'LineString' ? [f.geometry.coordinates] : f.geometry.coordinates)
+                .forEach(part => lines.push({ route: f.properties.route, cls, pts: part.map(proj) }));
+            roads.features.forEach(f => { if (INTERSTATES.has(f.properties.route)) add(f, 'im-interstate'); });
+            // US routes: their real paths (OpenStreetMap) where that file loaded, else the regional file's
+            if (base.us) (usRoutes ? usRoutes.features : roads.features.filter(f => US_ROUTES.has(f.properties.route))).forEach(f => add(f, 'im-us'));
             const inter = lines.filter(l => l.cls === 'im-interstate');
             inter.forEach(l => {
                 [0, l.pts.length - 1].forEach(end => {
@@ -195,8 +188,8 @@ window.WFIntroMap = (function () {
         };
         let raf = null;
         const onScroll = () => { if (!raf) raf = requestAnimationFrame(() => { raf = null; aim(); }); };
-        const ready = Promise.all([load(), opts.ready || null]).then(([[c, r]]) => {
-            counties = c; roads = r;
+        const ready = Promise.all([load(), opts.ready || null]).then(([[c, r, u]]) => {
+            counties = c; roads = r; usRoutes = u;
             draw();
             if (!reduce) { addEventListener('scroll', onScroll, { passive: true }); aim(); }
         }).catch(err => console.error('Title slide map failed to load', err));

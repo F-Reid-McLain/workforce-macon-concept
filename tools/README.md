@@ -26,3 +26,8 @@ Every program keeps its `source` and the date it was `checked`. The build also c
 4. Review the diff of `content/programs.json` before committing.
 
 Lengths and costs follow each school's published rules (for example, CGTC's "associate degrees about 2 years, diplomas about 18 months, certificates under a year" and its 2025–26 tuition of $107 per credit hour). They're typical full-time figures, not quotes.
+
+## Map roads
+
+- `fetch-us-routes.py` pulls the real paths of US 41, 80, 129 and 23 around Macon from OpenStreetMap into `data/us-routes-macon.geojson`, for the Jobs title slide's map. Rerun it only if the routes need refreshing: `python3 tools/fetch-us-routes.py`. Map data © OpenStreetMap contributors (ODbL), credited in the slide's source line.
+- `render-story.js` makes marketing stills of the 3D commuting story (see the top of the file).
