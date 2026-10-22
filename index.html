@@ -140,11 +140,17 @@
                     <div class="ci-when">The whole picture</div>
                     <h2>The region's commuting balance</h2>
                     <p>This is the balance the day just played out: every county around Macon-Bibb sends out more workers than it takes in. Only Macon-Bibb gains.</p>
-                    <p>Hover any county for detail, or click the map to show the region's major highways.</p>
-                    <p class="ci-note">Presenting this story? Press <b>P</b> or <b>▶ Present</b> for full screen, and use each card's "Link to this moment" to jump straight to a point in the day.</p>
-                    <p class="ci-note">Net commuting = jobs located in the county minus employed residents (LODES 2023). Population: ACS 2024.</p>
+                    <div class="ci-county" id="counties-tool">
+                        <label class="ci-county__pick">
+                            <span>See how your county trades workers with <span class="nw">Macon-Bibb</span>, or click it on the map</span>
+                            <select id="cty-select"><option value="">Pick a county</option></select>
+                        </label>
+                        <div class="cty-card" id="cty-card" aria-live="polite" hidden></div>
+                    </div>
                     <details class="ci-method">
-                        <summary>How this story works</summary>
+                        <summary>About this map and story</summary>
+                        <p class="ci-note">Net commuting = jobs located in the county minus employed residents (LODES 2023). Population: ACS 2024. Click the <b>Highways</b> button for the region's major roads.</p>
+                        <p class="ci-note">Presenting this story? Press <b>P</b> or <b>▶ Present</b> for full screen, and use each card's "Link to this moment" to jump straight to a point in the day.</p>
                         <ul>
                             <li><b>Real data.</b> Commuting comes from the U.S. Census Bureau's LODES 2023, which counts jobs, not people: someone with two jobs counts twice. Residents come from the American Community Survey 2024.</li>
                             <li><b>From everywhere.</b> Dots between counties are real flows between Macon-Bibb and each neighbor. Dots to and from the edge of the map stand for everyone else: all of Macon-Bibb's commuting with places beyond its neighbors, and each neighbor's net exchange with places other than Macon-Bibb. Together, each county's midday change equals its net commuting on the map.</li>
@@ -160,9 +166,9 @@
         <!-- Section rail (right edge on wide screens; pill bar on phones) -->
         <nav class="page-jumpnav" aria-label="Page sections">
             <a href="#section-commute">Commute</a>
+            <a href="#counties">Your county</a>
             <a href="#jobs">Jobs</a>
             <a href="#industries">Industries</a>
-            <a href="#counties">Your county</a>
             <a href="#custom-research">Custom research</a>
         </nav>
 
@@ -261,51 +267,30 @@
             </div>
         </section>
 
-        <!-- Stop 4 · Your county: a title slide, then the tool -->
-        <div class="stop-intro">
+        <!-- Closing: one big fact, then what custom research adds -->
+        <div class="stop-intro stop-intro--close">
             <div class="stop-intro__inner">
-                <p class="chapter-kicker">Your county</p>
+                <p class="chapter-kicker">One labor market</p>
                 <div class="ticker">
-                    <b class="ticker__num" id="cty-total">26,349</b>
-                    <span class="ticker__label">jobs in <span class="nw">Macon-Bibb</span> are held by people from its 16 neighbors</span>
+                    <b class="ticker__num" id="region-pop">631,000</b>
+                    <span class="ticker__label">people live in <span class="nw">Macon-Bibb</span> and its 16 neighbors</span>
                 </div>
-                <h2 class="chapter-finding chapter-finding--sm" id="find-county">In <em>Jones County</em>, <em>38%</em> of the jobs residents hold are in <span class="nw">Macon-Bibb</span>.</h2>
+                <h2 class="chapter-finding chapter-finding--sm">One labor market, and <em><span class="nw">Macon-Bibb</span></em> is where it comes to work.</h2>
+                <p class="chapter-dek">Site selectors call it a labor shed. <a href="#custom-research">The Chamber can map yours.</a></p>
             </div>
         </div>
-        <section class="stop" id="counties">
-            <p class="stop-hint" aria-hidden="true">Click anything to explore</p>
-            <div class="stop-label">
-                <p class="chapter-kicker">Your county <span class="info-btn-wrap"><button type="button" class="info-btn" aria-label="About this data">i</button><span class="info-popover"><strong>What this shows</strong><span>U.S. Census Bureau LODES 2023: jobs (not people; someone with two jobs counts twice) by where the worker lives and where the job is. Pay bands are LODES's monthly earnings groups. Population: ACS 2024.</span></span></span></p>
-                <p class="stop-label__text">Pick any neighboring county to see how it and <span class="nw">Macon-Bibb</span> trade workers.</p>
-            </div>
-            <div class="tool-panel tool-panel--county">
-                <div class="cty-map-wrap">
-                    <svg id="cty-map" role="group" aria-label="Map of Macon-Bibb and its 16 neighboring counties"></svg>
-                    <div class="cty-tip" aria-hidden="true"></div>
-                    <div class="cty-key"><span><i class="cty-key__in"></i>Coming to work in Macon-Bibb</span><span><i class="cty-key__out"></i>Leaving Macon-Bibb for work</span></div>
-                </div>
-                <div class="tool-col">
-                    <label class="tool-search cty-pick">
-                        <span class="sr-only">Pick a county</span>
-                        <select id="cty-select"></select>
-                    </label>
-                    <div class="tool-result cty-card" id="cty-card" aria-live="polite"></div>
-                    <p class="tool-upsell">Need the full labor shed around a site? <a href="#custom-research">Request custom research →</a></p>
-                </div>
-            </div>
-        </section>
 
-        <!-- Closing: what custom research adds -->
         <section class="chapter chapter--close" id="custom-research">
-            <h2 class="chapter-finding"><span class="nw">Macon-Bibb</span> is where Middle Georgia goes to work.</h2>
+            <h2 class="chapter-finding">Go deeper with custom research</h2>
             <div class="custom-pitch">
                 <h3>What custom research adds</h3>
                 <p>Workforce Macon is free and updated every quarter. When you need more than what's here, the Greater Macon Chamber of Commerce builds custom research for employers, site selectors and partners.</p>
                 <ul>
+                    <li><b>The labor shed</b> around your site: who lives within reach, and what they do</li>
                     <li><b>Pay ranges</b>, from entry-level to experienced, not just averages</li>
                     <li><b>Comparisons</b> with Atlanta, Savannah, Augusta, Columbus and peer metros</li>
                     <li><b>Trends</b> in jobs, pay and commuting over time</li>
-                    <li><b>Your focus</b>: a specific industry, occupation, the local talent pool, or the labor shed around your site</li>
+                    <li><b>Your focus</b>: a specific industry, occupation or the local talent pool</li>
                 </ul>
                 <div class="close-actions">
                     <a class="close-btn close-btn--primary" href="about.html#custom-research">Request custom research</a>

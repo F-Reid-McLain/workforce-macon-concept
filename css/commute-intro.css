@@ -163,6 +163,12 @@ body.ci-presenting .ci-present-hint { display: block; }
 }
 .ci-step { min-height: 80vh; display: flex; align-items: center; padding: 0 1.5rem; }
 .ci-step:last-child { min-height: 110vh; }   /* the map holds for a moment before the page moves on */
+/* The finished map's card holds the county tool. Opening a county must never move the page
+   (the day follows the scroll position), so the card scrolls inside itself instead of growing,
+   and the story opts out of the browser's scroll anchoring */
+.ci { overflow-anchor: none; }
+.ci-step--map .ci-card { max-height: calc(100vh - var(--ci-top, 64px) - 200px); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }   /* clear of the population box below */
+@media (max-width: 768px) { .ci-step--map .ci-card { max-height: 48vh; background: #101720; } }   /* phones: the map stays in view above the card */
 
 .ci-card {
     pointer-events: auto; max-width: 380px; padding: 1.2rem 1.35rem;

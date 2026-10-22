@@ -115,6 +115,7 @@ body.page-home .main-content { padding-bottom: 0; }
     }
 }
 .stop-intro .chapter-dek b { color: #fff; }
+.stop-intro .chapter-dek a { color: var(--ch-gold); font-weight: 600; }
 @media (prefers-reduced-motion: reduce) {
     .intro-map.is-drawn :is(.im-halo, .gm-factory) { animation: none; }
 }
@@ -372,40 +373,27 @@ body.page-home .demo-bar-row { padding: 5px 0; font-size: 0.86rem; }
 @keyframes hint-breathe { 50% { box-shadow: 0 0 0 6px rgba(242, 196, 107, 0.08); } }
 
 /* ----- Your county (js/county-explorer.js) ----- */
-.tool-panel--county { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); align-items: center; }
-.cty-map-wrap { position: relative; }
-#cty-map { display: block; width: 100%; height: auto; overflow: visible; }
-.cty { fill: rgba(242, 196, 107, var(--shade, 0.1)); stroke: rgba(14, 20, 32, 0.9); stroke-width: 1.2; cursor: pointer; outline: none; transition: fill 0.2s, stroke 0.2s; }
-.cty:hover, .cty:focus-visible { fill: rgba(242, 196, 107, calc(var(--shade, 0.1) + 0.18)); }
-.cty.is-on { stroke: var(--ch-gold); stroke-width: 2.5; fill: rgba(242, 196, 107, calc(var(--shade, 0.1) + 0.12)); }
-.cty--bibb { fill: #268a6b; stroke: #34d399; stroke-width: 1.5; cursor: default; }
-.cty--bibb:hover { fill: #2b9a77; }
-.cty-labels text { text-anchor: middle; dominant-baseline: middle; font: 600 0.68rem var(--font-body); fill: rgba(255, 255, 255, 0.72); pointer-events: none; paint-order: stroke; stroke: rgba(14, 20, 32, 0.7); stroke-width: 3px; }
-.cty-labels text.is-bibb { font-size: 0.8rem; font-weight: 800; fill: #fff; }
-.cty-flows { pointer-events: none; }
-.cty-route { fill: none; stroke: rgba(242, 196, 107, 0.28); stroke-width: 1.5; stroke-dasharray: 3 5; }
-.cty-route--out { stroke: rgba(232, 236, 243, 0.2); }
-.cty-tip {
-    position: absolute; left: 0; top: 0; z-index: 5; display: flex; flex-direction: column; gap: 2px; padding: 8px 12px; border-radius: 10px;
-    background: #18212f; border: 1px solid rgba(255, 255, 255, 0.16); box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
-    font-size: 0.8rem; color: var(--color-text-secondary); white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity 0.15s;
-}
-.cty-tip.is-on { opacity: 1; }
-.cty-tip b { color: #fff; font-size: 0.9rem; }
-.cty-key { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 8px; font-size: 0.76rem; color: var(--color-text-muted); }
-.cty-key span { display: inline-flex; align-items: center; gap: 6px; }
-.cty-key i { width: 18px; height: 0; border-top: 2px dashed; }
-.cty-key__in { border-color: var(--ch-gold); }
-.cty-key__out { border-color: #e8ecf3; }
-.cty-pick select {
+/* Your county: the picker and card inside the story's finished map (js/county-explorer.js) */
+.ci-county__pick select {
     width: 100%; box-sizing: border-box; padding: 0.7rem 2.2rem 0.7rem 0.9rem; border-radius: 10px; font: 600 0.95rem var(--font-body);
     background: #0e1420 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23f2c46b' stroke-width='2'/%3E%3C/svg%3E") no-repeat right 0.9rem center;
     color: #fff; border: 1px solid rgba(255, 255, 255, 0.16); appearance: none; -webkit-appearance: none; cursor: pointer;
 }
-.cty-pick select:focus { outline: none; border-color: var(--ch-gold); }
-.cty-card { padding: 18px 20px; border-radius: 12px; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--color-border); }
+.ci-county__pick select:focus { outline: none; border-color: var(--ch-gold); }
+.ci-county { margin-top: 0.4rem; display: grid; gap: 0.7rem; }
+.ci-county__pick { display: grid; gap: 0.45rem; }
+.ci-county__pick > span { font-size: 0.86rem; font-weight: 600; color: #e6e9ee; }
+.cty-card { padding: 14px 16px; border-radius: 12px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); }
+.cty-card[hidden] { display: none; }
+.ci-card.has-county > p, .ci-card.has-county > .ci-method { display: none; }
+/* inside the story card, its paragraph style would otherwise win */
+.ci-card .cty-pay__title { margin: 0 0 8px; font-size: 0.7rem; }
+.ci-card .cty-pay__vs { margin: 10px 0 0; font-size: 0.84rem; }
+.ci-card .cty-card h3 { margin: 0 0 8px; font: 700 1rem var(--font-heading); color: var(--ch-gold); }
+.cty-back { margin-top: 12px; padding: 0; border: 0; background: none; font: 600 0.82rem var(--font-body); color: #9fb1c9; cursor: pointer; }
+.cty-back:hover, .cty-back:focus-visible { color: var(--ch-gold); }
 .cty-big { display: flex; align-items: baseline; gap: 10px; margin-bottom: 10px; }
-.cty-big b { font: 800 clamp(2rem, 3.2vw, 2.6rem)/1 var(--font-heading); color: var(--ch-gold); font-variant-numeric: tabular-nums; }
+.cty-big b { font: 800 2rem/1 var(--font-heading); color: var(--ch-gold); font-variant-numeric: tabular-nums; }
 .cty-big > span { font-size: 0.9rem; line-height: 1.35; color: var(--color-text-secondary); }
 .cty-share { display: grid; gap: 6px; margin-bottom: 16px; font-size: 0.86rem; color: var(--color-text-secondary); }
 .cty-share b { color: #fff; }

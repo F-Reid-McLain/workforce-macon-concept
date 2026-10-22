@@ -33,7 +33,12 @@
     const OLD = { 'section-kpis': 'industries', 'section-industries': 'industries', 'section-occupations': 'jobs',
                   'section-hiring': 'counties', 'hiring': 'counties', 'section-demographics': 'custom-research', 'section-explore': 'custom-research' };
     const openers = {};
-    const jumpTo = id => { const el = document.getElementById(id); if (el) el.scrollIntoView({ behavior: 'instant', block: 'start' }); };
+    // A stop that lives inside the 3D story (#counties: its finished map) is the story's to land on
+    const jumpTo = id => {
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: 'instant', block: 'start' });
+        else if (window.WFStory) WFStory.goTo(id);
+    };
     function route() {
         const [stop, item] = decodeURIComponent(location.hash.slice(1)).split('/');
         if (OLD[stop]) { history.replaceState(null, '', '#' + OLD[stop]); jumpTo(OLD[stop]); return; }

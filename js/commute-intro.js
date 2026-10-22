@@ -296,7 +296,8 @@
             const W = stage.clientWidth, H = stage.clientHeight;
             const padLeft = W > +(stage.dataset.padBreakpoint || Infinity) ? +(stage.dataset.padLeft || 0) : 0;
             const vp = new deck.WebMercatorViewport({ width: W, height: H })
-                .fitBounds(bounds, { padding: { top: 56, bottom: 40, left: 24 + padLeft, right: 24 } });
+                // phones: the map fits the top half, above the card (which holds the county tool)
+                .fitBounds(bounds, { padding: { top: 56, bottom: W <= 768 ? Math.round(H * 0.5) : 40, left: 24 + padLeft, right: 24 } });
             flatView = { longitude: vp.longitude, latitude: vp.latitude, zoom: vp.zoom, pitch: 0, bearing: 0 };
             // Highway badges that land on top of each other get pushed apart (in screen space);
             // an interstate keeps its spot and the other badge moves
@@ -391,10 +392,17 @@
             useDevicePixels: Math.min(window.devicePixelRatio || 1, mobile ? 1.5 : 2),
             effects: [new deck.LightingEffect({ ambient, sun })],
             onHover: showTip,
-            onClick: info => { if (stagesOf(morphAt(hour)).live && info.object) toggleHighways(); },
+            // On the finished map, clicking a county opens it in the card (js/county-explorer.js)
+            onClick: info => {
+                const fips = info.object && info.object.fips;
+                if (stagesOf(morphAt(hour)).live && fips && fips !== BIBB) document.dispatchEvent(new CustomEvent('county:pick', { detail: { fips } }));
+            },
             getCursor: ({ isHovering }) => isHovering && stagesOf(morphAt(hour)).live ? 'pointer' : 'default',
         });
         const MASK = new deck.MaskExtension();
+        // The county open in the map's card: outlined in gold, with its commute drawn as arcs
+        let sel = (window.WFCounty && window.WFCounty.current) || null;
+        document.addEventListener('county:selected', e => { sel = e.detail; lastScene = ''; wake(); });
 
         // ----- Layers -----
         const lift = (ring, z) => ring.map(([x, y]) => [x, y, z]);
@@ -409,6 +417,7 @@
             const geoKey = Math.round(p * 1000) + '|' + hour.toFixed(3);
             const colorKey = m.toFixed(3);
             const fill = (fips, story) => m > 0 ? mixRGB(story, mapColor.get(fips), ripple(fips, m)) : story;
+            const isSel = fips => S.live && sel && sel.fips === fips, selKey = S.live && sel ? sel.fips : '';
             const out = [
                 new deck.SolidPolygonLayer({ id: 'mask-region', data: rings, getPolygon: r => r.ring, operation: 'mask' }),
                 new deck.SolidPolygonLayer({ id: 'home', data: rings, extruded: true, pickable: true, material, getPolygon: r => r.ring,
@@ -432,10 +441,11 @@
             out.push(
                 // County edges: story outlines on the block tops, ending as the map's borders
                 new deck.PathLayer({ id: 'edges', data: rings, getPath: r => lift(r.ring, fullTop(r.fips) + 20), widthUnits: 'pixels',
-                    getWidth: r => r.fips === BIBB ? 2.5 : 1,
+                    getWidth: r => r.fips === BIBB ? 2.5 : isSel(r.fips) ? 3.5 : 1,
                     getColor: r => r.fips === BIBB ? mixRGB([180, 140, 70], MAP.bibbLine, S.light).concat(230)
+                        : isSel(r.fips) ? [242, 196, 107, 255]
                         : mixRGB([255, 255, 255], MAP.border, S.light).concat(lerp(120, 255, S.light) * arr(r.fips)),
-                    updateTriggers: { getPath: geoKey, getColor: colorKey + '|' + (hour < 6 ? hour.toFixed(3) : 'in') } }),
+                    updateTriggers: { getPath: geoKey, getWidth: selKey, getColor: colorKey + '|' + (hour < 6 ? hour.toFixed(3) : 'in') + '|' + selKey } }),
                 // Night-time height of counties that emptied out
                 new deck.PathLayer({ id: 'night', data: rings.filter(r => k(r.fips) < 0.998), visible: S.settle < 0.99, opacity: 1 - S.settle,
                     getPath: r => lift(r.ring, p * BLOCK_H), widthUnits: 'pixels', getWidth: 1.2, getColor: LOSS.concat(150), updateTriggers: { getPath: geoKey } }),
@@ -497,6 +507,23 @@
                     getWidth: d => HWY[d.cls].width, getColor: d => [255, 255, 255, Math.round(255 * HWY[d.cls].alpha)],
                     capRounded: true, jointRounded: true, extensions: [MASK], maskId: 'mask-region' }),
             );
+            // The open county's commute: gold arcs in to Macon-Bibb (wider for more jobs), a white one back out
+            if (S.live && sel) {
+                const w = n => 1.5 + 7 * Math.sqrt(n / 10833);   // 10,833: Houston, the biggest flow
+                const arcs = [{ from: sel.fips, to: BIBB, n: sel.in, color: [242, 196, 107, 235] }]
+                    .concat(sel.out ? [{ from: BIBB, to: sel.fips, n: sel.out, color: [232, 236, 243, 200] }] : []);
+                // Flat curves (the map looks straight down, so arcs would flatten into one line): in on one side, out on the other
+                const curve = (a, b) => {
+                    const k = Math.cos(a[1] * Math.PI / 180), A = [a[0] * k, a[1]], B = [b[0] * k, b[1]];
+                    const dx = B[0] - A[0], dy = B[1] - A[1], len = Math.hypot(dx, dy) || 1, bend = len * 0.32;
+                    const C = [(A[0] + B[0]) / 2 - dy / len * bend, (A[1] + B[1]) / 2 + dx / len * bend];
+                    return d3.range(25).map(i => { const u = i / 24, v = 1 - u;
+                        return [(v * v * A[0] + 2 * v * u * C[0] + u * u * B[0]) / k, v * v * A[1] + 2 * v * u * C[1] + u * u * B[1], 60]; });
+                };
+                out.push(new deck.PathLayer({ id: 'county-arcs', data: arcs, getPath: d => curve(center.get(d.from), center.get(d.to)),
+                    getColor: d => d.color, getWidth: d => w(d.n), widthUnits: 'pixels', capRounded: true, jointRounded: true,
+                    parameters: { depthCompare: 'always' } }));
+            }
             return out;
         }
 
@@ -532,7 +559,7 @@
         let lastScene = '';
         function render() {
             const m = morphAt(hour), S = stagesOf(m);
-            const sceneKey = [hour.toFixed(4), rise.toFixed(3), hwy.toFixed(3), step].join();
+            const sceneKey = [hour.toFixed(4), rise.toFixed(3), hwy.toFixed(3), step, sel ? sel.fips : ''].join();
             if (sceneKey !== lastScene) {
                 lastScene = sceneKey;
                 setLight(hour, S.light);
@@ -713,7 +740,10 @@
             if (a) scrollTo({ top: Math.max(0, a.y), behavior: smooth ? 'smooth' : 'instant' });
         };
         const momentStep = name => steps.find(el => el.dataset.moment === name);
-        const goToHash = () => { const el = momentStep(location.hash.slice(1)); if (el) goToStep(el, false); };
+        // #counties (and #counties/<county>) is the finished map, where the county tool lives
+        const momentFor = id => { const name = String(id).split('/')[0]; return momentStep(name === 'counties' ? 'map' : name); };
+        const goToHash = () => { const el = momentFor(decodeURIComponent(location.hash.slice(1))); if (el) goToStep(el, false); };
+        window.WFStory = { goTo(id) { const el = momentFor(id); if (el) goToStep(el, false); return !!el; } };
         addEventListener('hashchange', goToHash);
         steps.filter(el => el.dataset.moment).forEach(el => {
             const card = el.querySelector('.ci-card');
