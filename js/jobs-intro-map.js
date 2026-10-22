@@ -3,10 +3,11 @@
    Macon-Bibb, the interstates (then the US routes) drawing in from the edges toward
    Macon, and the region's Level I trauma center (Atrium Health Navicent The Medical
    Center, 777 Hemlock St) rising where it stands.
-   The drawing plays as the slide settles into view (about three seconds) and
-   undraws as soon as it starts to scroll away, every time. It runs on a clock rather than straight
-   off the scroll position because the page glides onto each stop in a moment
-   (js/chapters.js), too fast to watch. Drawn and still with reduced motion. On wide screens the headline holds the left half and Macon the
+   The drawing plays (about three seconds) once the slide is centered, whether the
+   snap glided it there (js/chapters.js) or present mode's arrow keys did, and pulls
+   back quickly as soon as it moves away, so it builds fresh every visit. In present
+   mode an arrow press while it's drawing finishes it, like a slide build
+   (slide.wfFinishBuild, called by window.WFStops). Drawn and still with reduced motion. On wide screens the headline holds the left half and Macon the
    right; on phones the headline sits on top and Macon below it.
    Data: data/counties.geojson, data/major-highways.geojson (a coarse, regional file,
    so interstate ends that stop just short of the interstate they join are snapped
@@ -63,7 +64,7 @@
         const proj = projector(W, H, rings(bibbF.geometry));
         const center = proj([d3.mean(rings(bibbF.geometry)[0], p => p[0]), d3.mean(rings(bibbF.geometry)[0], p => p[1])]);
 
-        svg.append('g').attr('class', 'im-neighbors').selectAll('path')
+        const neighbors = svg.append('g').attr('class', 'im-neighbors').selectAll('path')
             .data(counties.features.filter(f => f !== bibbF)).join('path')
             .attr('d', f => rings(f.geometry).map(r => straight(r.map(proj))).join(''));
         const bibb = svg.append('path').attr('class', 'im-bibb')
@@ -144,8 +145,8 @@
 
         // Lengths for the draw-on
         const prep = sel => sel.each(function () { const n = this.getTotalLength(); this.__len = n; d3.select(this).attr('stroke-dasharray', `${n} ${n}`); });
-        prep(bibb); prep(ints); prep(us);
-        parts = { bibb, ints, us, shields, bld, halo, hLabel };
+        prep(neighbors); prep(bibb); prep(ints); prep(us);
+        parts = { neighbors, bibb, ints, us, shields, bld, halo, hLabel };
         render(reduce ? 1 : cur);
     }
 
@@ -159,34 +160,44 @@
         if (!parts) return;
         const stage = (a, b) => clamp((p - a) / (b - a));
         const dash = (sel, t) => sel.attr('stroke-dashoffset', function () { return this.__len * (1 - t); });
-        dash(parts.bibb, stage(0, 0.35));
-        parts.ints.each(function (d, i) { d3.select(this).attr('stroke-dashoffset', this.__len * (1 - stage(0.2 + (i % 3) * 0.04, 0.62 + (i % 3) * 0.04))); });
-        dash(parts.us, stage(0.42, 0.78));
-        parts.shields.style('opacity', stage(0.6, 0.72));
-        const rise = d3.easeBackOut.overshoot(1.4)(stage(0.7, 0.92));
-        parts.bld.attr('transform', `scale(1, ${Math.max(0.001, rise).toFixed(3)})`).style('opacity', stage(0.68, 0.74));
-        parts.halo.style('opacity', stage(0.85, 0.95));
-        parts.hLabel.style('opacity', stage(0.88, 1));
+        dash(parts.neighbors, stage(0, 0.3));
+        dash(parts.bibb, stage(0.08, 0.4));
+        parts.ints.each(function (d, i) { d3.select(this).attr('stroke-dashoffset', this.__len * (1 - stage(0.3 + (i % 3) * 0.04, 0.6 + (i % 3) * 0.04))); });
+        dash(parts.us, stage(0.5, 0.8));
+        parts.shields.style('opacity', stage(0.65, 0.75));
+        const rise = d3.easeBackOut.overshoot(1.4)(stage(0.75, 0.93));
+        parts.bld.attr('transform', `scale(1, ${Math.max(0.001, rise).toFixed(3)})`).style('opacity', stage(0.74, 0.79));
+        parts.halo.style('opacity', stage(0.88, 0.97));
+        parts.hLabel.style('opacity', stage(0.9, 1));
         svgEl.classList.toggle('is-drawn', p >= 0.999);   // the halo pulses only when complete
     }
 
-    // Draw on once the slide is centered; undraw (quicker) as soon as it starts to move off,
-    // so it's seen pulling back during the short glide away. The small gap keeps it from flickering.
+    // Play once the slide is centered; pull back (quicker) as soon as it moves off. The
+    // small gap between the two keeps it from flickering.
     let cur = 0, target = 0, clock = null;
     const DRAW_MS = 3000, UNDRAW_MS = 650;
-    function aim() {
-        const p = progress(), t = p >= 0.92 ? 1 : p < 0.9 ? 0 : target;
-        if (t === target) return;
+    const stopClock = () => { if (clock) { clock.stop(); clock = null; } };
+    function animateTo(t) {
+        stopClock();
         target = t;
-        if (clock) clock.stop();
-        const from = cur, ms = (target ? DRAW_MS : UNDRAW_MS) * Math.abs(target - from);
-        clock = d3.timer(e => {
-            const k = ms ? Math.min(1, e / ms) : 1;
-            cur = from + (target - from) * k;
+        const from = cur, ms = (t ? DRAW_MS : UNDRAW_MS) * Math.abs(t - from), t0 = performance.now();
+        clock = d3.timer(() => {
+            const k = ms ? clamp((performance.now() - t0) / ms) : 1;
+            cur = from + (t - from) * k;
             render(cur);
-            if (k >= 1) { clock.stop(); clock = null; }
+            if (k >= 1) stopClock();
         });
     }
+    function aim() {
+        const p = progress(), t = p >= 0.92 ? 1 : p < 0.9 ? 0 : target;
+        if (t !== target) animateTo(t);
+    }
+    // Present mode: an arrow press while it's drawing finishes it (true) instead of moving on
+    slide.wfFinishBuild = () => {
+        if (!clock || target !== 1) return false;
+        stopClock(); cur = 1; render(1);
+        return true;
+    };
     let raf = null;
     const onScroll = () => { if (!raf) raf = requestAnimationFrame(() => { raf = null; aim(); }); };
     Promise.all([d3.json('data/counties.geojson'), d3.json('data/major-highways.geojson')]).then(([c, r]) => {

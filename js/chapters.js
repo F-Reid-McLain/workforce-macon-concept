@@ -30,7 +30,9 @@
    scrolling: the map, each title slide (centered) and each tool (top). A small nudge
    is enough to move on, and a tiny one settles back. CSS scroll-snap can't do this: it
    snaps to the nearest point, so short wheel scrolls kept falling back onto the map.
-   The 3D story before the map scrolls freely, and so does the footer past the close. */
+   The 3D story before the map scrolls freely, and so does the footer past the close.
+   Also window.WFStops, the homepage stops in order, which present mode's arrow keys
+   step through once past the story (js/commute-intro.js). */
 (function () {
     'use strict';
     const map = document.getElementById('section-region');
@@ -39,13 +41,13 @@
     const enabled = () => innerWidth > 900 && innerHeight >= 600 && !document.body.classList.contains('ci-presenting');
     const NUDGE = 60;   // px: less than this and the page settles back where it was
 
-    function points() {
-        const top = el => el.getBoundingClientRect().top + scrollY;
-        const center = el => top(el) + el.offsetHeight / 2 - innerHeight / 2;
-        const pts = [center(map)];
-        document.querySelectorAll('.stop-intro, .stop, #custom-research').forEach(el => pts.push(el.classList.contains('stop-intro') ? center(el) : top(el)));
-        return pts.map(Math.round).sort((a, b) => a - b);
-    }
+    const top = el => el.getBoundingClientRect().top + scrollY;
+    const center = el => top(el) + el.offsetHeight / 2 - innerHeight / 2;
+    // The stops after the map, in order: { y, el }
+    const stops = () => [...document.querySelectorAll('.stop-intro, .stop, #custom-research')]
+        .map(el => ({ el, y: Math.round(el.classList.contains('stop-intro') ? center(el) : top(el)) }))
+        .sort((a, b) => a.y - b.y);
+    const points = () => [Math.round(center(map))].concat(stops().map(s => s.y)).sort((a, b) => a - b);
 
     // from: where the page last came to rest. A glide only moves it once it lands, so a
     // gesture that interrupts a glide is still measured from the stop it started at.
@@ -104,4 +106,18 @@
     };
     if ('onscrollend' in window) addEventListener('scrollend', soon);
     else { let t; addEventListener('scroll', () => { clearTimeout(t); t = setTimeout(soon, 100); }, { passive: true }); }
+    // Present mode: step to the next (dir 1) or previous (-1) stop. Returns false when
+    // stepping back above the first one, so the story can take over again.
+    window.WFStops = {
+        list: stops,
+        step(dir) {
+            const all = stops(), y = scrollY;
+            const here = all.find(s => Math.abs(s.y - y) <= 4);
+            if (dir > 0 && here && here.el.wfFinishBuild && here.el.wfFinishBuild()) return true;   // finish a build in progress first
+            const next = dir > 0 ? all.find(s => s.y > y + 4) : all.slice().reverse().find(s => s.y < y - 4);
+            if (!next) return dir > 0;
+            scrollTo({ top: next.y, behavior: reduce ? 'instant' : 'smooth' });
+            return true;
+        },
+    };
 })();

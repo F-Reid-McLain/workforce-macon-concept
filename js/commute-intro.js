@@ -681,11 +681,13 @@
             if (on === presenting) return;
             presenting = on;
             const at = steps[Math.max(0, step)];
+            const pastStory = anchors.length && scrollY > anchors[anchors.length - 1].y + 4, stayY = scrollY;
             document.body.classList.toggle('ci-presenting', on);
             if (on && !document.fullscreenElement && document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(() => {});
             if (!on && document.fullscreenElement) document.exitFullscreen().catch(() => {});
             // The header hides while presenting, so the stage moves up: re-measure, then land on the same card
-            requestAnimationFrame(() => { computeFlat(); lastScene = ''; goToStep(at, false); onScroll(); });
+            // (past the story, on the homepage's stops, it stays put)
+            requestAnimationFrame(() => { computeFlat(); lastScene = ''; if (pastStory) { measure(); scrollTo({ top: stayY, behavior: 'instant' }); } else goToStep(at, false); onScroll(); });
         }
         document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement && presenting) setPresenting(false); });
         document.getElementById('ci-present').addEventListener('click', () => setPresenting(true));
@@ -699,6 +701,13 @@
             const dir = ['ArrowRight', 'ArrowDown', 'PageDown', ' '].includes(e.key) ? 1 : ['ArrowLeft', 'ArrowUp', 'PageUp'].includes(e.key) ? -1 : 0;
             if (!dir) return;
             e.preventDefault();
+            // Past the story's last card, the arrows carry on through the homepage's stops (js/chapters.js)
+            const stops = window.WFStops, lastCard = anchors.length ? anchors[anchors.length - 1].y : Infinity;
+            if (stops && (scrollY > lastCard + 4 || (dir > 0 && step >= steps.length - 1))) {
+                if (stops.step(dir)) return;
+                goToStep(steps[steps.length - 1], true);   // stepped back above the first stop: the map card
+                return;
+            }
             goToStep(steps[Math.max(0, Math.min(steps.length - 1, step + dir))], true);
         });
 
