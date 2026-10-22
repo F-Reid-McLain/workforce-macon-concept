@@ -1,8 +1,8 @@
 /* ===== YOUR COUNTY — inside the story's finished regional map =====
    Pick any of Macon-Bibb's 16 neighbors (from the list in the map's card, or by
    clicking it on the map) to see how the two trade workers: jobs in Macon-Bibb held
-   by the county's residents, Macon-Bibb residents working there, what those jobs
-   pay, and the county's overall commuting balance.
+   by the county's residents, how much of its workforce that is, Macon-Bibb residents
+   working there, and how well those jobs pay.
 
    Talks to the map (js/commute-intro.js) through two events on document:
      county:pick      {fips}  the map was clicked
@@ -19,7 +19,6 @@
     const BIBB = '13021';
     const fmt = n => Math.round(n).toLocaleString();
     const pct = v => Math.round(100 * v) + '%';
-    const PAY = ['#a0aabe', '#f2c46b', '#2dd4bf'];   // ≤ $1,250 · $1,251–3,333 · > $3,333 a month (as in the story)
     const f5 = v => String(v).padStart(5, '0');
 
     const select = document.getElementById('cty-select'), card = document.getElementById('cty-card');
@@ -50,21 +49,11 @@
             .map(c => `<option value="${c.fips}">${c.name}: ${fmt(c.in)} jobs in Macon-Bibb</option>`).join('');
 
         // ----- The card -----
+        // Kept short: the jobs its residents hold here, how much of its workforce that is, then one line on the rest
         card.innerHTML = `<h3></h3>
             <div class="cty-big"><b data-k="in" data-f="int"></b><span>jobs in <span class="nw">Macon-Bibb</span> are held by <span data-name></span> residents</span></div>
             <div class="cty-share"><div class="cty-share__bar"><i></i></div><span data-share></span></div>
-            <dl class="tool-stats">
-                <div><dt>Reverse commute</dt><dd data-k="out" data-f="int"></dd></div>
-                <div><dt>Net, all places</dt><dd data-net></dd></div>
-                <div><dt>Residents</dt><dd data-k="pop" data-f="int"></dd></div>
-                <div><dt>Jobs located there</dt><dd data-k="jobs" data-f="int"></dd></div>
-            </dl>
-            <div class="cty-pay">
-                <p class="cty-pay__title">What those jobs pay a month</p>
-                <div class="cty-pay__bar">${PAY.map((c, k) => `<i style="background:${c}" data-band="${k}"></i>`).join('')}</div>
-                <div class="cty-pay__key">${region.payBands.map((b, k) => `<span><i style="background:${PAY[k]}"></i>${b.replace('/month', '')}</span>`).join('')}</div>
-                <p class="cty-pay__vs" data-vs></p>
-            </div>
+            <p class="cty-more" data-more></p>
             <button type="button" class="cty-back">← Back to the whole picture</button>`;
         const last = {}, localOver = region.localPay[2] / d3.sum(region.localPay);
         let current = null;
@@ -83,17 +72,12 @@
             if (storyCard) storyCard.classList.add('has-county');
             card.querySelector('h3').textContent = c.name;
             card.querySelector('[data-name]').textContent = c.name;
-            ['in', 'out', 'pop', 'jobs'].forEach(k => { card.querySelector(`[data-k="${k}"]`).dataset.num = c[k] || 0; });
+            card.querySelector('[data-k="in"]').dataset.num = c.in || 0;
             T.countIn(card, last);
             card.querySelector('.cty-share__bar i').style.width = pct(c.share);
             card.querySelector('[data-share]').innerHTML = `<b>${pct(c.share)}</b> of all jobs held by ${c.name} residents`;
-            const n = card.querySelector('[data-net]');
-            n.textContent = c.net < 0 ? `${fmt(-c.net)} more workers than jobs` : `${fmt(c.net)} more jobs than workers`;
-            n.className = c.net < 0 ? 'is-down' : 'is-up';
-            const tot = d3.sum(c.pay) || 1;
-            card.querySelectorAll('.cty-pay__bar i').forEach((el, k) => { el.style.width = (100 * c.pay[k] / tot).toFixed(1) + '%'; });
-            const over = c.pay[2] / tot;
-            card.querySelector('[data-vs]').innerHTML = `<b>${pct(over)}</b> pay more than $3,333 a month, compared with ${pct(localOver)} of jobs held by people who live and work in Macon-Bibb.`;
+            const over = c.pay[2] / (d3.sum(c.pay) || 1);
+            card.querySelector('[data-more]').innerHTML = `<b>${fmt(c.out)}</b> <span class="nw">Macon-Bibb</span> residents commute the other way. <b>${pct(over)}</b> of these jobs pay more than $3,333 a month, compared with ${pct(localOver)} for people who live and work in <span class="nw">Macon-Bibb</span>.`;
             if (changed) T.swap(card);
             tell(c);
             if (byUser) T.remember('counties', c.name);

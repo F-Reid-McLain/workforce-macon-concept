@@ -47,6 +47,9 @@
 /* Dark text on the gold (Macon-Bibb) and teal (other gainer) tiles */
 /* Macon-Bibb and any other gaining county sit on green tiles: figures in pale green */
 .ci-maplabel--bibb, .ci-maplabel--pale { color: #d1fae5; }
+/* Kept light: names only (hover a county for its population and net); Macon-Bibb keeps its net gain */
+.ci-maplabel:not(.ci-maplabel--bibb) span, .ci-maplabel--bibb span:first-of-type { display: none; }
+.ci-overlay.ci-stats { display: none; }   /* the region's population now closes the page instead */
 .ci-hwybadge {
     position: absolute; transform: translate(-50%, -50%); white-space: nowrap;
     padding: 2px 6px; border-radius: 3px; font: 700 9px/1.2 var(--font-body);

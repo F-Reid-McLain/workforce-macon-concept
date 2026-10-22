@@ -386,9 +386,10 @@ body.page-home .demo-bar-row { padding: 5px 0; font-size: 0.86rem; }
 .cty-card { padding: 14px 16px; border-radius: 12px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); }
 .cty-card[hidden] { display: none; }
 .ci-card.has-county > p, .ci-card.has-county > .ci-method { display: none; }
+.ci-card .cty-more { margin: 0; font-size: 0.86rem; line-height: 1.5; color: #c3cad6; }
+.ci-card .cty-more b { color: #fff; }
 /* inside the story card, its paragraph style would otherwise win */
-.ci-card .cty-pay__title { margin: 0 0 8px; font-size: 0.7rem; }
-.ci-card .cty-pay__vs { margin: 10px 0 0; font-size: 0.84rem; }
+
 .ci-card .cty-card h3 { margin: 0 0 8px; font: 700 1rem var(--font-heading); color: var(--ch-gold); }
 .cty-back { margin-top: 12px; padding: 0; border: 0; background: none; font: 600 0.82rem var(--font-body); color: #9fb1c9; cursor: pointer; }
 .cty-back:hover, .cty-back:focus-visible { color: var(--ch-gold); }
@@ -399,33 +400,12 @@ body.page-home .demo-bar-row { padding: 5px 0; font-size: 0.86rem; }
 .cty-share b { color: #fff; }
 .cty-share__bar { height: 6px; border-radius: 3px; background: rgba(255, 255, 255, 0.07); overflow: hidden; }
 .cty-share__bar i { display: block; height: 100%; width: 0; border-radius: 3px; background: var(--ch-gold); transition: width 0.7s cubic-bezier(0.2, 0.7, 0.2, 1); }
-.cty-card .tool-stats dd { font-size: 1.02rem; }
-.cty-card .tool-stats dd[data-net] { font-size: 0.92rem; line-height: 1.3; }
-@media (min-width: 901px) and (max-height: 780px) {
-    .cty-card { padding: 14px 16px; }
-    .cty-big { margin-bottom: 6px; }
-    .cty-big b { font-size: 1.9rem; }
-    .cty-share { margin-bottom: 10px; }
-    .cty-card .tool-stats { gap: 8px 16px; }
-    .cty-pay { margin-top: 10px; padding-top: 10px; }
-}
-/* Very short screens: drop the county's residents and local jobs, keep the commuting figures */
-@media (min-width: 901px) and (max-height: 690px) {
-    .cty-card .tool-stats div:nth-child(n + 3) { display: none; }
-}
-.cty-card .tool-stats dt { letter-spacing: 0.04em; }
-.cty-pay { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--color-border); }
-.cty-pay__title { margin: 0 0 8px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-muted); }
-.cty-pay__bar { display: flex; height: 12px; border-radius: 6px; overflow: hidden; background: rgba(255, 255, 255, 0.06); }
-.cty-pay__bar i { display: block; height: 100%; width: 0; transition: width 0.7s cubic-bezier(0.2, 0.7, 0.2, 1); }
-.cty-pay__key { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 8px; font-size: 0.72rem; color: var(--color-text-muted); }
-.cty-pay__key span { display: inline-flex; align-items: center; gap: 5px; }
-.cty-pay__key i { width: 9px; height: 9px; border-radius: 2px; }
-.cty-pay__vs { margin: 10px 0 0; font-size: 0.84rem; line-height: 1.45; color: var(--color-text-secondary); }
-.cty-pay__vs b { color: #fff; }
+
+
+
 
 @media (prefers-reduced-motion: reduce) {
-    .seg__pill, .pay-gauge__me, .row-bar [data-bar], .cty-share__bar i, .cty-pay__bar i { transition: none; }
+    .seg__pill, .pay-gauge__me, .row-bar [data-bar], .cty-share__bar i { transition: none; }
     .tool-result.is-swap, .stop-hint.is-on { animation: none; }
 }
 
