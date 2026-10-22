@@ -1,7 +1,57 @@
 {
-  "about": "Manufacturers that opened, expanded or modernized in Macon-Bibb since 2015, and plants announced but not yet open (status 'coming'). Shown on the homepage's Industries title slide (js/growth-intro-map.js): each rises on the map in its first year, and hovering (or tapping) it shows its milestones. Jobs are as announced or as last reported, not counted. Sites are approximate (geocoded from the address, road or park named in the announcement with OpenStreetMap), close enough for a county map. Not on the map: Agile Cold Storage (2024, refrigerated warehousing, not manufacturing). Left out until confirmed: Mr. Chips (pickles, planned around 2015) and Freudenberg (undated investment).",
+  "about": "Manufacturers that opened, expanded or modernized in Macon-Bibb since 2015, and plants announced but not yet open (status 'coming'). Shown on the homepage's Industries title slide (js/growth-intro-map.js): each rises on the map in its first year, and hovering (or tapping) it shows its milestones. Jobs are as announced or as last reported, not counted. Sites are approximate (geocoded from the address, road or park named in the announcement with OpenStreetMap), close enough for a county map. Not on the map: Agile Cold Storage (2024, refrigerated warehousing, not manufacturing). Also not on the map: Coca-Cola UNITED's Macon expansion (warehouse and distribution), Radius Recycling's aluminum separation plant and Complete Resources Management (recycling and waste), BrightFarms (greenhouse farming), Embraer, Stevens Aerospace and Dean Baldwin Painting (aircraft maintenance), and plants that opened before 2015, such as Aspen Products (announced 2013) and Johns Manville (1998).",
   "checked": "2026-10-22",
   "plants": [
+    {
+      "name": "First Quality",
+      "short": "First Quality",
+      "makes": "diapers & plastic packaging",
+      "year": 2015,
+      "status": "open",
+      "jobs": 715,
+      "jobsLabel": "715 new jobs",
+      "site": "Avondale Mill Road and Industrial Highway, near the airport",
+      "lat": 32.6917,
+      "lon": -83.6687,
+      "events": [
+        {
+          "year": 2015,
+          "text": "First Quality Packaging Solutions: $68 million to turn a plant on Industrial Highway into a plastic packaging factory, with 115 jobs"
+        },
+        {
+          "year": 2024,
+          "text": "$418 million diaper plant expansion with 600 new jobs, in Macon since 2008"
+        }
+      ],
+      "sources": [
+        "https://www.plasticsnews.com/article/20150622/NEWS/150629989/first-quality-building-68-million-plant-in-georgia/",
+        "https://www.packaging-gateway.com/news/first-quality-packaging-to-invest-68m-in-new-georgia-facility-4604268",
+        "https://www.gpb.org/news/2024/05/23/macon-lands-600-jobs-in-418m-industry-expansion"
+      ]
+    },
+    {
+      "name": "Mr. Chips",
+      "short": "Mr. Chips",
+      "makes": "pickles & relish",
+      "year": 2015,
+      "status": "open",
+      "jobs": 50,
+      "jobsLabel": "50+ jobs",
+      "site": "Lillian Drive, Ocmulgee East Industrial Park (the former Plastican building)",
+      "lat": 32.8033,
+      "lon": -83.5548,
+      "events": [
+        {
+          "year": 2015,
+          "text": "Opened a $10.5 million pickle plant in the former Plastican building; now more than 50 jobs"
+        }
+      ],
+      "sources": [
+        "https://mbcia.com/successstories1/mr-chips-inc/",
+        "https://covnews.com/news/state/ga-pickle-plant-could-create-50-jobs",
+        "https://mbcia.com/featured/ocmulgee-east-industrial-park-phase-3/"
+      ]
+    },
     {
       "name": "Kumho Tire Georgia",
       "short": "Kumho Tire",
@@ -17,10 +67,46 @@
         {
           "year": 2016,
           "text": "Opened its first U.S. plant, a $450 million factory, with about 450 jobs"
+        },
+        {
+          "year": 2021,
+          "text": "$21.8 million automated production unit, adding about 500,000 tires a year"
         }
       ],
       "sources": [
-        "https://www.moderntiredealer.com/articles/4219-kumho-tire-production-begins-in-georgia"
+        "https://www.moderntiredealer.com/articles/4219-kumho-tire-production-begins-in-georgia",
+        "https://mbcia.com/industry/kumho-tire-of-georgia-expansion/"
+      ]
+    },
+    {
+      "name": "Freudenberg Performance Materials",
+      "short": "Freudenberg",
+      "makes": "polyester roofing fabric",
+      "year": 2016,
+      "status": "open",
+      "jobs": 100,
+      "jobsLabel": "100 new jobs",
+      "site": "660 Allied Industrial Boulevard",
+      "lat": 32.776,
+      "lon": -83.6456,
+      "events": [
+        {
+          "year": 1983,
+          "text": "Opens its Macon plant"
+        },
+        {
+          "year": 2016,
+          "text": "Announced an expansion with 100 new jobs"
+        },
+        {
+          "year": 2017,
+          "text": "Started a new line making glass-reinforced polyester for roofing"
+        }
+      ],
+      "sources": [
+        "https://wgxa.tv/news/local/new-project-promises-to-benefit-macon-economically",
+        "https://www.nonwovens-industry.com/heaps/view/4963/1/297199",
+        "https://www.freudenberg-pm.com/en/news-insights/press/2017-03-01_pr_freudenberg_at_ire_las_vegas"
       ]
     },
     {
@@ -145,27 +231,6 @@
       ],
       "sources": [
         "https://www.ykkap.com/commercial/2024/05/ykk-ap-holds-ribbon-cutting-ceremony-for-new-residential-manufacturing-facility-in-macon/"
-      ]
-    },
-    {
-      "name": "First Quality Baby Products",
-      "short": "First Quality",
-      "makes": "diapers",
-      "year": 2024,
-      "status": "open",
-      "jobs": 600,
-      "jobsLabel": "600 new jobs",
-      "site": "2108 Avondale Mill Road, near the airport",
-      "lat": 32.6917,
-      "lon": -83.6687,
-      "events": [
-        {
-          "year": 2024,
-          "text": "$418 million expansion with 600 new jobs, in Macon since 2008"
-        }
-      ],
-      "sources": [
-        "https://www.gpb.org/news/2024/05/23/macon-lands-600-jobs-in-418m-industry-expansion"
       ]
     },
     {
