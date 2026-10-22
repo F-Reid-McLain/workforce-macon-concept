@@ -68,8 +68,6 @@ body.page-home .main-content { padding-bottom: 0; }
 .intro-source { margin: 14px auto 0; max-width: 60ch; font-size: 0.74rem; color: var(--color-text-muted); }
 
 /* The Industries title slide's map (js/growth-intro-map.js): new manufacturers rising year by year */
-.gm-spot { fill: #f2c46b; stroke: #0e1420; stroke-width: 1; }
-.gm-leader { stroke: rgba(242, 196, 107, 0.55); stroke-width: 1; }
 .gm-wall { fill: #d9dfe8; stroke: rgba(14, 20, 32, 0.6); stroke-width: 1; }
 .gm-roof { fill: #aebccd; stroke: rgba(14, 20, 32, 0.6); stroke-width: 1; stroke-linejoin: round; }
 .gm-chimney { fill: #8e9db0; }

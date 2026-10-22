@@ -4,8 +4,8 @@
    each new, expanding or modernizing manufacturer rises at its site as the ticker
    passes its first year. Plants announced but not yet open come last, drawn as dashed
    outlines. Hover a plant (or tap it, or Tab to it) for its milestones: what it makes,
-   what it invested, and the jobs. Pins are nudged apart where they crowd (several sit
-   in Sofkee Industrial Park), with a short line back to the real spot.
+   what it invested, and the jobs. Pins are loosely placed: nudged apart where they
+   crowd (several sit in Sofkee Industrial Park) and kept inside Macon-Bibb.
    Headline, dek and bars are computed from data/Industry Snapshot.csv (NAICS 31-33
    manufacturing vs. 62 health care, five-year change); the plants are
    content/manufacturers.json. */
@@ -112,17 +112,25 @@
             slide.style.setProperty('--gm-bottom', bottom.toFixed(0) + 'px');
             return { x: W / 2, y: (top + bottom) / 2 + 10, w: 1.15, h: Math.max(0.3, (bottom - top) * 1.5 / H), at: CENTER };
         },
-        layer({ svg, proj, W, H, wide, DOWNTOWN }) {
+        layer({ svg, proj, W, H, wide, bounds, bibbRings, DOWNTOWN }) {
             hideTip();
             const list = plantList;
             const at = appearAt(list);
             const size = p => (wide ? 1.2 : 1.05) + 0.5 * Math.sqrt(p.jobs / 600);
             // Pins start on their real spots and are nudged apart where they'd overlap
             const nodes = list.map((p, i) => { const [x, y] = proj([p.lon, p.lat]); return { i, p, sx: x, sy: y, x, y: y - 6, r: 15 * size(p), s: size(p), shown: false }; });
+            // and kept inside Macon-Bibb: one that drifts out is drawn back toward the county's middle
+            const inside = (x, y) => bibbRings.some(r => d3.polygonContains(r, [x, y]));
+            // the whole icon, with a little room, not just its middle
+            const inBibb = (x, y) => [[0, 0], [-18, -20], [18, -20], [-18, 12], [18, 12]].every(([ox, oy]) => inside(x + ox, y + oy));
+            const mid = [(bounds.x0 + bounds.x1) / 2, (bounds.y0 + bounds.y1) / 2];
             const sim = d3.forceSimulation(nodes)
                 .force('x', d3.forceX(d => d.sx).strength(0.35)).force('y', d3.forceY(d => d.sy - 6).strength(0.35))
                 .force('collide', d3.forceCollide(d => d.r).iterations(3)).stop();
-            for (let k = 0; k < 220; k++) sim.tick();
+            for (let k = 0; k < 220; k++) {
+                sim.tick();
+                nodes.forEach(d => { if (!inBibb(d.x, d.y + 2)) { d.x += (mid[0] - d.x) * 0.12; d.y += (mid[1] - d.y) * 0.12; } });
+            }
 
             const g = svg.append('g').attr('class', 'gm-plants');
             const pins = g.selectAll('g.gm-pin').data(nodes).join('g')
@@ -133,10 +141,6 @@
                 .on('mouseleave blur', hideTip)
                 // A tap fires a hover and then a click: only a later click on the same plant closes it
                 .on('click', (e, d) => { if (!d.shown) return; if (tipFor === d && performance.now() - shownAt > 400) hideTip(); else showTip(d); });
-            pins.append('circle').attr('class', 'gm-spot').attr('cx', d => d.sx).attr('cy', d => d.sy).attr('r', 2.4);
-            pins.append('line').attr('class', 'gm-leader')
-                .attr('x1', d => d.sx).attr('y1', d => d.sy).attr('x2', d => d.x).attr('y2', d => d.y + 6)
-                .style('display', d => Math.hypot(d.x - d.sx, d.y + 6 - d.sy) > 5 ? null : 'none');
             // A generous invisible target, so small plants are easy to hover and tap
             pins.append('circle').attr('class', 'gm-hit').attr('cx', d => d.x).attr('cy', d => d.y - 4).attr('r', d => Math.max(22, 14 * d.s));
             const bodies = pins.append('g').attr('class', 'gm-factory');
@@ -167,7 +171,6 @@
                     d.shown = t > 0.6;
                     const pin = d3.select(this).style('opacity', t > 0 ? 1 : 0).classed('is-live', d.shown);
                     pin.select('.gm-factory').attr('transform', `translate(${d.x.toFixed(1)},${(d.y + 6).toFixed(1)}) scale(${s.toFixed(2)},${(s * Math.max(0.001, rise)).toFixed(3)})`);
-                    pin.select('.gm-leader').style('opacity', stage(at[d.i], at[d.i] + 0.03));
                     if (!d.shown && tipFor === d) hideTip();   // the drawing pulled back
                 });
                 const b = stage(0.1, 0.4);

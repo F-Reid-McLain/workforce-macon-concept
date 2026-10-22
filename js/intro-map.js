@@ -28,7 +28,8 @@
                        in on part of the county)
      layer(ctx)        draws the slide's own parts once the base is in; returns
                        render(p, stage), called on every frame. ctx: { svg, proj, W,
-                       H, wide, center, slide, bounds } (bounds: Macon-Bibb's box on screen)
+                       H, wide, center, slide, bounds, bibbRings } (bounds: Macon-Bibb's box on
+                       screen; bibbRings: its outline on screen)
    }) */
 window.WFIntroMap = (function () {
     'use strict';
@@ -136,7 +137,8 @@ window.WFIntroMap = (function () {
             prep(neighbors); prep(bibb); prep(ints); prep(us);
             parts = { neighbors, bibb, ints, us, shields };
             const [bx0, by0] = proj([x0 / Math.cos(LAT0), y1]), [bx1, by1] = proj([x1 / Math.cos(LAT0), y0]);
-            renderLayer = opts.layer({ svg, proj, W, H, wide, center, slide, bounds: { x0: bx0, y0: by0, x1: bx1, y1: by1 }, DOWNTOWN });
+            renderLayer = opts.layer({ svg, proj, W, H, wide, center, slide, bounds: { x0: bx0, y0: by0, x1: bx1, y1: by1 },
+                                       bibbRings: rings(bibbF.geometry).map(r => r.map(proj)), DOWNTOWN });
             render(reduce ? 1 : cur);
         }
 
