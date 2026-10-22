@@ -1,34 +1,29 @@
 {
-  "about": "Manufacturers that opened, expanded or modernized in Macon-Bibb since 2015, and plants announced but not yet open (status 'coming'). Shown on the homepage's Industries title slide (js/growth-intro-map.js): each rises on the map in its first year, and hovering (or tapping) it shows its milestones. Jobs are as announced or as last reported, not counted. Each pin is checked against a physical address ('address'; 'located' says how): street numbers are geocoded with OpenStreetMap, and where the geocoder doesn't know a plant's private road, the plant's own building outline in OpenStreetMap is used. ArcelorMittal's site has no street number yet, so it sits at the end of Airport South Drive, where reports place it. Not on the map: Agile Cold Storage (2024, refrigerated warehousing, not manufacturing). Also not on the map: Coca-Cola UNITED's Macon expansion (warehouse and distribution), Radius Recycling's aluminum separation plant and Complete Resources Management (recycling and waste), BrightFarms (greenhouse farming), Embraer, Stevens Aerospace and Dean Baldwin Painting (aircraft maintenance), and plants that opened before 2015, such as Aspen Products (announced 2013) and Johns Manville (1998).",
+  "about": "Manufacturers that opened, expanded or modernized in Macon-Bibb since 2015, and plants announced but not yet open (status 'coming'). Shown on the homepage's Industries title slide (js/growth-intro-map.js): each rises on the map in its first year, and hovering (or tapping) it shows its milestones. Jobs are as announced or as last reported, not counted. Each pin is checked against a physical address ('address'; 'located' says how): street numbers are geocoded with OpenStreetMap, and where the geocoder doesn't know a plant's private road, the plant's own building outline in OpenStreetMap is used. ArcelorMittal's site has no street number yet, so it sits at the end of Airport South Drive, where reports place it; First Quality Packaging Solutions sits on the Industrial Highway building that matches its reported size. Pins are close, not survey-exact. Not on the map: Agile Cold Storage (2024, refrigerated warehousing, not manufacturing). Also not on the map: Coca-Cola UNITED's Macon expansion (warehouse and distribution), Radius Recycling's aluminum separation plant and Complete Resources Management (recycling and waste), BrightFarms (greenhouse farming), Embraer, Stevens Aerospace and Dean Baldwin Painting (aircraft maintenance), and plants that opened before 2015, such as Aspen Products (announced 2013) and Johns Manville (1998).",
   "checked": "2026-10-22",
   "plants": [
     {
-      "name": "First Quality",
-      "short": "First Quality",
-      "makes": "diapers & plastic packaging",
+      "name": "First Quality Packaging Solutions",
+      "short": "FQ Packaging",
+      "makes": "plastic food & medical packaging",
       "year": 2015,
       "status": "open",
-      "jobs": 715,
-      "jobsLabel": "715 new jobs",
-      "site": "Avondale Mill Road and Industrial Highway, near the airport",
-      "address": "2108 Avondale Mill Road, Macon, GA 31216",
-      "lat": 32.6916,
-      "lon": -83.6659,
-      "located": "street address geocoded with OpenStreetMap",
+      "jobs": 115,
+      "jobsLabel": "115 jobs",
+      "site": "Industrial Highway, a 314,000-square-foot plant",
+      "address": "Industrial Highway, Macon, GA 31216 (no street number found)",
+      "lat": 32.7045,
+      "lon": -83.6615,
+      "located": "approximate: the Industrial Highway building in OpenStreetMap that matches the plant's reported 314,000 square feet",
       "events": [
         {
           "year": 2015,
-          "text": "First Quality Packaging Solutions: $68 million to turn a plant on Industrial Highway into a plastic packaging factory, with 115 jobs"
-        },
-        {
-          "year": 2024,
-          "text": "$418 million diaper plant expansion with 600 new jobs, in Macon since 2008"
+          "text": "$68 million to turn a First Quality plant into a plastic packaging factory, with 115 jobs"
         }
       ],
       "sources": [
         "https://www.plasticsnews.com/article/20150622/NEWS/150629989/first-quality-building-68-million-plant-in-georgia/",
-        "https://www.packaging-gateway.com/news/first-quality-packaging-to-invest-68m-in-new-georgia-facility-4604268",
-        "https://www.gpb.org/news/2024/05/23/macon-lands-600-jobs-in-418m-industry-expansion"
+        "https://www.packaging-gateway.com/news/first-quality-packaging-to-invest-68m-in-new-georgia-facility-4604268"
       ]
     },
     {
@@ -250,6 +245,33 @@
       ],
       "sources": [
         "https://www.ykkap.com/commercial/2024/05/ykk-ap-holds-ribbon-cutting-ceremony-for-new-residential-manufacturing-facility-in-macon/"
+      ]
+    },
+    {
+      "name": "First Quality Baby Products",
+      "short": "First Quality",
+      "makes": "diapers",
+      "year": 2024,
+      "status": "open",
+      "jobs": 600,
+      "jobsLabel": "600 new jobs",
+      "site": "Avondale Mill Road, near the airport",
+      "address": "2108 Avondale Mill Road, Macon, GA 31216",
+      "lat": 32.6916,
+      "lon": -83.6659,
+      "located": "street address geocoded with OpenStreetMap",
+      "events": [
+        {
+          "year": 2008,
+          "text": "Bought the former Tyco/Covidien plant on Industrial Highway"
+        },
+        {
+          "year": 2024,
+          "text": "$418 million expansion with 600 new jobs"
+        }
+      ],
+      "sources": [
+        "https://www.gpb.org/news/2024/05/23/macon-lands-600-jobs-in-418m-industry-expansion"
       ]
     },
     {
