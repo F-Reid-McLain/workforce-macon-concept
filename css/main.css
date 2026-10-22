@@ -155,12 +155,13 @@ body.embed-mode .viz-container {
 .main-nav ul {
     display: flex;
     list-style: none;
-    gap: 2rem;
+    gap: 2.4rem;
 }
 
 .nav-link {
     color: var(--color-text-primary);
     text-decoration: none;
+    font-size: 1.1rem;
     font-weight: 500;
     transition: color var(--transition-base);
 }
@@ -530,7 +531,8 @@ body.embed-mode .viz-container {
 
     .nav-link {
         display: block;
-        padding: 0.75rem 1.5rem;
+        padding: 0.9rem 1.5rem;
+        font-size: 1.15rem;
     }
 }
 

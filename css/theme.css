@@ -82,7 +82,7 @@ entire site. Other CSS files must not hardcode these values.
     --font-heading-size-lg:  1.6rem;    /* Section h3 */
     --font-heading-size-md:  1.4rem;    /* Modal title */
     --font-heading-size-sm:  1.2rem;    /* Card h3 */
-    --font-logo-size:        1.5rem;
+    --font-logo-size:        1.6rem;
 
     /* ===== PAGE / BODY FONTS ===== */
     --font-body:             -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;

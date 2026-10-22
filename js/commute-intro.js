@@ -58,8 +58,11 @@
     // translucent but stay exact through the hand-off. Borders in navy so counties read as tiles.
     const NAVY = [14, 20, 32];
     const over = (c, a) => c.map((v, i) => Math.round(v * a + NAVY[i] * (1 - a)));   // c at opacity a over navy
-    const MAP = { bibb: over([52, 211, 153], 0.62), bibbLine: [110, 231, 183], lossLow: over([248, 113, 113], 0.14), lossHigh: over([248, 113, 113], 0.5),
-                  gainer: over([52, 211, 153], 0.4), border: NAVY };
+    // The finished map wears the simulation's see-through colors: counties that lose workers
+    // run from the blocks' lavender (a small loss) to the red of their ghosts (a big one),
+    // Macon-Bibb is the bright green of its gain, and borders are the ghosts' soft red edges
+    const MAP = { bibb: over(GAIN, 0.72), bibbLine: [110, 231, 183], lossLow: over(mixRGB(BLUE, LOSS, 0.15), 0.5), lossHigh: over(mixRGB(BLUE, LOSS, 0.85), 0.68),
+                  gainer: over(GAIN, 0.45), border: over([250, 160, 165], 0.72) };
     const HWY = {   // interstates read as primary: thick, bright, teal shield
         interstate: { order: 2, width: 3, alpha: 1, badge: [45, 212, 191], text: [10, 38, 34] },
         us:         { order: 1, width: 1.4, alpha: 0.65, badge: [26, 26, 26], text: [255, 255, 255] },
