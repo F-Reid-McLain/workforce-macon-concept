@@ -272,7 +272,8 @@
             `<em>${lean.sector}</em> leans on them most, with at least <em>${pct(lean)}%</em> of its jobs held by people from outside Macon-Bibb.`;
         const hc = data.sectors.find(r => r.sector.startsWith('Health care'));
         const note = document.getElementById('occ-commute-note');
-        if (note && hc) note.textContent = `Health care runs on commuters: at least ${pct(hc)}% of its jobs here are held by people who live outside Macon-Bibb.`;
+        // The why behind the Jobs headline: the region's trauma center at the highway crossroads, and who staffs it
+        if (note && hc) note.innerHTML = `<span class="nw">Macon-Bibb</span> is home to Middle Georgia's only Level I trauma center, right where <span class="nw">I-75</span> and <span class="nw">I-16</span> meet, and nurses drive in from across the region: at least <b>${pct(hc)}%</b> of health care jobs here are held by people who live outside the county.`;
     }
     // ===== HEADLINES (computed from the data) =====
     function writeFindings(totalRow, occRows) {

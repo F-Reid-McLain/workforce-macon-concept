@@ -167,11 +167,14 @@
         </nav>
 
         <!-- Stop 2 · Jobs: a title slide, then the tool -->
-        <div class="stop-intro">
+        <div class="stop-intro stop-intro--map">
+            <!-- Drawn by js/jobs-intro-map.js: Macon-Bibb's outline, its highways, and the trauma center rising where it stands -->
+            <svg class="intro-map" id="jobs-intro-map" aria-hidden="true"></svg>
             <div class="stop-intro__inner">
                 <p class="chapter-kicker">Jobs</p>
                 <h2 class="chapter-finding" id="find-occ"><em>Registered nurses</em> are <span class="nw">Macon-Bibb</span>'s most common job: <em>2,779</em> positions averaging <em>$87,600</em>.</h2>
-                <p class="chapter-dek" id="occ-commute-note"></p>
+                <p class="chapter-dek" id="occ-commute-note">Macon-Bibb is home to Middle Georgia's only Level I trauma center, right where <span class="nw">I-75</span> and <span class="nw">I-16</span> meet, and nurses drive in from across the region.</p>
+                <p class="intro-source">Trauma centers: Georgia Department of Public Health, 2025. Commuting: U.S. Census Bureau LODES 2023.</p>
             </div>
         </div>
         <section class="stop" id="jobs">
@@ -352,6 +355,7 @@
     <script src="js/chapters.js"></script>
     <script src="js/lookups.js"></script>
     <script src="js/county-explorer.js"></script>
+    <script src="js/jobs-intro-map.js"></script>
     <script src="js/commute-intro.js"></script>
 </body>
 </html>

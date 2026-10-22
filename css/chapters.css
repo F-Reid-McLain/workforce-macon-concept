@@ -16,6 +16,40 @@ body.page-home .main-content { padding-bottom: 0; }
 .stop-intro .chapter-finding--sm { font-size: clamp(1.7rem, 3vw, 2.6rem); max-width: 26ch; }
 .stop-intro .chapter-dek { margin: 0 auto; }
 .stop-intro .ticker { align-items: center; }
+/* The Jobs title slide's map (js/jobs-intro-map.js): Macon-Bibb's outline, highways drawing in, the trauma center rising */
+.stop-intro--map { position: relative; overflow: hidden; }
+.stop-intro--map .stop-intro__inner { position: relative; z-index: 1; }
+@media (min-width: 901px) {
+    .stop-intro--map { justify-content: flex-start; text-align: left; padding-left: max(24px, 6vw); }
+    .stop-intro--map .stop-intro__inner { max-width: 50%; }
+    .stop-intro--map .chapter-kicker { justify-content: flex-start; }
+    .stop-intro--map :is(.chapter-finding, .chapter-dek, .intro-source) { margin-left: 0; }
+    .stop-intro--map .chapter-finding { font-size: clamp(2.2rem, 4vw, 3.8rem); }
+}
+.intro-map { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.im-neighbors path { fill: none; stroke: rgba(255, 255, 255, 0.06); stroke-width: 1; }
+.im-bibb { fill: rgba(52, 211, 153, 0.06); stroke: rgba(52, 211, 153, 0.55); stroke-width: 1.5; }
+.im-roads path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.im-interstate { stroke: rgba(242, 196, 107, 0.7); stroke-width: 2.4; }
+.im-us { stroke: rgba(255, 255, 255, 0.18); stroke-width: 1.2; }
+.im-labels g, .im-hlabel { opacity: 0; transition: opacity 0.6s ease; }
+.im-labels rect { fill: #1b2433; stroke: rgba(242, 196, 107, 0.6); stroke-width: 1; }
+.im-labels text { font: 700 11px var(--font-body); fill: var(--ch-gold); }
+.im-building { transform: scaleY(0); transform-box: fill-box; transform-origin: 50% 100%; transition: transform 0.7s cubic-bezier(0.3, 1.3, 0.4, 1) 0.4s; }
+.im-building rect { fill: #e8ecf3; stroke: rgba(14, 20, 32, 0.6); stroke-width: 1; }
+.im-cross { fill: #de5e6d; }
+.im-halo { fill: rgba(222, 94, 109, 0.18); stroke: rgba(222, 94, 109, 0.5); stroke-width: 1; opacity: 0; transform-box: fill-box; transform-origin: center; }
+.im-hlabel { font: 600 12px var(--font-body); fill: #f3c7cc; paint-order: stroke; stroke: rgba(14, 20, 32, 0.85); stroke-width: 3px; transition-delay: 0.9s; }
+.intro-map.is-drawn .im-labels g, .intro-map.is-drawn .im-hlabel { opacity: 1; }
+.intro-map.is-drawn .im-building { transform: scaleY(1); }
+.intro-map.is-drawn .im-halo { opacity: 1; animation: im-pulse 2.4s ease-in-out 1.2s infinite; }
+@keyframes im-pulse { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.6); opacity: 0.25; } }
+.intro-source { margin: 14px auto 0; max-width: 60ch; font-size: 0.74rem; color: var(--color-text-muted); }
+.stop-intro .chapter-dek b { color: #fff; }
+@media (prefers-reduced-motion: reduce) {
+    .im-building, .im-labels g, .im-hlabel { transition: none; }
+    .intro-map.is-drawn .im-halo { animation: none; }
+}
 .stop {
     max-width: 1200px; margin: 0 auto; padding: 76px 24px 22px; box-sizing: border-box;
     min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; justify-content: center; gap: 16px;
@@ -385,6 +419,8 @@ body.page-home .demo-bar-row { padding: 5px 0; font-size: 0.86rem; }
 }
 @media (max-width: 900px) {
     .stop-intro { min-height: 0; padding: 96px 16px 8px; }
+    .stop-intro--map { min-height: 92vh; padding-bottom: 38vh; }
+    .im-hlabel { font-size: 11px; }
     .stop { min-height: 0; padding: 16px 16px 24px; scroll-margin-top: 70px; }
 }
 @media (max-width: 700px) {
