@@ -171,18 +171,22 @@
     {
       "name": "Unified Legacy",
       "short": "Unified Legacy",
-      "makes": "precision metal parts; parent of Unified Defense, Prince Service & Manufacturing and Tress U.S.",
+      "makes": "precision metal parts",
       "year": 2026,
       "status": "coming",
       "jobs": 500,
       "jobsLabel": "500 jobs",
-      "site": "Barnes Ferry Road",
+      "site": "2255 Barnes Ferry Road, next to Prince Service & Manufacturing on Hawkinsville Road",
       "lat": 32.7321,
-      "lon": -83.6355,
+      "lon": -83.6537,
       "events": [
         {
+          "year": 1965,
+          "text": "Its Prince Service & Manufacturing (then Prince Sheet Metal) starts in Macon, now on Hawkinsville Road"
+        },
+        {
           "year": 2026,
-          "text": "Announced a $125 million plant with 500 jobs over several years, for defense, aerospace, data center and industrial customers"
+          "text": "Announced a $125 million plant next door with 500 jobs over several years"
         },
         {
           "year": 2026,
@@ -192,7 +196,9 @@
       "sources": [
         "https://georgia.org/press-releases/2026/georgia-based-unified-legacy-create-500-new-jobs-macon-bibb-county",
         "https://www.maconbibb.us/unified-legacy-breaks-ground-on-125-million-manufacturing-facility/",
-        "https://www.plantservices.com/industry-news/news/55378750/unified-legacy-to-spend-125-million-on-georgia-metal-fabrication-expansion"
+        "https://www.plantservices.com/industry-news/news/55378750/unified-legacy-to-spend-125-million-on-georgia-metal-fabrication-expansion",
+        "https://maconmelody.com/?p=25992",
+        "https://web.maconchamber.com/members/Industrial,-Manufacturing-Logistics"
       ]
     },
     {
