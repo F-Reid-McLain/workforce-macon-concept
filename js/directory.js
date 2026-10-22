@@ -63,6 +63,7 @@ async function loadAssetData() {
         checkUrlParameters();
     } catch (error) {
         console.error("Error loading asset JSON:", error);
+        document.dispatchEvent(new CustomEvent('assets:failed', { detail: error }));
     }
 }
 
@@ -191,8 +192,9 @@ function checkUrlParameters() {
     const assetId = urlParams.get('asset');
     
     if (assetId) {
-        // On phones the map sits below the list, so show it as a sheet there
-        openAssetModal(assetId, { sheet: window.innerWidth <= 900 });
+        // In the details window, as the organization cards open it (the map's own panel
+        // only shows inside the full-size map, so it would open unseen)
+        if (assetData[assetId]) openAssetModal(assetId, { sheet: true });
         // Drop just this parameter from the address, keeping the finder's own
         urlParams.delete('asset');
         const rest = urlParams.toString();

@@ -22,7 +22,7 @@ entire site. Other CSS files must not hardcode these values.
     /* ===== TEXT COLORS ===== */
     --color-text-primary:    #ffffff;   /* Body copy, labels */
     --color-text-secondary:  #cccccc;   /* Descriptions, subtext */
-    --color-text-muted:      #888888;   /* Footer, placeholders */
+    --color-text-muted:      #a0a0a0;   /* Footer, placeholders, form hints (#888 failed contrast on the form panels) */
 
     /* ===== ACCENT / BRAND ===== */
     /* Chamber gold — matches the footer/choosemacon.com brand chrome. Kept

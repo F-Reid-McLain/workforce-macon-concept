@@ -139,12 +139,25 @@
         }, { threshold: 0.6 }).observe(stop);
     }
 
-    // A typeahead box with a short list of matches (biggest first); Enter picks the top match
-    function typeahead({ input, list, items, label, onPick }) {
+    // A typeahead box with a short list of matches; Enter picks the top match.
+    // Each word typed has to start a word in the name ("tire" finds Tire Dealers, not
+    // Retirement Communities). Names that start with the query come first, then ones
+    // where every word typed is a whole word or its plural ("nurse" ranks Registered
+    // Nurses above Nursery workers); within each, biggest first. aliases turn common
+    // short forms into the words in the data ("ceo" -> "chief executives").
+    const words = s => s.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
+    function typeahead({ input, list, items, label, onPick, aliases = {} }) {
         let matches = [];
         const show = () => {
-            const q = input.value.trim().toLowerCase();
-            matches = q.length < 2 ? [] : items.filter(it => label(it).toLowerCase().includes(q)).slice(0, 6);
+            let q = input.value.trim().toLowerCase();
+            if (aliases[q]) q = aliases[q];
+            const toks = words(q);
+            matches = q.length < 2 || !toks.length ? [] : items.map((it, i) => {
+                const name = label(it).toLowerCase(), ws = words(name);
+                if (!toks.every(t => ws.some(w => w.startsWith(t)))) return null;
+                const whole = toks.every(t => ws.some(w => w === t || w === t + 's' || w === t + 'es'));
+                return { it, i, score: (name.startsWith(q) ? 0 : 2) + (whole ? 0 : 1) };
+            }).filter(Boolean).sort((a, b) => a.score - b.score || a.i - b.i).slice(0, 6).map(m => m.it);
             list.innerHTML = matches.map((it, i) => `<li><button type="button" data-i="${i}">${esc(label(it))}</button></li>`).join('');
             list.hidden = !matches.length;
         };
@@ -181,7 +194,7 @@
 
         // The card is built once, so its numbers can count and its gauge marker can glide
         const PAY_LO = 20000, PAY_HI = 400000, gx = v => (100 * Math.log(Math.max(PAY_LO, Math.min(PAY_HI, v)) / PAY_LO) / Math.log(PAY_HI / PAY_LO)).toFixed(1) + '%';
-        out.innerHTML = `<h4></h4>
+        out.innerHTML = `<h3></h3>
             <dl class="tool-stats">
                 <div><dt>Average pay</dt><dd data-k="wage" data-f="money"></dd></div>
                 <div><dt>Jobs located in Macon-Bibb</dt><dd data-k="empl" data-f="int"></dd></div>
@@ -200,7 +213,7 @@
             const changed = current !== j;
             current = j;
             const [word, cls] = outlook(j.growth);
-            out.querySelector('h4').textContent = j.name;
+            out.querySelector('h3').textContent = j.name;
             ['wage', 'empl', 'openings'].forEach(k => { out.querySelector(`[data-k="${k}"]`).dataset.num = j[k]; });
             countIn(out, last);
             const ol = out.querySelector('[data-k="outlook"]'); ol.textContent = word; ol.className = cls;
@@ -227,6 +240,7 @@
         const count = document.getElementById('job-count');
         if (count) count.textContent = jobs.length.toLocaleString();
         typeahead({ input: document.getElementById('job-q'), list: document.getElementById('job-list'), items: jobs, label: j => j.name,
+                    aliases: { ceo: 'chief executives', rn: 'registered nurses', lpn: 'licensed practical', cna: 'nursing assistants', cdl: 'truck drivers', 'truck driver': 'truck drivers' },
                     onPick: j => { show(j); remember('jobs', j.name); } });
         const sortBy = segmented(document.getElementById('job-sorts'), rank);
         sortBy('common');
@@ -250,7 +264,7 @@
             .sort((a, b) => b.empl - a.empl);
         const out = document.getElementById('strength-result'), input = document.getElementById('strength-q');
         const last = {};
-        out.innerHTML = `<h4></h4>
+        out.innerHTML = `<h3></h3>
             <dl class="tool-stats">
                 <div><dt>Jobs located in Macon-Bibb</dt><dd data-k="empl" data-f="int"></dd></div>
                 <div><dt>Average wage</dt><dd data-k="wage" data-f="money"></dd></div>
@@ -259,7 +273,7 @@
             </dl>`;
         function show(i) {
             const conc = i.lq >= 1.2 ? `${timesUS(i.lq)} the U.S. concentration` : i.lq <= 0.8 ? `less concentrated than the U.S. (${i.lq.toFixed(2)}×)` : 'about the U.S. average';
-            out.querySelector('h4').textContent = i.name;
+            out.querySelector('h3').textContent = i.name;
             out.querySelector('[data-k="empl"]').dataset.num = i.empl;
             out.querySelector('[data-k="wage"]').dataset.num = i.wage;
             countIn(out, last);

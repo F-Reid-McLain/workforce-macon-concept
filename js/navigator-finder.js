@@ -75,7 +75,8 @@
     let programs = [], orgs = {}, shownPrograms = [], limit = PAGE;
     const orgName = id => (orgs[id] && orgs[id].name) || id;
 
-    // ----- Search: every word must appear somewhere; names count most -----
+    // ----- Search: every word must start a word somewhere; names count most -----
+    // ("art" finds Art and Arts, not Start or Heart)
     // The shorthand people actually type, mapped to how programs are named
     const SYNONYMS = {
         cdl: ['commercial driving'], truck: ['commercial driving', 'diesel'], trucking: ['commercial driving', 'diesel'], driver: ['commercial driving'],
@@ -83,15 +84,31 @@
         ekg: ['electrocardiography', 'ekg'], emt: ['emergency medical'], it: ['information technology', 'computer', 'network'],
         electrician: ['electric', 'wiring'], mechanic: ['automotive', 'diesel', 'mechanic'], forklift: ['forklift', 'warehous'],
         medic: ['medic', 'paramedic'], coding: ['coding', 'programm'], teacher: ['teach', 'educat'], cosmetology: ['cosmetolog'],
-        welder: ['weld'], welding: ['weld'], plumber: ['plumb'], plumbing: ['plumb'], cyber: ['cyber'], ai: ['artificial intelligence', 'generative ai', ' ai'],
+        welder: ['weld'], welding: ['weld'], plumber: ['plumb'], plumbing: ['plumb'], cyber: ['cyber'], ai: ['artificial intelligence', 'ai'],
+        cook: ['culinary', 'cook'], cooking: ['culinary', 'cook'], chef: ['culinary', 'chef'],
     };
-    function score(p, words) {
-        let s = 0;
-        for (const w of words) {
-            // Very short words (it, ai, rn) would match inside other words, so they use only their synonyms
+    const reEsc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    // Each word typed becomes the patterns it can match: itself and its synonyms, at the
+    // start of a word; very short ones (ai, it) only as whole words, or "ai" would find Aide
+    function patterns(words) {
+        return words.map(w => {
+            // Very short words (it, ai, rn) would match too much, so they use only their synonyms
             const alts = SYNONYMS[w] ? (w.length <= 3 ? SYNONYMS[w] : [w].concat(SYNONYMS[w])) : [w];
-            if (alts.some(a => p.nameL.includes(a))) s += 3;
-            else if (alts.some(a => p.hay.includes(a))) s += 1;
+            return alts.map(a => {
+                const start = '(^|[^a-z0-9])' + reEsc(a.trim());
+                return { own: a === w, start: new RegExp(start + (a.trim().length <= 3 ? '($|[^a-z0-9])' : '')), whole: new RegExp(start + 's?($|[^a-z0-9])') };
+            });
+        });
+    }
+    // A whole word in the name counts most ("art" ranks Arts above Artificial Intelligence),
+    // the word as typed above its synonyms ("electrician" ranks Electrician above Electric)
+    function score(p, pats) {
+        let s = 0;
+        for (const alts of pats) {
+            if (alts.some(r => r.own && r.whole.test(p.nameL))) s += 5;
+            else if (alts.some(r => r.whole.test(p.nameL))) s += 4;
+            else if (alts.some(r => r.start.test(p.nameL))) s += 3;
+            else if (alts.some(r => r.start.test(p.hay))) s += 1;
             else return -1;
         }
         return s;
@@ -100,14 +117,14 @@
     // Everything but the town filter (the Where map counts each town from these), then the town
     let beforePlace = [];
     function filterPrograms() {
-        const words = state.q.trim().toLowerCase().split(/\s+/).filter(Boolean);
+        const words = state.q.trim().toLowerCase().split(/\s+/).filter(Boolean), pats = patterns(words);
         const out = [];
         for (const p of programs) {
             if (state.field && p.field !== state.field) continue;
             if (state.online && !p.online) continue;
             if (state.len.size && !state.len.has(p.bucket)) continue;
             if (state.earn.size && !state.earn.has(p.earn)) continue;
-            const s = words.length ? score(p, words) : 0;
+            const s = words.length ? score(p, pats) : 0;
             if (s < 0) continue;
             out.push([s, p]);
         }
@@ -209,8 +226,9 @@
         const cats = ids.map(id => orgs[id] && orgs[id].category).filter(Boolean);
         WFMap.highlight(ids.concat(cats, ['hub']));
     }
-    let lit = null;
+    let lit = null, ready = false;
     function update() {
+        if (!ready) return;   // until the programs and organizations are both in (start() runs it then)
         const training = state.door === 'training';
         document.getElementById('view-training').hidden = !training;
         document.getElementById('view-orgs').hidden = training;
@@ -319,13 +337,21 @@
         DEFAULT_NOTE = `${orgTotal} organizations and ${programs.length.toLocaleString()} programs across Greater Macon, by the kind of help they offer.`;
         if (state.len.size || state.earn.size || state.online) { filtersPanel.hidden = false; filtersBtn.setAttribute('aria-expanded', 'true'); filtersBtn.classList.add('is-open'); }
         renderFields();
+        ready = true;
         update();
     }
+    // If either list fails to load, say so where the programs would be
+    function failed(err) {
+        console.error('Navigator data failed to load', err);
+        const box = document.getElementById('finder-fields');
+        if (box) box.outerHTML = '<p class="finder-empty" role="alert">The program list didn\'t load. Refresh the page to try again.</p>';
+    }
+    document.addEventListener('assets:failed', e => failed(e.detail), { once: true });
     if (!gotAssets) document.addEventListener('assets:loaded', () => { gotAssets = true; start(); }, { once: true });
     fetch('content/programs.json').then(r => r.json()).then(d => {
         programs = d.programs || [];
         const checked = document.getElementById('finder-checked');
         if (checked && d.built) checked.textContent = new Date(d.built + 'T12:00:00').toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
         gotPrograms = true; start();
-    }).catch(err => console.error('Program catalog failed to load', err));
+    }).catch(failed);
 })();

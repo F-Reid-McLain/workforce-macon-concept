@@ -49,7 +49,7 @@
         const premium = Math.round((mfg.pay - avg) / 1000) * 1000;
         const dek = document.getElementById('grow-dek');
         if (dek) dek.innerHTML = nw(`Macon-Bibb added <b>${(Math.round(mfg.change / 100) * 100).toLocaleString()}</b> factory jobs in the past five years, paying <b>$${(Math.round(mfg.pay / 100) * 100).toLocaleString()}</b> on average` +
-            (premium > 0 ? `, about $${premium.toLocaleString()} more than the county average` : '') + '.' +
+            (premium > 0 ? `, about $${premium.toLocaleString()} above the $${(Math.round(avg / 100) * 100).toLocaleString()} average across all industries here` : '') + '.' +
             (announced ? ` And <b>${announced.toLocaleString()}</b> more were announced in ${LAST} alone.` : ''));
         buildSide(list);
     });

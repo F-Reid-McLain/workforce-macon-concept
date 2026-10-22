@@ -139,7 +139,7 @@
         function hideTip() { tip.classList.remove('is-on'); }
 
         // ----- The card -----
-        card.innerHTML = `<h4></h4>
+        card.innerHTML = `<h3></h3>
             <div class="cty-big"><b data-k="in" data-f="int"></b><span>jobs in <span class="nw">Macon-Bibb</span> are held by <span data-name></span> residents</span></div>
             <div class="cty-share"><div class="cty-share__bar"><i></i></div><span data-share></span></div>
             <dl class="tool-stats">
@@ -161,7 +161,7 @@
             current = c;
             select.value = c.fips;
             gMap.selectAll('path').classed('is-on', d => d === c);
-            card.querySelector('h4').textContent = c.name;
+            card.querySelector('h3').textContent = c.name;
             card.querySelector('[data-name]').textContent = c.name;
             ['in', 'out', 'pop', 'jobs'].forEach(k => { card.querySelector(`[data-k="${k}"]`).dataset.num = c[k] || 0; });
             T.countIn(card, last);

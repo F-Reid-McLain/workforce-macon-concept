@@ -537,6 +537,8 @@
             section.style.setProperty('--ci-pulse', (smooth(5.6, 5.95, hour) * (1 - smooth(18.9, 19.5, hour))).toFixed(3));
             updatePulse();
             section.classList.toggle('is-map', S.live);
+            // The map's buttons fade in with it; until they're showing, keyboard focus skips them
+            section.querySelectorAll('.ci-overlay').forEach(el => { el.inert = S.overlays < 0.5; });
             if (m > 0.05 && m < 0.97) tip.style.display = 'none';
         }
 

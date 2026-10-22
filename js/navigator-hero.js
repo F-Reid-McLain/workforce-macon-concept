@@ -1,8 +1,7 @@
 /* ===== HERO ANIMATION — Workforce Navigator =====
    Shows off the ecosystem map in the page's banner:
    1. Build-in, once the banner is on screen: the hub appears, its six kinds of help
-      sprout, then every organization blooms out along its link, while the counts
-      beside the headline tick up.
+      sprout, then every organization blooms out along its link.
    2. Tour: the caption then walks through the six kinds of help, naming a few
       organizations in each, and loops while left alone.
       Any click, key, scroll, touch or hover over the banner ends the tour; so does
@@ -42,13 +41,6 @@
     const settle = (ms = 900) => svg.transition().duration(ms).ease(d3.easeCubicInOut).call(zoom.transform, restTransform());
 
     // ----- 1. Build-in -----
-    function countUp() {
-        document.querySelectorAll('#hero-stats b[data-n]').forEach(b => {
-            const to = +b.dataset.n;
-            if (reduce) { b.textContent = to.toLocaleString(); return; }
-            const t = d3.timer(e => { const k = Math.min(1, e / 1900); b.textContent = Math.round(to * d3.easeCubicOut(k)).toLocaleString(); if (k >= 1) t.stop(); });
-        });
-    }
     function buildIn(done) {
         const depth = d => d.type === 'hub' ? 0 : d.type === 'major-group' ? 1 : 2;
         // Organizations bloom in order around the hub, kind by kind
@@ -67,7 +59,6 @@
                 .transition().delay(Math.max(0, nodeDelay(far) - 260)).duration(420).ease(d3.easeCubicOut).attr('stroke-dashoffset', 0)
                 .on('end', function () { d3.select(this).attr('stroke-dasharray', null).attr('stroke-dashoffset', null); });
         });
-        countUp();
         setTimeout(done, 1250 + assets.length * 45 + 600);
     }
 
@@ -105,10 +96,6 @@
     hero.addEventListener('mouseenter', () => stopTour(false));
     document.addEventListener('finder:update', e => {
         const d = e.detail;
-        if (d.door === 'training' && d.programs && !d.filtering) {
-            const progs = document.querySelector('#hero-stats b[data-n="617"]');
-            if (progs && d.programs.length) progs.dataset.n = d.programs.length;
-        }
         if (d.filtering || d.door !== 'training') stopTour(true);
     });
 
@@ -121,10 +108,7 @@
     // ----- Start: once the map is built and the banner is on screen -----
     document.addEventListener('viz:ready', () => {
         svg.call(zoom.transform, restTransform());
-        const orgs = document.querySelector('#hero-stats b[data-n="29"]');
-        if (orgs) orgs.dataset.n = workforceData.nodes.filter(d => d.type === 'asset').length;
-        if (reduce) { countUp(); return; }
-        document.querySelectorAll('#hero-stats b[data-n]').forEach(b => { b.textContent = '0'; });
+        if (reduce) return;
         const io = new IntersectionObserver(entries => {
             if (!entries.some(e => e.isIntersecting)) return;
             io.disconnect();

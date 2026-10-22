@@ -79,7 +79,7 @@ function initSubmissionForm(formEl, buildSubject) {
             submitBtn.disabled = false;
             submitBtn.textContent = originalLabel;
             if (errorEl) {
-                errorEl.textContent = 'Something went wrong sending your submission. Please try again, or email us directly.';
+                errorEl.textContent = 'Something went wrong sending your submission. Your entries are still here, so please try again in a few minutes, or call the Chamber at (478) 621-2000.';
                 errorEl.hidden = false;
             }
         }

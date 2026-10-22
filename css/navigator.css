@@ -20,6 +20,9 @@
 .door.is-on { color: var(--ch-gold); }
 .door.is-on::after { content: ''; position: absolute; left: 10px; right: 10px; bottom: -1px; height: 3px; border-radius: 3px 3px 0 0; background: var(--ch-gold); }
 .door.is-on em { background: rgba(242, 196, 107, 0.15); color: var(--ch-gold); }
+.door-short { display: none; }
+@media (max-width: 440px) { .door-long { display: none; } .door-short { display: inline; } }
+@media (max-width: 340px) { .door em { display: none; } }
 .finder-view[hidden] { display: none; }
 
 /* ----- Search and filters ----- */
@@ -189,7 +192,10 @@ body:not(.embed-mode) .minimap .viz-search { display: none !important; }   /* th
     .nav-hero { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 220px; height: auto; }
     .nav-hero__text { padding: 22px 20px 6px; }
     .doors { overflow-x: auto; scrollbar-width: none; }
-    .door { flex: none; padding: 0.65rem 0.75rem; font-size: 0.92rem; }
+    /* all three tabs fit across a phone, so "For employers" isn't hidden off the edge */
+    .door { flex: 1 1 auto; padding: 0.65rem 0.3rem; font-size: 0.84rem; white-space: nowrap; }
+    .door em { margin-left: 3px; padding: 1px 5px; font-size: 0.72rem; }
+    .door.is-on::after { left: 4px; right: 4px; }
     .ftiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .pcard__top { align-items: flex-start; }
     .finder-row__label { width: 100%; }
