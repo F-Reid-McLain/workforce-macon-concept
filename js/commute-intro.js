@@ -570,6 +570,33 @@
         addEventListener('scroll', onScroll, { passive: true });
         addEventListener('resize', () => { measure(); computeFlat(); lastScene = ''; onScroll(); });
 
+        // ----- Idle drift: when nobody's scrolling, the 3D view keeps moving -----
+        // On the opening view the camera circles Macon-Bibb, so the county turns in place
+        // under the headline; on the story's cards it sways gently. It eases back to the
+        // story's own camera as soon as anyone scrolls, clicks, touches or presses a key,
+        // holds still after a couple of idle minutes, and stays off for reduced motion and
+        // on the finished (flat) map.
+        const IDLE_MS = 2000, IDLE_MAX = 120000;
+        const SPIN = 360 / 75000, SWAY = 8;            // degrees per ms; degrees either way
+        let lastInput = performance.now(), orbit = 0, swayClock = 0, idleTimer = null;
+        const wrap180 = d => ((d % 360) + 540) % 360 - 180;
+        function noteInput() {
+            lastInput = performance.now();
+            clearTimeout(idleTimer);
+            idleTimer = setTimeout(() => wake(), IDLE_MS + 60);   // the loop sleeps when nothing moves; start the drift
+            wake();
+        }
+        ['wheel', 'touchstart', 'pointerdown', 'keydown'].forEach(ev => addEventListener(ev, noteInput, { passive: true }));
+        addEventListener('scroll', () => { if (onScreen) noteInput(); }, { passive: true });
+        idleTimer = setTimeout(() => wake(), IDLE_MS + 1700);   // after the opening rise
+        // The camera turned by deg around Macon-Bibb's center, so the county stays put on screen
+        function orbitAround(v, deg) {
+            if (!deg) return v;
+            const t = deg * Math.PI / 180, k = Math.cos(v.latitude * Math.PI / 180);
+            const x = (v.longitude - bc[0]) * k, y = v.latitude - bc[1];
+            return { ...v, longitude: bc[0] + (x * Math.cos(t) + y * Math.sin(t)) / k, latitude: bc[1] - x * Math.sin(t) + y * Math.cos(t), bearing: v.bearing + deg };
+        }
+
         // ----- Animation loop: runs while something is still moving and the story is on screen -----
         let onScreen = true, loopRAF = null, lastNow = performance.now(), lastView = '';
         const riseStart = performance.now() + 300;
@@ -587,7 +614,19 @@
             if (Math.abs(tilt.tx - tilt.x) + Math.abs(tilt.ty - tilt.y) > 0.002) busy = true;
 
             // Camera: the story path, blended into the overhead map view; mouse tilt fades out with it
-            const S = stagesOf(morphAt(hour)), c = storyCamera(hour), f = flatView, e = S.settle, free = 1 - e;
+            const S = stagesOf(morphAt(hour)), f = flatView, e = S.settle, free = 1 - e;
+            const since = now - lastInput;
+            if (since < IDLE_MS || e > 0.02 || reducedMotion) {
+                // someone's moving the page (or the map is flat): ease back to the story's camera
+                if (Math.abs(wrap180(orbit)) > 0.02) { orbit = wrap180(orbit) * Math.exp(-dt / 380); busy = true; } else orbit = 0;
+                swayClock = 0;
+            } else if (since < IDLE_MAX && rise >= 1 && Math.abs(target - hour) < 0.001) {
+                const ease = smooth(IDLE_MS, IDLE_MS + 2500, since);   // drift starts slowly
+                if (hour < 5.6) orbit += dt * SPIN * ease;            // the opening view: turn all the way around
+                else { swayClock += dt; const want = SWAY * ease * Math.sin(swayClock / 3800); orbit += (wrap180(want - orbit)) * (1 - Math.exp(-dt / 500)); }
+                busy = true;
+            }
+            const c = orbitAround(storyCamera(hour), orbit * free);
             const vs = {
                 longitude: lerp(c.longitude, f.longitude, e), latitude: lerp(c.latitude, f.latitude, e), zoom: lerp(c.zoom, f.zoom, e),
                 pitch: Math.max(0, lerp(c.pitch, 0, e) - tilt.y * 5 * free), bearing: lerpAngle(c.bearing, 0, e) + tilt.x * 7 * free,
