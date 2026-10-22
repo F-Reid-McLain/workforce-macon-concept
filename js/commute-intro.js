@@ -25,6 +25,15 @@
     const BIBB = '13021';
     const mobile = window.innerWidth < 700;
     const reducedMotion = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+    // Marketing stills (?render=1, shot by tools/render-story.js): one fixed moment of the day,
+    // no page around it, no labels unless asked; optional camera (cam=lon,lat,zoom,pitch,bearing),
+    // longer comet trails (trail=) and bigger dots (dot=)
+    const RQ = new URLSearchParams(location.search);
+    const RENDER = RQ.has('render') ? {
+        hour: +RQ.get('hour') || 8.3, labels: RQ.get('labels') === '1',
+        cam: RQ.get('cam') ? RQ.get('cam').split(',').map(Number) : null, trail: +RQ.get('trail') || 4, dot: +RQ.get('dot') || 1,
+    } : null;
+    if (RENDER) document.documentElement.classList.add('ci-render');
     const clamp01 = x => Math.max(0, Math.min(1, x));
     const smooth = (a, b, x) => { const t = clamp01((x - a) / (b - a)); return t * t * (3 - 2 * t); };
     const lerp = (a, b, k) => a + (b - a) * k;
@@ -346,7 +355,7 @@
         });
 
         // ----- State -----
-        let target = 5, hour = 5, step = 0, rise = reducedMotion ? 1 : 0;
+        let target = RENDER ? RENDER.hour : 5, hour = target, step = 0, rise = reducedMotion || RENDER ? 1 : 0;
         let hwyOn = false, hwy = 0;
         const tilt = { x: 0, y: 0, tx: 0, ty: 0 };
         if (!reducedMotion && matchMedia('(hover: hover)').matches) {
@@ -445,10 +454,10 @@
             const dotColor = d => { const c = d.to === BIBB ? GOLD : [255, 255, 255]; return d.band < 0 ? c : mixRGB(c, PAY[d.band], payMix); };
             // Farther-away dots are a little smaller and fainter: LODES sometimes places jobs at a
             // company's reporting address, so long-distance flows are less certain than local ones
-            const dotAlpha = d => d.edge ? 165 : 245, dotSize = d => (mobile ? 2.4 : 3) * (d.edge ? 0.8 : 1);
+            const dotAlpha = d => d.edge ? 165 : 245, dotSize = d => (mobile ? 2.4 : 3) * (d.edge ? 0.8 : 1) * (RENDER ? RENDER.dot : 1);
             const moving = m < 0.15 ? commuters.filter(d => onRoad(d, hour)) : [];
             if (moving.length && rise > 0.9) {
-                const TRAIL = 4, STEP = 0.014;
+                const TRAIL = RENDER ? RENDER.trail : 4, STEP = 0.014;
                 const trail = moving.flatMap(d => d3.range(1, TRAIL + 1).filter(k => onRoad(d, hour - k * STEP)).map(k => ({ d, k })));
                 out.push(
                     new deck.ScatterplotLayer({ id: 'trails', data: trail, getPosition: t => dotPosAt(t.d, hour - t.k * STEP),
@@ -465,7 +474,7 @@
             // Story labels: county name and its change right now (text rebuilt only when a figure changes)
             // Built from the first frame (names start fully transparent), so the label font
             // texture is made during the welcome screen rather than mid-scroll
-            if (S.storyLabels > 0.01) {
+            if (S.storyLabels > 0.01 && (!RENDER || RENDER.labels)) {
                 const pct = c => Math.round((share(c.fips, hour) - 1) * 100);
                 const textKey = counties.map(pct).join();
                 // One shared layer. Names fade in with their counties; the dark outline (a single
@@ -553,6 +562,7 @@
             anchors = steps.map(el => { const r = el.getBoundingClientRect(); return { t: +el.dataset.time, y: r.top + scrollY + r.height / 2 - innerHeight / 2, el }; });
         };
         function onScroll() {
+            if (RENDER) { wake(); return; }   // a still: the moment doesn't follow the scroll
             const y = scrollY;
             let t = anchors[0].t;
             if (y > anchors[0].y) {
@@ -616,7 +626,7 @@
             // Camera: the story path, blended into the overhead map view; mouse tilt fades out with it
             const S = stagesOf(morphAt(hour)), f = flatView, e = S.settle, free = 1 - e;
             const since = now - lastInput;
-            if (since < IDLE_MS || e > 0.02 || reducedMotion) {
+            if (since < IDLE_MS || e > 0.02 || reducedMotion || RENDER) {
                 // someone's moving the page (or the map is flat): ease back to the story's camera
                 if (Math.abs(wrap180(orbit)) > 0.02) { orbit = wrap180(orbit) * Math.exp(-dt / 380); busy = true; } else orbit = 0;
                 swayClock = 0;
@@ -626,7 +636,7 @@
                 else { swayClock += dt; const want = SWAY * ease * Math.sin(swayClock / 3800); orbit += (wrap180(want - orbit)) * (1 - Math.exp(-dt / 500)); }
                 busy = true;
             }
-            const c = orbitAround(storyCamera(hour), orbit * free);
+            const c = RENDER && RENDER.cam ? V(...RENDER.cam) : orbitAround(storyCamera(hour), orbit * free);
             const vs = {
                 longitude: lerp(c.longitude, f.longitude, e), latitude: lerp(c.latitude, f.latitude, e), zoom: lerp(c.zoom, f.zoom, e),
                 pitch: Math.max(0, lerp(c.pitch, 0, e) - tilt.y * 5 * free), bearing: lerpAngle(c.bearing, 0, e) + tilt.x * 7 * free,

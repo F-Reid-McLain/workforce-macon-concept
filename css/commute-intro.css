@@ -217,3 +217,9 @@ body.ci-on-screen .page-jumpnav { opacity: 0; pointer-events: none; }
     .ci-card, .ci-stage #ci-map { transition: none; }
     .ci.is-map .ci-pill:not(.is-used) .ci-pill__dot { animation: none; }
 }
+
+/* Marketing stills (?render=1): just the 3D stage, filling the window */
+html.ci-render .main-header, html.ci-render .page-jumpnav, html.ci-render .ci-steps, html.ci-render .ci-time,
+html.ci-render .ci-tip, html.ci-render .ci-present, html.ci-render .ci-present-hint, html.ci-render .ci-pulse,
+html.ci-render .ci-overlay, html.ci-render .ci-maplabels, html.ci-render .ci-hwylabels { display: none !important; }
+html.ci-render .ci { --ci-top: 0px !important; }
