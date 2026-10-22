@@ -3,13 +3,15 @@
    Macon-Bibb, the interstates (then the US routes) drawing in from the edges toward
    Macon, and the region's Level I trauma center (Atrium Health Navicent The Medical
    Center, 777 Hemlock St) rising where it stands.
-   The drawing follows the scroll: it draws as the slide arrives, is complete while
-   the slide is centered, and undraws as it scrolls away. Drawn and still with
-   reduced motion. On wide screens the headline holds the left half and Macon the
+   The drawing plays as the slide settles into view (about three seconds) and
+   undraws as soon as it starts to scroll away, every time. It runs on a clock rather than straight
+   off the scroll position because the page glides onto each stop in a moment
+   (js/chapters.js), too fast to watch. Drawn and still with reduced motion. On wide screens the headline holds the left half and Macon the
    right; on phones the headline sits on top and Macon below it.
    Data: data/counties.geojson, data/major-highways.geojson (a coarse, regional file,
    so interstate ends that stop just short of the interstate they join are snapped
-   onto it, and roads are drawn as smooth curves). */
+   onto it, the US routes, which the file stops a few miles short of town, are
+   carried in to downtown where they meet, and roads are drawn as smooth curves). */
 (function () {
     'use strict';
     if (!window.d3) return;
@@ -19,6 +21,7 @@
     const svg = d3.select(svgEl);
     const reduce = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
     const HOSPITAL = [-83.6363, 32.8366];
+    const DOWNTOWN = [-83.6290, 32.8380];   // where the US routes meet
     const INTERSTATES = new Set(['I-75', 'I-16', 'I-475']);
     const US_ROUTES = new Set(['US-41', 'US-80', 'US-129', 'US-23']);
     const LAT0 = 32.8 * Math.PI / 180;
@@ -72,8 +75,15 @@
             const route = f.properties.route;
             const cls = INTERSTATES.has(route) ? 'im-interstate' : US_ROUTES.has(route) ? 'im-us' : null;
             if (!cls) return;
-            (f.geometry.type === 'LineString' ? [f.geometry.coordinates] : f.geometry.coordinates)
-                .forEach(part => lines.push({ route, cls, pts: part.map(proj) }));
+            (f.geometry.type === 'LineString' ? [f.geometry.coordinates] : f.geometry.coordinates).forEach(part => {
+                part = part.slice();
+                if (cls === 'im-us') {   // carry the end nearer town on in to downtown (if it stops within ~12 km)
+                    const km = q => Math.hypot((q[0] - DOWNTOWN[0]) * 93.5, (q[1] - DOWNTOWN[1]) * 111);
+                    const [a, b] = [km(part[0]), km(part[part.length - 1])];
+                    if (Math.min(a, b) < 12 && Math.min(a, b) > 0.2) { if (a < b) part.unshift(DOWNTOWN); else part.push(DOWNTOWN); }
+                }
+                lines.push({ route, cls, pts: part.map(proj) });
+            });
         });
         const inter = lines.filter(l => l.cls === 'im-interstate');
         inter.forEach(l => {
@@ -136,10 +146,10 @@
         const prep = sel => sel.each(function () { const n = this.getTotalLength(); this.__len = n; d3.select(this).attr('stroke-dasharray', `${n} ${n}`); });
         prep(bibb); prep(ints); prep(us);
         parts = { bibb, ints, us, shields, bld, halo, hLabel };
-        render(reduce ? 1 : progress());
+        render(reduce ? 1 : cur);
     }
 
-    // 0 while the slide is away, 1 while it's centered (with a little hold either side)
+    // How centered the slide is: 0 while it's away, 1 while it's centered
     function progress() {
         const r = slide.getBoundingClientRect(), vh = innerHeight;
         const off = Math.abs(r.top + r.height / 2 - vh / 2);
@@ -160,12 +170,29 @@
         svgEl.classList.toggle('is-drawn', p >= 0.999);   // the halo pulses only when complete
     }
 
+    // Draw on once the slide is centered; undraw (quicker) as soon as it starts to move off,
+    // so it's seen pulling back during the short glide away. The small gap keeps it from flickering.
+    let cur = 0, target = 0, clock = null;
+    const DRAW_MS = 3000, UNDRAW_MS = 650;
+    function aim() {
+        const p = progress(), t = p >= 0.92 ? 1 : p < 0.9 ? 0 : target;
+        if (t === target) return;
+        target = t;
+        if (clock) clock.stop();
+        const from = cur, ms = (target ? DRAW_MS : UNDRAW_MS) * Math.abs(target - from);
+        clock = d3.timer(e => {
+            const k = ms ? Math.min(1, e / ms) : 1;
+            cur = from + (target - from) * k;
+            render(cur);
+            if (k >= 1) { clock.stop(); clock = null; }
+        });
+    }
     let raf = null;
-    const onScroll = () => { if (!raf) raf = requestAnimationFrame(() => { raf = null; render(progress()); }); };
+    const onScroll = () => { if (!raf) raf = requestAnimationFrame(() => { raf = null; aim(); }); };
     Promise.all([d3.json('data/counties.geojson'), d3.json('data/major-highways.geojson')]).then(([c, r]) => {
         counties = c; roads = r;
         draw();
-        if (!reduce) addEventListener('scroll', onScroll, { passive: true });
+        if (!reduce) { addEventListener('scroll', onScroll, { passive: true }); aim(); }
     }).catch(err => console.error('Jobs map failed to load', err));
     let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(draw, 250); });
 })();
