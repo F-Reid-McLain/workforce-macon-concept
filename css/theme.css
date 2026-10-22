@@ -117,12 +117,13 @@ entire site. Other CSS files must not hardcode these values.
    tuned as carefully as the map itself.
    ================================================================ */
 /* ===== NIGHT PALETTE =====
-   The homepage and the Workforce Navigator share this palette: <html class="theme-night">.
+   Every page uses this palette: <html class="theme-night">.
    It's one block of tokens on purpose, so trying a different palette later means
    editing only this block. It sits on the root (not body) because the Navigator's
    map reads its colors from the root (js/viz-engine.js resolveThemeColors), and it
    yields to ?theme=light on embeds. */
 :root.theme-night:not([data-theme="light"]) {
+    color-scheme: dark;   /* native controls (file pickers, dropdown lists, scrollbars) go dark too */
     --color-bg-page:         #0e1420;
     --color-bg-surface:      #141c2a;
     --color-bg-surface-deep: #111827;
@@ -135,6 +136,12 @@ entire site. Other CSS files must not hardcode these values.
     --header-bg:             rgba(14, 20, 32, 0.92);
     --footer-bg:             #0a0f19;
     --footer-bg-bar:         #070b13;
+    --footer-bar-border:     rgba(255, 255, 255, 0.08);
+    --footer-text:           #c3cad6;
+    /* One gold sitewide: links, the header's current page, the footer's labels */
+    --color-accent:          #f2c46b;
+    --color-accent-hover:    #e0b25a;
+    --footer-accent-gold:    #f2c46b;
     /* Accents used by the homepage stops and the Navigator */
     --ch-gold:               #f2c46b;
     --ch-teal:               #2dd4bf;

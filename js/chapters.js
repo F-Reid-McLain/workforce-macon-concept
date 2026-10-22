@@ -25,6 +25,15 @@
     });
 })();
 
+/* The section rail steps aside while the footer is on screen, so it doesn't sit over
+   the footer's links (css/chapters.css). */
+(function () {
+    'use strict';
+    const footer = document.querySelector('.main-footer');
+    if (!footer || !('IntersectionObserver' in window)) return;
+    new IntersectionObserver(es => document.body.classList.toggle('footer-in-view', es[0].isIntersecting)).observe(footer);
+})();
+
 /* Settling onto sections (desktop and laptop). From the finished regional map onward,
    when a scroll ends the page glides onto the next stop in the direction you were
    scrolling: the map, each title slide (centered) and each tool (top). A small nudge

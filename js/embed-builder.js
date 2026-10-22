@@ -60,6 +60,10 @@
     }
 
     let resizeTimer = null;
+    // The preview sits in a collapsed "Preview and tips" panel; size it when that opens
+    var morePanel = previewWrap && previewWrap.closest('details');
+    if (morePanel) morePanel.addEventListener('toggle', function () { if (morePanel.open) layoutPreview(false); });
+
     window.addEventListener('resize', function () {
         if (previewWidthMode !== 'auto') return;
         // Debounced (not just rAF-coalesced) since this can trigger a full

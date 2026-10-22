@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="theme-night">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -43,13 +43,49 @@
         <div class="container">
             <section class="page-header">
                 <h2>About Workforce Macon</h2>
-                <p>Connecting talent, training, and opportunity in Greater Macon</p>
+                <p>Free data on how Middle Georgia works, and a guide to the region's training and support programs, from the Greater Macon Chamber of Commerce. Updated every quarter.</p>
             </section>
 
             <div class="about-content">
+                <div class="about-tools">
+                    <a class="about-tool" href="index.html">
+                        <span class="about-tool__kicker">Workforce Data</span>
+                        <strong>How Middle Georgia comes to work in Macon</strong>
+                        <span>The commuting story, then what jobs pay, which industries are growing, and how your county connects to Macon-Bibb.</span>
+                    </a>
+                    <a class="about-tool" href="navigator.html">
+                        <span class="about-tool__kicker">Workforce Navigator</span>
+                        <strong>Find a program, support, or workers</strong>
+                        <span>Every training program and support organization in Greater Macon, searchable, with a map of how they connect.</span>
+                    </a>
+                </div>
+
+                <section class="about-section" id="custom-research">
+                    <h3>Custom research</h3>
+                    <p>Need more than what's here? The Chamber builds custom research for employers, site selectors and partners, such as:</p>
+                    <ul>
+                        <li><b>Site selection</b> and the labor shed around a site</li>
+                        <li><b>Industry and occupation</b> deep dives</li>
+                        <li><b>Pay benchmarking</b>, from entry-level to experienced, against peer metros</li>
+                        <li><b>Data for grants</b> and program planning</li>
+                    </ul>
+                    <p>Each report is quoted to fit the question. To start one, call the Chamber at <a href="tel:+14786212000">(478) 621-2000</a> and ask about custom workforce research.</p>
+                </section>
+
+                <section class="about-section">
+                    <h3>Where the data comes from</h3>
+                    <dl class="about-sources">
+                        <dt>Commuting</dt><dd>U.S. Census Bureau, LEHD Origin-Destination Employment Statistics (LODES), 2023</dd>
+                        <dt>Residents</dt><dd>U.S. Census Bureau, American Community Survey, 2024</dd>
+                        <dt>Jobs, pay and industries</dt><dd>JobsEQ, based on the Quarterly Census of Employment and Wages and Occupational Employment and Wage Statistics</dd>
+                        <dt>New manufacturers</dt><dd>Company, Georgia Department of Economic Development and Macon-Bibb County Industrial Authority announcements</dd>
+                        <dt>Programs and organizations</dt><dd>Each school's and organization's own published listings</dd>
+                    </dl>
+                </section>
+
                 <section class="about-section about-cta">
-                    <h3>Help Us Keep This Map Accurate</h3>
-                    <p>Know an organization that belongs on the map, or spotted something out of date? Let us know.</p>
+                    <h3>Help keep it accurate</h3>
+                    <p>Know an organization or program that belongs in the Navigator, or spotted something out of date?</p>
                     <div class="about-cta-buttons">
                         <a href="submit-asset.html" class="cta-btn">Suggest an Asset</a>
                         <a href="request-edit.html" class="cta-btn">Request an Edit</a>
@@ -57,14 +93,13 @@
                 </section>
 
                 <section class="about-section">
-                    <h3>Embed This Map on Your Site</h3>
-                    <p>Partners are welcome to embed the live Workforce Navigator map on their own website using an <code>&lt;iframe&gt;</code>. The embedded map stays in sync automatically — any updates published here appear in the embed with no extra work.</p>
-
+                    <h3>Embed the map</h3>
+                    <p>Partners can put the live Workforce Navigator map on their own site. It stays up to date on its own.</p>
                     <div class="embed-builder">
                         <div class="embed-builder-controls">
                             <label class="form-checkbox-label embed-builder-checkbox">
                                 <input type="checkbox" id="embed-opt-map-only">
-                                Map only (hide site header &amp; footer)
+                                Map only (hide the site header and footer)
                             </label>
                             <div class="form-field embed-builder-field">
                                 <label class="form-label" for="embed-opt-theme">Theme</label>
@@ -78,89 +113,27 @@
                                 <input class="form-input" type="number" id="embed-opt-height" value="800" min="300" max="2000" step="10">
                             </div>
                         </div>
-
-                        <p>Your embed code:</p>
                         <pre class="embed-code" tabindex="0" aria-label="Embed code"><code id="embed-snippet"></code></pre>
-                        <button type="button" class="control-btn embed-copy-btn" id="embed-copy-btn">Copy Code</button>
-
-                        <p class="embed-preview-label">
-                            Live preview — reflects the settings above.
-                            This preview is scaled to fit the column, and browsers block real fullscreen from working through a scaled/transformed frame — <a href="navigator.html" id="embed-preview-open-link" target="_blank" rel="noopener">open it in its own tab</a> to test fullscreen (map-only mode) for real.
-                        </p>
-                        <div class="embed-preview-toolbar">
-                            <span class="embed-preview-toolbar-label">Preview at:</span>
-                            <button type="button" class="control-btn embed-preview-preset active" data-width="auto">Your Browser</button>
-                            <button type="button" class="control-btn embed-preview-preset" data-width="1280">Desktop</button>
-                            <button type="button" class="control-btn embed-preview-preset" data-width="768">Tablet</button>
-                            <button type="button" class="control-btn embed-preview-preset" data-width="375">Mobile</button>
-                        </div>
-                        <div class="embed-preview-wrap" id="embed-preview-wrap">
-                            <iframe id="embed-preview" class="embed-preview-frame" title="Embed preview" src="navigator.html" allowfullscreen></iframe>
-                        </div>
-                    </div>
-
-                    <p>Notes on embedding:</p>
-                    <ul>
-                        <li>The map only resizes to fill its iframe automatically — set whatever <code>height</code> fits your layout (a fixed pixel value works better than a percentage, since the iframe itself doesn't know your page's available height).</li>
-                        <li>Light theme is tuned for the map and its own controls (search, zoom, node labels). It doesn't need "Map only" checked — you can preview it against the full site chrome too, though partners typically use the two together.</li>
-                        <li>The map requires JavaScript and loads its data from this site, so the embedding page must allow cross-origin iframes (this is the default for most site builders and CMSs).</li>
-                        <li>Avoid placing the iframe inside another fixed-height, scrollable container on your page — the map already handles panning and zooming internally, so nesting it inside a second scrollable box just adds a confusing scrollbar-within-a-scrollbar. Give it a plain block-level spot on the page instead.</li>
-                    </ul>
-                </section>
-
-                <section class="about-section">
-                    <h3>Project Overview</h3>
-                    <p>Workforce Macon is the Greater Macon Chamber of Commerce's guide to the region's workforce: the commuting story and workforce data on the homepage, and the Workforce Navigator, an interactive visualization of the interconnected network of workforce development resources in the Greater Macon region. This comprehensive tool helps job seekers, employers, and community partners understand and navigate the rich ecosystem of training, education, and support services available locally.</p>
-
-                    <p>From higher education institutions to specialized job training programs, faith-based initiatives to re-entry services, this map demonstrates how 31 workforce assets work together to build and sustain Macon's economic future.</p>
-
-                    <p>This map is only as accurate and complete as the community keeps it. New workforce organizations start up, programs change, and contact details go stale — we rely on job seekers, employers, and partner organizations to flag what's missing or out of date so the Navigator stays a resource people can trust.</p>
-                </section>
-
-                <section class="about-section">
-                    <h3>Greater Macon Chamber of Commerce</h3>
-                    <p>The Greater Macon Chamber of Commerce serves as the driving force behind regional workforce development initiatives. As the convening organization for employers, educational institutions, and community partners, the Chamber works to align workforce programs with economic growth strategies.</p>
-                    
-                    <p>Key workforce initiatives include:</p>
-                    <ul>
-                        <li>Development of Workforce Macon and the Workforce Navigator</li>
-                        <li>Creation of the Greater Career Works platform</li>
-                        <li>Choose Macon talent attraction campaign</li>
-                        <li>Leadership Macon professional development</li>
-                        <li>Employer-driven workforce pipeline development</li>
-                    </ul>
-                </section>
-
-                <section class="about-section">
-                    <h3>How to Use This Tool</h3>
-                    <div class="usage-grid">
-                        <div class="usage-card">
-                            <h4>Workforce Data</h4>
-                            <p>Follow a workday of commuting across the region, then look up jobs, industries and how your county connects to Macon-Bibb.</p>
-                        </div>
-                        <div class="usage-card">
-                            <h4>Workforce Navigator</h4>
-                            <p>Find the right program, school or partner: start with what you need, search every organization, and see how they connect on the interactive map.</p>
-                        </div>
-                    </div>
-                </section>
-
-                <section class="about-section">
-                    <h3>Contact & Resources</h3>
-                    <div class="contact-grid">
-                        <div class="contact-card">
-                            <h4>Greater Macon Chamber of Commerce</h4>
-                            <p>338 Poplar Street<br>
-                            Macon, GA 31201</p>
-                            <p><strong>Phone:</strong> (478) 621-2000<br>
-                            <strong>Website:</strong> <a href="https://maconchamber.com" target="_blank" rel="noopener">maconchamber.com</a></p>
-                        </div>
-                        <div class="contact-card">
-                            <h4>Additional Resources</h4>
-                            <p><strong>Choose Macon:</strong> <a href="https://choosemacon.com" target="_blank" rel="noopener">choosemacon.com</a><br>
-                            <strong>Greater Career Works:</strong> <a href="https://greatercareerworks.org" target="_blank" rel="noopener">greatercareerworks.org</a><br>
-                            <strong>WorkSource Middle GA:</strong> <a href="https://middlegaworks.com" target="_blank" rel="noopener">middlegaworks.com</a></p>
-                        </div>
+                        <button type="button" class="control-btn embed-copy-btn" id="embed-copy-btn">Copy code</button>
+                        <details class="about-more">
+                            <summary>Preview and tips</summary>
+                            <p class="embed-preview-label">The preview is scaled to fit, so full screen won't work inside it; <a href="navigator.html" id="embed-preview-open-link" target="_blank" rel="noopener">open the map in a new tab</a> to try that.</p>
+                            <div class="embed-preview-toolbar">
+                                <span class="embed-preview-toolbar-label">Preview at:</span>
+                                <button type="button" class="control-btn embed-preview-preset active" data-width="auto">Your browser</button>
+                                <button type="button" class="control-btn embed-preview-preset" data-width="1280">Desktop</button>
+                                <button type="button" class="control-btn embed-preview-preset" data-width="768">Tablet</button>
+                                <button type="button" class="control-btn embed-preview-preset" data-width="375">Mobile</button>
+                            </div>
+                            <div class="embed-preview-wrap" id="embed-preview-wrap">
+                                <iframe id="embed-preview" class="embed-preview-frame" title="Embed preview" src="navigator.html" loading="lazy" allowfullscreen></iframe>
+                            </div>
+                            <ul>
+                                <li>Set a fixed pixel height that fits your layout; the map fills whatever space the frame gives it.</li>
+                                <li>Don't put the frame inside another scrolling box. The map already pans and zooms on its own.</li>
+                                <li>The map loads its data from this site, so the page it's on must allow embedded frames (most site builders do).</li>
+                            </ul>
+                        </details>
                     </div>
                 </section>
             </div>
@@ -193,6 +166,8 @@
                     <li><a href="about.html" class="main-footer__link">About</a></li>
                 </ul>
             </div>
+        </div>
+        <div class="main-footer__bar">
             <div class="main-footer__attribution">Workforce Macon is an initiative of the Greater Macon Chamber of Commerce.</div>
             <div class="main-footer__meta-links">
                 <a href="submit-asset.html" class="main-footer__meta-link">Suggest an Asset</a>

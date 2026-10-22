@@ -321,6 +321,7 @@ body.page-home .demo-bar-row { padding: 5px 0; font-size: 0.86rem; }
     }
     body.page-home .page-jumpnav:hover a, body.page-home .page-jumpnav a.active { color: #cfd6e2; }
     body.page-home .page-jumpnav a.active::after { background: var(--ch-gold); transform: scale(1.35); }
+    body.page-home.footer-in-view .page-jumpnav { opacity: 0; pointer-events: none; }
 }
 @media (min-width: 769px) and (max-width: 1320px) {
     body.page-home .page-jumpnav { display: none; }
