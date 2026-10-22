@@ -256,6 +256,7 @@ body.page-home .demo-bar-row { padding: 5px 0; font-size: 0.86rem; }
 .pay-gauge__ends { display: flex; justify-content: space-between; margin-top: 8px; font-size: 0.68rem; color: var(--color-text-muted); }
 .pay-gauge__cap { margin: 10px 0 0; font-size: 0.88rem; color: var(--color-text-secondary); }
 .pay-gauge__cap b { color: #fff; }
+.pay-gauge__where { margin: 6px 0 0; font-size: 0.74rem; line-height: 1.45; color: var(--color-text-muted); }
 
 /* Idle demo: a hint chip while a tool shows itself off */
 .stop { position: relative; }

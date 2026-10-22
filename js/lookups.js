@@ -4,7 +4,9 @@
 
    - Jobs (#jobs): search any of ~800 occupations, or browse the top 10 by
      most common, best paid, fastest growing or most openings; each job's pay
-     is shown against the average Macon-Bibb job (data/Occupation Snapshot.csv, OES-based).
+     is shown against the average job located in Macon-Bibb (data/Occupation Snapshot.csv, OES-based).
+     The data counts jobs where they are, not where workers live, so jobs held by
+     commuters from neighboring counties are included in every figure.
    - Industries (#industries): beside the donut (js/workforce-data.js), a switch
      between the biggest sectors, Macon's specialties (location quotient) and
      what commuters come in for, each lighting its slices of the donut, plus a
@@ -182,15 +184,16 @@
         out.innerHTML = `<h4></h4>
             <dl class="tool-stats">
                 <div><dt>Average pay</dt><dd data-k="wage" data-f="money"></dd></div>
-                <div><dt>Jobs in Macon-Bibb</dt><dd data-k="empl" data-f="int"></dd></div>
+                <div><dt>Jobs located in Macon-Bibb</dt><dd data-k="empl" data-f="int"></dd></div>
                 <div><dt>Openings a year</dt><dd data-k="openings" data-f="approx"></dd></div>
                 <div><dt>Outlook</dt><dd data-k="outlook"></dd></div>
             </dl>
             <div class="pay-gauge" aria-hidden="true">
-                <div class="pay-gauge__track"><span class="pay-gauge__avg" style="left:${gx(avgPay)}"><em>Avg. job ${money(avgPay)}</em></span><span class="pay-gauge__me"></span></div>
+                <div class="pay-gauge__track"><span class="pay-gauge__avg" style="left:${gx(avgPay)}"><em>Avg. job here ${money(avgPay)}</em></span><span class="pay-gauge__me"></span></div>
                 <div class="pay-gauge__ends"><span>$20K</span><span>$400K</span></div>
             </div>
-            <p class="pay-gauge__cap"></p>`;
+            <p class="pay-gauge__cap"></p>
+            <p class="pay-gauge__where">Pay for jobs located in Macon-Bibb, whoever holds them, including commuters from neighboring counties.</p>`;
         const last = {};
         let current = jobs[0], ranked = [], view = 'common';
         function show(j, quiet) {
@@ -203,8 +206,8 @@
             const ol = out.querySelector('[data-k="outlook"]'); ol.textContent = word; ol.className = cls;
             out.querySelector('.pay-gauge__me').style.left = gx(j.wage);
             const diff = j.wage - avgPay;
-            out.querySelector('.pay-gauge__cap').innerHTML = Math.abs(diff) < 1000 ? 'About the same as the average Macon-Bibb job.'
-                : `<b>${money(Math.abs(diff))} ${diff > 0 ? 'more' : 'less'}</b> than the average Macon-Bibb job (${money(avgPay)}).`;
+            out.querySelector('.pay-gauge__cap').innerHTML = Math.abs(diff) < 1000 ? 'About the same as the average job located in Macon-Bibb.'
+                : `<b>${money(Math.abs(diff))} ${diff > 0 ? 'more' : 'less'}</b> than the average job located in Macon-Bibb (${money(avgPay)}).`;
             if (changed && !quiet) swap(out);
             list.querySelectorAll('button').forEach(b => b.classList.toggle('is-hot', ranked[+b.dataset.i] === j));
         }
@@ -249,7 +252,7 @@
         const last = {};
         out.innerHTML = `<h4></h4>
             <dl class="tool-stats">
-                <div><dt>Jobs in Macon-Bibb</dt><dd data-k="empl" data-f="int"></dd></div>
+                <div><dt>Jobs located in Macon-Bibb</dt><dd data-k="empl" data-f="int"></dd></div>
                 <div><dt>Average wage</dt><dd data-k="wage" data-f="money"></dd></div>
                 <div><dt>Concentration</dt><dd data-k="conc"></dd></div>
                 <div><dt>Recent change</dt><dd data-k="change"></dd></div>
