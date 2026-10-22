@@ -26,28 +26,48 @@ body.page-home .main-content { padding-bottom: 0; }
     .stop-intro--map :is(.chapter-finding, .chapter-dek, .intro-source) { margin-left: 0; }
     .stop-intro--map .chapter-finding { font-size: clamp(2.2rem, 4vw, 3.8rem); }
 }
-.intro-map { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.intro-map { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none;
+    /* roads fade out toward the slide's top and bottom instead of stopping at a hard edge */
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent);
+            mask-image: linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent); }
+/* Keep lines out from behind the words: the left half on wide screens, the top on phones */
+@media (min-width: 901px) {
+    .intro-map {
+        -webkit-mask-image: linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent), linear-gradient(to right, transparent 34%, #000 58%);
+        -webkit-mask-composite: source-in;
+                mask-image: linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent), linear-gradient(to right, transparent 34%, #000 58%);
+                mask-composite: intersect;
+    }
+}
+@media (max-width: 900px) {
+    .intro-map {
+        -webkit-mask-image: linear-gradient(to bottom, transparent 60%, #000 66%, #000 92%, transparent);
+                mask-image: linear-gradient(to bottom, transparent 60%, #000 66%, #000 92%, transparent);
+    }
+}
 .im-neighbors path { fill: none; stroke: rgba(255, 255, 255, 0.06); stroke-width: 1; }
-.im-bibb { fill: rgba(52, 211, 153, 0.06); stroke: rgba(52, 211, 153, 0.55); stroke-width: 1.5; }
+.im-bibb { fill: rgba(52, 211, 153, 0.06); stroke: rgba(52, 211, 153, 0.55); stroke-width: 1.5; stroke-linejoin: round; }
 .im-roads path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
 .im-interstate { stroke: rgba(242, 196, 107, 0.7); stroke-width: 2.4; }
 .im-us { stroke: rgba(255, 255, 255, 0.18); stroke-width: 1.2; }
-.im-labels g, .im-hlabel { opacity: 0; transition: opacity 0.6s ease; }
 .im-labels rect { fill: #1b2433; stroke: rgba(242, 196, 107, 0.6); stroke-width: 1; }
 .im-labels text { font: 700 11px var(--font-body); fill: var(--ch-gold); }
-.im-building { transform: scaleY(0); transform-box: fill-box; transform-origin: 50% 100%; transition: transform 0.7s cubic-bezier(0.3, 1.3, 0.4, 1) 0.4s; }
-.im-building rect { fill: #e8ecf3; stroke: rgba(14, 20, 32, 0.6); stroke-width: 1; }
-.im-cross { fill: #de5e6d; }
-.im-halo { fill: rgba(222, 94, 109, 0.18); stroke: rgba(222, 94, 109, 0.5); stroke-width: 1; opacity: 0; transform-box: fill-box; transform-origin: center; }
-.im-hlabel { font: 600 12px var(--font-body); fill: #f3c7cc; paint-order: stroke; stroke: rgba(14, 20, 32, 0.85); stroke-width: 3px; transition-delay: 0.9s; }
-.intro-map.is-drawn .im-labels g, .intro-map.is-drawn .im-hlabel { opacity: 1; }
-.intro-map.is-drawn .im-building { transform: scaleY(1); }
-.intro-map.is-drawn .im-halo { opacity: 1; animation: im-pulse 2.4s ease-in-out 1.2s infinite; }
-@keyframes im-pulse { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.6); opacity: 0.25; } }
+/* The hospital (opacity and rise are driven by the scroll, js/jobs-intro-map.js) */
+.im-spot { fill: #de5e6d; stroke: #fff; stroke-width: 1.2; }
+.im-halo { fill: rgba(222, 94, 109, 0.14); stroke: none; filter: blur(6px); transform-box: fill-box; transform-origin: center; }
+.im-shadow { fill: rgba(0, 0, 0, 0.35); }
+.im-wing { fill: #d9dfe8; stroke: rgba(14, 20, 32, 0.55); stroke-width: 1; }
+.im-tower { fill: #f3f5f9; stroke: rgba(14, 20, 32, 0.55); stroke-width: 1; }
+.im-win { fill: #8fb3d9; }
+.im-door { fill: #1b2433; }
+.im-badge { fill: #de5e6d; stroke: #fff; stroke-width: 1.5; }
+.im-cross { fill: #fff; }
+.im-hlabel { font: 600 12px var(--font-body); fill: #f3c7cc; paint-order: stroke; stroke: rgba(14, 20, 32, 0.9); stroke-width: 3.5px; }
+.intro-map.is-drawn .im-halo { animation: im-pulse 2.4s ease-in-out infinite; }
+@keyframes im-pulse { 0%, 100% { transform: scale(0.9); opacity: 0.7; } 50% { transform: scale(1.25); opacity: 1; } }
 .intro-source { margin: 14px auto 0; max-width: 60ch; font-size: 0.74rem; color: var(--color-text-muted); }
 .stop-intro .chapter-dek b { color: #fff; }
 @media (prefers-reduced-motion: reduce) {
-    .im-building, .im-labels g, .im-hlabel { transition: none; }
     .intro-map.is-drawn .im-halo { animation: none; }
 }
 .stop {
