@@ -255,12 +255,22 @@
                     </div>
                     <!-- What the slices' colors show, and the U.S. comparison ring (js/workforce-data.js) -->
                     <div class="donut-ctrl">
-                        <div class="seg seg--sm" id="donut-mode" role="group" aria-label="Color the slices by">
-                            <button type="button" data-view="sector">Sectors</button>
-                            <button type="button" data-view="pay">Pay</button>
-                            <button type="button" data-view="growth">Growth</button>
+                        <div class="donut-ctrl__row">
+                            <span class="donut-ctrl__label" aria-hidden="true">Size</span>
+                            <div class="seg seg--sm" id="donut-size" role="group" aria-label="Size the slices by">
+                                <button type="button" data-view="jobs">Jobs</button>
+                                <button type="button" data-view="wages">Wages</button>
+                            </div>
+                            <button type="button" class="donut-us" id="donut-us" aria-pressed="false"><span class="donut-us__dot" aria-hidden="true"></span>vs. U.S.</button>
                         </div>
-                        <button type="button" class="donut-us" id="donut-us" aria-pressed="false"><span class="donut-us__dot" aria-hidden="true"></span>vs. U.S.</button>
+                        <div class="donut-ctrl__row">
+                            <span class="donut-ctrl__label" aria-hidden="true">Color</span>
+                            <div class="seg seg--sm" id="donut-mode" role="group" aria-label="Color the slices by">
+                                <button type="button" data-view="sector">Sectors</button>
+                                <button type="button" data-view="pay">Pay</button>
+                                <button type="button" data-view="growth">Growth</button>
+                            </div>
+                        </div>
                     </div>
                     <p class="donut-key" id="donut-key" hidden></p>
                 </div>

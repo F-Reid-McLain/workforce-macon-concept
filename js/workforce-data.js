@@ -88,6 +88,11 @@
     const DONUT_OTHER = '#4b5568';
     // What the colors show (the switch under the donut), and whether the U.S. ring is on
     let donutMode = 'sector', donutUS = false;
+    // What the slices' sizes show: jobs, or wages (each industry's jobs × average pay, a year)
+    let donutSize = 'jobs';
+    const sizeOf = d => donutSize === 'wages' ? d.payroll : d.value;
+    const fmtMoney = v => v >= 1e9 ? '$' + (v / 1e9).toFixed(1) + 'B' : v >= 1e7 ? '$' + Math.round(v / 1e6) + 'M'
+        : v >= 1e6 ? '$' + (v / 1e6).toFixed(1) + 'M' : '$' + Math.round(v / 1e3) + 'K';
     const PAY = d3.scaleLinear([25000, 55000, 95000], ['#39425a', '#8a7748', '#f2c46b']).clamp(true);
     const GROWTH = d3.scaleLinear([-0.2, 0, 0.2], ['#e8705f', '#4b5568', '#34d399']).clamp(true);
     const colorOf = d => donutMode === 'pay' ? PAY(d.wage) : donutMode === 'growth' ? GROWTH(d.growth) : d.color;
@@ -99,7 +104,8 @@
     function figures(list) {
         const value = d3.sum(list, c => c.empl);
         const before = d3.sum(list, c => c.empl - c.change);
-        return { value, wage: value ? d3.sum(list, c => c.empl * c.wage) / value : 0,
+        const payroll = d3.sum(list, c => c.empl * c.wage);
+        return { value, payroll, wage: value ? payroll / value : 0,
                  growth: before > 0 ? d3.sum(list, c => c.change) / before : 0,
                  us: d3.sum(list, c => c.lq > 0 ? c.empl / c.lq : 0) };
     }
@@ -107,9 +113,10 @@
     function donutSlices(node) {
         if (node === hierarchy) {
             return node.children.map(g => ({ name: g.name, color: g.color, sector: g, ...figures(g.children.concat(g.gone)) }))
-                .sort((a, b) => b.value - a.value);
+                .sort((a, b) => sizeOf(b) - sizeOf(a));
         }
-        const kids = [...node.children].sort((a, b) => b.empl - a.empl), top = kids.slice(0, 10), rest = kids.slice(10);
+        const by = c => donutSize === 'wages' ? c.empl * c.wage : c.empl;
+        const kids = [...node.children].sort((a, b) => by(b) - by(a)), top = kids.slice(0, 10), rest = kids.slice(10);
         const out = top.map((c, i) => ({ name: c.name, naics: c.naics, ...figures([c]),
             color: d3.interpolateRgb(node.color, '#1b2433')(Math.min(0.75, i * 0.075)) }));
         if (rest.length) out.push({ name: `Other (${rest.length} industries)`, color: DONUT_OTHER, other: true, ...figures(rest.concat(node.gone || [])) });
@@ -127,10 +134,12 @@
         const slices = donutSlices(node);
         const allJobs = sectorJobsAll();
         const total = d3.sum(slices, d => d.value), usTotal = d3.sum(slices, d => d.us) || 1;
+        const wages = donutSize === 'wages', totalPay = d3.sum(slices, d => d.payroll) || 1;
+        const sizeShare = d => wages ? d.payroll / totalPay : d.value / total;   // its share of the ring
         const size = Math.max(240, Math.min(box.clientWidth || 480, 520)), R = size / 2, inner = R * 0.62;
         const svg = d3.select('#donut-svg').attr('viewBox', `${-R} ${-R} ${size} ${size}`).attr('width', size).attr('height', size);
         box.style.setProperty('--donut-size', size + 'px');
-        const pie = d3.pie().value(d => d.value).sort(null).padAngle(0.006)(slices);
+        const pie = d3.pie().value(sizeOf).sort(null).padAngle(0.006)(slices);
         const usPie = d3.pie().value(d => d.us).sort(null).padAngle(0.006)(slices);
         const arc = d3.arc().innerRadius(inner).outerRadius(R - 6).cornerRadius(3);
         const arcHot = d3.arc().innerRadius(inner - 2).outerRadius(R).cornerRadius(3);
@@ -147,12 +156,13 @@
             .attr('fill', d => colorOf(d.data))
             .attr('tabindex', d => clickable(d) ? 0 : -1)
             .attr('role', d => clickable(d) ? 'button' : 'img')
-            .attr('aria-label', d => `${d.data.name}: ${Math.round(d.value).toLocaleString()} jobs, ${fmtShare(d.value / total)}` +
+            .attr('aria-label', d => `${d.data.name}: ${wages ? `${fmtMoney(d.data.payroll)} in wages a year, ${fmtShare(sizeShare(d.data))} of wages`
+                : `${Math.round(d.data.value).toLocaleString()} jobs, ${fmtShare(sizeShare(d.data))}`}` +
                 (isRoot ? '' : d.data.other ? '' : '. Open its details'))
             .style('cursor', d => clickable(d) ? 'pointer' : 'default');
         const usPaths = gUS.selectAll('path').data(usPie, d => d.data.name).join('path')
             .attr('fill', d => colorOf(d.data)).attr('d', usArc).attr('aria-hidden', 'true');
-        gUS.style('opacity', donutUS ? 0.8 : 0);
+        gUS.style('opacity', donutUS && !wages ? 0.8 : 0);
 
         // The old ring, kept as ghosts for the transition
         const ghosts = gGhost.selectAll('path').data(opts.ghosts || []).join('path')
@@ -165,7 +175,10 @@
         const outIdx = trans && trans.zoomOut ? pie.findIndex(d => d.data.sector === trans.zoomOut) : -1;
         const span = trans && trans.zoomIn ? trans.zoomIn : outIdx >= 0 ? [pie[outIdx].startAngle, pie[outIdx].endAngle] : null;
         const into = (t, w) => w[0] + (t / TAU) * (w[1] - w[0]);
-        let zNow = trans ? 0 : 1;   // the zoom's progress, so a hover mid-zoom doesn't jump it to the end
+        // morph: each slice's angles before a resize (Jobs ↔ Wages), keyed by name, to slide from
+        const morph = opts.morph || null;
+        const was = (d, k) => { const m = morph && morph.get(d.data.name); return m ? m[k] : k === 'startAngle' ? d.startAngle : d.endAngle; };
+        let zNow = trans || morph ? 0 : 1;   // the zoom's progress, so a hover mid-zoom doesn't jump it to the end
         function draw(a, hot, z = zNow) {
             zNow = z;
             paths.attr('d', (d, i) => {
@@ -174,6 +187,7 @@
                 if (e <= 0) return null;
                 let s0 = d.startAngle, s1 = d.startAngle + (d.endAngle - d.startAngle) * e;
                 if (trans && trans.zoomIn) { s0 = into(s0, span) + (s0 - into(s0, span)) * z; s1 = into(s1, span) + (s1 - into(s1, span)) * z; }
+                if (morph) { s0 = was(d, 'startAngle') + (s0 - was(d, 'startAngle')) * z; s1 = was(d, 'endAngle') + (s1 - was(d, 'endAngle')) * z; }
                 return (hot === i ? arcHot : arc)({ ...d, startAngle: s0, endAngle: s1 });
             }).attr('opacity', (d, i) => {
                 if ((a * (n + 4) - i) <= 0) return 0;
@@ -195,10 +209,15 @@
         }
         let hot = -1;
         const center = document.getElementById('donut-center');
-        const lead = d => donutMode === 'pay' ? fmtPay(d.wage) : donutMode === 'growth' ? fmtGrowth(d.growth) : fmtShare(d.value / total);
+        const lead = d => donutMode === 'pay' ? fmtPay(d.wage) : donutMode === 'growth' ? fmtGrowth(d.growth) : fmtShare(sizeShare(d));
+        const amount = d => wages ? fmtMoney(d.payroll) : Math.round(d.value).toLocaleString();
+        const usOn = donutUS && !wages;   // the U.S. ring compares jobs (there are no U.S. wages to compare)
         const centerDefault = () => {
-            const key = donutUS ? '<small>Outer ring: Macon-Bibb · inner: the U.S.</small>'
+            const key = usOn ? '<small>Outer ring: Macon-Bibb · inner: the U.S.</small>'
                 : donutMode === 'pay' ? '<small>Colored by average pay</small>' : donutMode === 'growth' ? '<small>Colored by five-year job change</small>' : '';
+            if (wages) return isRoot
+                ? `<b>${fmtMoney(totalPay)}</b><span>in wages a year</span>${key || '<small>Slices sized by wages · click one to look inside</small>'}`
+                : `<b>${fmtMoney(totalPay)}</b><span>${node.name}</span>${key || `<small>${fmtShare(totalPay / allPay())} of all wages · click here to go back</small>`}`;
             return isRoot
                 ? `<b>${Math.round(officialJobs || allJobs).toLocaleString()}</b><span>jobs in ${slices.length} sectors</span>${key || '<small>Click a slice to look inside</small>'}`
                 : `<b>${fmtShare(total / allJobs)}</b><span>${node.name}</span>${key || `<small>${Math.round(total).toLocaleString()} jobs · click an industry, or here to go back</small>`}`;
@@ -206,18 +225,21 @@
         const setCenter = i => {
             if (i < 0) { center.innerHTML = centerDefault(); return; }
             const d = pie[i].data;
-            const us = donutUS ? ` · U.S. ${fmtShare(d.us / usTotal)}` : '';
-            const detail = donutMode === 'sector' ? `${Math.round(d.value).toLocaleString()} jobs${d.wage ? ` · ${fmtPay(d.wage)} avg pay` : ''}`
+            const us = ` · U.S. ${fmtShare(d.us / usTotal)}`;
+            // sized by wages, its share of wages against its share of jobs is the point
+            const detail = wages ? (donutMode === 'sector' ? `${fmtMoney(d.payroll)} a year · ${fmtShare(d.value / total)} of jobs`
+                    : `${fmtShare(d.payroll / totalPay)} of wages · ${fmtShare(d.value / total)} of jobs`)
+                : donutMode === 'sector' ? `${Math.round(d.value).toLocaleString()} jobs${d.wage ? ` · ${fmtPay(d.wage)} avg pay` : ''}`
                 : `${fmtShare(d.value / total)} of jobs · ${Math.round(d.value).toLocaleString()} jobs`;
-            center.innerHTML = `<b>${lead(d)}</b><span>${d.name}</span><small>${donutUS ? `Here ${fmtShare(d.value / total)}${us}` : detail}</small>`;
+            center.innerHTML = `<b>${lead(d)}</b><span>${d.name}</span><small>${usOn ? `Here ${fmtShare(d.value / total)}${us}` : detail}</small>`;
         };
         const legend = document.getElementById('donut-legend');
         // Column headings make it plain what each figure is
-        const lastHead = donutMode === 'pay' ? 'Avg pay' : donutMode === 'growth' ? 'Change' : isRoot ? '% of jobs' : '% of sector';
+        const lastHead = () => donutMode === 'pay' ? 'Avg pay' : donutMode === 'growth' ? 'Change' : isRoot ? (wages ? 'Share' : '% of jobs') : 'Share';
         legend.innerHTML = `<li class="donut-legend__head" aria-hidden="true"><span></span><span>${isRoot ? 'Industry sector' : 'Industry in ' + node.name}</span>
-            <span>Jobs</span><span>${lastHead}</span></li>` + pie.map((d, i) => `<li><button type="button" data-i="${i}" ${clickable(d) ? '' : 'tabindex="-1"'}>
+            <span>${wages ? 'Wages' : 'Jobs'}</span><span>${lastHead()}</span></li>` + pie.map((d, i) => `<li><button type="button" data-i="${i}" ${clickable(d) ? '' : 'tabindex="-1"'}>
             <i style="background:${colorOf(d.data)}"></i><span class="dl-name">${d.data.name}</span>
-            <span class="dl-val">${Math.round(d.value).toLocaleString()}</span><span class="dl-share">${lead(d.data)}</span></button></li>`).join('');
+            <span class="dl-val">${amount(d.data)}</span><span class="dl-share">${lead(d.data)}</span></button></li>`).join('');
         const legendRows = Array.from(legend.querySelectorAll('button'));
         // Slice i hot (or none, -1); with none, any sectors lit by the other tools stay lit
         const paint = i => {
@@ -263,19 +285,34 @@
             usPaths.transition().duration(450).attr('fill', d => colorOf(d.data));
             legendRows.forEach((b, i) => { b.querySelector('i').style.background = colorOf(pie[i].data); b.querySelector('.dl-share').textContent = lead(pie[i].data); });
             const h = legend.querySelector('.donut-legend__head span:nth-child(4)');
-            if (h) h.textContent = donutMode === 'pay' ? 'Avg pay' : donutMode === 'growth' ? 'Change' : isRoot ? '% of jobs' : '% of sector';
-            gUS.transition().duration(450).style('opacity', donutUS ? 0.8 : 0);
+            if (h) h.textContent = lastHead();
+            gUS.transition().duration(450).style('opacity', donutUS && !wages ? 0.8 : 0);
             setCenter(hot);
         };
-        renderDonut.snapshot = () => ({ node, pie: pie.map(d => ({ startAngle: d.startAngle, endAngle: d.endAngle, padAngle: d.padAngle, fill: colorOf(d.data), sector: d.data.sector })) });
+        renderDonut.snapshot = () => ({ node, pie: pie.map(d => ({ startAngle: d.startAngle, endAngle: d.endAngle, padAngle: d.padAngle, fill: colorOf(d.data), sector: d.data.sector, name: d.data.name })) });
         renderDonut.draw = (a, z) => draw(a, hot, z === undefined ? zNow : z);
         renderDonut.hot = highlight;
         renderDonut.indexOf = naics => { const k = pie.findIndex(d => d.data.naics === naics); return k >= 0 ? k : pie.findIndex(d => d.data.other); };
         paint(-1);
         setCenter(-1);
-        draw(opts.assemble === undefined ? donutBuilt : opts.assemble, -1, trans ? 0 : 1);
+        draw(opts.assemble === undefined ? donutBuilt : opts.assemble, -1, trans || morph ? 0 : 1);
     }
     function sectorJobsAll() { return hierarchy ? d3.sum(hierarchy.children, sectorJobs) : 0; }
+    function allPay() { return hierarchy ? d3.sum(hierarchy.children, g => d3.sum(g.children, c => c.empl * c.wage)) : 1; }
+    // Jobs ↔ Wages: the same view redrawn, each slice sliding from its old size to its new one
+    function resizeDonut() {
+        if (!donutNode || !renderDonut.snapshot) return;
+        if (donutAnim) donutAnim.stop();
+        const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const morph = new Map(renderDonut.snapshot().pie.map(p => [p.name, p]));
+        renderDonut(donutNode, { assemble: donutBuilt, morph: reduce || donutBuilt < 1 ? null : morph });
+        if (reduce || donutBuilt < 1) return;
+        donutAnim = d3.timer(t => {
+            const k = Math.min(1, t / 700);
+            renderDonut.draw(1, d3.easeCubicInOut(k));
+            if (k >= 1) { donutAnim.stop(); donutAnim = null; }
+        });
+    }
     // Drill in or out. Into a sector from the whole ring: its slice grows to fill the ring as it
     // splits into its industries, and the other sectors fade away. Back out: the industries fold
     // into their sector's wedge and the other sectors return. Anything else sweeps in fresh.
@@ -311,6 +348,14 @@
                 : donutMode === 'growth' ? '<span>−20%</span><i></i><span>+20% in 5 yrs</span>' : '';
         };
         WFTools.segmented(mode, v => { donutMode = v; showKey(); if (renderDonut.recolor) renderDonut.recolor(); })('sector');
+        const size = document.getElementById('donut-size');
+        if (size) WFTools.segmented(size, v => {
+            if (v === donutSize) return;
+            donutSize = v;
+            us.disabled = v === 'wages';   // the U.S. ring compares jobs
+            us.title = us.disabled ? 'The U.S. comparison is by jobs' : '';
+            resizeDonut();
+        })('jobs');
         us.addEventListener('click', () => {
             donutUS = !donutUS;
             us.setAttribute('aria-pressed', String(donutUS));

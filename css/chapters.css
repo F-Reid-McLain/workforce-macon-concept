@@ -175,14 +175,17 @@ body.page-home .demo-bar-row { padding: 5px 0; font-size: 0.86rem; }
 .donut-tip { display: none; }
 /* Under the donut: what the colors show, the U.S. ring, and a color key (js/workforce-data.js) */
 .donut-wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; min-width: 0; width: 100%; }
-.donut-ctrl { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; }
+.donut-ctrl { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.donut-ctrl__row { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; }
+.donut-ctrl__label { width: 3.8em; text-align: right; font-size: 0.66rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text-muted); }
 .seg--sm button { padding: 0.32rem 0.75rem; font-size: 0.78rem; }
 .donut-us {
     display: inline-flex; align-items: center; gap: 6px; padding: 0.32rem 0.75rem; border-radius: 999px; cursor: pointer;
     font: 600 0.78rem var(--font-body); background: transparent; color: var(--color-text-secondary); border: 1px solid rgba(255, 255, 255, 0.16);
     transition: color 0.2s, border-color 0.2s, background 0.2s;
 }
-.donut-us:hover { color: #fff; border-color: rgba(255, 255, 255, 0.35); }
+.donut-us:hover:not(:disabled) { color: #fff; border-color: rgba(255, 255, 255, 0.35); }
+.donut-us:disabled { opacity: 0.4; cursor: default; }
 .donut-us__dot { width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid currentColor; box-sizing: border-box; transition: background 0.2s; }
 .donut-us[aria-pressed="true"] { color: #fff; border-color: var(--ch-gold); background: rgba(242, 196, 107, 0.12); }
 .donut-us[aria-pressed="true"] .donut-us__dot { background: var(--ch-gold); border-color: var(--ch-gold); }
