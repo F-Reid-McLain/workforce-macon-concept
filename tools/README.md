@@ -31,3 +31,4 @@ Lengths and costs follow each school's published rules (for example, CGTC's "ass
 
 - `fetch-us-routes.py` pulls the real paths of US 41, 80, 129 and 23 around Macon from OpenStreetMap into `data/us-routes-macon.geojson`, for the Jobs title slide's map. Rerun it only if the routes need refreshing: `python3 tools/fetch-us-routes.py`. Map data © OpenStreetMap contributors (ODbL), credited in the slide's source line.
 - `render-story.js` makes marketing stills of the 3D commuting story (see the top of the file).
+- `render-poster.js` renders the phone opening's stand-in picture of Macon-Bibb (`assets/story/opening-phone.png`), shown while the 3D starts up. Rerun it after changing the story's opening camera or lighting, and paste the CSS numbers it prints into `.ci-poster` in `css/commute-intro.css`.

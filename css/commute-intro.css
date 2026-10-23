@@ -161,6 +161,18 @@ body.ci-presenting .ci-present-hint { display: block; }
 /* The map fades in once its data has loaded */
 .ci-stage #ci-map { opacity: 0; transition: opacity 0.8s ease; }
 .ci.is-ready #ci-map { opacity: 1; }
+/* Phones: the opening block as a picture until the 3D is ready, then the two cross-fade.
+   Size and offset from the stage's middle come from tools/render-poster.js */
+.ci-poster { display: none; }
+@media (max-width: 700px) {
+    .ci-poster {
+        --poster-w: 267.5px; --poster-dx: -18.8px; --poster-dy: 51.5px;
+        display: block; position: absolute; z-index: 0; pointer-events: none;
+        left: calc(50% + var(--poster-dx)); top: calc(50% + var(--poster-dy)); width: var(--poster-w); height: auto;
+        transform: translate(-50%, -50%); transition: opacity 0.8s ease;
+    }
+    .ci.is-ready .ci-poster { opacity: 0; }
+}
 
 .ci-time {
     position: absolute; top: 18px; right: 18px; z-index: 3;
