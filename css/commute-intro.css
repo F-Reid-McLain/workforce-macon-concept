@@ -241,6 +241,23 @@ body.ci-on-screen .page-jumpnav { opacity: 0; pointer-events: none; }
     .ci-pulse__chart { width: 260px; height: 48px; }
 }
 
+/* ----- Phones: the short story. Five cards (welcome, 6 AM, rush hour, midday, the map), each a
+   one-line caption in a compact strip at the bottom, so the map gets the screen. The pay and
+   evening cards, the long notes, the live counter and the moment links are for larger screens
+   (and presenting); the day still plays through the evening between midday and the map. ----- */
+.ci-short { display: none; }
+@media (max-width: 700px) {
+    .ci-step--full, .ci-long, .ci-pulse, .ci-linkbtn { display: none !important; }
+    .ci-short { display: block; }
+    .ci-step { min-height: 90vh; min-height: 90svh; padding: 0 0.6rem calc(14px + env(safe-area-inset-bottom)); }
+    .ci-card { padding: 0.8rem 1rem 0.85rem; border-radius: 12px; background: rgba(16, 23, 32, 0.92); }
+    .ci-card .ci-when { font-size: 0.66rem; margin-bottom: 0.2rem; }
+    .ci-card :is(h2, h3) { font-size: 1.1rem; margin-bottom: 0.25rem; }
+    .ci-card p { font-size: 0.92rem; line-height: 1.4; }
+    .ci-step--map .ci-card { max-height: 40vh; max-height: 40svh; }
+    .ci-step--map .ci-county__pick > span { font-size: 0.82rem; }
+}
+
 @media (prefers-reduced-motion: reduce) {
     .ci-scroll svg { animation: none; }
     .ci-card, .ci-stage #ci-map { transition: none; }

@@ -33,6 +33,8 @@
         <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16.png">
         <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
         <link rel="manifest" href="site.webmanifest">
+        <link rel="preconnect" href="https://unpkg.com" crossorigin>
+        <link rel="preconnect" href="https://d3js.org" crossorigin>
         <link rel="stylesheet" href="css/theme.css">
         <link rel="stylesheet" href="css/main.css">
         <link rel="stylesheet" href="css/viz.css">
@@ -55,6 +57,12 @@
                     <li><a href="index.html" class="nav-link active">Workforce Data</a></li>
                     <li><a href="navigator.html" class="nav-link">Workforce Navigator</a></li>
                     <li><a href="about.html" class="nav-link">About</a></li>
+                    <!-- Phones: the homepage's sections, in place of the section bar (css/main.css) -->
+                    <li class="nav-section-title" aria-hidden="true">On this page</li>
+                    <li class="nav-section"><a href="#section-commute" class="nav-link">Commute</a></li>
+                    <li class="nav-section"><a href="#jobs" class="nav-link">Jobs</a></li>
+                    <li class="nav-section"><a href="#industries" class="nav-link">Industries</a></li>
+                    <li class="nav-section"><a href="#custom-research" class="nav-link">Custom research</a></li>
                 </ul>
             </nav>
         </div>
@@ -109,15 +117,17 @@
                 <div class="ci-step" data-time="6" id="ci-dawn" data-moment="6am"><div class="ci-card">
                     <div class="ci-when">6:00 AM</div>
                     <h2>Macon and its neighbors</h2>
-                    <p>Macon-Bibb sits at the center of 16 neighboring counties. At 6 AM they all stand level: everyone is still at home.</p>
+                    <p class="ci-short">Macon-Bibb and its 16 neighbors, everyone still at home.</p>
+                    <p class="ci-long">Macon-Bibb sits at the center of 16 neighboring counties. At 6 AM they all stand level: everyone is still at home.</p>
                 </div></div>
                 <div class="ci-step" data-time="7.5" data-moment="8am"><div class="ci-card">
                     <div class="ci-when">7:30 AM</div>
                     <h2>Rush hour</h2>
-                    <p>By 8 AM, Macon-Bibb is filling up as its neighbors empty out.</p>
-                    <p class="ci-note"><span class="ci-swatch" style="background:#f2c46b"></span>Gold dots head into Macon-Bibb, <span class="ci-swatch" style="background:#fff"></span>white dots head out; each is <span data-ci="perDot"></span> commuters. Smaller, fainter dots come from or go beyond the map: people who commute farther. A county drops as its dots leave and rises as they land: <span class="ci-swatch" style="background:rgba(52,211,153,0.75)"></span>green is Macon-Bibb's gain, <span class="ci-swatch" style="background:rgba(248,113,113,0.45)"></span>faint red is what each neighbor has lost. Heights exaggerate the change 2.5×; labels show the real change. Timing is illustrative.</p>
+                    <p class="ci-short">Neighbors stream in to fill <strong data-ci="inFromRegion">26,349</strong> jobs in <span class="nw">Macon-Bibb</span>.</p>
+                    <p class="ci-long">By 8 AM, Macon-Bibb is filling up as its neighbors empty out.</p>
+                    <p class="ci-note ci-long"><span class="ci-swatch" style="background:#f2c46b"></span>Gold dots head into Macon-Bibb, <span class="ci-swatch" style="background:#fff"></span>white dots head out; each is <span data-ci="perDot"></span> commuters. Smaller, fainter dots come from or go beyond the map: people who commute farther. A county drops as its dots leave and rises as they land: <span class="ci-swatch" style="background:rgba(52,211,153,0.75)"></span>green is Macon-Bibb's gain, <span class="ci-swatch" style="background:rgba(248,113,113,0.45)"></span>faint red is what each neighbor has lost. Heights exaggerate the change 2.5×; labels show the real change. Timing is illustrative.</p>
                 </div></div>
-                <div class="ci-step" data-time="8.5" data-moment="pay"><div class="ci-card">
+                <div class="ci-step ci-step--full" data-time="8.5" data-moment="pay"><div class="ci-card">
                     <div class="ci-when">8:30 AM</div>
                     <h2>Who's coming in</h2>
                     <p>Now the dots show what each commuter earns. <strong data-ci="payIn"></strong> of the jobs neighbors hold in Macon-Bibb pay more than $3,333 a month, compared with <strong data-ci="payLocal"></strong> of jobs held by people who live and work here.</p>
@@ -127,10 +137,11 @@
                 <div class="ci-step" data-time="12.5" data-moment="noon"><div class="ci-card">
                     <div class="ci-when">12:30 PM</div>
                     <h2>The workday</h2>
-                    <p>Counting commuters from everywhere, Macon-Bibb holds about <strong data-ci="bibbDay"></strong> people by midday (<span data-ci="bibbPct"></span>), drawn most from <span data-ci="topSources"></span>.</p>
-                    <p><strong data-ci="oneIn"></strong> jobs here is held by someone from a neighboring county, and about <strong data-ci="farIn"></strong> more are filled by people from farther away.</p>
+                    <p class="ci-short"><strong data-ci="oneIn"></strong> jobs here is held by someone from a neighboring county.</p>
+                    <p class="ci-long">Counting commuters from everywhere, Macon-Bibb holds about <strong data-ci="bibbDay"></strong> people by midday (<span data-ci="bibbPct"></span>), drawn most from <span data-ci="topSources"></span>.</p>
+                    <p class="ci-long"><strong data-ci="oneIn"></strong> jobs here is held by someone from a neighboring county, and about <strong data-ci="farIn"></strong> more are filled by people from farther away.</p>
                 </div></div>
-                <div class="ci-step" data-time="17.75" data-moment="evening"><div class="ci-card">
+                <div class="ci-step ci-step--full" data-time="17.75" data-moment="evening"><div class="ci-card">
                     <div class="ci-when">5:45 PM</div>
                     <h2>Heading home</h2>
                     <p>The dots reverse, and most of those higher paychecks head home with them. By evening the region settles back into its night-time shape, ready to do it all again tomorrow.</p>
@@ -139,7 +150,7 @@
                 <div class="ci-step ci-step--map" data-time="21" id="section-region" data-moment="map"><div class="ci-card">
                     <div class="ci-when">The whole picture</div>
                     <h2>The region's commuting balance</h2>
-                    <p>This is the balance the day just played out: every county around Macon-Bibb sends out more workers than it takes in. Only Macon-Bibb gains.</p>
+                    <p class="ci-long">This is the balance the day just played out: every county around Macon-Bibb sends out more workers than it takes in. Only Macon-Bibb gains.</p>
                     <div class="ci-county" id="counties-tool">
                         <label class="ci-county__pick">
                             <span>See how your county trades workers with <span class="nw">Macon-Bibb</span>, or click it on the map</span>

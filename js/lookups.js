@@ -27,6 +27,29 @@
     const mobile = () => window.innerWidth <= 768;
     const reduce = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
 
+    // ----- Phones: long lists show their top few, with a button for the rest -----
+    // The cap is a class on the list (css/chapters.css hides the rows past it at phone width),
+    // so it holds however often the list redraws; the button only shows when there's more.
+    function phoneCap(listEl, more) {
+        if (!listEl) return;
+        listEl.classList.add('is-capped');
+        const btn = document.createElement('button');
+        btn.type = 'button'; btn.className = 'cap-more';
+        const label = () => { btn.textContent = listEl.classList.contains('is-open') ? 'Show fewer' : more; };
+        btn.addEventListener('click', () => { listEl.classList.toggle('is-open'); label(); });
+        listEl.after(btn);
+        const fit = () => {
+            const cap = +getComputedStyle(listEl).getPropertyValue('--cap') || Infinity;   // no cap above phone width
+            btn.hidden = listEl.querySelectorAll(':scope > li:not(.donut-legend__head)').length <= cap;
+        };
+        addEventListener('resize', fit);
+        new MutationObserver(fit).observe(listEl, { childList: true });
+        label(); fit();
+    }
+    phoneCap(document.getElementById('job-rank'), 'Show 5 more');
+    phoneCap(document.getElementById('strength-list'), 'Show all specialties');
+    phoneCap(document.getElementById('donut-legend'), 'Show every sector');
+
     // ----- Links into a tool: #<stop>/<item> -----
     const slug = s => String(s).toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
     // Chapters from the earlier homepage, so old links still land somewhere sensible

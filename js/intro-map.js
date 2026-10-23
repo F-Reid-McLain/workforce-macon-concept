@@ -68,7 +68,9 @@ window.WFIntroMap = (function () {
 
         function draw() {
             if (!counties || !roads) return;
-            const W = slide.clientWidth, H = slide.clientHeight, wide = W >= 900;
+            // Sized from the <svg>'s own box: the whole slide on wide screens; on phones the
+            // map has a screen of its own after the text (css/chapters.css)
+            const W = svgEl.clientWidth, H = svgEl.clientHeight, wide = W >= 900;
             svg.attr('viewBox', `0 0 ${W} ${H}`).attr('width', W).attr('height', H).selectAll('*').remove();
             const bibbF = counties.features.find(f => f.properties.name === 'Bibb');
             // Planar projection fitted to Macon-Bibb where the slide wants it
@@ -142,9 +144,9 @@ window.WFIntroMap = (function () {
             render(reduce ? 1 : cur);
         }
 
-        // How centered the slide is: 0 while it's away, 1 while it's centered
+        // How centered the map is: 0 while it's away, 1 while it's centered
         function progress() {
-            const r = slide.getBoundingClientRect(), vh = innerHeight;
+            const r = svgEl.getBoundingClientRect(), vh = innerHeight;
             const off = Math.abs(r.top + r.height / 2 - vh / 2);
             return clamp(1.15 - off / (0.55 * vh));
         }

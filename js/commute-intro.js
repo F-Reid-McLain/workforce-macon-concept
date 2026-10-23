@@ -118,7 +118,7 @@
             return net > 0 ? [{ from: EDGE, to: fips, jobs: net }] : net < 0 ? [{ from: fips, to: EDGE, jobs: -net }] : [];
         });
         const allFlows = region.flows.concat(edgeFlows);
-        const PER_DOT = d3.sum(allFlows, f => f.jobs) / (mobile ? 260 : 480);
+        const PER_DOT = d3.sum(allFlows, f => f.jobs) / (mobile ? 180 : 480);   // fewer, larger groups on phones
         let seed = 3; const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296;
         // Each dot also carries a pay band (LODES earnings), split in proportion to its flow's mix
         const bandAt = (pay, q) => { const tot = d3.sum(pay); let acc = 0; for (let b = 0; b < pay.length; b++) { acc += pay[b] / tot; if (q < acc) return b; } return pay.length - 1; };
@@ -296,7 +296,7 @@
             const padLeft = W > +(stage.dataset.padBreakpoint || Infinity) ? +(stage.dataset.padLeft || 0) : 0;
             const vp = new deck.WebMercatorViewport({ width: W, height: H })
                 // phones: the map fits the top half, above the card (which holds the county tool)
-                .fitBounds(bounds, { padding: { top: 56, bottom: W <= 768 ? Math.round(H * 0.5) : 40, left: 24 + padLeft, right: 24 } });
+                .fitBounds(bounds, { padding: { top: 56, bottom: W <= 700 ? Math.round(H * 0.42) : W <= 768 ? Math.round(H * 0.5) : 40, left: W <= 700 ? 12 : 24 + padLeft, right: W <= 700 ? 12 : 24 } });
             flatView = { longitude: vp.longitude, latitude: vp.latitude, zoom: vp.zoom, pitch: 0, bearing: 0 };
             // Highway badges that land on top of each other get pushed apart (in screen space);
             // an interstate keeps its spot and the other badge moves
@@ -606,10 +606,14 @@
         }
 
         // ----- Scroll → target time; the shown time glides after it -----
-        const steps = Array.from(section.querySelectorAll('.ci-step'));
+        // Phones skip some cards (.ci-step--full, css/commute-intro.css), so the story runs on
+        // the cards actually showing; the day's time still glides across the gaps between them
+        const allSteps = Array.from(section.querySelectorAll('.ci-step'));
+        let steps = allSteps;
         let anchors = [];
         const measure = () => {
             setTop();
+            steps = allSteps.filter(el => el.offsetParent !== null);
             anchors = steps.map(el => { const r = el.getBoundingClientRect(); return { t: +el.dataset.time, y: r.top + scrollY + r.height / 2 - innerHeight / 2, el }; });
         };
         function onScroll() {
@@ -637,7 +641,10 @@
         // story's own camera as soon as anyone scrolls, clicks, touches or presses a key,
         // holds still after a couple of idle minutes, and stays off for reduced motion and
         // on the finished (flat) map.
-        const IDLE_MS = 2000, IDLE_MAX = 120000;
+        // Touch devices (phones, tablets) keep only the opening spin, for half a minute, so the
+        // loop can sleep and spare the battery; no sway on the cards
+        const canHover = !!(window.matchMedia && matchMedia('(hover: hover)').matches);
+        const IDLE_MS = 2000, IDLE_MAX = canHover ? 120000 : 30000;
         const SPIN = 360 / 75000, SWAY = 8;            // degrees per ms; degrees either way
         let lastInput = performance.now(), orbit = 0, swayClock = 0, idleTimer = null;
         const wrap180 = d => ((d % 360) + 540) % 360 - 180;
@@ -681,7 +688,7 @@
                 // someone's moving the page (or the map is flat): ease back to the story's camera
                 if (Math.abs(wrap180(orbit)) > 0.02) { orbit = wrap180(orbit) * Math.exp(-dt / 380); busy = true; } else orbit = 0;
                 swayClock = 0;
-            } else if (since < IDLE_MAX && rise >= 1 && Math.abs(target - hour) < 0.001) {
+            } else if (since < IDLE_MAX && rise >= 1 && Math.abs(target - hour) < 0.001 && (canHover || hour < 5.6)) {
                 const ease = smooth(IDLE_MS, IDLE_MS + 2500, since);   // drift starts slowly
                 if (hour < 5.6) orbit += dt * SPIN * ease;            // the opening view: turn all the way around
                 else { swayClock += dt; const want = SWAY * ease * Math.sin(swayClock / 3800); orbit += (wrap180(want - orbit)) * (1 - Math.exp(-dt / 500)); }
@@ -785,13 +792,17 @@
             if (smooth && presenting && !reducedMotion) { glideTo(y); if (glide) glideStep = steps.indexOf(el); }
             else { stopGlide(); scrollTo({ top: y, behavior: smooth ? 'smooth' : 'instant' }); }
         };
-        const momentStep = name => steps.find(el => el.dataset.moment === name);
+        // A moment whose card isn't showing (on phones) lands on the next card that is
+        const momentStep = name => {
+            const i = allSteps.findIndex(el => el.dataset.moment === name);
+            return i < 0 ? null : allSteps.slice(i).find(el => steps.includes(el)) || steps[steps.length - 1];
+        };
         // #counties (and #counties/<county>) is the finished map, where the county tool lives
         const momentFor = id => { const name = String(id).split('/')[0]; return momentStep(name === 'counties' ? 'map' : name); };
         const goToHash = () => { const el = momentFor(decodeURIComponent(location.hash.slice(1))); if (el) goToStep(el, false); };
         window.WFStory = { goTo(id) { const el = momentFor(id); if (el) goToStep(el, false); return !!el; } };
         addEventListener('hashchange', goToHash);
-        steps.filter(el => el.dataset.moment).forEach(el => {
+        allSteps.filter(el => el.dataset.moment).forEach(el => {
             const card = el.querySelector('.ci-card');
             if (!card) return;
             const btn = document.createElement('button');

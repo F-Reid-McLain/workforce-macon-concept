@@ -78,12 +78,12 @@
         tip.innerHTML = `<b class="gm-tip__name">${esc(p.name)}</b>` +
             `<span class="gm-tip__makes">${esc(p.makes)}${p.status === 'coming' ? ' · <i>coming</i>' : ''}</span>` +
             `<ul>${p.events.map(e => `<li><b>${e.year}</b> ${esc(e.text)}</li>`).join('')}</ul>`;
-        // Above the plant, kept inside the slide
-        const W = slide.clientWidth, w = tip.offsetWidth || 260;
+        // Above the plant, kept inside the slide (the map may start partway down it, on phones)
+        const W = slide.clientWidth, w = tip.offsetWidth || 260, oy = svgEl.offsetTop;
         const x = Math.max(8 + w / 2, Math.min(W - 8 - w / 2, d.x)), y = d.y - 22 * d.s;
-        tip.style.left = x + 'px'; tip.style.top = y + 'px';
+        tip.style.left = x + 'px'; tip.style.top = (oy + y) + 'px';
         tip.classList.toggle('is-below', y - tip.offsetHeight < 70);   // too close to the top: open below instead
-        if (tip.classList.contains('is-below')) tip.style.top = (d.y + 14) + 'px';
+        if (tip.classList.contains('is-below')) tip.style.top = (oy + d.y + 14) + 'px';
         tip.classList.add('is-on');
     }
     function hideTip() { tipFor = null; tip.classList.remove('is-on'); }
@@ -105,12 +105,8 @@
         base: { neighbors: [0, 0.18], bibb: [0.04, 0.24], ints: [0.12, 0.32], us: null, shields: [0.26, 0.34] },
         fit: (W, H, wide) => {
             if (wide) return { x: W * 0.75, y: H * 0.5, w: 0.62, h: 0.82, at: CENTER };
-            // Phones: in the space below the text
-            const inner = slide.querySelector('.stop-intro__inner');
-            const top = inner.offsetTop + inner.offsetHeight, bottom = H - 12;
-            slide.style.setProperty('--gm-top', top.toFixed(0) + 'px');   // the map fades in below the text (css/chapters.css)
-            slide.style.setProperty('--gm-bottom', bottom.toFixed(0) + 'px');
-            return { x: W / 2, y: (top + bottom) / 2 + 10, w: 1.15, h: Math.max(0.3, (bottom - top) * 1.5 / H), at: CENTER };
+            // Phones: the map has its own screen, after the text (css/chapters.css)
+            return { x: W / 2, y: H * 0.56, w: 0.88, h: 0.6 };   // the whole county, centered
         },
         layer({ svg, proj, W, H, wide, bounds, bibbRings, DOWNTOWN }) {
             hideTip();
@@ -154,9 +150,10 @@
             const [dx, dy] = proj(DOWNTOWN);
             const down = svg.insert('g', '.gm-plants').attr('class', 'gm-downtown').attr('transform', `translate(${dx.toFixed(1)},${dy.toFixed(1)})`);
             down.append('circle').attr('r', 3.5);
-            down.append('text').attr('x', 8).attr('dy', '0.35em').text('Downtown Macon');
+            // labeled above the dot, clear of the plants south of downtown
+            down.append('text').attr('y', -10).attr('text-anchor', 'middle').text('Downtown Macon');
             // The year ticker, at the top of the map's half, with how to explore underneath
-            const tick = svg.append('g').attr('class', 'gm-ticker').attr('transform', wide ? `translate(${(W * 0.55).toFixed(1)},${(H * 0.2).toFixed(1)})` : `translate(16,${(dy + 34).toFixed(1)})`);
+            const tick = svg.append('g').attr('class', 'gm-ticker').attr('transform', wide ? `translate(${(W * 0.55).toFixed(1)},${(H * 0.2).toFixed(1)})` : `translate(18,${(H * 0.12 + 20).toFixed(1)})`);
             const year = tick.append('text').attr('class', 'gm-year').text(FIRST);
             tick.append('text').attr('class', 'gm-year-cap').attr('y', 16).text('new & expanding plants');
             const hint = tick.append('text').attr('class', 'gm-hint').attr('y', 32).text(touch ? 'Tap a plant for its story' : 'Hover a plant for its story');
@@ -173,7 +170,8 @@
                     pin.select('.gm-factory').attr('transform', `translate(${d.x.toFixed(1)},${(d.y + 6).toFixed(1)}) scale(${s.toFixed(2)},${(s * Math.max(0.001, rise)).toFixed(3)})`);
                     if (!d.shown && tipFor === d) hideTip();   // the drawing pulled back
                 });
-                const b = stage(0.1, 0.4);
+                // the bars sit with the headline: on phones that's the screen before the map, so they show in full
+                const b = wide ? stage(0.1, 0.4) : 1;
                 barFills.forEach((f, i) => { f.style.transform = `scaleX(${d3.easeCubicOut(clampBar(b - i * 0.08)).toFixed(3)})`; });
             };
         },
