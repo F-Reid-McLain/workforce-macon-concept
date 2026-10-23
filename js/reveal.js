@@ -75,11 +75,19 @@
         };
         const finalText = el.textContent;
         el.setAttribute('aria-label', finalText.trim());
+        // Hold the number's final width while it counts, so the words around it don't
+        // rewrap ("0" is much narrower than "2,779" and would pull a headline up a line)
+        // (only numbers inside running text; block numbers like the tickers keep their layout)
+        const inline = getComputedStyle(el).display === 'inline';
+        const width = el.getBoundingClientRect().width, st = el.style;
+        const prev = [st.display, st.minWidth, st.textAlign, st.fontVariantNumeric];
+        if (inline) { st.display = 'inline-block'; st.minWidth = width + 'px'; st.textAlign = 'right'; st.fontVariantNumeric = 'tabular-nums'; }
         const start = performance.now();
         (function tick(now) {
             const k = Math.min(1, (now - start) / DURATION);
             el.textContent = k < 1 ? fmt(target * easeOut(k)) : finalText;
             if (k < 1) requestAnimationFrame(tick);
+            else [st.display, st.minWidth, st.textAlign, st.fontVariantNumeric] = prev;
         })(start);
         return true;
     }
