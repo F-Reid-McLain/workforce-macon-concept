@@ -14,8 +14,7 @@
    - Your county (#counties) lives in js/county-explorer.js and uses the helpers below.
 
    Picking something puts it in the address (#jobs/registered-nurses,
-   #industries/hospitals), so a link reopens the tool on it. A tool left
-   untouched on screen demos itself once, and stops the moment anyone touches it. */
+   #industries/hospitals), so a link reopens the tool on it. */
 (function () {
     'use strict';
     if (!window.d3) return;
@@ -143,30 +142,6 @@
     // A quick lift-and-fade whenever a card's contents change
     function swap(el) { el.classList.remove('is-swap'); void el.offsetWidth; el.classList.add('is-swap'); }
 
-    // A tool left untouched on screen plays its steps once, then stops; any touch ends it
-    const canDemo = !reduce && !(window.matchMedia && matchMedia('(hover: none)').matches) && 'IntersectionObserver' in window;
-    function attract(stop, steps) {
-        if (!canDemo || !stop) return;
-        let idle = null, timers = [], done = false;
-        const hint = stop.querySelector('.stop-hint');
-        const end = () => { clearTimeout(idle); timers.forEach(clearTimeout); timers = []; if (hint) hint.classList.remove('is-on'); stop.classList.remove('is-demo'); };
-        const quit = () => { done = true; end(); };
-        ['pointerdown', 'keydown', 'focusin', 'wheel', 'touchstart'].forEach(ev => stop.addEventListener(ev, e => { if (e.isTrusted && !done) quit(); }, { passive: true }));
-        new IntersectionObserver(es => {
-            if (done) return;
-            const seen = es.some(e => e.isIntersecting);
-            end();
-            if (!seen) return;
-            idle = setTimeout(() => {
-                done = true;
-                stop.classList.add('is-demo');
-                if (hint) hint.classList.add('is-on');
-                steps.forEach((fn, k) => timers.push(setTimeout(fn, k * 1600)));
-                timers.push(setTimeout(end, steps.length * 1600 + 900));
-            }, 3500);
-        }, { threshold: 0.6 }).observe(stop);
-    }
-
     // A typeahead box with a short list of matches; Enter picks the top match.
     // Each word typed has to start a word in the name ("tire" finds Tire Dealers, not
     // Retirement Communities). Names that start with the query come first, then ones
@@ -274,9 +249,6 @@
         sortBy('common');
         show(current, true);
         register('jobs', s => { const j = jobs.find(j => slug(j.name) === s); if (j) show(j); return !!j; });
-        // Idle demo: each ranking in turn, its #1 into the card, then back where it started
-        const demo = v => () => { sortBy(v); show(ranked[0]); };
-        attract(document.getElementById('jobs'), [demo('paid'), demo('growing'), demo('openings'), demo('common')]);
     }).catch(err => console.error('Job lookup failed to load', err));
 
     // ----- Industries -----
@@ -332,16 +304,10 @@
         if (indView.current() === 'specialties') { lightFor('specialties'); growBars(); }
         typeahead({ input, list: document.getElementById('strength-qlist'), items: inds, label: i => i.name, onPick: pick });
         register('industries', s => { const i = inds.find(i => slug(i.name) === s); if (i) { input.value = i.name; show(i); } return !!i; });
-        // Idle demo: specialties (their sectors light up), what commuters come for, then back
-        attract(document.getElementById('industries'), [
-            () => { indView('specialties'); growBars(); },
-            () => indView('commuters'),
-            () => indView('biggest'),
-        ]);
     }).catch(err => console.error('Industry lookup failed to load', err));
 
     // Shared with js/county-explorer.js (the fourth stop)
-    window.WFTools = { register, remember, attract, countIn, swap, slug, segmented };
+    window.WFTools = { register, remember, countIn, swap, slug, segmented };
 
     // Plain links to a stop, or a chapter from the earlier homepage
     if (OLD[location.hash.slice(1)]) route();
