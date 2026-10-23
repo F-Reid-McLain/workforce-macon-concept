@@ -57,20 +57,23 @@
     function buildHierarchy(rows) {
         const groups = {};
         for (const [id, cfg] of Object.entries(INDUSTRIES)) {
-            groups[id] = { id, name: cfg.name, color: cfg.color, children: [] };
+            groups[id] = { id, name: cfg.name, color: cfg.color, children: [], gone: [] };
         }
         for (const row of rows) {
             const naics = (row['NAICS'] || '').trim();
             if (!naics) continue;
             const empl = toNum(row['Empl']);
-            if (empl <= 0) continue;
             const id = sectorFor(naics);
             if (!id) continue;
-            groups[id].children.push({
+            // Industries down to no jobs here draw no slice, but their losses still count in
+            // their sector's five-year change (as in the Industries title slide's figures)
+            (empl > 0 ? groups[id].children : groups[id].gone).push({
                 name: (row['Industry'] || '').trim(),
                 naics,
                 empl,
                 wage: toNum(row['Avg Ann Wages']),
+                lq: toNum(row['LQ']),               // concentration vs. the U.S. (1 = the U.S. share)
+                change: toNum(row['Empl Change']),  // jobs gained or lost over five years
             });
         }
         return { name: 'root', children: Object.values(groups).filter(g => g.children.length) };
@@ -83,22 +86,39 @@
     let hierarchy = null, donutNode = null, donutBuilt = 0, donutAnim = null, officialJobs = 0;
     let donutLit = null, pendingFocus = null;   // sectors lit by the other tools; an industry to open once loaded
     const DONUT_OTHER = '#4b5568';
+    // What the colors show (the switch under the donut), and whether the U.S. ring is on
+    let donutMode = 'sector', donutUS = false;
+    const PAY = d3.scaleLinear([25000, 55000, 95000], ['#39425a', '#8a7748', '#f2c46b']).clamp(true);
+    const GROWTH = d3.scaleLinear([-0.2, 0, 0.2], ['#e8705f', '#4b5568', '#34d399']).clamp(true);
+    const colorOf = d => donutMode === 'pay' ? PAY(d.wage) : donutMode === 'growth' ? GROWTH(d.growth) : d.color;
+    const fmtPay = v => '$' + Math.round(v / 1000) + 'K';
+    const fmtGrowth = v => { const p = Math.round(v * 100); return (p > 0 ? '+' : p < 0 ? '−' : '') + Math.abs(p) + '%'; };
 
+    // A slice's figures from its industries: jobs, average pay, five-year change, and its
+    // "U.S.-equivalent" size (jobs ÷ concentration: what its share of jobs would be nationally)
+    function figures(list) {
+        const value = d3.sum(list, c => c.empl);
+        const before = d3.sum(list, c => c.empl - c.change);
+        return { value, wage: value ? d3.sum(list, c => c.empl * c.wage) / value : 0,
+                 growth: before > 0 ? d3.sum(list, c => c.change) / before : 0,
+                 us: d3.sum(list, c => c.lq > 0 ? c.empl / c.lq : 0) };
+    }
     const sectorJobs = g => d3.sum(g.children, c => c.empl);
-    const sectorWage = g => { const j = sectorJobs(g); return j ? d3.sum(g.children, c => c.empl * c.wage) / j : 0; };
     function donutSlices(node) {
         if (node === hierarchy) {
-            return node.children.map(g => ({ name: g.name, value: sectorJobs(g), wage: sectorWage(g), color: g.color, sector: g }))
+            return node.children.map(g => ({ name: g.name, color: g.color, sector: g, ...figures(g.children.concat(g.gone)) }))
                 .sort((a, b) => b.value - a.value);
         }
         const kids = [...node.children].sort((a, b) => b.empl - a.empl), top = kids.slice(0, 10), rest = kids.slice(10);
-        const out = top.map((c, i) => ({ name: c.name, naics: c.naics, value: c.empl, wage: c.wage,
+        const out = top.map((c, i) => ({ name: c.name, naics: c.naics, ...figures([c]),
             color: d3.interpolateRgb(node.color, '#1b2433')(Math.min(0.75, i * 0.075)) }));
-        if (rest.length) out.push({ name: `Other (${rest.length} industries)`, value: d3.sum(rest, c => c.empl),
-            wage: d3.sum(rest, c => c.empl * c.wage) / d3.sum(rest, c => c.empl), color: DONUT_OTHER, other: true });
+        if (rest.length) out.push({ name: `Other (${rest.length} industries)`, color: DONUT_OTHER, other: true, ...figures(rest.concat(node.gone || [])) });
         return out;
     }
 
+    // trans: how this view arrives. { zoomIn: [a0, a1] } grows it out of the wedge the sector had
+    // in the ring before; { zoomOut: sector } shrinks the old ring back into that sector's wedge.
+    // ghosts: the old ring's slices, drawn fading or folding away while the new one arrives.
     function renderDonut(node, opts = {}) {
         const box = document.getElementById('donut');
         if (!box || !node) return;
@@ -106,55 +126,104 @@
         const isRoot = node === hierarchy;
         const slices = donutSlices(node);
         const allJobs = sectorJobsAll();
-        const total = d3.sum(slices, d => d.value);
+        const total = d3.sum(slices, d => d.value), usTotal = d3.sum(slices, d => d.us) || 1;
         const size = Math.max(240, Math.min(box.clientWidth || 480, 520)), R = size / 2, inner = R * 0.62;
         const svg = d3.select('#donut-svg').attr('viewBox', `${-R} ${-R} ${size} ${size}`).attr('width', size).attr('height', size);
         box.style.setProperty('--donut-size', size + 'px');
         const pie = d3.pie().value(d => d.value).sort(null).padAngle(0.006)(slices);
+        const usPie = d3.pie().value(d => d.us).sort(null).padAngle(0.006)(slices);
         const arc = d3.arc().innerRadius(inner).outerRadius(R - 6).cornerRadius(3);
         const arcHot = d3.arc().innerRadius(inner - 2).outerRadius(R).cornerRadius(3);
+        const usArc = d3.arc().innerRadius(inner - 15).outerRadius(inner - 7).cornerRadius(2);
         const fmtShare = v => (v * 100 >= 10 ? Math.round(v * 100) : (v * 100).toFixed(1)) + '%';
+        const clickable = d => isRoot || !d.data.other;
 
-        const paths = svg.selectAll('path').data(pie, d => d.data.name).join('path')
-            .attr('fill', d => d.data.color)
-            .attr('tabindex', 0)
-            .attr('role', isRoot ? 'button' : 'img')
-            .attr('aria-label', d => `${d.data.name}: ${Math.round(d.value).toLocaleString()} jobs, ${fmtShare(d.value / total)}`)
-            .style('cursor', isRoot ? 'pointer' : 'default');
+        // Layers: the U.S. ring inside, the ring itself, and the old ring's ghosts on top
+        const gUS = svg.selectAll('g.d-us').data([0]).join('g').attr('class', 'd-us');
+        const gRing = svg.selectAll('g.d-ring').data([0]).join('g').attr('class', 'd-ring');
+        const gGhost = svg.selectAll('g.d-ghost').data([0]).join('g').attr('class', 'd-ghost');
+        svg.selectAll(':scope > path').remove();   // (from before the layers)
+        const paths = gRing.selectAll('path').data(pie, d => d.data.name).join('path')
+            .attr('fill', d => colorOf(d.data))
+            .attr('tabindex', d => clickable(d) ? 0 : -1)
+            .attr('role', d => clickable(d) ? 'button' : 'img')
+            .attr('aria-label', d => `${d.data.name}: ${Math.round(d.value).toLocaleString()} jobs, ${fmtShare(d.value / total)}` +
+                (isRoot ? '' : d.data.other ? '' : '. Open its details'))
+            .style('cursor', d => clickable(d) ? 'pointer' : 'default');
+        const usPaths = gUS.selectAll('path').data(usPie, d => d.data.name).join('path')
+            .attr('fill', d => colorOf(d.data)).attr('d', usArc).attr('aria-hidden', 'true');
+        gUS.style('opacity', donutUS ? 0.8 : 0);
 
-        // Draw at assembly progress a (0–1): each slice sweeps open in turn, largest first
-        const n = pie.length;
-        function draw(a, hot) {
+        // The old ring, kept as ghosts for the transition
+        const ghosts = gGhost.selectAll('path').data(opts.ghosts || []).join('path')
+            .attr('fill', d => d.fill).style('pointer-events', 'none');
+
+        // Draw at assembly progress a (0–1): each slice sweeps open in turn, largest first.
+        // During a zoom, z (0–1) carries angles between the sector's old wedge and the full ring.
+        const n = pie.length, TAU = 2 * Math.PI;
+        const trans = opts.trans || null;
+        const outIdx = trans && trans.zoomOut ? pie.findIndex(d => d.data.sector === trans.zoomOut) : -1;
+        const span = trans && trans.zoomIn ? trans.zoomIn : outIdx >= 0 ? [pie[outIdx].startAngle, pie[outIdx].endAngle] : null;
+        const into = (t, w) => w[0] + (t / TAU) * (w[1] - w[0]);
+        let zNow = trans ? 0 : 1;   // the zoom's progress, so a hover mid-zoom doesn't jump it to the end
+        function draw(a, hot, z = zNow) {
+            zNow = z;
             paths.attr('d', (d, i) => {
                 const r = Math.max(0, Math.min(1, (a * (n + 4) - i) / 4));
                 const e = 1 - Math.pow(1 - r, 3);
                 if (e <= 0) return null;
-                return (hot === i ? arcHot : arc)({ ...d, endAngle: d.startAngle + (d.endAngle - d.startAngle) * e });
-            }).attr('opacity', (d, i) => (a * (n + 4) - i) > 0 ? 1 : 0);
+                let s0 = d.startAngle, s1 = d.startAngle + (d.endAngle - d.startAngle) * e;
+                if (trans && trans.zoomIn) { s0 = into(s0, span) + (s0 - into(s0, span)) * z; s1 = into(s1, span) + (s1 - into(s1, span)) * z; }
+                return (hot === i ? arcHot : arc)({ ...d, startAngle: s0, endAngle: s1 });
+            }).attr('opacity', (d, i) => {
+                if ((a * (n + 4) - i) <= 0) return 0;
+                if (outIdx >= 0) return i === outIdx ? (z > 0.85 ? 1 : 0) : Math.min(1, z * 1.3);   // the rest of the ring fades back in
+                return 1;
+            });
+            // the old ring: zooming in, its other sectors fade and slide outward; zooming out, its
+            // industries fold back into their sector's wedge
+            ghosts.attr('d', g => {
+                if (trans && trans.zoomOut && span) {
+                    const s0 = g.startAngle + (into(g.startAngle, span) - g.startAngle) * z, s1 = g.endAngle + (into(g.endAngle, span) - g.endAngle) * z;
+                    return arc({ ...g, startAngle: s0, endAngle: s1 });
+                }
+                return d3.arc().innerRadius(inner + 14 * z).outerRadius(R - 6 + 14 * z).cornerRadius(3)(g);
+            }).attr('opacity', g => trans && trans.zoomOut ? (z < 0.85 ? 1 : (1 - z) / 0.15) : Math.max(0, 1 - z * 1.6));
+            if (z >= 1) gGhost.selectAll('path').remove();
             // Each legend row arrives with its slice
-            legendRows.forEach((b, i) => { const r = Math.max(0, Math.min(1, (a * (n + 4) - i) / 2)); b.style.opacity = r; b.style.transform = `translateX(${(1 - r) * 8}px)`; });
+            legendRows.forEach((b, i) => { const r = Math.max(0, Math.min(1, (a * (n + 4) - i) / 2)); b.style.opacity = trans ? Math.min(1, z * 1.5) : r; b.style.transform = trans ? '' : `translateX(${(1 - r) * 8}px)`; });
         }
         let hot = -1;
         const center = document.getElementById('donut-center');
-        const centerDefault = () => isRoot
-            ? `<b>${Math.round(officialJobs || allJobs).toLocaleString()}</b><span>jobs in ${slices.length} sectors</span><small>Click a slice to look inside</small>`
-            : `<b>${fmtShare(total / allJobs)}</b><span>${node.name}</span><small>${Math.round(total).toLocaleString()} jobs · click here to go back</small>`;
+        const lead = d => donutMode === 'pay' ? fmtPay(d.wage) : donutMode === 'growth' ? fmtGrowth(d.growth) : fmtShare(d.value / total);
+        const centerDefault = () => {
+            const key = donutUS ? '<small>Outer ring: Macon-Bibb · inner: the U.S.</small>'
+                : donutMode === 'pay' ? '<small>Colored by average pay</small>' : donutMode === 'growth' ? '<small>Colored by five-year job change</small>' : '';
+            return isRoot
+                ? `<b>${Math.round(officialJobs || allJobs).toLocaleString()}</b><span>jobs in ${slices.length} sectors</span>${key || '<small>Click a slice to look inside</small>'}`
+                : `<b>${fmtShare(total / allJobs)}</b><span>${node.name}</span>${key || `<small>${Math.round(total).toLocaleString()} jobs · click an industry, or here to go back</small>`}`;
+        };
         const setCenter = i => {
             if (i < 0) { center.innerHTML = centerDefault(); return; }
             const d = pie[i].data;
-            center.innerHTML = `<b>${fmtShare(d.value / total)}</b><span>${d.name}</span><small>${Math.round(d.value).toLocaleString()} jobs${d.wage ? ` · $${Math.round(d.wage / 1000)}K avg wage` : ''}</small>`;
+            const us = donutUS ? ` · U.S. ${fmtShare(d.us / usTotal)}` : '';
+            const detail = donutMode === 'sector' ? `${Math.round(d.value).toLocaleString()} jobs${d.wage ? ` · ${fmtPay(d.wage)} avg pay` : ''}`
+                : `${fmtShare(d.value / total)} of jobs · ${Math.round(d.value).toLocaleString()} jobs`;
+            center.innerHTML = `<b>${lead(d)}</b><span>${d.name}</span><small>${donutUS ? `Here ${fmtShare(d.value / total)}${us}` : detail}</small>`;
         };
         const legend = document.getElementById('donut-legend');
-        // Column headings make it plain that every slice is a count of jobs
+        // Column headings make it plain what each figure is
+        const lastHead = donutMode === 'pay' ? 'Avg pay' : donutMode === 'growth' ? 'Change' : isRoot ? '% of jobs' : '% of sector';
         legend.innerHTML = `<li class="donut-legend__head" aria-hidden="true"><span></span><span>${isRoot ? 'Industry sector' : 'Industry in ' + node.name}</span>
-            <span>Jobs</span><span>${isRoot ? '% of jobs' : '% of sector'}</span></li>` + pie.map((d, i) => `<li><button type="button" data-i="${i}" ${isRoot ? '' : 'tabindex="-1"'}>
-            <i style="background:${d.data.color}"></i><span class="dl-name">${d.data.name}</span>
-            <span class="dl-val">${Math.round(d.value).toLocaleString()}</span><span class="dl-share">${fmtShare(d.value / total)}</span></button></li>`).join('');
+            <span>Jobs</span><span>${lastHead}</span></li>` + pie.map((d, i) => `<li><button type="button" data-i="${i}" ${clickable(d) ? '' : 'tabindex="-1"'}>
+            <i style="background:${colorOf(d.data)}"></i><span class="dl-name">${d.data.name}</span>
+            <span class="dl-val">${Math.round(d.value).toLocaleString()}</span><span class="dl-share">${lead(d.data)}</span></button></li>`).join('');
         const legendRows = Array.from(legend.querySelectorAll('button'));
         // Slice i hot (or none, -1); with none, any sectors lit by the other tools stay lit
         const paint = i => {
             const lit = isRoot && donutLit;
             paths.attr('fill-opacity', (d, j) => i >= 0 ? (j === i ? 1 : 0.35) : !lit || lit.has(d.data.sector.id) ? 1 : 0.2);
+            usPaths.attr('fill-opacity', (d, j) => i >= 0 ? (j === i ? 1 : 0.3) : 1);
             legendRows.forEach((b, j) => b.classList.toggle('is-dim', i < 0 && !!lit && !lit.has(pie[j].data.sector.id)));
         };
         const highlight = i => {
@@ -164,16 +233,22 @@
             legendRows.forEach((b, j) => b.classList.toggle('is-hot', j === i));
             setCenter(i);
         };
-        const drill = i => { const d = pie[i] && pie[i].data; if (isRoot && d && d.sector) animateTo(d.sector); };
+        // A sector opens into its industries; an industry opens its details (js/lookups.js)
+        const open = i => {
+            const d = pie[i] && pie[i].data;
+            if (!d) return;
+            if (isRoot && d.sector) animateTo(d.sector);
+            else if (!isRoot && d.naics && WFDonut.onIndustry) WFDonut.onIndustry(d.naics);
+        };
 
         paths.on('mouseenter', (e, d) => highlight(pie.indexOf(d))).on('mouseleave', () => highlight(-1))
             .on('focus', (e, d) => highlight(pie.indexOf(d))).on('blur', () => highlight(-1))
-            .on('click', (e, d) => drill(pie.indexOf(d)))
-            .on('keydown', (e, d) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); drill(pie.indexOf(d)); } });
+            .on('click', (e, d) => open(pie.indexOf(d)))
+            .on('keydown', (e, d) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(pie.indexOf(d)); } });
         legendRows.forEach((b, i) => {
             b.addEventListener('mouseenter', () => highlight(i)); b.addEventListener('mouseleave', () => highlight(-1));
             b.addEventListener('focus', () => highlight(i)); b.addEventListener('blur', () => highlight(-1));
-            b.addEventListener('click', () => drill(i));
+            b.addEventListener('click', () => open(i));
         });
         center.classList.toggle('is-back', !isRoot);
         center.onclick = isRoot ? null : () => animateTo(hierarchy);
@@ -182,22 +257,65 @@
         back.onclick = () => animateTo(hierarchy);
         box.classList.toggle('is-drilled', !isRoot);
 
-        renderDonut.draw = a => draw(a, hot);
+        // Recolor (the switch) and show or hide the U.S. ring, without rebuilding
+        renderDonut.recolor = () => {
+            paths.transition().duration(450).attr('fill', d => colorOf(d.data));
+            usPaths.transition().duration(450).attr('fill', d => colorOf(d.data));
+            legendRows.forEach((b, i) => { b.querySelector('i').style.background = colorOf(pie[i].data); b.querySelector('.dl-share').textContent = lead(pie[i].data); });
+            const h = legend.querySelector('.donut-legend__head span:nth-child(4)');
+            if (h) h.textContent = donutMode === 'pay' ? 'Avg pay' : donutMode === 'growth' ? 'Change' : isRoot ? '% of jobs' : '% of sector';
+            gUS.transition().duration(450).style('opacity', donutUS ? 0.8 : 0);
+            setCenter(hot);
+        };
+        renderDonut.snapshot = () => ({ node, pie: pie.map(d => ({ startAngle: d.startAngle, endAngle: d.endAngle, padAngle: d.padAngle, fill: colorOf(d.data), sector: d.data.sector })) });
+        renderDonut.draw = (a, z) => draw(a, hot, z === undefined ? zNow : z);
         renderDonut.hot = highlight;
         renderDonut.indexOf = naics => { const k = pie.findIndex(d => d.data.naics === naics); return k >= 0 ? k : pie.findIndex(d => d.data.other); };
         paint(-1);
         setCenter(-1);
-        draw(opts.assemble === undefined ? donutBuilt : opts.assemble, -1);
+        draw(opts.assemble === undefined ? donutBuilt : opts.assemble, -1, trans ? 0 : 1);
     }
     function sectorJobsAll() { return hierarchy ? d3.sum(hierarchy.children, sectorJobs) : 0; }
-    // Drill in or out: the new ring sweeps in over ~0.7 s
+    // Drill in or out. Into a sector from the whole ring: its slice grows to fill the ring as it
+    // splits into its industries, and the other sectors fade away. Back out: the industries fold
+    // into their sector's wedge and the other sectors return. Anything else sweeps in fresh.
     function animateTo(node) {
         if (donutAnim) donutAnim.stop();
         const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const was = renderDonut.snapshot ? renderDonut.snapshot() : null;
         donutBuilt = 1;   // once someone has drilled, the first-view assembly is done
-        renderDonut(node, { assemble: reduce ? 1 : 0 });
+        let opts = { assemble: reduce ? 1 : 0 };
+        if (!reduce && was && was.node === hierarchy && node !== hierarchy) {
+            const w = was.pie.find(p => p.sector === node);
+            if (w) opts = { assemble: 1, trans: { zoomIn: [w.startAngle, w.endAngle] }, ghosts: was.pie.filter(p => p !== w) };
+        } else if (!reduce && was && was.node !== hierarchy && node === hierarchy) {
+            opts = { assemble: 1, trans: { zoomOut: was.node }, ghosts: was.pie };
+        }
+        renderDonut(node, opts);
         if (reduce) return;
-        donutAnim = d3.timer(t => { const a = Math.min(1, t / 750); renderDonut.draw(a); if (a >= 1) { donutAnim.stop(); donutAnim = null; } });
+        const ms = opts.trans ? 820 : 750, ease = d3.easeCubicInOut;
+        donutAnim = d3.timer(t => {
+            const k = Math.min(1, t / ms);
+            if (opts.trans) renderDonut.draw(1, ease(k)); else renderDonut.draw(k);
+            if (k >= 1) { donutAnim.stop(); donutAnim = null; }
+        });
+    }
+    // The switch under the donut (what the colors show) and the U.S. ring toggle
+    function donutControls() {
+        const mode = document.getElementById('donut-mode'), us = document.getElementById('donut-us'), key = document.getElementById('donut-key');
+        if (!mode || !window.WFTools) return;
+        const showKey = () => {
+            key.hidden = donutMode === 'sector';
+            key.className = 'donut-key donut-key--' + donutMode;
+            key.innerHTML = donutMode === 'pay' ? '<span>$25K</span><i></i><span>$95K+ avg pay</span>'
+                : donutMode === 'growth' ? '<span>−20%</span><i></i><span>+20% in 5 yrs</span>' : '';
+        };
+        WFTools.segmented(mode, v => { donutMode = v; showKey(); if (renderDonut.recolor) renderDonut.recolor(); })('sector');
+        us.addEventListener('click', () => {
+            donutUS = !donutUS;
+            us.setAttribute('aria-pressed', String(donutUS));
+            if (renderDonut.recolor) renderDonut.recolor();
+        });
     }
     // Assemble the first time the donut comes into view
     function assembleOnView() {
@@ -299,6 +417,7 @@
         hierarchy = buildHierarchy(dataRows);
         officialJobs = totalRow ? toNum(totalRow['Empl']) : 0;   // same total as the headline (a few jobs sit outside the 20 sectors)
         renderDonut(hierarchy);
+        donutControls();
         assembleOnView();
         if (pendingFocus) { WFDonut.focusSector(pendingFocus); pendingFocus = null; }
         writeFindings(totalRow, occRows);

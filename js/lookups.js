@@ -286,6 +286,8 @@
             D().focusSector(i.naics);   // swing the donut to this industry's sector
         }
         const pick = i => { input.value = i.name; show(i); remember('industries', i.name); };
+        // An industry's slice in the donut opens the same card (js/workforce-data.js)
+        if (window.WFDonut) WFDonut.onIndustry = naics => { const i = inds.find(x => x.naics === naics); if (i) pick(i); };
         // Specialties: much more concentrated here than nationally, and big enough to matter
         const top = inds.filter(i => i.lq >= 2 && i.empl >= 200).sort((a, b) => b.lq - a.lq).slice(0, 8);
         specialtyIds = Array.from(new Set(top.map(i => D().sectorOf(i.naics)).filter(Boolean)));

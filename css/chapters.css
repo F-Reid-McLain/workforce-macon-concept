@@ -173,6 +173,25 @@ body.page-home .demo-bar-row { padding: 5px 0; font-size: 0.86rem; }
 .donut-center span { font-size: 0.95rem; font-weight: 600; color: var(--ch-gold); max-width: 90%; line-height: 1.25; }
 .donut-center small { font-size: 0.76rem; color: var(--color-text-muted); max-width: 90%; }
 .donut-tip { display: none; }
+/* Under the donut: what the colors show, the U.S. ring, and a color key (js/workforce-data.js) */
+.donut-wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; min-width: 0; width: 100%; }
+.donut-ctrl { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; }
+.seg--sm button { padding: 0.32rem 0.75rem; font-size: 0.78rem; }
+.donut-us {
+    display: inline-flex; align-items: center; gap: 6px; padding: 0.32rem 0.75rem; border-radius: 999px; cursor: pointer;
+    font: 600 0.78rem var(--font-body); background: transparent; color: var(--color-text-secondary); border: 1px solid rgba(255, 255, 255, 0.16);
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+.donut-us:hover { color: #fff; border-color: rgba(255, 255, 255, 0.35); }
+.donut-us__dot { width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid currentColor; box-sizing: border-box; transition: background 0.2s; }
+.donut-us[aria-pressed="true"] { color: #fff; border-color: var(--ch-gold); background: rgba(242, 196, 107, 0.12); }
+.donut-us[aria-pressed="true"] .donut-us__dot { background: var(--ch-gold); border-color: var(--ch-gold); }
+.donut-key { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 0.72rem; color: var(--color-text-muted); font-variant-numeric: tabular-nums; }
+.donut-key[hidden] { display: none; }
+.donut-key i { width: 120px; height: 8px; border-radius: 4px; }
+.donut-key--pay i { background: linear-gradient(90deg, #39425a, #8a7748, #f2c46b); }
+.donut-key--growth i { background: linear-gradient(90deg, #e8705f, #4b5568, #34d399); }
+.d-us path { transition: fill-opacity 0.2s; }
 .donut-side { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
 .donut-back {
     align-self: flex-start; padding: 0.45rem 0.9rem; border-radius: 999px; cursor: pointer;
@@ -410,7 +429,8 @@ body.page-home .demo-bar-row { padding: 5px 0; font-size: 0.86rem; }
     .rank-list button { padding: 4px 10px; row-gap: 4px; }
     /* Industries: the donut and its side column share one screen-high panel; the views scroll inside it */
     .tool-panel--donut { height: min(600px, calc(100vh - 160px)); min-height: 420px; align-items: stretch; }
-    .tool-panel--donut .donut { align-self: center; max-width: min(430px, calc(100vh - 230px)); }
+    .tool-panel--donut .donut-wrap { align-self: center; }
+    .tool-panel--donut .donut { max-width: min(410px, calc(100vh - 290px)); }
     .tool-col--fit { min-height: 0; }
     .tool-col--fit [data-pane] { flex: 1 1 auto; min-height: 0; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, 0.18) transparent; }
     .tool-col--fit .donut-legend { max-height: none; overflow: visible; }
@@ -527,7 +547,8 @@ body.page-home .demo-bar-row { padding: 5px 0; font-size: 0.86rem; }
     .tool-panel--donut .tool-col--fit { display: contents; }
     .tool-panel--donut .tool-search { order: 1; }
     .tool-panel--donut #strength-result { order: 2; }
-    .tool-panel--donut .donut { order: 3; max-width: 260px; }
+    .tool-panel--donut .donut-wrap { order: 3; }
+    .tool-panel--donut .donut { max-width: 260px; }
     .tool-panel--donut #ind-views { order: 4; }
     .tool-panel--donut [data-pane] { order: 5; }
     .tool-panel--donut .tool-upsell { order: 6; }

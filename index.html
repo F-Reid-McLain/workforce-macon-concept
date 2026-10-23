@@ -248,9 +248,21 @@
                 <p class="stop-label__text">Click into the donut, switch views, or look up any industry.</p>
             </div>
             <div class="tool-panel tool-panel--donut">
-                <div class="donut" id="donut">
-                    <svg id="donut-svg" role="group" aria-label="Jobs by industry"></svg>
-                    <div class="donut-center" id="donut-center"></div>
+                <div class="donut-wrap">
+                    <div class="donut" id="donut">
+                        <svg id="donut-svg" role="group" aria-label="Jobs by industry"></svg>
+                        <div class="donut-center" id="donut-center"></div>
+                    </div>
+                    <!-- What the slices' colors show, and the U.S. comparison ring (js/workforce-data.js) -->
+                    <div class="donut-ctrl">
+                        <div class="seg seg--sm" id="donut-mode" role="group" aria-label="Color the slices by">
+                            <button type="button" data-view="sector">Sectors</button>
+                            <button type="button" data-view="pay">Pay</button>
+                            <button type="button" data-view="growth">Growth</button>
+                        </div>
+                        <button type="button" class="donut-us" id="donut-us" aria-pressed="false"><span class="donut-us__dot" aria-hidden="true"></span>vs. U.S.</button>
+                    </div>
+                    <p class="donut-key" id="donut-key" hidden></p>
                 </div>
                 <div class="tool-col tool-col--fit">
                     <label class="tool-search">
