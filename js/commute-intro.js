@@ -118,7 +118,7 @@
             return net > 0 ? [{ from: EDGE, to: fips, jobs: net }] : net < 0 ? [{ from: fips, to: EDGE, jobs: -net }] : [];
         });
         const allFlows = region.flows.concat(edgeFlows);
-        const PER_DOT = d3.sum(allFlows, f => f.jobs) / (mobile ? 260 : 480);
+        const PER_DOT = d3.sum(allFlows, f => f.jobs) / (mobile ? 180 : 480);   // fewer, larger groups on phones
         let seed = 3; const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296;
         // Each dot also carries a pay band (LODES earnings), split in proportion to its flow's mix
         const bandAt = (pay, q) => { const tot = d3.sum(pay); let acc = 0; for (let b = 0; b < pay.length; b++) { acc += pay[b] / tot; if (q < acc) return b; } return pay.length - 1; };
@@ -238,7 +238,6 @@
         const timeIcon = document.getElementById('ci-time-icon');
         const hwyBtn = document.getElementById('ci-hwy');
         const pngBtn = document.getElementById('ci-png');
-        const labelFont = getComputedStyle(document.querySelector('h2') || document.body).fontFamily;
 
         // Light through the day: moonlight, dawn, midday, evening. On the finished map it goes
         // flat and neutral, so counties show their map colors exactly.
@@ -297,7 +296,7 @@
             const padLeft = W > +(stage.dataset.padBreakpoint || Infinity) ? +(stage.dataset.padLeft || 0) : 0;
             const vp = new deck.WebMercatorViewport({ width: W, height: H })
                 // phones: the map fits the top half, above the card (which holds the county tool)
-                .fitBounds(bounds, { padding: { top: 56, bottom: W <= 768 ? Math.round(H * 0.5) : 40, left: 24 + padLeft, right: 24 } });
+                .fitBounds(bounds, { padding: { top: 56, bottom: W <= 700 ? Math.round(H * 0.42) : W <= 768 ? Math.round(H * 0.5) : 40, left: W <= 700 ? 12 : 24 + padLeft, right: W <= 700 ? 12 : 24 } });
             flatView = { longitude: vp.longitude, latitude: vp.latitude, zoom: vp.zoom, pitch: 0, bearing: 0 };
             // Highway badges that land on top of each other get pushed apart (in screen space);
             // an interstate keeps its spot and the other badge moves
@@ -341,7 +340,20 @@
             hwyLayerEl.appendChild(el);
             return el;
         });
-        mapEl.after(hwyLayerEl, labelsEl);
+        // The 3D story's labels (name and change), also HTML; positions come from placeNames()
+        const namesEl = document.createElement('div');
+        namesEl.className = 'ci-names';
+        namesEl.setAttribute('aria-hidden', 'true');
+        const names = counties.map(c => {
+            const el = document.createElement('div');
+            el.className = 'ci-name' + (c.fips === BIBB ? ' ci-name--bibb' : '');
+            const b = document.createElement('b'); b.textContent = nameOf.get(c.fips);
+            const chgEl = document.createElement('span');
+            el.append(b, chgEl);
+            namesEl.appendChild(el);
+            return { el, chgEl, chg: null, pos: null, alpha: 0 };
+        });
+        mapEl.after(namesEl, hwyLayerEl, labelsEl);
         computeFlat();
 
         // ----- Hand-off: the story becomes the map, staged across the evening -----
@@ -387,10 +399,24 @@
         const toggleHighways = () => { hwyOn = !hwyOn; hwyBtn.setAttribute('aria-pressed', String(hwyOn)); hwyBtn.classList.add('is-used'); wake(); };
         hwyBtn.addEventListener('click', toggleHighways);
 
+        // Pin the story's labels to their counties after every frame the map draws (the camera
+        // drifts and orbits between scene changes, so this can't wait for the layers to change)
+        function placeNames() {
+            if (namesEl.style.opacity === '0') return;
+            const vp = deckgl.getViewports()[0];
+            if (!vp) return;
+            names.forEach(n => {
+                if (!n.pos) return;
+                const [x, y] = vp.project(n.pos);
+                n.el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) translate(-50%, -50%)`;
+                n.el.style.opacity = n.alpha.toFixed(3);
+            });
+        }
         const deckgl = new deck.Deck({
             parent: mapEl, views: new deck.MapView({ repeat: false }), viewState: storyCamera(5), controller: false,
-            useDevicePixels: Math.min(window.devicePixelRatio || 1, mobile ? 1.5 : 2),
+            useDevicePixels: Math.min(window.devicePixelRatio || 1, 2),
             effects: [new deck.LightingEffect({ ambient, sun })],
+            onAfterRender: () => placeNames(),
             onHover: showTip,
             // On the finished map, clicking a county opens it in the card (js/county-explorer.js)
             onClick: info => {
@@ -484,22 +510,20 @@
             // Story labels: county name and its change right now (text rebuilt only when a figure changes)
             // Built from the first frame (names start fully transparent), so the label font
             // texture is made during the welcome screen rather than mid-scroll
-            if (S.storyLabels > 0.01 && (!RENDER || RENDER.labels)) {
+            // The story's county names and changes: HTML over the canvas, placed each frame
+            // (placeNames), so they stay as sharp as the page's own text. Names fade in with
+            // their counties.
+            const showNames = S.storyLabels > 0.01 && (!RENDER || RENDER.labels);
+            namesEl.style.opacity = showNames ? S.storyLabels.toFixed(3) : '0';
+            if (showNames) {
                 const pct = c => Math.round((share(c.fips, hour) - 1) * 100);
-                const textKey = counties.map(pct).join();
-                // One shared layer. Names fade in with their counties; the dark outline (a single
-                // value for the whole layer) waits until everyone has arrived, so no outline shows
-                // ahead of a county that isn't there yet.
-                const nameAlpha = c => c.fips === BIBB ? smooth(5.15, 5.5, hour) : smooth(0.5, 1, arr(c.fips));
-                out.push(new deck.TextLayer({ id: 'names', data: counties, opacity: S.storyLabels,
-                    getPosition: d => { const ctr = center.get(d.fips); return [ctr[0], ctr[1], fullTop(d.fips) + 900]; },
-                    getText: d => pct(d) !== 0 ? `${nameOf.get(d.fips)}\n${pct(d) > 0 ? '+' : ''}${pct(d)}%` : nameOf.get(d.fips),
-                    getSize: d => d.fips === BIBB ? (mobile ? 14 : 17) : (mobile ? 10 : 12), lineHeight: 1.1,
-                    getColor: d => (d.fips === BIBB ? [242, 196, 107] : [245, 240, 228]).concat(Math.round(255 * nameAlpha(d))),
-                    fontFamily: labelFont, fontWeight: 600, billboard: true, fontSettings: { sdf: true },
-                    outlineWidth: 4 * smooth(5.8, 6.0, hour), outlineColor: [16, 23, 26, 230],
-                    parameters: { depthCompare: 'always', depthWriteEnabled: false },
-                    updateTriggers: { getPosition: geoKey, getText: textKey, getColor: hour < 6 ? hour.toFixed(3) : 'in' } }));
+                counties.forEach((c, i) => {
+                    const n = names[i], v = pct(c), ctr = center.get(c.fips);
+                    n.pos = [ctr[0], ctr[1], fullTop(c.fips) + 900];
+                    n.alpha = c.fips === BIBB ? smooth(5.15, 5.5, hour) : smooth(0.5, 1, arr(c.fips));
+                    const chg = v !== 0 ? `${v > 0 ? '+' : '−'}${Math.abs(v)}%` : '';
+                    if (chg !== n.chg) { n.chg = chg; n.chgEl.textContent = chg; }
+                });
             }
             // Highways (click the finished map), clipped to the region; badges stay whole
             if (hwy > 0.01 && hwyPaths.length) out.push(
@@ -582,10 +606,14 @@
         }
 
         // ----- Scroll → target time; the shown time glides after it -----
-        const steps = Array.from(section.querySelectorAll('.ci-step'));
+        // Phones skip some cards (.ci-step--full, css/commute-intro.css), so the story runs on
+        // the cards actually showing; the day's time still glides across the gaps between them
+        const allSteps = Array.from(section.querySelectorAll('.ci-step'));
+        let steps = allSteps;
         let anchors = [];
         const measure = () => {
             setTop();
+            steps = allSteps.filter(el => el.offsetParent !== null);
             anchors = steps.map(el => { const r = el.getBoundingClientRect(); return { t: +el.dataset.time, y: r.top + scrollY + r.height / 2 - innerHeight / 2, el }; });
         };
         function onScroll() {
@@ -613,7 +641,10 @@
         // story's own camera as soon as anyone scrolls, clicks, touches or presses a key,
         // holds still after a couple of idle minutes, and stays off for reduced motion and
         // on the finished (flat) map.
-        const IDLE_MS = 2000, IDLE_MAX = 120000;
+        // Touch devices (phones, tablets) keep only the opening spin, for half a minute, so the
+        // loop can sleep and spare the battery; no sway on the cards
+        const canHover = !!(window.matchMedia && matchMedia('(hover: hover)').matches);
+        const IDLE_MS = 2000, IDLE_MAX = canHover ? 120000 : 30000;
         const SPIN = 360 / 75000, SWAY = 8;            // degrees per ms; degrees either way
         let lastInput = performance.now(), orbit = 0, swayClock = 0, idleTimer = null;
         const wrap180 = d => ((d % 360) + 540) % 360 - 180;
@@ -657,7 +688,7 @@
                 // someone's moving the page (or the map is flat): ease back to the story's camera
                 if (Math.abs(wrap180(orbit)) > 0.02) { orbit = wrap180(orbit) * Math.exp(-dt / 380); busy = true; } else orbit = 0;
                 swayClock = 0;
-            } else if (since < IDLE_MAX && rise >= 1 && Math.abs(target - hour) < 0.001) {
+            } else if (since < IDLE_MAX && rise >= 1 && Math.abs(target - hour) < 0.001 && (canHover || hour < 5.6)) {
                 const ease = smooth(IDLE_MS, IDLE_MS + 2500, since);   // drift starts slowly
                 if (hour < 5.6) orbit += dt * SPIN * ease;            // the opening view: turn all the way around
                 else { swayClock += dt; const want = SWAY * ease * Math.sin(swayClock / 3800); orbit += (wrap180(want - orbit)) * (1 - Math.exp(-dt / 500)); }
@@ -734,18 +765,44 @@
 
         // ----- Moments: links into the story (#6am, #8am, #pay, #noon, #evening, #map), a copy-link
         // button on each card, and present mode (fullscreen; arrow keys step card by card) -----
+        // Present mode glides between cards slowly (the browser's smooth scroll takes about half a
+        // second), so the camera's move and the clock play out instead of flashing past. Any wheel,
+        // touch or new key press takes over from a glide in progress.
+        const GLIDE_MS = 1400, GLIDE_PER_PX = 1.6, GLIDE_MAX = 3600;   // about 2.5–3 s a card
+        let glide = null, glideStep = -1;   // the card a glide is heading to, so a key press mid-glide moves on from it
+        const stopGlide = () => { if (glide) { cancelAnimationFrame(glide); glide = null; } glideStep = -1; };
+        ['wheel', 'touchstart', 'mousedown'].forEach(t => addEventListener(t, stopGlide, { passive: true }));
+        function glideTo(y) {
+            stopGlide();
+            const from = scrollY, dist = y - from;
+            if (Math.abs(dist) < 2) return;
+            const ms = Math.min(GLIDE_MAX, GLIDE_MS + Math.abs(dist) * GLIDE_PER_PX), t0 = performance.now();
+            const frame = now => {
+                const k = Math.min(1, (now - t0) / ms);
+                scrollTo({ top: from + dist * d3.easeCubicInOut(k), behavior: 'instant' });
+                if (k < 1) glide = requestAnimationFrame(frame); else { glide = null; glideStep = -1; }
+            };
+            glide = requestAnimationFrame(frame);
+        }
         const goToStep = (el, smooth) => {
             measure();
             const a = anchors.find(x => x.el === el);
-            if (a) scrollTo({ top: Math.max(0, a.y), behavior: smooth ? 'smooth' : 'instant' });
+            if (!a) return;
+            const y = Math.max(0, a.y);
+            if (smooth && presenting && !reducedMotion) { glideTo(y); if (glide) glideStep = steps.indexOf(el); }
+            else { stopGlide(); scrollTo({ top: y, behavior: smooth ? 'smooth' : 'instant' }); }
         };
-        const momentStep = name => steps.find(el => el.dataset.moment === name);
+        // A moment whose card isn't showing (on phones) lands on the next card that is
+        const momentStep = name => {
+            const i = allSteps.findIndex(el => el.dataset.moment === name);
+            return i < 0 ? null : allSteps.slice(i).find(el => steps.includes(el)) || steps[steps.length - 1];
+        };
         // #counties (and #counties/<county>) is the finished map, where the county tool lives
         const momentFor = id => { const name = String(id).split('/')[0]; return momentStep(name === 'counties' ? 'map' : name); };
         const goToHash = () => { const el = momentFor(decodeURIComponent(location.hash.slice(1))); if (el) goToStep(el, false); };
         window.WFStory = { goTo(id) { const el = momentFor(id); if (el) goToStep(el, false); return !!el; } };
         addEventListener('hashchange', goToHash);
-        steps.filter(el => el.dataset.moment).forEach(el => {
+        allSteps.filter(el => el.dataset.moment).forEach(el => {
             const card = el.querySelector('.ci-card');
             if (!card) return;
             const btn = document.createElement('button');
@@ -787,12 +844,14 @@
             e.preventDefault();
             // Past the story's last card, the arrows carry on through the homepage's stops (js/chapters.js)
             const stops = window.WFStops, lastCard = anchors.length ? anchors[anchors.length - 1].y : Infinity;
-            if (stops && (scrollY > lastCard + 4 || (dir > 0 && step >= steps.length - 1))) {
+            if (stops && (scrollY > lastCard + 4 || (dir > 0 && (glideStep >= 0 ? glideStep : step) >= steps.length - 1))) {
+                stopGlide();
                 if (stops.step(dir)) return;
                 goToStep(steps[steps.length - 1], true);   // stepped back above the first stop: the map card
                 return;
             }
-            goToStep(steps[Math.max(0, Math.min(steps.length - 1, step + dir))], true);
+            const from = glideStep >= 0 ? glideStep : step;
+            goToStep(steps[Math.max(0, Math.min(steps.length - 1, from + dir))], true);
         });
 
         measure(); onScroll();

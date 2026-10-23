@@ -459,17 +459,68 @@ body.page-home .demo-bar-row { padding: 5px 0; font-size: 0.86rem; }
 }
 @media (max-width: 900px) {
     .stop-intro { min-height: 0; padding: 96px 16px 8px; }
-    .stop-intro--map { min-height: 92vh; padding-bottom: 38vh; }
     .im-hlabel { font-size: 11px; }
-    /* Phones: text, then the map below it */
-    .stop-intro--grow { flex-direction: column; justify-content: flex-start; min-height: 0; padding-bottom: 54vh; }
-    .stop-intro--grow .intro-map {
-        -webkit-mask-image: linear-gradient(to bottom, transparent var(--gm-top, 40%), #000 calc(var(--gm-top, 40%) + 48px), #000 calc(var(--gm-bottom, 90%) - 24px), transparent var(--gm-bottom, 90%));
-                mask-image: linear-gradient(to bottom, transparent var(--gm-top, 40%), #000 calc(var(--gm-top, 40%) + 48px), #000 calc(var(--gm-bottom, 90%) - 24px), transparent var(--gm-bottom, 90%));
+    /* Phones and tablets: a map slide is two screens. The words get the first, centered under
+       the header; the map gets the whole second one and plays as it arrives (js/intro-map.js
+       sizes and times itself from the <svg>'s own box) */
+    .stop-intro--map { display: block; min-height: 200vh; min-height: 200svh; padding: 0 16px; }
+    .stop-intro--map .stop-intro__inner {
+        min-height: 100vh; min-height: 100svh; box-sizing: border-box; margin: 0 auto;
+        display: flex; flex-direction: column; justify-content: center; padding: 64px 0 24px;
+    }
+    .stop-intro--map .intro-map {
+        inset: auto; top: 100vh; top: 100svh; left: 0; width: 100%; height: 100vh; height: 100svh;
+        -webkit-mask-image: linear-gradient(to bottom, transparent, #000 10%, #000 90%, transparent);
+                mask-image: linear-gradient(to bottom, transparent, #000 10%, #000 90%, transparent);
     }
     .stop { min-height: 0; padding: 16px 16px 24px; scroll-margin-top: 70px; }
 }
+.cap-more { display: none; }
+/* ----- Phones: the section bar gives way to "On this page" links in the ☰ menu (index.html) ----- */
+.nav-section, .nav-section-title { display: none; }
+@media (max-width: 768px) {
+    body.page-home .page-jumpnav { display: none !important; }
+    body.page-home .nav-section { display: block; }
+    body.page-home .nav-section-title {
+        display: block; margin-top: 0.4rem; padding: 0.9rem 1.5rem 0.25rem; border-top: 1px solid var(--color-border);
+        font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-text-muted);
+    }
+    body.page-home .nav-section .nav-link { padding: 0.6rem 1.5rem; font-size: 1rem; }
+}
 @media (max-width: 700px) {
+    /* Title slides: each headline fits one phone screen */
+    .stop-intro .chapter-finding { font-size: clamp(1.9rem, 8.5vw, 2.6rem); max-width: 18ch; }
+    .stop-intro .chapter-finding--sm { font-size: clamp(1.5rem, 6.6vw, 2rem); }
+    .stop-intro .chapter-dek { font-size: 1rem; line-height: 1.5; }
+    /* About ten words a slide: the headline carries it. The longer explanation stays on larger
+       screens; the credits drop to the foot of the map screen (where OpenStreetMap's belongs) */
+    .stop-intro .chapter-dek, .stop-intro--close .chapter-finding { display: none; }
+    .stop-intro--map .stop-intro__inner { position: static; }   /* so the credits place against the whole two-screen slide */
+    .stop-intro--map .intro-source {
+        position: absolute; z-index: 1; left: 16px; right: 16px; bottom: 12px; margin: 0;
+        font-size: 0.62rem; line-height: 1.4; color: rgba(255, 255, 255, 0.45);
+    }
+    .stop-intro .ticker__num { font-size: clamp(3.2rem, 17vw, 4.6rem); }
+    .grow-bars { margin-top: 12px; width: 100%; }
+    /* Tools: long lists show their top few, with a button for the rest (js/lookups.js phoneCap) */
+    #job-rank, #strength-list { --cap: 5; }
+    #donut-legend { --cap: 6; }
+    #job-rank.is-capped:not(.is-open) > li:nth-child(n+6),
+    #strength-list.is-capped:not(.is-open) > li:nth-child(n+6),
+    #donut-legend.is-capped:not(.is-open) > li:nth-child(n+8) { display: none; }   /* (the legend's first row is its header) */
+    .cap-more:not([hidden]) {
+        display: block; width: 100%; margin: 8px 0 0; padding: 10px 12px; border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.14); background: rgba(255, 255, 255, 0.04);
+        color: var(--ch-gold); font: 600 0.9rem var(--font-body); cursor: pointer;
+    }
+    /* Industries: look-up first, then the donut, then the views and their list */
+    .tool-panel--donut .tool-col--fit { display: contents; }
+    .tool-panel--donut .tool-search { order: 1; }
+    .tool-panel--donut #strength-result { order: 2; }
+    .tool-panel--donut .donut { order: 3; max-width: 260px; }
+    .tool-panel--donut #ind-views { order: 4; }
+    .tool-panel--donut [data-pane] { order: 5; }
+    .tool-panel--donut .tool-upsell { order: 6; }
     .chapter { padding: 88px 16px 16px; }
     .tool-panel { padding: 18px 16px; }
     .donut { max-width: 320px; }

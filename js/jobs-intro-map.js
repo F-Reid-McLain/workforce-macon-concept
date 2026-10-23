@@ -3,7 +3,7 @@
    interstates and US routes drawing in (js/intro-map.js), then the region's Level I
    trauma center (Atrium Health Navicent The Medical Center, 777 Hemlock St) rising
    where it stands. On wide screens the headline holds the left half and Macon the
-   right; on phones the headline sits on top and Macon below it. */
+   right; on phones the headline has a screen of its own, then Macon fills the next. */
 (function () {
     'use strict';
     const svgEl = document.getElementById('jobs-intro-map');
@@ -14,7 +14,7 @@
         svg: svgEl,
         drawMs: 3000,
         base: { neighbors: [0, 0.3], bibb: [0.08, 0.4], ints: [0.3, 0.6], us: [0.5, 0.8], shields: [0.65, 0.75] },
-        fit: (W, H, wide) => wide ? { x: W * 0.74, y: H * 0.54, w: 0.36, h: 0.5 } : { x: W / 2, y: H * 0.8, w: 0.62, h: 0.36 },
+        fit: (W, H, wide) => wide ? { x: W * 0.74, y: H * 0.54, w: 0.36, h: 0.5 } : { x: W / 2, y: H * 0.52, w: 0.86, h: 0.58 },
         layer({ svg, proj }) {
             // The hospital stands on its spot (a small marker at its real location) and rises above the road
             const [hx, hy] = proj(HOSPITAL);

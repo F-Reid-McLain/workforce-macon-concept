@@ -33,6 +33,26 @@
     opacity: calc(1 - var(--ci-settle)); pointer-events: none;
 }
 
+/* ----- The 3D story's county labels: HTML placed over the canvas each frame (js placeNames),
+   so they render as sharp as the page's text. A dark halo keeps them legible on the blocks. ----- */
+.ci-names { position: absolute; inset: 0; z-index: 2; pointer-events: none; overflow: hidden; will-change: opacity; }
+.ci-name {
+    position: absolute; left: 0; top: 0; text-align: center; white-space: nowrap;
+    display: flex; flex-direction: column; align-items: center; line-height: 1.15;
+    font-family: var(--font-body); font-size: 12px; font-weight: 600; color: #f5f0e4;
+    font-variant-numeric: tabular-nums; will-change: transform;
+    text-shadow: 0 0 3px rgba(16, 23, 26, 0.95), 0 0 6px rgba(16, 23, 26, 0.8), 0 1px 2px rgba(0, 0, 0, 0.9);
+    -webkit-font-smoothing: antialiased;
+}
+.ci-name b { font-size: 13px; font-weight: 600; letter-spacing: 0.01em; }
+.ci-name--bibb { color: #f2c46b; font-size: 15px; }
+.ci-name--bibb b { font-size: 18px; font-weight: 700; }
+@media (max-width: 700px) {
+    .ci-name { font-size: 10px; }
+    .ci-name b { font-size: 11px; }
+    .ci-name--bibb { font-size: 13px; }
+    .ci-name--bibb b { font-size: 15px; }
+}
 /* ----- The finished map's labels: HTML pinned over the canvas, for crisp small text ----- */
 .ci-maplabels, .ci-hwylabels { position: absolute; inset: 0; z-index: 2; pointer-events: none; will-change: opacity; }
 .ci-maplabels { opacity: calc(var(--ci-maplabels, 0) * (1 - var(--ci-hwy, 0))); }   /* county labels step aside for highways, as on the old map */
@@ -219,6 +239,27 @@ body.ci-on-screen .page-jumpnav { opacity: 0; pointer-events: none; }
     .ci-pulse { top: 52px; bottom: auto; right: auto; left: 50%; transform: translateX(-50%); padding: 0.5rem 0.7rem; }
     .ci-pulse__row b { font-size: 1.3rem; }
     .ci-pulse__chart { width: 260px; height: 48px; }
+}
+
+/* ----- Phones: the short story. Five cards (welcome, 6 AM, rush hour, midday, the map), each a
+   one-line caption in a compact strip at the bottom, so the map gets the screen. The pay and
+   evening cards, the long notes, the live counter and the moment links are for larger screens
+   (and presenting); the day still plays through the evening between midday and the map. ----- */
+.ci-short { display: none; }
+@media (max-width: 700px) {
+    .ci-step--full, .ci-long, .ci-pulse, .ci-linkbtn { display: none !important; }
+    .ci-welcome :is(.ci-eyebrow, .ci-lede) { display: none; }   /* the opening is just the headline (the header carries the name) */
+    .ci-welcome h1 { margin-bottom: 1.4rem; }
+    .ci-step.ci-step--welcome { align-items: flex-start; padding-top: 9vh; padding-top: 9svh; }   /* the words up top, the county turning below them */
+    .ci-skip { display: none; }   /* the menu's "On this page" links do this on phones */
+    .ci-short { display: block; }
+    .ci-step { min-height: 90vh; min-height: 90svh; padding: 0 0.6rem calc(14px + env(safe-area-inset-bottom)); }
+    .ci-card { padding: 0.8rem 1rem 0.85rem; border-radius: 12px; background: rgba(16, 23, 32, 0.92); }
+    .ci-card .ci-when { font-size: 0.66rem; margin-bottom: 0.2rem; }
+    .ci-card :is(h2, h3) { font-size: 1.1rem; margin-bottom: 0.25rem; }
+    .ci-card p { font-size: 0.92rem; line-height: 1.4; }
+    .ci-step--map .ci-card { max-height: 40vh; max-height: 40svh; }
+    .ci-step--map .ci-county__pick > span { font-size: 0.82rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
