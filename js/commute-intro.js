@@ -238,7 +238,6 @@
         const timeIcon = document.getElementById('ci-time-icon');
         const hwyBtn = document.getElementById('ci-hwy');
         const pngBtn = document.getElementById('ci-png');
-        const labelFont = getComputedStyle(document.querySelector('h2') || document.body).fontFamily;
 
         // Light through the day: moonlight, dawn, midday, evening. On the finished map it goes
         // flat and neutral, so counties show their map colors exactly.
@@ -341,7 +340,20 @@
             hwyLayerEl.appendChild(el);
             return el;
         });
-        mapEl.after(hwyLayerEl, labelsEl);
+        // The 3D story's labels (name and change), also HTML; positions come from placeNames()
+        const namesEl = document.createElement('div');
+        namesEl.className = 'ci-names';
+        namesEl.setAttribute('aria-hidden', 'true');
+        const names = counties.map(c => {
+            const el = document.createElement('div');
+            el.className = 'ci-name' + (c.fips === BIBB ? ' ci-name--bibb' : '');
+            const b = document.createElement('b'); b.textContent = nameOf.get(c.fips);
+            const chgEl = document.createElement('span');
+            el.append(b, chgEl);
+            namesEl.appendChild(el);
+            return { el, chgEl, chg: null, pos: null, alpha: 0 };
+        });
+        mapEl.after(namesEl, hwyLayerEl, labelsEl);
         computeFlat();
 
         // ----- Hand-off: the story becomes the map, staged across the evening -----
@@ -387,10 +399,24 @@
         const toggleHighways = () => { hwyOn = !hwyOn; hwyBtn.setAttribute('aria-pressed', String(hwyOn)); hwyBtn.classList.add('is-used'); wake(); };
         hwyBtn.addEventListener('click', toggleHighways);
 
+        // Pin the story's labels to their counties after every frame the map draws (the camera
+        // drifts and orbits between scene changes, so this can't wait for the layers to change)
+        function placeNames() {
+            if (namesEl.style.opacity === '0') return;
+            const vp = deckgl.getViewports()[0];
+            if (!vp) return;
+            names.forEach(n => {
+                if (!n.pos) return;
+                const [x, y] = vp.project(n.pos);
+                n.el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) translate(-50%, -50%)`;
+                n.el.style.opacity = n.alpha.toFixed(3);
+            });
+        }
         const deckgl = new deck.Deck({
             parent: mapEl, views: new deck.MapView({ repeat: false }), viewState: storyCamera(5), controller: false,
-            useDevicePixels: Math.min(window.devicePixelRatio || 1, mobile ? 1.5 : 2),
+            useDevicePixels: Math.min(window.devicePixelRatio || 1, 2),
             effects: [new deck.LightingEffect({ ambient, sun })],
+            onAfterRender: () => placeNames(),
             onHover: showTip,
             // On the finished map, clicking a county opens it in the card (js/county-explorer.js)
             onClick: info => {
@@ -484,22 +510,20 @@
             // Story labels: county name and its change right now (text rebuilt only when a figure changes)
             // Built from the first frame (names start fully transparent), so the label font
             // texture is made during the welcome screen rather than mid-scroll
-            if (S.storyLabels > 0.01 && (!RENDER || RENDER.labels)) {
+            // The story's county names and changes: HTML over the canvas, placed each frame
+            // (placeNames), so they stay as sharp as the page's own text. Names fade in with
+            // their counties.
+            const showNames = S.storyLabels > 0.01 && (!RENDER || RENDER.labels);
+            namesEl.style.opacity = showNames ? S.storyLabels.toFixed(3) : '0';
+            if (showNames) {
                 const pct = c => Math.round((share(c.fips, hour) - 1) * 100);
-                const textKey = counties.map(pct).join();
-                // One shared layer. Names fade in with their counties; the dark outline (a single
-                // value for the whole layer) waits until everyone has arrived, so no outline shows
-                // ahead of a county that isn't there yet.
-                const nameAlpha = c => c.fips === BIBB ? smooth(5.15, 5.5, hour) : smooth(0.5, 1, arr(c.fips));
-                out.push(new deck.TextLayer({ id: 'names', data: counties, opacity: S.storyLabels,
-                    getPosition: d => { const ctr = center.get(d.fips); return [ctr[0], ctr[1], fullTop(d.fips) + 900]; },
-                    getText: d => pct(d) !== 0 ? `${nameOf.get(d.fips)}\n${pct(d) > 0 ? '+' : ''}${pct(d)}%` : nameOf.get(d.fips),
-                    getSize: d => d.fips === BIBB ? (mobile ? 14 : 17) : (mobile ? 10 : 12), lineHeight: 1.1,
-                    getColor: d => (d.fips === BIBB ? [242, 196, 107] : [245, 240, 228]).concat(Math.round(255 * nameAlpha(d))),
-                    fontFamily: labelFont, fontWeight: 600, billboard: true, fontSettings: { sdf: true },
-                    outlineWidth: 4 * smooth(5.8, 6.0, hour), outlineColor: [16, 23, 26, 230],
-                    parameters: { depthCompare: 'always', depthWriteEnabled: false },
-                    updateTriggers: { getPosition: geoKey, getText: textKey, getColor: hour < 6 ? hour.toFixed(3) : 'in' } }));
+                counties.forEach((c, i) => {
+                    const n = names[i], v = pct(c), ctr = center.get(c.fips);
+                    n.pos = [ctr[0], ctr[1], fullTop(c.fips) + 900];
+                    n.alpha = c.fips === BIBB ? smooth(5.15, 5.5, hour) : smooth(0.5, 1, arr(c.fips));
+                    const chg = v !== 0 ? `${v > 0 ? '+' : '−'}${Math.abs(v)}%` : '';
+                    if (chg !== n.chg) { n.chg = chg; n.chgEl.textContent = chg; }
+                });
             }
             // Highways (click the finished map), clipped to the region; badges stay whole
             if (hwy > 0.01 && hwyPaths.length) out.push(
