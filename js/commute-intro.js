@@ -734,10 +734,32 @@
 
         // ----- Moments: links into the story (#6am, #8am, #pay, #noon, #evening, #map), a copy-link
         // button on each card, and present mode (fullscreen; arrow keys step card by card) -----
+        // Present mode glides between cards slowly (the browser's smooth scroll takes about half a
+        // second), so the camera's move and the clock play out instead of flashing past. Any wheel,
+        // touch or new key press takes over from a glide in progress.
+        const GLIDE_MS = 1400, GLIDE_PER_PX = 1.6, GLIDE_MAX = 3600;   // about 2.5–3 s a card
+        let glide = null, glideStep = -1;   // the card a glide is heading to, so a key press mid-glide moves on from it
+        const stopGlide = () => { if (glide) { cancelAnimationFrame(glide); glide = null; } glideStep = -1; };
+        ['wheel', 'touchstart', 'mousedown'].forEach(t => addEventListener(t, stopGlide, { passive: true }));
+        function glideTo(y) {
+            stopGlide();
+            const from = scrollY, dist = y - from;
+            if (Math.abs(dist) < 2) return;
+            const ms = Math.min(GLIDE_MAX, GLIDE_MS + Math.abs(dist) * GLIDE_PER_PX), t0 = performance.now();
+            const frame = now => {
+                const k = Math.min(1, (now - t0) / ms);
+                scrollTo({ top: from + dist * d3.easeCubicInOut(k), behavior: 'instant' });
+                if (k < 1) glide = requestAnimationFrame(frame); else { glide = null; glideStep = -1; }
+            };
+            glide = requestAnimationFrame(frame);
+        }
         const goToStep = (el, smooth) => {
             measure();
             const a = anchors.find(x => x.el === el);
-            if (a) scrollTo({ top: Math.max(0, a.y), behavior: smooth ? 'smooth' : 'instant' });
+            if (!a) return;
+            const y = Math.max(0, a.y);
+            if (smooth && presenting && !reducedMotion) { glideTo(y); if (glide) glideStep = steps.indexOf(el); }
+            else { stopGlide(); scrollTo({ top: y, behavior: smooth ? 'smooth' : 'instant' }); }
         };
         const momentStep = name => steps.find(el => el.dataset.moment === name);
         // #counties (and #counties/<county>) is the finished map, where the county tool lives
@@ -787,12 +809,14 @@
             e.preventDefault();
             // Past the story's last card, the arrows carry on through the homepage's stops (js/chapters.js)
             const stops = window.WFStops, lastCard = anchors.length ? anchors[anchors.length - 1].y : Infinity;
-            if (stops && (scrollY > lastCard + 4 || (dir > 0 && step >= steps.length - 1))) {
+            if (stops && (scrollY > lastCard + 4 || (dir > 0 && (glideStep >= 0 ? glideStep : step) >= steps.length - 1))) {
+                stopGlide();
                 if (stops.step(dir)) return;
                 goToStep(steps[steps.length - 1], true);   // stepped back above the first stop: the map card
                 return;
             }
-            goToStep(steps[Math.max(0, Math.min(steps.length - 1, step + dir))], true);
+            const from = glideStep >= 0 ? glideStep : step;
+            goToStep(steps[Math.max(0, Math.min(steps.length - 1, from + dir))], true);
         });
 
         measure(); onScroll();
