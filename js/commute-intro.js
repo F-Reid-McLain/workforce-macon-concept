@@ -368,7 +368,11 @@
         });
 
         // ----- State -----
-        let target = RENDER ? RENDER.hour : 5, hour = target, step = 0, rise = reducedMotion || RENDER ? 1 : 0;
+        // Phones show the opening block as a picture while this loads (.ci-poster), already risen,
+        // so there the 3D starts risen too and the two match as they cross-fade
+        const poster = section.querySelector('.ci-poster');
+        const posterShown = !!poster && getComputedStyle(poster).display !== 'none';
+        let target = RENDER ? RENDER.hour : 5, hour = target, step = 0, rise = reducedMotion || RENDER || posterShown ? 1 : 0;
         let hwyOn = false, hwy = 0;
         const tilt = { x: 0, y: 0, tx: 0, ty: 0 };
         if (!reducedMotion && matchMedia('(hover: hover)').matches) {
@@ -399,6 +403,15 @@
         const toggleHighways = () => { hwyOn = !hwyOn; hwyBtn.setAttribute('aria-pressed', String(hwyOn)); hwyBtn.classList.add('is-used'); wake(); };
         hwyBtn.addEventListener('click', toggleHighways);
 
+        // On the finished map, clicking or tapping a county opens it in the card (js/county-explorer.js).
+        // Handled here rather than by deck.gl's onClick, which doesn't fire for a finger's tap.
+        mapEl.addEventListener('click', e => {
+            if (!stagesOf(morphAt(hour)).live) return;
+            const r = mapEl.getBoundingClientRect();
+            const info = deckgl.pickObject({ x: e.clientX - r.left, y: e.clientY - r.top, radius: 2 });
+            const fips = info && info.object && info.object.fips;
+            if (fips && fips !== BIBB) document.dispatchEvent(new CustomEvent('county:pick', { detail: { fips } }));
+        });
         // Pin the story's labels to their counties after every frame the map draws (the camera
         // drifts and orbits between scene changes, so this can't wait for the layers to change)
         function placeNames() {
@@ -414,15 +427,13 @@
         }
         const deckgl = new deck.Deck({
             parent: mapEl, views: new deck.MapView({ repeat: false }), viewState: storyCamera(5), controller: false,
+            // Vertical swipes on the map scroll the page (on phones the map fills the screen);
+            // taps still reach it, to pick a county on the finished map
+            touchAction: 'pan-y',
             useDevicePixels: Math.min(window.devicePixelRatio || 1, 2),
             effects: [new deck.LightingEffect({ ambient, sun })],
             onAfterRender: () => placeNames(),
             onHover: showTip,
-            // On the finished map, clicking a county opens it in the card (js/county-explorer.js)
-            onClick: info => {
-                const fips = info.object && info.object.fips;
-                if (stagesOf(morphAt(hour)).live && fips && fips !== BIBB) document.dispatchEvent(new CustomEvent('county:pick', { detail: { fips } }));
-            },
             getCursor: ({ isHovering }) => isHovering && stagesOf(morphAt(hour)).live ? 'pointer' : 'default',
         });
         const MASK = new deck.MaskExtension();

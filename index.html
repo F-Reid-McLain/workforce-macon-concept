@@ -33,8 +33,14 @@
         <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16.png">
         <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
         <link rel="manifest" href="site.webmanifest">
-        <link rel="preconnect" href="https://unpkg.com" crossorigin>
-        <link rel="preconnect" href="https://d3js.org" crossorigin>
+        <!-- The opening 3D scene needs these first: start them downloading right away, ahead of
+             everything else the page loads (js/commute-intro.js) -->
+        <link rel="preload" href="https://unpkg.com/deck.gl@9.0.38/dist.min.js" as="script">
+        <link rel="preload" href="https://d3js.org/d3.v7.min.js" as="script">
+        <link rel="preload" href="data/commute-region.json" as="fetch" crossorigin>
+        <link rel="preload" href="data/Population%20By%20County.csv" as="fetch" crossorigin>
+        <link rel="preload" href="data/Net%20Commuting%20LODES.csv" as="fetch" crossorigin>
+        <link rel="preload" href="data/major-highways.geojson" as="fetch" crossorigin>
         <link rel="stylesheet" href="css/theme.css">
         <link rel="stylesheet" href="css/main.css">
         <link rel="stylesheet" href="css/viz.css">
@@ -73,6 +79,8 @@
         <section class="ci" id="section-commute" aria-label="How Middle Georgia commutes to Macon-Bibb">
             <div class="ci-stage" id="ci-stage" data-pad-left="400" data-pad-breakpoint="900">
                 <div class="ci-shadow" aria-hidden="true"></div>
+                <!-- Phones: a picture of the opening Macon-Bibb block, shown at once while the 3D starts up (tools/render-poster.js) -->
+                <img class="ci-poster" src="assets/story/opening-phone.png" alt="" aria-hidden="true" width="268" height="209" fetchpriority="high" decoding="async">
                 <div id="ci-map" aria-hidden="true"></div>
                 <div class="ci-time" aria-hidden="true"><span id="ci-time-icon">☾</span><span id="ci-time-label">5:00 AM</span></div>
                 <div class="ci-tip" id="ci-tip"></div>
