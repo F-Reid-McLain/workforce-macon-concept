@@ -492,7 +492,14 @@ body.page-home .demo-bar-row { padding: 5px 0; font-size: 0.86rem; }
     .stop-intro .chapter-finding { font-size: clamp(1.9rem, 8.5vw, 2.6rem); max-width: 18ch; }
     .stop-intro .chapter-finding--sm { font-size: clamp(1.5rem, 6.6vw, 2rem); }
     .stop-intro .chapter-dek { font-size: 1rem; line-height: 1.5; }
-    .stop-intro .intro-source { font-size: 0.68rem; }
+    /* About ten words a slide: the headline carries it. The longer explanation stays on larger
+       screens; the credits drop to the foot of the map screen (where OpenStreetMap's belongs) */
+    .stop-intro .chapter-dek, .stop-intro--close .chapter-finding { display: none; }
+    .stop-intro--map .stop-intro__inner { position: static; }   /* so the credits place against the whole two-screen slide */
+    .stop-intro--map .intro-source {
+        position: absolute; z-index: 1; left: 16px; right: 16px; bottom: 12px; margin: 0;
+        font-size: 0.62rem; line-height: 1.4; color: rgba(255, 255, 255, 0.45);
+    }
     .stop-intro .ticker__num { font-size: clamp(3.2rem, 17vw, 4.6rem); }
     .grow-bars { margin-top: 12px; width: 100%; }
     /* Tools: long lists show their top few, with a button for the rest (js/lookups.js phoneCap) */

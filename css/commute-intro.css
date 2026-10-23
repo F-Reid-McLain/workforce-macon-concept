@@ -248,6 +248,10 @@ body.ci-on-screen .page-jumpnav { opacity: 0; pointer-events: none; }
 .ci-short { display: none; }
 @media (max-width: 700px) {
     .ci-step--full, .ci-long, .ci-pulse, .ci-linkbtn { display: none !important; }
+    .ci-welcome :is(.ci-eyebrow, .ci-lede) { display: none; }   /* the opening is just the headline (the header carries the name) */
+    .ci-welcome h1 { margin-bottom: 1.4rem; }
+    .ci-step.ci-step--welcome { align-items: flex-start; padding-top: 9vh; padding-top: 9svh; }   /* the words up top, the county turning below them */
+    .ci-skip { display: none; }   /* the menu's "On this page" links do this on phones */
     .ci-short { display: block; }
     .ci-step { min-height: 90vh; min-height: 90svh; padding: 0 0.6rem calc(14px + env(safe-area-inset-bottom)); }
     .ci-card { padding: 0.8rem 1rem 0.85rem; border-radius: 12px; background: rgba(16, 23, 32, 0.92); }
