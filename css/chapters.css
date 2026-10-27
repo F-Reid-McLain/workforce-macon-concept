@@ -465,6 +465,17 @@ body.page-home .demo-bar-row { padding: 5px 0; font-size: 0.86rem; }
     .rank-list li:nth-child(n + 9) { display: none; }
     .stop { padding-top: 68px; gap: 12px; }
 }
+/* Short windows (a browser not maximized, a small laptop): Jobs another step down, top 7 */
+@media (min-width: 901px) and (max-height: 660px) {
+    #jobs { --jt: 0.92; }
+    .rank-list li:nth-child(n + 8) { display: none; }
+    .stop { padding-top: 60px; padding-bottom: 12px; gap: 8px; }
+}
+/* Between phone and desktop (701–900px, the tools in one column): the donut sized by the
+   window's height too, so a short window still shows it whole */
+@media (min-width: 701px) and (max-width: 900px) {
+    .tool-panel--donut .donut { max-width: min(440px, calc(100vh - 180px)); }
+}
 
 /* Snapping (desktop and laptop) is done in js/chapters.js: it settles in the direction you
    were scrolling, which CSS scroll-snap can't do (a small nudge would snap back). */

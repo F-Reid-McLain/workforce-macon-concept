@@ -105,7 +105,10 @@
         ready: side,
         base: { neighbors: [0, 0.18], bibb: [0.04, 0.24], ints: [0.12, 0.32], us: null, shields: [0.26, 0.34] },
         fit: (W, H, wide) => {
-            if (wide) return { x: W * 0.75, y: H * 0.5, w: 0.62, h: 0.82, at: CENTER };
+            // Wide: in the space right of the words (they take the left half), whatever the window's
+            // shape, so a squarer window doesn't slide the plants under the text
+            if (wide) { const L = Math.max(24, W * 0.06) + 0.5 * (W - Math.max(24, W * 0.06)) + 24, R = W - 24;
+                return { x: (L + R) / 2, y: H * 0.52, w: (R - L) / W, h: 0.86, at: CENTER }; }
             // Phones: the map has its own screen, after the text (css/chapters.css)
             // zoomed in on the plants (south and east Macon-Bibb), so they spread out and read at thumb size
             return { x: W / 2, y: H * 0.48, w: 1.3, h: 0.95, at: CENTER };
