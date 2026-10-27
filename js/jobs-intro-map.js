@@ -15,7 +15,7 @@
         drawMs: 3000,
         base: { neighbors: [0, 0.3], bibb: [0.08, 0.4], ints: [0.3, 0.6], us: [0.5, 0.8], shields: [0.65, 0.75] },
         // phones: zoomed in with the hospital a little left of the middle (its label runs to the right)
-        fit: (W, H, wide) => wide ? { x: W * 0.74, y: H * 0.54, w: 0.36, h: 0.5 } : { x: W * 0.4, y: H * 0.52, w: 1.5, h: 1.1, at: HOSPITAL },
+        fit: (W, H, wide) => wide ? { x: W * 0.74, y: H * 0.54, w: 0.36, h: 0.5 } : { x: W * (W < 360 ? 0.32 : 0.4), y: H * 0.52, w: 1.5, h: 1.1, at: HOSPITAL },
         shieldReach: wide => wide ? 0.42 : 0.8,   // phones: out toward the edges, clear of the hospital
         layer({ svg, proj, wide }) {
             // The hospital stands on its spot (a small marker at its real location) and rises above the road

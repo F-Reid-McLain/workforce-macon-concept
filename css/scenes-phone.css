@@ -1,0 +1,86 @@
+/* ===== PHONES: THE HOMEPAGE AS SWIPE SCENES (js/scenes-phone.js) =====
+   Only under html.scenes (set in index.html's <head> on phones, not with reduced motion), so
+   nothing here touches desktop or the plain phone page. Full screen like an app: no header
+   bar (just a floating menu button), a progress bar across the top, every scene exactly the
+   visible screen (100dvh), and safe-area room for the notch and the home bar. */
+
+html.scenes { overscroll-behavior: none; scroll-behavior: auto; }
+html.scenes body { overscroll-behavior: none; }
+
+/* ----- The header gives way to a floating menu button ----- */
+html.scenes .main-header {
+    position: fixed; height: 0; padding: 0; border: 0; box-shadow: none;
+    background: transparent !important; transform: none !important;
+}
+html.scenes .main-header .logo, html.scenes .page-jumpnav { display: none; }
+html.scenes .nav-toggle {
+    position: fixed; z-index: 330; top: calc(env(safe-area-inset-top) + 14px); right: 12px;
+    width: 44px; height: 44px; margin: 0; padding: 0; border-radius: 50%;
+    background: rgba(14, 20, 32, 0.55); border: 1px solid rgba(255, 255, 255, 0.14);
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+}
+html.scenes .nav-toggle span { width: 18px; }
+html.scenes .main-nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 320;
+    padding-top: calc(env(safe-area-inset-top) + 66px); background: rgb(14, 20, 32);
+}
+
+/* ----- Where you are: a segment per scene ----- */
+.scene-bar { display: none; }
+html.scenes .scene-bar {
+    display: flex; gap: 3px; position: fixed; z-index: 310; pointer-events: none;
+    top: calc(env(safe-area-inset-top) + 6px); left: 12px; right: 12px;
+}
+html.scenes .scene-bar i { flex: 1; height: 3px; border-radius: 2px; background: rgba(255, 255, 255, 0.16); transition: background 0.5s; }
+html.scenes .scene-bar i.is-done { background: rgba(255, 255, 255, 0.5); }
+html.scenes .scene-bar i.is-on { background: #f2c46b; }
+
+/* ----- The story fills the screen ----- */
+html.scenes .ci-stage { height: 100dvh; }
+html.scenes .ci-time { top: calc(env(safe-area-inset-top) + 18px); right: auto; left: 12px; }
+html.scenes .ci-tools { top: calc(env(safe-area-inset-top) + 66px); }
+html.scenes .ci-step.ci-step--welcome { padding-top: calc(env(safe-area-inset-top) + 12vh); }
+/* short screens (iPhone SE): the headline sits higher and a little smaller, clear of Macon-Bibb below */
+@media (max-height: 620px) {
+    html.scenes .ci-step.ci-step--welcome { padding-top: calc(env(safe-area-inset-top) + 64px); }
+    html.scenes .ci-welcome h1 { font-size: 1.85rem; margin-bottom: 0.9rem; }
+}
+html.scenes .ci-caption { padding-bottom: calc(1.4rem + env(safe-area-inset-bottom)); }
+html.scenes .ci-step { padding-bottom: calc(14px + env(safe-area-inset-bottom)); }
+
+/* ----- Title slides: one pinned screen, the words and then the map -----
+   The slide keeps two screens of scroll (the scene player's two stops), but both its words and
+   its map stick to the screen the whole way: swiping on lifts the words away while the map
+   comes in from a little closer and draws (js/intro-map.js reads .is-map) */
+html.scenes .stop-intro--map { display: block; min-height: 200dvh; padding: 0; overflow: clip; }
+html.scenes .stop-intro--map .intro-map {
+    position: sticky; inset: auto; top: 0; display: block; width: 100%; height: 100dvh;
+    opacity: 0; transform: scale(1.08); transform-origin: 50% 55%;
+    transition: opacity 0.7s ease, transform 1.2s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+html.scenes .stop-intro--map.is-map .intro-map { opacity: 1; transform: none; }
+/* once drawn, the map keeps drifting closer, slowly */
+html.scenes .stop-intro--map.is-map .intro-map.is-drawn { animation: scene-drift 14s ease-in-out infinite alternate; }
+@keyframes scene-drift { from { transform: scale(1); } to { transform: scale(1.045); } }
+html.scenes .stop-intro--map .stop-intro__inner {
+    position: sticky; top: 0; height: 100dvh; min-height: 0; margin: -100dvh 0 0; box-sizing: border-box;
+    display: flex; flex-direction: column; justify-content: center; max-width: none;
+    padding: calc(env(safe-area-inset-top) + 40px) 20px calc(40px + env(safe-area-inset-bottom));
+    animation: none !important;
+}
+html.scenes .stop-intro--map .stop-intro__inner > :not(.intro-source) { transition: opacity 0.5s ease, transform 0.7s cubic-bezier(0.4, 0, 0.2, 1); }
+html.scenes .stop-intro--map.is-map .stop-intro__inner { pointer-events: none; }   /* taps reach the plants */
+html.scenes .stop-intro--map.is-map .stop-intro__inner > :not(.intro-source) { opacity: 0; transform: translateY(-56px); }
+html.scenes .stop-intro--map .intro-source { opacity: 0; transition: opacity 0.6s ease 0.3s; bottom: calc(12px + env(safe-area-inset-bottom)); }
+html.scenes .stop-intro--map.is-map .intro-source { opacity: 1; }
+html.scenes .stop-intro--map .intro-cue { margin-top: 2.6rem; }
+html.scenes .gm-tip, html.scenes .gm-tip.is-below { bottom: calc(76px + env(safe-area-inset-bottom)); }
+
+/* ----- The tools: edge to edge, starting under the progress bar and menu button ----- */
+html.scenes .stop { min-height: 100dvh; padding: calc(env(safe-area-inset-top) + 64px) 16px calc(28px + env(safe-area-inset-bottom)); justify-content: flex-start; }
+html.scenes .tool-panel { padding: 0; border: 0; border-radius: 0; background: transparent; }
+html.scenes .donut-ctrl, html.scenes .tool-panel--donut #ind-views { margin: 0 -16px; }
+
+/* ----- The close and custom research: a full screen each ----- */
+html.scenes .stop-intro--close { min-height: 100dvh; }
+html.scenes #custom-research { min-height: 100dvh; box-sizing: border-box; padding-top: calc(env(safe-area-inset-top) + 72px); }

@@ -189,12 +189,17 @@ window.WFIntroMap = (function () {
         }
         // Phones scroll freely between snaps, so there the map plays once its screen is mostly in
         // view and holds until it's mostly gone; desktop settles exactly, so it waits for center
+        // Phone swipe scenes pin the map for the whole slide and flip from the words to the map
+        // (css/scenes-phone.css): there it plays while the slide shows its map state.
+        const scenes = document.documentElement.classList.contains('scenes');
         function aim() {
+            if (scenes) { const t = slide.classList.contains('is-map') ? 1 : 0; if (t !== target) animateTo(t); return; }
             const narrow = innerWidth <= 900, ON = narrow ? 0.7 : 0.92, OFF = narrow ? 0.35 : 0.9;
             const p = progress(), t = p >= ON ? 1 : p < OFF ? 0 : target;
             if (t !== target) animateTo(t);
         }
         // Present mode: an arrow press while it's drawing finishes it (true) instead of moving on
+        slide.wfAim = () => aim();   // the scene player calls this when it flips the slide
         slide.wfFinishBuild = () => {
             if (!clock || target !== 1) return false;
             stopClock(); cur = 1; render(1);
