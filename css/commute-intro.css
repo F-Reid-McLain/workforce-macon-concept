@@ -274,7 +274,30 @@ body.ci-on-screen .page-jumpnav { opacity: 0; pointer-events: none; }
     .ci-step--map .ci-county__pick > span { font-size: 0.82rem; }
 }
 
+/* Phones: the captions as subtitles under the map (js/commute-intro.js). The story's own cards
+   stay in the page for screen readers and to pace the scroll, but out of sight. */
+.ci-caption { display: none; }
+@media (max-width: 700px) {
+    .ci-step:not(.ci-step--welcome):not(.ci-step--map) .ci-card { opacity: 0 !important; pointer-events: none; }
+    .ci-caption {
+        display: block; position: absolute; z-index: 3; left: 0; right: 0; bottom: 0;
+        padding: 2.2rem 1.25rem calc(1.1rem + env(safe-area-inset-bottom));
+        background: linear-gradient(to top, rgba(11, 16, 23, 0.97) 55%, rgba(11, 16, 23, 0));
+        opacity: 0; transform: translateY(12px); transition: opacity 0.4s, transform 0.4s; pointer-events: none;
+    }
+    .ci-caption.is-on { opacity: 1; transform: none; }
+    .ci-caption__text { transition: opacity 0.18s, transform 0.18s; min-height: 3.6em; }
+    .ci-caption.is-swapping .ci-caption__text { opacity: 0; transform: translateY(6px); }
+    .ci-caption b { display: block; margin-bottom: 0.2rem; font: var(--font-heading-weight) 1.3rem/1.2 var(--font-heading); color: #fff; }
+    .ci-caption span { display: block; font-size: 1.05rem; line-height: 1.4; color: #dbe2ec; }
+    .ci-caption strong { color: #f2c46b; font-variant-numeric: tabular-nums; }
+    .ci-caption__dots { display: flex; gap: 6px; margin-top: 0.75rem; }
+    .ci-caption__dots i { width: 18px; height: 3px; border-radius: 2px; background: rgba(255, 255, 255, 0.22); transition: background 0.3s, width 0.3s; }
+    .ci-caption__dots i.is-on { width: 28px; background: #f2c46b; }
+}
+
 @media (prefers-reduced-motion: reduce) {
+    .ci-caption, .ci-caption__text { transition: none; }
     .ci-scroll svg { animation: none; }
     .ci-card, .ci-stage #ci-map { transition: none; }
     .ci.is-map .ci-pill:not(.is-used) .ci-pill__dot { animation: none; }
