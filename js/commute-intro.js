@@ -338,7 +338,8 @@
         function phoneCardRoom(H) { return (roomUsed = cardRoom !== null ? cardRoom : cardRoomNow(H)); }
         function computeFlat() {
             const W = stage.clientWidth, H = stage.clientHeight;
-            const padLeft = W > +(stage.dataset.padBreakpoint || Infinity) ? +(stage.dataset.padLeft || 0) : 0;
+            // room on the left for the card wherever it sits beside the map (above 768px; below, it sits under it)
+            const padLeft = W > +(stage.dataset.padBreakpoint || Infinity) ? +(stage.dataset.padLeft || 0) : W > 768 ? Math.min(400, Math.round(W * 0.47)) : 0;
             const vp = new deck.WebMercatorViewport({ width: W, height: H })
                 // phones: the map fits the top half, above the card (which holds the county tool)
                 .fitBounds(bounds, { padding: { top: 56, bottom: W <= 700 ? phoneCardRoom(H) : W <= 768 ? Math.round(H * 0.5) : 40, left: W <= 700 ? 12 : 24 + padLeft, right: W <= 700 ? 12 : 24 } });
