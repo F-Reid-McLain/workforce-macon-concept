@@ -2,8 +2,8 @@
    After the commuting story, three tools people can come back to, each
    deliberately limited to the essentials (the depth is what custom research is for):
 
-   - Jobs (#jobs): search any of ~800 occupations, or browse the top 10 by
-     most common, best paid, fastest growing or most openings; each job's pay
+   - Jobs (#jobs): search any of ~800 occupations, or browse the top 8 by
+     most common, best paid or fastest growing; each job's pay and count, with its pay
      is shown against the average job located in Macon-Bibb (data/Occupation Snapshot.csv, OES-based).
      The data counts jobs where they are, not where workers live, so jobs held by
      commuters from neighboring counties are included in every figure.
@@ -45,7 +45,7 @@
         new MutationObserver(fit).observe(listEl, { childList: true });
         label(); fit();
     }
-    phoneCap(document.getElementById('job-rank'), 'Show 5 more');
+    phoneCap(document.getElementById('job-rank'), 'Show 3 more');
     phoneCap(document.getElementById('strength-list'), 'Show all specialties');
     phoneCap(document.getElementById('donut-legend'), 'Show every sector');
 
@@ -191,53 +191,47 @@
             common:   { key: j => j.empl,     min: 0,   val: j => fmt(j.empl) + ' jobs',     note: 'Ranked by jobs in Macon-Bibb.' },
             paid:     { key: j => j.wage,     min: 30,  val: j => money(j.wage),             note: 'Ranked by average pay, among jobs with at least 30 positions here.' },
             growing:  { key: j => j.growth,   min: 100, val: j => pct(j.growth) + ' a year', note: 'Ranked by projected growth a year, among jobs with at least 100 positions here.' },
-            openings: { key: j => j.openings, min: 0,   val: j => '~' + fmt(j.openings) + ' a year', note: 'Ranked by openings a year: new jobs plus people retiring or changing careers.' },
         };
-        const out = document.getElementById('job-result'), list = document.getElementById('job-rank'), note = document.getElementById('job-rank-note');
-        const outlook = g => g > 0.005 ? ['Growing', 'is-up'] : g < -0.005 ? ['Shrinking', 'is-down'] : ['Steady', ''];
+        // Kept simple: search, the top 8, and one card with the two figures that matter (pay and jobs)
+        const TOP = 8;
+        const out = document.getElementById('job-result'), list = document.getElementById('job-rank');
 
         // The card is built once, so its numbers can count and its gauge marker can glide
         const PAY_LO = 20000, PAY_HI = 400000, gx = v => (100 * Math.log(Math.max(PAY_LO, Math.min(PAY_HI, v)) / PAY_LO) / Math.log(PAY_HI / PAY_LO)).toFixed(1) + '%';
         out.innerHTML = `<h3></h3>
             <dl class="tool-stats">
                 <div><dt>Average pay</dt><dd data-k="wage" data-f="money"></dd></div>
-                <div><dt>Jobs located in Macon-Bibb</dt><dd data-k="empl" data-f="int"></dd></div>
-                <div><dt>Openings a year</dt><dd data-k="openings" data-f="approx"></dd></div>
-                <div><dt>Outlook</dt><dd data-k="outlook"></dd></div>
+                <div><dt>Jobs in Macon-Bibb</dt><dd data-k="empl" data-f="int"></dd></div>
             </dl>
             <div class="pay-gauge" aria-hidden="true">
                 <div class="pay-gauge__track"><span class="pay-gauge__avg" style="left:${gx(avgPay)}"><em>Avg. job here ${money(avgPay)}</em></span><span class="pay-gauge__me"></span></div>
                 <div class="pay-gauge__ends"><span>$20K</span><span>$400K</span></div>
             </div>
-            <p class="pay-gauge__cap"></p>
-            <p class="pay-gauge__where">Pay for jobs located in Macon-Bibb, whoever holds them, including commuters from neighboring counties.</p>`;
+            <p class="pay-gauge__cap"></p>`;
         const last = {};
         let current = jobs[0], ranked = [], view = 'common';
         function show(j, quiet) {
             const changed = current !== j;
             current = j;
-            const [word, cls] = outlook(j.growth);
             out.querySelector('h3').textContent = j.name;
-            ['wage', 'empl', 'openings'].forEach(k => { out.querySelector(`[data-k="${k}"]`).dataset.num = j[k]; });
+            ['wage', 'empl'].forEach(k => { out.querySelector(`[data-k="${k}"]`).dataset.num = j[k]; });
             countIn(out, last);
-            const ol = out.querySelector('[data-k="outlook"]'); ol.textContent = word; ol.className = cls;
             out.querySelector('.pay-gauge__me').style.left = gx(j.wage);
             const diff = j.wage - avgPay;
             out.querySelector('.pay-gauge__cap').innerHTML = Math.abs(diff) < 1000 ? 'About the same as the average job located in Macon-Bibb.'
-                : `<b>${money(Math.abs(diff))} ${diff > 0 ? 'more' : 'less'}</b> than the average job located in Macon-Bibb (${money(avgPay)}).`;
+                : `<b>${money(Math.abs(diff))} ${diff > 0 ? 'more' : 'less'}</b> than the average job here.`;
             if (changed && !quiet) swap(out);
             list.querySelectorAll('button').forEach(b => b.classList.toggle('is-hot', ranked[+b.dataset.i] === j));
         }
         function rank(v) {
             view = v;
             const s = SORTS[v];
-            ranked = jobs.filter(j => j.empl >= s.min).sort((a, b) => s.key(b) - s.key(a)).slice(0, 10);
+            ranked = jobs.filter(j => j.empl >= s.min).sort((a, b) => s.key(b) - s.key(a)).slice(0, TOP);
             const top = s.key(ranked[0]) || 1;
             flip(list, () => {
                 list.innerHTML = ranked.map((j, i) => `<li data-key="${esc(j.name)}"><button type="button" data-i="${i}"><b>${i + 1}</b><span>${esc(j.name)}</span><em>${s.val(j)}</em>
                     <i class="row-bar"><i data-bar style="width:${Math.max(2, 100 * s.key(j) / top).toFixed(1)}%"></i></i></button></li>`).join('');
             });
-            note.textContent = s.note;
             show(current, true);
         }
         list.addEventListener('click', e => { const b = e.target.closest('button'); if (b) { show(ranked[+b.dataset.i]); remember('jobs', current.name); } });
