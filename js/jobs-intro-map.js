@@ -14,8 +14,10 @@
         svg: svgEl,
         drawMs: 3000,
         base: { neighbors: [0, 0.3], bibb: [0.08, 0.4], ints: [0.3, 0.6], us: [0.5, 0.8], shields: [0.65, 0.75] },
-        fit: (W, H, wide) => wide ? { x: W * 0.74, y: H * 0.54, w: 0.36, h: 0.5 } : { x: W / 2, y: H * 0.52, w: 0.86, h: 0.58 },
-        layer({ svg, proj }) {
+        // phones: zoomed in with the hospital a little left of the middle (its label runs to the right)
+        fit: (W, H, wide) => wide ? { x: W * 0.74, y: H * 0.54, w: 0.36, h: 0.5 } : { x: W * 0.4, y: H * 0.52, w: 1.5, h: 1.1, at: HOSPITAL },
+        shieldReach: wide => wide ? 0.42 : 0.8,   // phones: out toward the edges, clear of the hospital
+        layer({ svg, proj, wide }) {
             // The hospital stands on its spot (a small marker at its real location) and rises above the road
             const [hx, hy] = proj(HOSPITAL);
             const gH = svg.append('g').attr('class', 'im-hospital').attr('transform', `translate(${hx.toFixed(1)},${hy.toFixed(1)})`);
@@ -32,6 +34,7 @@
             bld.append('rect').attr('class', 'im-door').attr('x', -3.5).attr('y', -7).attr('width', 7).attr('height', 7).attr('rx', 1);
             bld.append('circle').attr('class', 'im-badge').attr('cx', 0).attr('cy', -40).attr('r', 7.5);
             bld.append('path').attr('class', 'im-cross').attr('d', 'M-1.6,-44.5h3.2v3h3v3.2h-3v3h-3.2v-3h-3v-3.2h3z');
+            if (!wide) gH.attr('transform', `translate(${hx.toFixed(1)},${hy.toFixed(1)}) scale(1.45)`);   // phones: thumb-sized
             const hLabel = gH.append('text').attr('class', 'im-hlabel').attr('x', 28).attr('y', -30).text('Level I trauma center');
             return (p, stage) => {
                 const rise = d3.easeBackOut.overshoot(1.4)(stage(0.75, 0.93));

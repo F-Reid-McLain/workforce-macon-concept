@@ -215,12 +215,14 @@
         const centerDefault = () => {
             const key = usOn ? '<small>Outer ring: Macon-Bibb · inner: the U.S.</small>'
                 : donutMode === 'pay' ? '<small>Colored by average pay</small>' : donutMode === 'growth' ? '<small>Colored by five-year job change</small>' : '';
+            // (touch screens get the short hints: the middle of a phone's donut is small)
+            const touch = window.matchMedia && matchMedia('(hover: none)').matches;
             if (wages) return isRoot
-                ? `<b>${fmtMoney(totalPay)}</b><span>in wages a year</span>${key || '<small>Slices sized by wages · click one to look inside</small>'}`
-                : `<b>${fmtMoney(totalPay)}</b><span>${node.name}</span>${key || `<small>${fmtShare(totalPay / allPay())} of all wages · click here to go back</small>`}`;
+                ? `<b>${fmtMoney(totalPay)}</b><span>in wages a year</span>${key || (touch ? '<small>Tap a slice</small>' : '<small>Slices sized by wages · click one to look inside</small>')}`
+                : `<b>${fmtMoney(totalPay)}</b><span>${node.name}</span>${key || (touch ? '<small>Tap here to go back</small>' : `<small>${fmtShare(totalPay / allPay())} of all wages · click here to go back</small>`)}`;
             return isRoot
-                ? `<b>${Math.round(officialJobs || allJobs).toLocaleString()}</b><span>jobs in ${slices.length} sectors</span>${key || '<small>Click a slice to look inside</small>'}`
-                : `<b>${fmtShare(total / allJobs)}</b><span>${node.name}</span>${key || `<small>${Math.round(total).toLocaleString()} jobs · click an industry, or here to go back</small>`}`;
+                ? `<b>${Math.round(officialJobs || allJobs).toLocaleString()}</b><span>jobs in ${slices.length} sectors</span>${key || (touch ? '<small>Tap a slice</small>' : '<small>Click a slice to look inside</small>')}`
+                : `<b>${fmtShare(total / allJobs)}</b><span>${node.name}</span>${key || (touch ? '<small>Tap here to go back</small>' : `<small>${Math.round(total).toLocaleString()} jobs · click an industry, or here to go back</small>`)}`;
         };
         const setCenter = i => {
             if (i < 0) { center.innerHTML = centerDefault(); return; }

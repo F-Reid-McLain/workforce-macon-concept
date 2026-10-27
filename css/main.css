@@ -153,6 +153,9 @@ body.embed-mode .viz-container {
 @media (max-width: 374px) {
     .logo h1 { font-size: 1.2rem; letter-spacing: 1px; }
 }
+@media (max-width: 700px) {
+    .logo a { display: block; padding: 10px 0; margin: -10px 0; }   /* a taller tap target, same header */
+}
 
 .logo .accent {
     font-weight: 300;

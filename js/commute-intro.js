@@ -276,6 +276,30 @@
             [12.5,  V(-83.62, 32.68, 8.4, 60, 6)],     // the workday
             [17.75, V(-83.62, 32.64, 8.3, 56, 0)],     // heading home
         ];
+        // Phones: the desktop camera pulled back still spilled the region off a tall, narrow screen
+        // and sat it low. Each moment after the welcome is fitted instead: a little flatter, the
+        // whole region across the width, centered between the clock and the caption below.
+        if (mobile) fitPhoneCamera();
+        function fitPhoneCamera() {
+            const W = stage.clientWidth, H = stage.clientHeight;
+            if (!W || !H) return;
+            const pts = rings.flatMap(r => r.ring).filter((p, i) => i % 4 === 0);
+            const top = 56, bottom = H - Math.max(150, H * 0.24);   // clear of the time pill and the caption
+            CAMERA.forEach((kf, i) => {
+                if (i === 0) return;   // the welcome keeps Macon-Bibb alone under the headline
+                let v = { ...kf[1], pitch: Math.min(kf[1].pitch, 40) };
+                for (let pass = 0; pass < 3; pass++) {
+                    const vp = new deck.WebMercatorViewport({ width: W, height: H, ...v });
+                    const xy = pts.map(p => vp.project(p));
+                    const x0 = d3.min(xy, p => p[0]), x1 = d3.max(xy, p => p[0]), y0 = d3.min(xy, p => p[1]), y1 = d3.max(xy, p => p[1]);
+                    const k = Math.min((W * 0.94) / (x1 - x0), ((bottom - top) * 0.86) / (y1 - y0));
+                    // move the region's middle to the space's middle, then scale to fit
+                    const c = vp.unproject([W / 2 + ((x0 + x1) / 2 - W / 2), H / 2 + ((y0 + y1) / 2 - (top + bottom) / 2)]);
+                    v = { ...v, longitude: c[0], latitude: c[1], zoom: v.zoom + Math.log2(k) };
+                }
+                kf[1] = v;
+            });
+        }
         function storyCamera(h) {
             if (h <= CAMERA[0][0]) return CAMERA[0][1];
             for (let i = 1; i < CAMERA.length; i++) {
@@ -291,12 +315,20 @@
         const allPts = rings.flatMap(r => r.ring);
         const bounds = [[d3.min(allPts, p => p[0]), d3.min(allPts, p => p[1])], [d3.max(allPts, p => p[0]), d3.max(allPts, p => p[1])]];
         let flatView = null;
+        // Phones: the map takes everything above its card (measured, with a little air)
+        let cardRoom = null, roomUsed = null;   // the room it's easing through while it re-fits; the room last fitted to
+        function cardRoomNow(H) {
+            const card = section.querySelector('.ci-step--map .ci-card');
+            const h = card ? card.offsetHeight : 0;
+            return h ? Math.min(Math.round(H * 0.5), h + 30) : Math.round(H * 0.42);
+        }
+        function phoneCardRoom(H) { return (roomUsed = cardRoom !== null ? cardRoom : cardRoomNow(H)); }
         function computeFlat() {
             const W = stage.clientWidth, H = stage.clientHeight;
             const padLeft = W > +(stage.dataset.padBreakpoint || Infinity) ? +(stage.dataset.padLeft || 0) : 0;
             const vp = new deck.WebMercatorViewport({ width: W, height: H })
                 // phones: the map fits the top half, above the card (which holds the county tool)
-                .fitBounds(bounds, { padding: { top: 56, bottom: W <= 700 ? Math.round(H * 0.42) : W <= 768 ? Math.round(H * 0.5) : 40, left: W <= 700 ? 12 : 24 + padLeft, right: W <= 700 ? 12 : 24 } });
+                .fitBounds(bounds, { padding: { top: 56, bottom: W <= 700 ? phoneCardRoom(H) : W <= 768 ? Math.round(H * 0.5) : 40, left: W <= 700 ? 12 : 24 + padLeft, right: W <= 700 ? 12 : 24 } });
             flatView = { longitude: vp.longitude, latitude: vp.latitude, zoom: vp.zoom, pitch: 0, bearing: 0 };
             // Highway badges that land on top of each other get pushed apart (in screen space);
             // an interstate keeps its spot and the other badge moves
@@ -351,8 +383,9 @@
             const chgEl = document.createElement('span');
             el.append(b, chgEl);
             namesEl.appendChild(el);
-            return { el, chgEl, chg: null, pos: null, alpha: 0 };
+            return { el, chgEl, chg: null, pos: null, alpha: 0, name: nameOf.get(c.fips), bibb: c.fips === BIBB, rank: c.fips === BIBB ? Infinity : pop.get(c.fips) || 0 };
         });
+        const byRank = names.slice().sort((a, b) => b.rank - a.rank);
         mapEl.after(namesEl, hwyLayerEl, labelsEl);
         computeFlat();
 
@@ -422,8 +455,22 @@
                 if (!n.pos) return;
                 const [x, y] = vp.project(n.pos);
                 n.el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) translate(-50%, -50%)`;
-                n.el.style.opacity = n.alpha.toFixed(3);
+                n.xy = [x, y];
             });
+            // Phones: the region is small, so labels that would sit on top of a more important one
+            // (Macon-Bibb first, then the biggest counties) step aside
+            const shown = new Set();
+            if (mobile) {
+                const boxes = [];
+                byRank.forEach(n => {
+                    if (!n.pos || n.alpha < 0.02) return;
+                    const w = Math.max(n.name.length, (n.chg || '').length) * (n.bibb ? 8.5 : 6) + 6, h = n.bibb ? 34 : 25;
+                    const b = [n.xy[0] - w / 2, n.xy[1] - h / 2, n.xy[0] + w / 2, n.xy[1] + h / 2];
+                    if (boxes.some(o => b[0] < o[2] && b[2] > o[0] && b[1] < o[3] && b[3] > o[1])) return;
+                    boxes.push(b); shown.add(n);
+                });
+            }
+            names.forEach(n => { if (n.pos) n.el.style.opacity = (mobile && !shown.has(n) ? 0 : n.alpha).toFixed(3); });
         }
         // Ready (the map fades in over the phone's stand-in picture) only once a frame with the
         // counties in it has really been drawn: Safari can take a second or two after the data
@@ -455,7 +502,23 @@
         const MASK = new deck.MaskExtension();
         // The county open in the map's card: outlined in gold, with its commute drawn as arcs
         let sel = (window.WFCounty && window.WFCounty.current) || null;
-        document.addEventListener('county:selected', e => { sel = e.detail; lastScene = ''; wake(); });
+        document.addEventListener('county:selected', e => {
+            sel = e.detail; lastScene = ''; wake();
+            // Phones: the card grows with the county's numbers (or shrinks back), so the map eases
+            // to fit the room left above it instead of disappearing under the card
+            if (!mobile) return;
+            requestAnimationFrame(() => {
+                const H = stage.clientHeight, to = cardRoomNow(H), from = roomUsed === null ? to : roomUsed;
+                if (Math.abs(to - from) < 4) return;
+                const t0 = performance.now();
+                const t = d3.timer(() => {
+                    const k = Math.min(1, (performance.now() - t0) / 450);
+                    cardRoom = from + (to - from) * d3.easeCubicInOut(k);
+                    computeFlat(); lastScene = ''; wake();
+                    if (k >= 1) { t.stop(); cardRoom = null; }
+                });
+            });
+        });
 
         // ----- Layers -----
         const lift = (ring, z) => ring.map(([x, y]) => [x, y, z]);
@@ -693,7 +756,7 @@
             else { capEl.classList.add('is-swapping'); capSwap = setTimeout(fill, 180); }
         }
         addEventListener('scroll', onScroll, { passive: true });
-        addEventListener('resize', () => { measure(); computeFlat(); lastScene = ''; onScroll(); });
+        addEventListener('resize', () => { measure(); computeFlat(); if (mobile) fitPhoneCamera(); lastScene = ''; onScroll(); });
 
         // ----- Idle drift: when nobody's scrolling, the 3D view keeps moving -----
         // On the opening view the camera circles Macon-Bibb, so the county turns in place
