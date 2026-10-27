@@ -33,14 +33,6 @@
         <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16.png">
         <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
         <link rel="manifest" href="site.webmanifest">
-        <!-- The opening 3D scene needs these first: start them downloading right away, ahead of
-             everything else the page loads (js/commute-intro.js) -->
-        <link rel="preload" href="https://unpkg.com/deck.gl@9.0.38/dist.min.js" as="script">
-        <link rel="preload" href="https://d3js.org/d3.v7.min.js" as="script">
-        <link rel="preload" href="data/commute-region.json" as="fetch" crossorigin>
-        <link rel="preload" href="data/Population%20By%20County.csv" as="fetch" crossorigin>
-        <link rel="preload" href="data/Net%20Commuting%20LODES.csv" as="fetch" crossorigin>
-        <link rel="preload" href="data/major-highways.geojson" as="fetch" crossorigin>
         <link rel="stylesheet" href="css/theme.css">
         <link rel="stylesheet" href="css/main.css">
         <link rel="stylesheet" href="css/viz.css">
@@ -48,6 +40,14 @@
     <link rel="stylesheet" href="css/reveal.css">
     <link rel="stylesheet" href="css/commute-intro.css">
     <link rel="stylesheet" href="css/chapters.css">
+        <!-- Then what the opening 3D scene needs, downloading while the page paints (the scripts
+             themselves are deferred, so the words and the opening picture show first; js/commute-intro.js) -->
+        <link rel="preload" href="https://unpkg.com/deck.gl@9.0.38/dist.min.js" as="script">
+        <link rel="preload" href="https://d3js.org/d3.v7.min.js" as="script">
+        <link rel="preload" href="data/commute-region.json" as="fetch" crossorigin>
+        <link rel="preload" href="data/Population%20By%20County.csv" as="fetch" crossorigin>
+        <link rel="preload" href="data/Net%20Commuting%20LODES.csv" as="fetch" crossorigin>
+        <link rel="preload" href="data/major-highways.geojson" as="fetch" crossorigin>
 </head>
 <body class="page-home">
     <header class="main-header">
@@ -379,17 +379,17 @@
         </div>
     </footer>
 
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="https://unpkg.com/deck.gl@9.0.38/dist.min.js"></script>
-    <script src="js/workforce-data.js"></script>
-    <script src="js/nav.js"></script>
-    <script src="js/reveal.js"></script>
-    <script src="js/chapters.js"></script>
-    <script src="js/lookups.js"></script>
-    <script src="js/county-explorer.js"></script>
-    <script src="js/intro-map.js"></script>
-    <script src="js/jobs-intro-map.js"></script>
-    <script src="js/growth-intro-map.js"></script>
-    <script src="js/commute-intro.js"></script>
+    <script defer src="https://d3js.org/d3.v7.min.js"></script>
+    <script defer src="https://unpkg.com/deck.gl@9.0.38/dist.min.js"></script>
+    <script defer src="js/workforce-data.js"></script>
+    <script defer src="js/nav.js"></script>
+    <script defer src="js/reveal.js"></script>
+    <script defer src="js/chapters.js"></script>
+    <script defer src="js/lookups.js"></script>
+    <script defer src="js/county-explorer.js"></script>
+    <script defer src="js/intro-map.js"></script>
+    <script defer src="js/jobs-intro-map.js"></script>
+    <script defer src="js/growth-intro-map.js"></script>
+    <script defer src="js/commute-intro.js"></script>
 </body>
 </html>

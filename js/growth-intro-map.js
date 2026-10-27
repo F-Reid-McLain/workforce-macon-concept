@@ -79,7 +79,8 @@
             `<span class="gm-tip__makes">${esc(p.makes)}${p.status === 'coming' ? ' · <i>coming</i>' : ''}</span>` +
             `<ul>${p.events.map(e => `<li><b>${e.year}</b> ${esc(e.text)}</li>`).join('')}</ul>`;
         // Above the plant, kept inside the slide (the map may start partway down it, on phones)
-        const W = slide.clientWidth, w = tip.offsetWidth || 260, oy = svgEl.offsetTop;
+        // (measured from the boxes: Safari gives an <svg> no offsetTop)
+        const W = slide.clientWidth, w = tip.offsetWidth || 260, oy = svgEl.getBoundingClientRect().top - slide.getBoundingClientRect().top;
         const x = Math.max(8 + w / 2, Math.min(W - 8 - w / 2, d.x)), y = d.y - 22 * d.s;
         tip.style.left = x + 'px'; tip.style.top = (oy + y) + 'px';
         tip.classList.toggle('is-below', y - tip.offsetHeight < 70);   // too close to the top: open below instead

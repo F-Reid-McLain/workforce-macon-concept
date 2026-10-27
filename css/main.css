@@ -118,6 +118,8 @@ body.embed-mode .viz-container {
     border: none;
     cursor: pointer;
     padding: 0.4rem;
+    min-width: 44px; min-height: 44px; margin: -8px -8px -8px 0;   /* a thumb-sized target without moving the bars */
+    align-items: center; justify-content: center;
     flex-direction: column;
     gap: 5px;
     flex-shrink: 0;
@@ -145,6 +147,11 @@ body.embed-mode .viz-container {
 .logo h1 {
     font: 700 var(--font-logo-size)/1 var(--font-heading);
     letter-spacing: 2px;
+    white-space: nowrap;
+}
+/* Narrow phones (iPhone SE and the like): the name stays on one line, so the header stays one row */
+@media (max-width: 374px) {
+    .logo h1 { font-size: 1.2rem; letter-spacing: 1px; }
 }
 
 .logo .accent {

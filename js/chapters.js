@@ -70,8 +70,9 @@
         spans = [];
         document.querySelectorAll('.stop-intro, .stop, #custom-research').forEach(el => {
             if (el.classList.contains('stop-intro--map')) {
-                const words = el.querySelector('.stop-intro__inner'), svg = el.querySelector('.intro-map');
-                out.push(top(words), top(svg) + svg.getBoundingClientRect().height - innerHeight);
+                // from the slide's own box: its words slide and fade in as they arrive, so their
+                // box is somewhere else mid-build. Words fill its first screen, the map its last.
+                out.push(top(el), top(el) + el.offsetHeight - innerHeight);
             } else if (el.classList.contains('stop-intro')) out.push(center(el));
             else {
                 const a = top(el) - HEADER, b = top(el) + el.offsetHeight - innerHeight;
@@ -81,7 +82,8 @@
         });
         return out;
     }
-    const points = () => [Math.round(center(map))].concat(phone() ? phonePoints().map(Math.round) : stops().map(s => s.y)).sort((a, b) => a - b);
+    const mapPoint = () => Math.round(phone() ? top(map) + map.offsetHeight - innerHeight : center(map));
+    const points = () => [mapPoint()].concat(phone() ? phonePoints().map(Math.round) : stops().map(s => s.y)).sort((a, b) => a - b);
 
     // from: where the page last came to rest. A glide only moves it once it lands, so a
     // gesture that interrupts a glide is still measured from the stop it started at.
