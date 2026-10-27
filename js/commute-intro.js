@@ -286,7 +286,20 @@
             const pts = rings.flatMap(r => r.ring).filter((p, i) => i % 4 === 0);
             const top = 56, bottom = H - Math.max(150, H * 0.24);   // clear of the time pill and the caption
             CAMERA.forEach((kf, i) => {
-                if (i === 0) return;   // the welcome keeps Macon-Bibb alone under the headline
+                if (i === 0) {
+                    // the welcome: Macon-Bibb alone under the headline, centered across the screen
+                    // (the desktop camera leaves it about 20px left of center on a phone)
+                    const bibb = rings.filter(r => r.fips === BIBB).flatMap(r => r.ring);
+                    let v = { ...kf[1] };
+                    for (let pass = 0; pass < 2; pass++) {
+                        const vp = new deck.WebMercatorViewport({ width: W, height: H, ...v });
+                        const xs = bibb.map(p => vp.project(p)[0]), dx = (d3.min(xs) + d3.max(xs)) / 2 - W / 2;
+                        const c = vp.unproject([W / 2 + dx, H / 2]);
+                        v = { ...v, longitude: c[0], latitude: c[1] };
+                    }
+                    kf[1] = v;
+                    return;
+                }
                 let v = { ...kf[1], pitch: Math.min(kf[1].pitch, 40) };
                 for (let pass = 0; pass < 3; pass++) {
                     const vp = new deck.WebMercatorViewport({ width: W, height: H, ...v });

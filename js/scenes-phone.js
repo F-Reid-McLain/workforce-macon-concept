@@ -25,6 +25,11 @@
     const fits = window.matchMedia('(max-width: 700px) and (pointer: coarse)');
     fits.addEventListener && fits.addEventListener('change', () => { if (!fits.matches) location.reload(); });
 
+    // Every visit opens on the first scene (Safari would otherwise restore an old scroll position,
+    // partway between scenes), unless the link is to a section
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    if (!location.hash) window.scrollTo(0, 0);
+
     // The opening's prompt says what a phone does here
     const cue = document.querySelector('.ci-scroll');
     if (cue && cue.firstChild && cue.firstChild.nodeType === 3) cue.firstChild.textContent = 'Swipe up to watch a workday';
