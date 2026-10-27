@@ -32,3 +32,22 @@ Lengths and costs follow each school's published rules (for example, CGTC's "ass
 - `fetch-us-routes.py` pulls the real paths of US 41, 80, 129 and 23 around Macon from OpenStreetMap into `data/us-routes-macon.geojson`, for the Jobs title slide's map. Rerun it only if the routes need refreshing: `python3 tools/fetch-us-routes.py`. Map data © OpenStreetMap contributors (ODbL), credited in the slide's source line.
 - `render-story.js` makes marketing stills of the 3D commuting story (see the top of the file).
 - `render-poster.js` renders the phone opening's stand-in picture of Macon-Bibb (`assets/story/opening-phone.png`), shown while the 3D starts up. Rerun it after changing the story's opening camera or lighting, and paste the CSS numbers it prints into `.ci-poster` in `css/commute-intro.css`.
+
+## `phone-check.js`: the homepage as an iPhone sees it
+
+Runs the homepage in WebKit (Safari's engine) with a real iPhone's visible area. The address bar and toolbar leave an iPhone 15 only 393 × 659, not its full screen. It then checks what shrinking a desktop browser misses:
+- Safari-only bugs and page errors;
+- sideways scrolling;
+- tap targets smaller than a thumb;
+- the final map's card fitting on screen;
+- each title slide's words and self-drawing map;
+- the key taps: pick a county, search a job (and the keyboard closing), open a donut sector, tap a plant.
+
+It saves a screenshot of every stop to `phone-check/` (don't commit that folder).
+
+    npm install playwright && npx playwright install webkit     (once)
+    python3 -m http.server 8765
+    node tools/phone-check.js                         (iPhone 15)
+    node tools/phone-check.js --device "iPhone SE"     (the smallest: 320 × 568)
+
+Run it after any change to the homepage's layout or scripts; every line should say `ok`. For load speed on a slow phone, run Lighthouse's mobile audit (`npx lighthouse <url> --form-factor=mobile`), with the Chrome flag `--use-angle=metal`. Without it, Chrome draws the 3D story in software, and the scores come out far worse than a real phone.

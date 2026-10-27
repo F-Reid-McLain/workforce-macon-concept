@@ -559,3 +559,18 @@ body.page-home .demo-bar-row { padding: 5px 0; font-size: 0.86rem; }
     .tool-panel { padding: 18px 16px; }
     .donut { max-width: 320px; }
 }
+
+/* ----- Phones: thumb-sized targets (Apple's 44px guide; measured in WebKit's iPhone profile)
+   and the closing figure as a screen of its own ----- */
+@media (max-width: 700px) {
+    .seg button { min-height: 40px; padding-top: 0.5rem; padding-bottom: 0.5rem; }
+    .seg--sm button, .donut-us { min-height: 38px; }
+    .info-btn { position: relative; }
+    .info-btn::after { content: ""; position: absolute; inset: -13px; }   /* a 44px tap area round the small "i" */
+    .ci-pill { min-height: 38px; padding-left: 0.95rem; padding-right: 0.95rem; }
+    #ci-png { display: none; }   /* saving the map as a picture is a desktop task */
+    .ci-method summary { padding: 0.7rem 0; }
+    .tool-upsell a { display: inline-block; padding: 0.65rem 0; }
+    .stop-intro--close { min-height: 100vh; min-height: 100svh; box-sizing: border-box; display: flex; align-items: center; justify-content: center; }
+}
+

@@ -172,7 +172,8 @@
         list.addEventListener('mousedown', e => e.preventDefault());   // keep focus in the box so the click lands
         list.addEventListener('click', e => { const b = e.target.closest('button'); if (b) pick(matches[+b.dataset.i]); });
         input.addEventListener('blur', () => setTimeout(() => { list.hidden = true; }, 150));
-        function pick(it) { input.value = label(it); list.hidden = true; onPick(it); }
+        // On touch screens the keyboard goes away with the pick, so it doesn't cover the result
+        function pick(it) { input.value = label(it); list.hidden = true; if (matchMedia('(hover: none)').matches) input.blur(); onPick(it); }
     }
 
     // ----- Jobs -----
