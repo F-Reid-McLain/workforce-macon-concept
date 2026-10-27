@@ -767,6 +767,8 @@
         // Touch devices (phones, tablets) keep only the opening spin, for half a minute, so the
         // loop can sleep and spare the battery; no sway on the cards
         const canHover = !!(window.matchMedia && matchMedia('(hover: hover)').matches);
+        // Phones in swipe scenes (js/scenes-phone.js) keep the gentle sway between swipes: the movement is the point
+        const SCENES = document.documentElement.classList.contains('scenes');
         const IDLE_MS = 2000, IDLE_MAX = canHover ? 120000 : 30000;
         const SPIN = 360 / 75000, SWAY = 8;            // degrees per ms; degrees either way
         let lastInput = performance.now(), orbit = 0, swayClock = 0, idleTimer = null;
@@ -811,7 +813,7 @@
                 // someone's moving the page (or the map is flat): ease back to the story's camera
                 if (Math.abs(wrap180(orbit)) > 0.02) { orbit = wrap180(orbit) * Math.exp(-dt / 380); busy = true; } else orbit = 0;
                 swayClock = 0;
-            } else if (since < IDLE_MAX && rise >= 1 && Math.abs(target - hour) < 0.001 && (canHover || hour < 5.6)) {
+            } else if (since < IDLE_MAX && rise >= 1 && Math.abs(target - hour) < 0.001 && (canHover || SCENES || hour < 5.6)) {
                 const ease = smooth(IDLE_MS, IDLE_MS + 2500, since);   // drift starts slowly
                 if (hour < 5.6) orbit += dt * SPIN * ease;            // the opening view: turn all the way around
                 else { swayClock += dt; const want = SWAY * ease * Math.sin(swayClock / 3800); orbit += (wrap180(want - orbit)) * (1 - Math.exp(-dt / 500)); }
@@ -923,7 +925,8 @@
         // #counties (and #counties/<county>) is the finished map, where the county tool lives
         const momentFor = id => { const name = String(id).split('/')[0]; return momentStep(name === 'counties' ? 'map' : name); };
         const goToHash = () => { const el = momentFor(decodeURIComponent(location.hash.slice(1))); if (el) goToStep(el, false); };
-        window.WFStory = { goTo(id) { const el = momentFor(id); if (el) goToStep(el, false); return !!el; } };
+        // anchors: the story's visible cards and the scroll position of each (js/scenes-phone.js steps through them)
+        window.WFStory = { goTo(id) { const el = momentFor(id); if (el) goToStep(el, false); return !!el; }, anchors: () => { measure(); return anchors.slice(); } };
         addEventListener('hashchange', goToHash);
         allSteps.filter(el => el.dataset.moment).forEach(el => {
             const card = el.querySelector('.ci-card');

@@ -43,6 +43,10 @@ Runs the homepage in WebKit (Safari's engine) with a real iPhone's visible area.
 - each title slide's words and self-drawing map;
 - the key taps: pick a county, search a job (and the keyboard closing), open a donut sector, tap a plant.
 
+Phones get the homepage as full-screen swipe scenes (`js/scenes-phone.js`, `css/scenes-phone.css`), and the check walks them scene by scene, as a swipe would, also checking each scene fills the screen. With reduced motion, phones get the plain scrolling page, and the check covers that too (add `reducedMotion: 'reduce'` to its browser context).
+
+Playwright's WebKit can tap but not swipe. To test real swipe gestures, use Chrome's touch emulation (`Input.synthesizeScrollGesture` with `gestureSourceType: 'touch'`) at 393 × 659.
+
 It saves a screenshot of every stop to `phone-check/` (don't commit that folder).
 
     npm install playwright && npx playwright install webkit     (once)

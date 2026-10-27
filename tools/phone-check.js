@@ -13,7 +13,10 @@
 
    It reports page errors, sideways scrolling, tap targets under 40 px, whether each stop's
    key interaction works (pick a county, search a job, open a sector, tap a plant), and saves
-   a screenshot of every stop. phone-check/ is for looking at, not for committing. */
+   a screenshot of every stop. Phones get the homepage as swipe scenes (js/scenes-phone.js):
+   it goes scene to scene the way a swipe does, and also checks each fills the screen. (Swipe
+   gestures themselves need Chrome's touch emulation; Playwright's WebKit can only tap.)
+   phone-check/ is for looking at, not for committing. */
 const { webkit, devices } = require('playwright');
 const fs = require('fs');
 
@@ -72,8 +75,46 @@ const device = args.device || 'iPhone 15', base = args.base || 'http://localhost
     await shot('1-opening');
     await scrollToY(1500); await shot('2-story');
 
+    // Phones get the swipe scenes (js/scenes-phone.js); with reduced motion, the plain page.
+    // to(name, n): the map's scene, a title slide's words or map (n: 0 nurses, 1 manufacturing),
+    // a tool, or the close, reached the way that page reaches it
+    const scenes = await page.evaluate(() => document.documentElement.classList.contains('scenes'));
+    console.log(scenes ? '  (swipe scenes)' : '  (plain scrolling page)');
+    if (scenes) {
+        const list = await page.evaluate(() => WFScenes.list());
+        ok('every scene is listed', list.length === 13, list.map(x => x.kind).join(' '));
+    }
+    const to = async (name, n = 0, ms = 1800) => {
+        if (scenes) {
+            await page.evaluate(([name, n]) => {
+                const l = WFScenes.list(), want = { map: s => s.kind === 'story' && s.id === 'section-region', words: s => s.kind === 'words', titlemap: s => s.kind === 'map',
+                    jobs: s => s.id === 'jobs', industries: s => s.id === 'industries', close: s => s.kind === 'close' }[name];
+                const hits = l.map((s, i) => want(s) ? i : -1).filter(i => i >= 0);
+                WFScenes.go(hits[Math.min(n, hits.length - 1)]);
+            }, [name, n]);
+            await wait(ms + 3600);   // the glide, then the arrival
+            return;
+        }
+        const y = await page.evaluate(([name, n]) => {
+            const top = el => el.getBoundingClientRect().top + scrollY;
+            const sl = document.querySelectorAll('.stop-intro--map')[n];
+            if (name === 'map') { const m = document.getElementById('section-region'); return top(m) + m.offsetHeight - innerHeight; }
+            if (name === 'words') return top(sl);
+            if (name === 'titlemap') return top(sl) + sl.offsetHeight - innerHeight;
+            if (name === 'close') { const c = document.querySelector('.stop-intro--close'); return top(c) + c.offsetHeight / 2 - innerHeight / 2; }
+            return top(document.getElementById(name)) - 64;
+        }, [name, n]);
+        await scrollToY(y, ms);
+    };
+    const fills = async label => {
+        if (!scenes) return;
+        const f = await page.evaluate(() => ({ header: getComputedStyle(document.querySelector('.main-header .logo')).display, bar: document.querySelectorAll('.scene-bar i.is-on').length }));
+        ok(`${label}: full screen (no header bar, progress shown)`, f.header === 'none' && f.bar === 1);
+    };
+
     // The finished map: its card in view, and picking a county fills it
-    await scrollToY(await yOf(() => { const m = document.getElementById('section-region'); return m.getBoundingClientRect().top + scrollY + m.offsetHeight - innerHeight; }), 3000);
+    await to('map', 0, 3000);
+    await fills('regional map');
     const card = await page.evaluate(() => { const r = document.querySelector('.ci-step--map .ci-card').getBoundingClientRect(); return { top: r.top, bottom: r.bottom, vh: innerHeight }; });
     ok('map card fits on screen', card.bottom <= card.vh && card.top >= 60, `${Math.round(card.top)}..${Math.round(card.bottom)} of ${card.vh}`);
     const select = page.locator('.ci-step--map select').first();
@@ -82,38 +123,36 @@ const device = args.device || 'iPhone 15', base = args.base || 'http://localhost
     await shot('3-map');
 
     // Title slides: each one's words, then its map, which draws itself
-    const slides = await page.evaluate(() => [...document.querySelectorAll('.stop-intro--map')].map(s => {
-        // the stops js/chapters.js settles on: the slide's first screen (its words) and its last (its map)
-        const top = s.getBoundingClientRect().top + scrollY;
-        return { words: Math.round(top), map: Math.round(top + s.offsetHeight - innerHeight) };
-    }));
-    for (const [i, s] of slides.entries()) {
-        await scrollToY(s.words);
-        ok(`title ${i + 1}'s words show`, await page.evaluate(() => { const h = [...document.querySelectorAll('.stop-intro--map .chapter-finding')].find(f => { const r = f.getBoundingClientRect(); return r.top > 0 && r.bottom < innerHeight; }); return !!h && +getComputedStyle(h.closest('.stop-intro__inner')).opacity > 0.9; }));
+    for (let i = 0; i < 2; i++) {
+        await to('words', i);
+        ok(`title ${i + 1}'s words show`, await page.evaluate(i => { const sl = document.querySelectorAll('.stop-intro--map')[i], h = sl.querySelector('.chapter-finding'), r = h.getBoundingClientRect(); return r.top > 0 && r.bottom < innerHeight && +getComputedStyle(h).opacity > 0.9 && +getComputedStyle(h.closest('.stop-intro__inner')).opacity > 0.9; }, i));
         await shot(`${4 + i * 3}-slide${i + 1}-words`);
-        await scrollToY(s.map, 6500);
+        await to('titlemap', i, 6500);
         ok(`title map ${i + 1} draws itself`, await page.evaluate(i => document.querySelectorAll('.intro-map')[i].classList.contains('is-drawn'), i));
+        if (scenes) ok(`title map ${i + 1} fills the screen`, await page.evaluate(i => { const r = document.querySelectorAll('.intro-map')[i].getBoundingClientRect(); return r.top <= 1 && r.bottom >= innerHeight - 1 && r.width >= innerWidth - 1; }, i));
         if (i === 1 && await tapOn('.gm-pin .gm-hit')) {
             const tip = await page.evaluate(() => { const t = document.querySelector('.gm-tip'), r = t.getBoundingClientRect(); return { on: t.classList.contains('is-on'), top: r.top, bottom: r.bottom, vh: innerHeight }; });
             ok('tapping a plant opens its card on screen', tip.on && tip.top >= 60 && tip.bottom <= tip.vh, `${Math.round(tip.top)}..${Math.round(tip.bottom)}`);
         }
         await shot(`${5 + i * 3}-slide${i + 1}-map`);
         // the tool after it
-        const tool = i === 0 ? '#jobs' : '#industries';
-        await scrollToY(await yOf(new Function(`const e = document.querySelector('${tool}'); return e.getBoundingClientRect().top + scrollY - 64;`)));
+        const tool = i === 0 ? 'jobs' : 'industries';
+        await to(tool);
+        await fills(tool);
         if (i === 0) {
             await tapOn('#jobs input[type=search]'); await page.keyboard.type('nurse', { delay: 40 }); await wait(600);
             await tapOn('#jobs .tool-matches li');
             ok('job search opens a job', await page.evaluate(() => { const r = document.querySelector('#jobs .tool-result'); return !!r && !r.hidden; }));
             ok('keyboard closes after the pick', await page.evaluate(() => document.activeElement.tagName !== 'INPUT'));
         } else {
-            await page.evaluate(() => { const e = document.getElementById('donut'); window.scrollTo(0, e.getBoundingClientRect().top + scrollY - 80); }); await wait(1500);
+            await page.evaluate(() => { const e = document.getElementById('donut'); const r = e.getBoundingClientRect(); if (r.top < 60 || r.bottom > innerHeight) window.scrollTo(0, r.top + scrollY - 80); }); await wait(1500);
             await tapOn('.d-ring path'); await wait(600);
             ok('tapping a donut slice opens its sector', await page.evaluate(() => document.getElementById('donut').classList.contains('is-drilled')));
         }
-        await shot(`${6 + i * 3}-${tool.slice(1)}`);
+        await shot(`${6 + i * 3}-${tool}`);
     }
-    await scrollToY(await yOf(() => { const c = document.querySelector('.stop-intro--close'); return c.getBoundingClientRect().top + scrollY + c.offsetHeight / 2 - innerHeight / 2; }));
+    await to('close');
+    await fills('close');
     await shot('10-close');
 
     ok('no page errors', !errors.length, errors.slice(0, 3).join(' | '));

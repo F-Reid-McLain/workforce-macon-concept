@@ -20,7 +20,16 @@
       }
     </script>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <script>
+      // Phones: the homepage as full-screen swipe scenes (js/scenes-phone.js, css/scenes-phone.css),
+      // set before anything paints (and after the viewport tag, or a phone still measures 980px
+      // wide). Reduced motion keeps the plain scrolling page.
+      if (window.matchMedia && matchMedia('(max-width: 700px) and (pointer: coarse)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.documentElement.classList.add('scenes');
+      }
+    </script>
+    <meta name="theme-color" content="#0e1420">
     <title>Workforce Macon · Middle Georgia's workforce, by the numbers</title>
     <meta name="description" content="Workforce Macon, from the Greater Macon Chamber of Commerce: how Middle Georgia comes to work in Macon-Bibb, and the jobs, industries and people behind it.">
     <meta property="og:site_name" content="Workforce Macon">
@@ -40,6 +49,7 @@
     <link rel="stylesheet" href="css/reveal.css">
     <link rel="stylesheet" href="css/commute-intro.css">
     <link rel="stylesheet" href="css/chapters.css">
+    <link rel="stylesheet" href="css/scenes-phone.css">
         <!-- Then what the opening 3D scene needs, downloading while the page paints (the scripts
              themselves are deferred, so the words and the opening picture show first; js/commute-intro.js) -->
         <link rel="preload" href="https://unpkg.com/deck.gl@9.0.38/dist.min.js" as="script">
@@ -394,5 +404,6 @@
     <script defer src="js/jobs-intro-map.js"></script>
     <script defer src="js/growth-intro-map.js"></script>
     <script defer src="js/commute-intro.js"></script>
+    <script defer src="js/scenes-phone.js"></script>
 </body>
 </html>

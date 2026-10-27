@@ -52,7 +52,8 @@
     if (!map) return;
     const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
     const phone = () => innerWidth <= 900;
-    const enabled = () => (phone() || innerHeight >= 600) && !document.body.classList.contains('ci-presenting');
+    // (phones in swipe scenes are moved by js/scenes-phone.js instead)
+    const enabled = () => !document.documentElement.classList.contains('scenes') && (phone() || innerHeight >= 600) && !document.body.classList.contains('ci-presenting');
     const HEADER = 64;   // phones: the fixed header's room above a tool
     const NUDGE = 60;   // px: less than this and the page settles back where it was
 
