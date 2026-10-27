@@ -90,7 +90,7 @@
     // gesture that interrupts a glide is still measured from the stop it started at.
     let from = scrollY, glideTo = null, pending = null, quietUntil = 0, lastInput = 0;
     const STILL = 260;   // ms without wheel or touch input before the page settles
-    const land = y => { from = y; glideTo = null; quietUntil = performance.now() + 450; };
+    const land = y => { from = y; glideTo = null; held = null; quietUntil = performance.now() + 450; };
     function settle() {
         const wait = STILL - (performance.now() - lastInput);
         if (wait > 0) { pending = setTimeout(settle, wait); return; }   // the wheel is still turning
@@ -108,10 +108,17 @@
             // Coming down out of the story: settle onto the map once it's mostly in view
             if (moved > 0 && y > first - innerHeight * 0.5) target = first;
         } else if (y <= last) {
+            // A nudge settles back; anything more moves one stop on from where the page last
+            // rested, never more, however far the momentum carried it (a flick used to coast past a
+            // stop and settle on the one after; a slow read out of a tall tool's foot was pulled on)
+            // (a jump of more than a screen and a half, from a link or the menu, settles where it landed)
+            const jump = Math.abs(moved) > innerHeight * 1.6;
             if (Math.abs(moved) < NUDGE) target = pts.reduce((a, b) => Math.abs(b - y) < Math.abs(a - y) ? b : a);
-            else if (moved > 0) target = pts.find(p => p >= y - 1);
-            else target = pts.slice().reverse().find(p => p <= y + 1);
+            else if (moved > 0) target = jump ? pts.find(p => p >= y - 1) : pts.find(p => p > from + 1);
+            else target = jump ? pts.slice().reverse().find(p => p <= y + 1) : pts.slice().reverse().find(p => p < from - 1);
+            if (target === undefined) target = null;
         }
+        if (window.WFDebug) WFDebug.log('settle', { from, moved, target });
         if (target === null || Math.abs(target - y) <= 2) { from = y; return; }
         // Settling back after a tiny nudge doesn't hold the wheel: the nudge may be the
         // slow start of a real swipe, which should carry on through
@@ -123,6 +130,10 @@
     // fingers lift. While a glide runs, and just after it lands, those are swallowed, so
     // the tail of one swipe can't carry the page on past the stop it chose. A real new
     // swipe starts with a bigger delta and gets through.
+    // And one gesture moves at most one stop: scrolling that would carry the page past the next
+    // stop holds it there, like a page's edge (in a tall tool, its foot), until the gesture ends,
+    // or a fresh push (bigger than the dying momentum before it) carries on to the stop after.
+    let held = null, lastAbs = 0;
     addEventListener('wheel', e => {
         const settling = glideTo !== null || performance.now() < quietUntil;
         if (settling && enabled() && Math.abs(e.deltaY) < 40 && scrollY >= points()[0] - 2) {
@@ -130,6 +141,21 @@
             if (glideTo === null) quietUntil = Math.min(performance.now() + 250, quietUntil + 250);   // let the tail run out
             return;
         }
+        const dy = e.deltaY, abs = Math.abs(dy);
+        if (enabled() && glideTo === null && dy) {
+            if (held !== null && abs > lastAbs * 1.5 + 2) { from = held; held = null; }   // a fresh push: on to the next stop
+            const pts = points();
+            if (scrollY >= pts[0] - innerHeight) {
+                const next = dy > 0 ? pts.find(p => p > from + 1) : pts.slice().reverse().find(p => p < from - 1);
+                if (next !== undefined && (dy > 0 ? scrollY + dy > next : scrollY + dy < next)) {
+                    e.preventDefault();
+                    if (Math.abs(scrollY - next) > 1) scrollTo({ top: next, behavior: 'instant' });
+                    if (window.WFDebug && held === null) WFDebug.log('hold at next stop', { next });
+                    held = next;
+                }
+            }
+        }
+        lastAbs = abs;
         lastInput = performance.now();
         clearTimeout(pending);
     }, { passive: false });

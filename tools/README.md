@@ -55,3 +55,7 @@ It saves a screenshot of every stop to `phone-check/` (don't commit that folder)
     node tools/phone-check.js --device "iPhone SE"     (the smallest: 320 × 568)
 
 Run it after any change to the homepage's layout or scripts; every line should say `ok`. For load speed on a slow phone, run Lighthouse's mobile audit (`npx lighthouse <url> --form-factor=mobile`), with the Chrome flag `--use-angle=metal`. Without it, Chrome draws the 3D story in software, and the scores come out far worse than a real phone.
+
+## Scroll recorder: `?debug=scroll`
+
+For scrolling that feels wrong on a real device, which no simulator can show: open the homepage with `?debug=scroll` at the end of the address (for example `index.html?debug=scroll`). A small panel in the corner records every wheel, touch and scroll event with its timing, plus every decision the page's own scrolling makes (settling onto a stop, holding at a stop, moving between phone scenes). Reproduce the problem, tap **Copy log**, and paste it. Nothing is sent anywhere, and without `?debug=scroll` the recorder doesn't run (`js/debug-scroll.js`).
