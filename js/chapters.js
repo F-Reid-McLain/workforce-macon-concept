@@ -111,11 +111,14 @@
             // A nudge settles back; anything more moves one stop on from where the page last
             // rested, never more, however far the momentum carried it (a flick used to coast past a
             // stop and settle on the one after; a slow read out of a tall tool's foot was pulled on)
+            // (a jump of more than a screen and a half, from a link or the menu, settles where it landed)
+            const jump = Math.abs(moved) > innerHeight * 1.6;
             if (Math.abs(moved) < NUDGE) target = pts.reduce((a, b) => Math.abs(b - y) < Math.abs(a - y) ? b : a);
-            else if (moved > 0) target = pts.find(p => p > from + 1);
-            else target = pts.slice().reverse().find(p => p < from - 1);
+            else if (moved > 0) target = jump ? pts.find(p => p >= y - 1) : pts.find(p => p > from + 1);
+            else target = jump ? pts.slice().reverse().find(p => p <= y + 1) : pts.slice().reverse().find(p => p < from - 1);
             if (target === undefined) target = null;
         }
+        if (window.WFDebug) WFDebug.log('settle', { from, moved, target });
         if (target === null || Math.abs(target - y) <= 2) { from = y; return; }
         // Settling back after a tiny nudge doesn't hold the wheel: the nudge may be the
         // slow start of a real swipe, which should carry on through
@@ -147,6 +150,7 @@
                 if (next !== undefined && (dy > 0 ? scrollY + dy > next : scrollY + dy < next)) {
                     e.preventDefault();
                     if (Math.abs(scrollY - next) > 1) scrollTo({ top: next, behavior: 'instant' });
+                    if (window.WFDebug && held === null) WFDebug.log('hold at next stop', { next });
                     held = next;
                 }
             }

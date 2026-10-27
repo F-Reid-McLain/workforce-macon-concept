@@ -104,6 +104,7 @@
         // scroll that ran past one of its edges settles back onto that edge
         const y = s.kind === 'tool' ? Math.max(s.y, Math.min(s.end, from)) : s.y;
         index = i; heading = i; drawBar();
+        if (window.WFDebug) WFDebug.log('scene go', { to: i, kind: s.kind, target: Math.round(y) });
         stop();
         // a title slide flips the moment you swipe (its screen stays pinned while the page moves)
         if (s.kind === 'words' || s.kind === 'map') setFlip(s.el, s.kind === 'map');
@@ -167,7 +168,7 @@
     addEventListener('touchmove', e => {
         if (mode === 'native' || !scenes.length) return;
         const t = e.touches[0], dx = t.clientX - sx, dy = t.clientY - sy;
-        if (mode === null) mode = decide(e, dx, dy);
+        if (mode === null) { mode = decide(e, dx, dy); if (window.WFDebug) WFDebug.log('swipe is', { mode, dy: Math.round(dy) }); }
         if (mode === 'scene' && e.cancelable) e.preventDefault();
     }, { passive: false });
     addEventListener('touchend', e => {
