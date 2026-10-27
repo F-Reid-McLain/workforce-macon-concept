@@ -84,6 +84,8 @@
                 <div id="ci-map" aria-hidden="true"></div>
                 <div class="ci-time" aria-hidden="true"><span id="ci-time-icon">☾</span><span id="ci-time-label">5:00 AM</span></div>
                 <div class="ci-tip" id="ci-tip"></div>
+                <!-- Phones: the story's captions as subtitles, pinned under the map (js/commute-intro.js) -->
+                <div class="ci-caption" id="ci-caption" aria-hidden="true"><div class="ci-caption__text"><b></b><span></span></div><div class="ci-caption__dots"></div></div>
                 <!-- Present mode: fullscreen, arrow keys step through the cards (js/commute-intro.js) -->
                 <button type="button" class="ci-pill ci-present" id="ci-present" title="Present this story (P)">▶ Present</button>
                 <div class="ci-present-hint" aria-hidden="true">← → to step · Esc to exit</div>
@@ -203,7 +205,6 @@
             </div>
         </div>
         <section class="stop" id="jobs">
-            <p class="stop-hint" aria-hidden="true">Click anything to explore</p>
             <div class="stop-label">
                 <p class="chapter-kicker">Jobs <span class="info-btn-wrap"><button type="button" class="info-btn" aria-label="About this data">i</button><span class="info-popover"><strong>What this shows</strong><span>Occupational Employment and Wage Statistics (OES) estimates for jobs located in Macon-Bibb, counted where people work, so jobs held by commuters from other counties are included: jobs and average annual pay by occupation, with regional projections for growth and openings (new jobs plus people retiring or changing careers).</span></span></span></p>
                 <p class="stop-label__text">Look up what any job located in Macon-Bibb pays, including the ones commuters hold, or browse the top jobs.</p>
@@ -244,15 +245,36 @@
             </div>
         </div>
         <section class="stop" id="industries">
-            <p class="stop-hint" aria-hidden="true">Click anything to explore</p>
             <div class="stop-label">
                 <p class="chapter-kicker">Industries <span class="info-btn-wrap"><button type="button" class="info-btn" aria-label="About this data">i</button><span class="info-popover"><strong>What this shows</strong><span>Payroll jobs and average annual wage by industry (QCEW-based), grouped into sectors. Concentration compares each industry's share of jobs here with its share nationally (location quotient). What commuters come in for uses U.S. Census Bureau LODES 2023.</span></span></span></p>
                 <p class="stop-label__text">Click into the donut, switch views, or look up any industry.</p>
             </div>
             <div class="tool-panel tool-panel--donut">
-                <div class="donut" id="donut">
-                    <svg id="donut-svg" role="group" aria-label="Jobs by industry"></svg>
-                    <div class="donut-center" id="donut-center"></div>
+                <div class="donut-wrap">
+                    <div class="donut" id="donut">
+                        <svg id="donut-svg" role="group" aria-label="Jobs by industry"></svg>
+                        <div class="donut-center" id="donut-center"></div>
+                    </div>
+                    <!-- What the slices' colors show, and the U.S. comparison ring (js/workforce-data.js) -->
+                    <div class="donut-ctrl">
+                        <div class="donut-ctrl__row">
+                            <span class="donut-ctrl__label" aria-hidden="true">Size</span>
+                            <div class="seg seg--sm" id="donut-size" role="group" aria-label="Size the slices by">
+                                <button type="button" data-view="jobs">Jobs</button>
+                                <button type="button" data-view="wages">Wages</button>
+                            </div>
+                            <button type="button" class="donut-us" id="donut-us" aria-pressed="false"><span class="donut-us__dot" aria-hidden="true"></span>vs. U.S.</button>
+                        </div>
+                        <div class="donut-ctrl__row">
+                            <span class="donut-ctrl__label" aria-hidden="true">Color</span>
+                            <div class="seg seg--sm" id="donut-mode" role="group" aria-label="Color the slices by">
+                                <button type="button" data-view="sector">Sectors</button>
+                                <button type="button" data-view="pay">Pay</button>
+                                <button type="button" data-view="growth">Growth</button>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="donut-key" id="donut-key" hidden></p>
                 </div>
                 <div class="tool-col tool-col--fit">
                     <label class="tool-search">

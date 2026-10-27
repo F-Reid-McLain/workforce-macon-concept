@@ -639,9 +639,42 @@
             anchors.forEach((a, i) => { if (y >= a.y - innerHeight * 0.35) idx = i; });
             anchors.forEach((a, i) => a.el.classList.toggle('is-active', i === idx));
             target = t; step = idx;
+            caption(y);
             // A big jump (link, scrollbar drag) lands directly instead of fast-forwarding the day
             if (reducedMotion || Math.abs(t - hour) > 2.5) hour = t;
             wake();
+        }
+        // ----- Phones: captions as subtitles -----
+        // Instead of cards riding up over the map, one caption stays pinned under it and fades
+        // from line to line as the day moves on, so there is always one line to read and the map
+        // stays clear. It shows each step's heading and short line (.ci-short), arriving a little
+        // before the step's own moment, and steps aside for the welcome and the finished map's card.
+        const capEl = document.getElementById('ci-caption');
+        const capB = capEl && capEl.querySelector('b'), capS = capEl && capEl.querySelector('span'), capDots = capEl && capEl.querySelector('.ci-caption__dots');
+        let capShown = null, capSwap = null;
+        function caption(y) {
+            if (!capEl || capEl.offsetParent === null) return;
+            const told = anchors.filter(a => !a.el.matches('.ci-step--welcome, .ci-step--map'));
+            const mapStep = anchors.find(a => a.el.matches('.ci-step--map'));
+            let k = -1;
+            told.forEach((a, i) => { if (y >= a.y - innerHeight * 0.6) k = i; });
+            if (mapStep && mapStep.el.querySelector('.ci-card').getBoundingClientRect().top < innerHeight * 0.95) k = -1;   // the map's own card is arriving
+            const el = k >= 0 ? told[k].el : null;
+            if (el === capShown) return;
+            const first = !capShown;
+            capShown = el;
+            capEl.classList.toggle('is-on', !!el);
+            if (!el) return;
+            if (capDots.childElementCount !== told.length) capDots.innerHTML = told.map(() => '<i></i>').join('');
+            Array.from(capDots.children).forEach((d, i) => d.classList.toggle('is-on', i === k));
+            const fill = () => {
+                capB.textContent = el.querySelector('h2, h3').textContent;
+                capS.innerHTML = el.querySelector('.ci-short').innerHTML;
+                capEl.classList.remove('is-swapping');
+            };
+            clearTimeout(capSwap);
+            if (first || reducedMotion) fill();
+            else { capEl.classList.add('is-swapping'); capSwap = setTimeout(fill, 180); }
         }
         addEventListener('scroll', onScroll, { passive: true });
         addEventListener('resize', () => { measure(); computeFlat(); lastScene = ''; onScroll(); });

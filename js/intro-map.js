@@ -6,7 +6,8 @@
    manufacturers).
 
    The drawing plays once the slide is centered, whether the snap glided it there
-   (js/chapters.js) or present mode's arrow keys did, and pulls back quickly as soon as
+   (js/chapters.js) or present mode's arrow keys did (on phones, where the slide's map has a
+   screen of its own, once that screen is mostly in view), and pulls back quickly as soon as
    it moves away, so it builds fresh every visit. In present mode an arrow press while
    it's drawing finishes it, like a slide build (slide.wfFinishBuild, called by
    window.WFStops). Drawn and still with reduced motion.
@@ -180,8 +181,11 @@ window.WFIntroMap = (function () {
                 if (k >= 1) stopClock();
             });
         }
+        // Phones scroll freely between snaps, so there the map plays once its screen is mostly in
+        // view and holds until it's mostly gone; desktop settles exactly, so it waits for center
         function aim() {
-            const p = progress(), t = p >= 0.92 ? 1 : p < 0.9 ? 0 : target;
+            const narrow = innerWidth <= 900, ON = narrow ? 0.7 : 0.92, OFF = narrow ? 0.35 : 0.9;
+            const p = progress(), t = p >= ON ? 1 : p < OFF ? 0 : target;
             if (t !== target) animateTo(t);
         }
         // Present mode: an arrow press while it's drawing finishes it (true) instead of moving on

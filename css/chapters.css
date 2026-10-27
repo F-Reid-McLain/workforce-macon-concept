@@ -173,6 +173,28 @@ body.page-home .demo-bar-row { padding: 5px 0; font-size: 0.86rem; }
 .donut-center span { font-size: 0.95rem; font-weight: 600; color: var(--ch-gold); max-width: 90%; line-height: 1.25; }
 .donut-center small { font-size: 0.76rem; color: var(--color-text-muted); max-width: 90%; }
 .donut-tip { display: none; }
+/* Under the donut: what the colors show, the U.S. ring, and a color key (js/workforce-data.js) */
+.donut-wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; min-width: 0; width: 100%; }
+.donut-ctrl { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.donut-ctrl__row { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; }
+.donut-ctrl__label { width: 3.8em; text-align: right; font-size: 0.66rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text-muted); }
+.seg--sm button { padding: 0.32rem 0.75rem; font-size: 0.78rem; }
+.donut-us {
+    display: inline-flex; align-items: center; gap: 6px; padding: 0.32rem 0.75rem; border-radius: 999px; cursor: pointer;
+    font: 600 0.78rem var(--font-body); background: transparent; color: var(--color-text-secondary); border: 1px solid rgba(255, 255, 255, 0.16);
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+.donut-us:hover:not(:disabled) { color: #fff; border-color: rgba(255, 255, 255, 0.35); }
+.donut-us:disabled { opacity: 0.4; cursor: default; }
+.donut-us__dot { width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid currentColor; box-sizing: border-box; transition: background 0.2s; }
+.donut-us[aria-pressed="true"] { color: #fff; border-color: var(--ch-gold); background: rgba(242, 196, 107, 0.12); }
+.donut-us[aria-pressed="true"] .donut-us__dot { background: var(--ch-gold); border-color: var(--ch-gold); }
+.donut-key { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 0.72rem; color: var(--color-text-muted); font-variant-numeric: tabular-nums; }
+.donut-key[hidden] { display: none; }
+.donut-key i { width: 120px; height: 8px; border-radius: 4px; }
+.donut-key--pay i { background: linear-gradient(90deg, #39425a, #8a7748, #f2c46b); }
+.donut-key--growth i { background: linear-gradient(90deg, #e8705f, #4b5568, #34d399); }
+.d-us path { transition: fill-opacity 0.2s; }
 .donut-side { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
 .donut-back {
     align-self: flex-start; padding: 0.45rem 0.9rem; border-radius: 999px; cursor: pointer;
@@ -365,15 +387,7 @@ body.page-home .demo-bar-row { padding: 5px 0; font-size: 0.86rem; }
 .pay-gauge__cap b { color: #fff; }
 .pay-gauge__where { margin: 6px 0 0; font-size: 0.74rem; line-height: 1.45; color: var(--color-text-muted); }
 
-/* Idle demo: a hint chip while a tool shows itself off */
 .stop { position: relative; }
-.stop-hint {
-    position: absolute; top: 74px; right: 24px; margin: 0; padding: 0.4rem 0.8rem; border-radius: 999px;
-    background: rgba(242, 196, 107, 0.14); border: 1px solid rgba(242, 196, 107, 0.4); color: var(--ch-gold);
-    font-size: 0.78rem; font-weight: 600; opacity: 0; transform: translateY(-4px); pointer-events: none; transition: opacity 0.4s, transform 0.4s;
-}
-.stop-hint.is-on { opacity: 1; transform: none; animation: hint-breathe 1.8s ease-in-out infinite; }
-@keyframes hint-breathe { 50% { box-shadow: 0 0 0 6px rgba(242, 196, 107, 0.08); } }
 
 /* ----- Your county (js/county-explorer.js) ----- */
 /* Your county: the picker and card inside the story's finished map (js/county-explorer.js) */
@@ -409,7 +423,7 @@ body.page-home .demo-bar-row { padding: 5px 0; font-size: 0.86rem; }
 
 @media (prefers-reduced-motion: reduce) {
     .seg__pill, .pay-gauge__me, .row-bar [data-bar], .cty-share__bar i { transition: none; }
-    .tool-result.is-swap, .stop-hint.is-on { animation: none; }
+    .tool-result.is-swap { animation: none; }
 }
 
 /* ----- Desktop and laptop: each tool fits one screen ----- */
@@ -418,7 +432,8 @@ body.page-home .demo-bar-row { padding: 5px 0; font-size: 0.86rem; }
     .rank-list button { padding: 4px 10px; row-gap: 4px; }
     /* Industries: the donut and its side column share one screen-high panel; the views scroll inside it */
     .tool-panel--donut { height: min(600px, calc(100vh - 160px)); min-height: 420px; align-items: stretch; }
-    .tool-panel--donut .donut { align-self: center; max-width: min(430px, calc(100vh - 230px)); }
+    .tool-panel--donut .donut-wrap { align-self: center; }
+    .tool-panel--donut .donut { max-width: min(410px, calc(100vh - 290px)); }
     .tool-col--fit { min-height: 0; }
     .tool-col--fit [data-pane] { flex: 1 1 auto; min-height: 0; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, 0.18) transparent; }
     .tool-col--fit .donut-legend { max-height: none; overflow: visible; }
@@ -427,6 +442,24 @@ body.page-home .demo-bar-row { padding: 5px 0; font-size: 0.86rem; }
     .tool-result--compact .tool-stats { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
     .tool-result--compact .tool-stats dd { font-size: 0.98rem; }
 }
+/* Desktop: the Jobs tool a size up, to fill its screen (a step less on shorter laptops) */
+@media (min-width: 901px) {
+    #jobs { --jt: 1.14; }
+    #jobs .tool-panel { padding: calc(26px * var(--jt)) calc(28px * var(--jt)); gap: calc(36px * var(--jt)); }
+    #jobs .tool-col { gap: calc(14px * var(--jt)); }
+    #jobs .tool-search input { padding: calc(0.75rem * var(--jt)) calc(1rem * var(--jt)); font-size: calc(0.98rem * var(--jt)); }
+    #jobs .seg button { padding: calc(0.45rem * var(--jt)) calc(0.9rem * var(--jt)); font-size: calc(0.82rem * var(--jt)); }
+    #jobs .rank-list button { padding: calc(5px * var(--jt)) 12px; font-size: calc(0.92rem * var(--jt)); column-gap: 12px; }
+    #jobs .row-bar { height: 4px; }
+    #jobs .tool-col--result .tool-result { padding: calc(22px * var(--jt)) calc(24px * var(--jt)); }
+    #jobs .tool-result h3 { font-size: calc(1.05rem * var(--jt) * 1.1); }
+    #jobs .tool-stats { gap: calc(14px * var(--jt)) 18px; }
+    #jobs .tool-stats dt { font-size: 0.72rem; white-space: nowrap; }
+    #jobs .tool-stats dd { font-size: calc(1.3rem * var(--jt) * 1.1); }
+    #jobs :is(.pay-gauge__cap, .tool-upsell) { font-size: calc(0.86rem * var(--jt)); }
+    #jobs .stop-label__text { font-size: calc(1rem * var(--jt)); }
+}
+@media (min-width: 901px) and (max-height: 780px) { #jobs { --jt: 1.04; } }
 /* Shorter laptop screens: the top 8 jobs instead of 10 */
 @media (min-width: 901px) and (max-height: 780px) {
     .rank-list li:nth-child(n + 9) { display: none; }
@@ -517,7 +550,8 @@ body.page-home .demo-bar-row { padding: 5px 0; font-size: 0.86rem; }
     .tool-panel--donut .tool-col--fit { display: contents; }
     .tool-panel--donut .tool-search { order: 1; }
     .tool-panel--donut #strength-result { order: 2; }
-    .tool-panel--donut .donut { order: 3; max-width: 260px; }
+    .tool-panel--donut .donut-wrap { order: 3; }
+    .tool-panel--donut .donut { max-width: 260px; }
     .tool-panel--donut #ind-views { order: 4; }
     .tool-panel--donut [data-pane] { order: 5; }
     .tool-panel--donut .tool-upsell { order: 6; }
