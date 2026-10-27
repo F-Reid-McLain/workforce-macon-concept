@@ -425,6 +425,22 @@
                 n.el.style.opacity = n.alpha.toFixed(3);
             });
         }
+        // Ready (the map fades in over the phone's stand-in picture) only once a frame with the
+        // counties in it has really been drawn: Safari can take a second or two after the data
+        // arrives, and fading the picture out sooner left Macon-Bibb missing from the screen
+        // (the graphics can still be compiling in the background, and the map skips drawing until
+        // they're done, so this reads a few pixels around the middle of the frame: any drawn = ready)
+        let wantReady = false;
+        function drawnYet(ctx) {
+            const gl = ctx && (ctx.gl || (ctx.device && ctx.device.gl));
+            if (!gl) return true;
+            const W = gl.drawingBufferWidth, H = gl.drawingBufferHeight, px = new Uint8Array(4);
+            for (let i = 0; i < 25; i++) {
+                gl.readPixels(Math.round(W * (0.3 + 0.1 * (i % 5))), Math.round(H * (0.3 + 0.1 * Math.floor(i / 5))), 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px);
+                if (px[3] > 0) return true;
+            }
+            return false;
+        }
         const deckgl = new deck.Deck({
             parent: mapEl, views: new deck.MapView({ repeat: false }), viewState: storyCamera(5), controller: false,
             // Vertical swipes on the map scroll the page (on phones the map fills the screen);
@@ -432,7 +448,7 @@
             touchAction: 'pan-y',
             useDevicePixels: Math.min(window.devicePixelRatio || 1, 2),
             effects: [new deck.LightingEffect({ ambient, sun })],
-            onAfterRender: () => placeNames(),
+            onAfterRender: ctx => { placeNames(); if (wantReady && drawnYet(ctx)) { wantReady = false; requestAnimationFrame(() => section.classList.add('is-ready')); } },
             onHover: showTip,
             getCursor: ({ isHovering }) => isHovering && stagesOf(morphAt(hour)).live ? 'pointer' : 'default',
         });
@@ -901,6 +917,12 @@
         measure(); onScroll();
         if (reducedMotion) hour = target;
         if (location.hash) goToHash();
-        section.classList.add('is-ready');
+        wantReady = true; wake();
+        // Safari can drop the first frames (the canvas settling its size clears it), and the loop
+        // then sleeps until something moves: keep drawing for the first few seconds so Macon-Bibb
+        // is on screen from the start
+        const settleDraw = setInterval(() => deckgl.redraw('settle'), 120);
+        setTimeout(() => clearInterval(settleDraw), 4000);
+        setTimeout(() => section.classList.add('is-ready'), 8000);   // whatever happens, don't hold the map back for good
     }).catch(err => console.error('Commuting intro failed to load', err));
 })();
