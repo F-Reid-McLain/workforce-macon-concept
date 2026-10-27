@@ -571,6 +571,56 @@ body.page-home .demo-bar-row { padding: 5px 0; font-size: 0.86rem; }
     #ci-png { display: none; }   /* saving the map as a picture is a desktop task */
     .ci-method summary { padding: 0.7rem 0; }
     .tool-upsell a { display: inline-block; padding: 0.65rem 0; }
+    /* A tapped plant's story opens as a panel along the bottom of the map, not over the plants */
+    .gm-tip, .gm-tip.is-below { left: 12px !important; right: 12px; top: auto !important; bottom: 76px; width: auto; max-width: none; transform: none; font-size: 0.9rem; }
+    .gm-tip__name { font-size: 1.05rem; }
     .stop-intro--close { min-height: 100vh; min-height: 100svh; box-sizing: border-box; display: flex; align-items: center; justify-content: center; }
 }
+
+/* ----- Phones: the Industries tool's switches on one swipeable line each, not four stacked rows ----- */
+@media (max-width: 700px) {
+    .donut-ctrl {
+        flex-direction: row; flex-wrap: nowrap; justify-content: flex-start; gap: 14px;
+        overflow-x: auto; scrollbar-width: none; margin: 0 -16px; padding: 2px 16px 4px; max-width: 100vw;
+    }
+    .donut-ctrl::-webkit-scrollbar, .tool-panel--donut #ind-views::-webkit-scrollbar { display: none; }
+    .donut-ctrl__row { flex: none; flex-wrap: nowrap; gap: 6px; }
+    .donut-ctrl__label { width: auto; }
+    .donut-us { display: none; }   /* the U.S. ring is too fine to read at phone size */
+    .seg--sm { flex-wrap: nowrap; }
+    .tool-panel--donut #ind-views { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin: 0 -16px; padding: 2px 16px 4px; }
+    .tool-panel--donut #ind-views button { flex: none; }
+    /* a soft edge on the right says there's more to swipe to */
+    .donut-ctrl, .tool-panel--donut #ind-views {
+        -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent);
+                mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent);
+    }
+}
+
+/* ----- Phones: the title slides' word screens as title cards: a size larger, a soft glow behind,
+   and a cue at the foot leading into the map below; the close gets its call to action ----- */
+.intro-cue, .intro-cta { display: none; }
+@media (max-width: 700px) {
+    .stop-intro .chapter-finding { font-size: clamp(2.05rem, 9.4vw, 2.8rem); line-height: 1.08; }
+    .stop-intro--map .stop-intro__inner {
+        background: radial-gradient(ellipse 80% 45% at 50% 48%, rgba(242, 196, 107, 0.07), transparent 70%);
+        margin: 0 -16px; padding-left: 16px; padding-right: 16px;
+    }
+    .intro-cue {
+        display: flex; flex-direction: column; align-items: center; gap: 4px; margin: 2.2rem 0 0;
+        font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ch-gold);
+    }
+    .intro-cue::after {
+        content: ""; width: 10px; height: 10px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor;
+        transform: rotate(45deg); animation: cue-bob 1.8s ease-in-out infinite;
+    }
+    @keyframes cue-bob { 0%, 100% { translate: 0 0; } 50% { translate: 0 5px; } }
+    .stop-intro--close .stop-intro__inner { display: flex; flex-direction: column; align-items: center; }
+    .intro-cta {
+        display: inline-flex; align-items: center; min-height: 48px; margin-top: 2rem; padding: 0 1.3rem; border-radius: 999px;
+        background: var(--ch-gold); color: #1b1608; font-weight: 700; font-size: 0.95rem; text-decoration: none;
+        box-shadow: 0 6px 22px rgba(242, 196, 107, 0.3);
+    }
+}
+@media (max-width: 700px) and (prefers-reduced-motion: reduce) { .intro-cue::after { animation: none; } }
 

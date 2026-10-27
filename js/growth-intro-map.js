@@ -107,13 +107,15 @@
         fit: (W, H, wide) => {
             if (wide) return { x: W * 0.75, y: H * 0.5, w: 0.62, h: 0.82, at: CENTER };
             // Phones: the map has its own screen, after the text (css/chapters.css)
-            return { x: W / 2, y: H * 0.56, w: 0.88, h: 0.6 };   // the whole county, centered
+            // zoomed in on the plants (south and east Macon-Bibb), so they spread out and read at thumb size
+            return { x: W / 2, y: H * 0.48, w: 1.3, h: 0.95, at: CENTER };
         },
+        shieldReach: wide => wide ? 0.42 : 0.62,   // phones: zoomed in, so out past the plants
         layer({ svg, proj, W, H, wide, bounds, bibbRings, DOWNTOWN }) {
             hideTip();
             const list = plantList;
             const at = appearAt(list);
-            const size = p => (wide ? 1.2 : 1.05) + 0.5 * Math.sqrt(p.jobs / 600);
+            const size = p => (wide ? 1.2 : 1.3) + 0.5 * Math.sqrt(p.jobs / 600);
             // Pins start on their real spots and are nudged apart where they'd overlap
             const nodes = list.map((p, i) => { const [x, y] = proj([p.lon, p.lat]); return { i, p, sx: x, sy: y, x, y: y - 6, r: 15 * size(p), s: size(p), shown: false }; });
             // and kept inside Macon-Bibb: one that drifts out is drawn back toward the county's middle

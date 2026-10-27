@@ -27,6 +27,8 @@
                        share of the width and height its outline may fill; with
                        at: [lon, lat], that point goes at { x, y } instead (to zoom
                        in on part of the county)
+     shieldReach(wide) optional: how far from the middle the interstate shields sit, as a
+                       share of the smaller side (default 0.42)
      layer(ctx)        draws the slide's own parts once the base is in; returns
                        render(p, stage), called on every frame. ctx: { svg, proj, W,
                        H, wide, center, slide, bounds, bibbRings } (bounds: Macon-Bibb's box on
@@ -123,9 +125,13 @@ window.WFIntroMap = (function () {
             const ints = gRoads.selectAll('path.im-interstate').data(halves.filter(h => h.cls === 'im-interstate')).join('path').attr('class', 'im-interstate').attr('d', d => smooth(d.pts));
 
             // Interstate shields out toward the edges: I-75 to the north, I-16 to the southeast
+            // (shieldReach: how far out from the middle they may sit, as a share of the smaller side;
+            // a slide zoomed in close pushes them further out, clear of what it puts in the middle)
+            const reach = Math.min(W, H) * ((opts.shieldReach && opts.shieldReach(wide)) || 0.42);
+            const inView = q => wide || (q[0] > 26 && q[0] < W - 26 && q[1] > 80 && q[1] < H - 70);   // phones: on screen, clear of the credits
             const shieldAt = (route, pick) => {
                 const options = halves.filter(h => h.route === route)
-                    .map(h => h.pts.find(q => dist(q, center) < Math.min(W, H) * 0.42) || h.pts[h.pts.length - 1]);
+                    .map(h => h.pts.find(q => dist(q, center) < reach && inView(q)) || h.pts[h.pts.length - 1]);
                 return options.length ? options.reduce(pick) : null;
             };
             const labels = [['I-75', (a, b) => (a[1] < b[1] ? a : b)], ['I-16', (a, b) => (a[0] > b[0] ? a : b)]]

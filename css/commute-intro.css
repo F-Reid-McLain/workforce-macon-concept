@@ -271,7 +271,10 @@ body.ci-on-screen .page-jumpnav { opacity: 0; pointer-events: none; }
     .ci-card :is(h2, h3) { font-size: 1.1rem; margin-bottom: 0.25rem; }
     .ci-card p { font-size: 0.92rem; line-height: 1.4; }
     .ci-step--map .ci-card { max-height: 40vh; max-height: 40svh; }
-    .ci-step--map .ci-county__pick > span { font-size: 0.82rem; }
+    /* the finished map's card: just its title, the county picker (which says what it does) and the notes */
+    .ci-step--map .ci-when, .ci-step--map .ci-county__pick > span { display: none; }
+    .ci-step--map .ci-card :is(h2, h3) { font-size: 1.15rem; margin-bottom: 0.6rem; }
+    .ci-step--map .ci-county { margin-top: 0; }
 }
 
 /* Phones: the captions as subtitles under the map (js/commute-intro.js). The story's own cards
