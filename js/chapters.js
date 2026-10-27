@@ -34,11 +34,15 @@
     new IntersectionObserver(es => document.body.classList.toggle('footer-in-view', es[0].isIntersecting)).observe(footer);
 })();
 
-/* Settling onto sections (desktop and laptop). From the finished regional map onward,
-   when a scroll ends the page glides onto the next stop in the direction you were
-   scrolling: the map, each title slide (centered) and each tool (top). A small nudge
-   is enough to move on, and a tiny one settles back. CSS scroll-snap can't do this: it
-   snaps to the nearest point, so short wheel scrolls kept falling back onto the map.
+/* Settling onto sections. From the finished regional map onward, when a scroll ends the
+   page glides onto the next stop in the direction you were scrolling: the map, each title
+   slide (centered) and each tool (top). A small nudge is enough to move on, and a tiny one
+   settles back. CSS scroll-snap can't do this: it snaps to the nearest point, so short wheel
+   scrolls kept falling back onto the map (and on phones, "proximity" snapping only caught
+   swipes that happened to stop right at a stop).
+   Phones settle the same way once a swipe's momentum has run out, onto their own screens:
+   a map slide's words, then its map (a screen each there), and each tool's top; a tool
+   taller than the screen scrolls freely between its top and bottom.
    The 3D story before the map scrolls freely, and so does the footer past the close.
    Also window.WFStops, the homepage stops in order, which present mode's arrow keys
    step through once past the story (js/commute-intro.js). */
@@ -47,7 +51,9 @@
     const map = document.getElementById('section-region');
     if (!map) return;
     const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const enabled = () => innerWidth > 900 && innerHeight >= 600 && !document.body.classList.contains('ci-presenting');
+    const phone = () => innerWidth <= 900;
+    const enabled = () => (phone() || innerHeight >= 600) && !document.body.classList.contains('ci-presenting');
+    const HEADER = 64;   // phones: the fixed header's room above a tool
     const NUDGE = 60;   // px: less than this and the page settles back where it was
 
     const top = el => el.getBoundingClientRect().top + scrollY;
@@ -56,7 +62,26 @@
     const stops = () => [...document.querySelectorAll('.stop-intro, .stop, #custom-research')]
         .map(el => ({ el, y: Math.round(el.classList.contains('stop-intro') ? center(el) : top(el)) }))
         .sort((a, b) => a.y - b.y);
-    const points = () => [Math.round(center(map))].concat(stops().map(s => s.y)).sort((a, b) => a - b);
+    // Phones: each map slide's two screens, each tool's top (and its bottom when it's taller
+    // than the screen), the close centered. spans: the tall tools' free stretches.
+    let spans = [];
+    function phonePoints() {
+        const out = [];
+        spans = [];
+        document.querySelectorAll('.stop-intro, .stop, #custom-research').forEach(el => {
+            if (el.classList.contains('stop-intro--map')) {
+                const words = el.querySelector('.stop-intro__inner'), svg = el.querySelector('.intro-map');
+                out.push(top(words), top(svg) + svg.getBoundingClientRect().height - innerHeight);
+            } else if (el.classList.contains('stop-intro')) out.push(center(el));
+            else {
+                const a = top(el) - HEADER, b = top(el) + el.offsetHeight - innerHeight;
+                out.push(a);
+                if (b > a + 40) { out.push(b); spans.push([a, b]); }
+            }
+        });
+        return out;
+    }
+    const points = () => [Math.round(center(map))].concat(phone() ? phonePoints().map(Math.round) : stops().map(s => s.y)).sort((a, b) => a - b);
 
     // from: where the page last came to rest. A glide only moves it once it lands, so a
     // gesture that interrupts a glide is still measured from the stop it started at.
@@ -74,6 +99,7 @@
         }
         if (!enabled()) { from = y; return; }
         const pts = points(), first = pts[0], last = pts[pts.length - 1], moved = y - from;
+        if (spans.some(([a, b]) => y > a + 2 && y < b - 2)) { from = y; return; }   // inside a tall tool: read freely
         let target = null;
         if (y < first) {
             // Coming down out of the story: settle onto the map once it's mostly in view

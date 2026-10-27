@@ -508,6 +508,7 @@ body.page-home .demo-bar-row { padding: 5px 0; font-size: 0.86rem; }
     }
     .stop { min-height: 0; padding: 16px 16px 24px; scroll-margin-top: 70px; }
 }
+}
 .cap-more { display: none; }
 /* ----- Phones: the section bar gives way to "On this page" links in the ☰ menu (index.html) ----- */
 .nav-section, .nav-section-title { display: none; }
