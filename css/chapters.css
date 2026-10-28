@@ -684,3 +684,15 @@ body.page-home .demo-bar-row { padding: 5px 0; font-size: 0.86rem; }
     #jobs.has-pop .tool-col--result { transform: translate(-50%, -50%); opacity: 1; transition: transform 0.3s ease, opacity 0.3s ease, visibility 0s; }
 }
 
+
+/* ----- Inside a sector, the way back out: a round arrow beside the donut, clear of its ring ----- */
+.donut-wrap { position: relative; }
+.donut-up {
+    position: absolute; top: 0; left: 0; z-index: 3; display: grid; place-items: center; width: 44px; height: 44px; padding: 0;
+    border-radius: 50%; border: 1px solid rgba(242, 196, 107, 0.6); background: rgba(14, 20, 32, 0.9); color: var(--ch-gold); cursor: pointer;
+    animation: donut-up-in 0.3s ease;
+}
+.donut-up:hover { background: var(--ch-gold); color: #1b1608; }
+.donut-up[hidden] { display: none; }
+@keyframes donut-up-in { from { opacity: 0; transform: translateX(6px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .donut-up { animation: none; } }

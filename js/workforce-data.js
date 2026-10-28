@@ -279,6 +279,8 @@
         const back = document.getElementById('donut-back');
         back.hidden = isRoot;
         back.onclick = () => animateTo(hierarchy);
+        const up = document.getElementById('donut-up');
+        if (up) { up.hidden = isRoot; up.onclick = () => animateTo(hierarchy); }
         box.classList.toggle('is-drilled', !isRoot);
 
         // Recolor (the switch) and show or hide the U.S. ring, without rebuilding

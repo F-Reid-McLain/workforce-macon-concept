@@ -239,14 +239,14 @@ html.scenes .ci-step--map .ci-card {
 }
 html.scenes .ci-step--map #cty-card > h3 { display: none; }
 
-/* ----- Where the page itself scrolls (custom research, the footer), a soft dark band behind the top
+/* ----- Where the page itself scrolls (custom research and the footer: the only screen that does), a soft dark band behind the top
    bar (under the header's buttons, which sit at 300 and up) so passing text never runs under the menu button ----- */
 html.scenes body::before {
     content: ''; position: fixed; z-index: 299; pointer-events: none; left: 0; right: 0; top: 0; height: calc(env(safe-area-inset-top) + 72px);
     background: linear-gradient(to bottom, rgba(14, 20, 32, 0.96) 55%, rgba(14, 20, 32, 0));
     opacity: 0; transition: opacity 0.3s;
 }
-html.scenes[data-scene="tool"] body::before { opacity: 1; }
+html.scenes[data-scene-id="custom-research"] body::before { opacity: 1; }   /* (Jobs and Industries keep their own title row clear) */
 
 /* ----- A phone turned sideways: too short for the maps and tools, so a card asks to turn it upright
    ("Continue anyway" sets html.upright-ok, js/scenes-phone.js) ----- */
