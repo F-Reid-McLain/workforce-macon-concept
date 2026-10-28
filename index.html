@@ -26,7 +26,8 @@
       // set before anything paints (and after the viewport tag, or a phone still measures 980px
       // wide). With Reduce Motion on, the scenes are calm: they fade from one to the next, with
       // no camera flights or drifting (html.calm).
-      if (window.matchMedia && matchMedia('(max-width: 700px) and (pointer: coarse)').matches) {
+      // (a phone turned sideways counts too: it's asked to turn upright, and turning back finds the scenes)
+      if (window.matchMedia && matchMedia('(pointer: coarse) and (max-width: 700px), (pointer: coarse) and (orientation: landscape) and (max-height: 500px)').matches) {
         document.documentElement.classList.add('scenes');
         if (matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('calm');
       }
@@ -62,6 +63,15 @@
         <link rel="preload" href="data/major-highways.geojson" as="fetch" crossorigin>
 </head>
 <body class="page-home">
+    <!-- Phones turned sideways: too short a screen for the maps and tools, so a card asks to turn upright (css/scenes-phone.css) -->
+    <div class="turn-upright" role="dialog" aria-labelledby="turn-upright-title">
+        <div class="turn-upright__card">
+            <svg viewBox="0 0 48 48" width="48" height="48" aria-hidden="true"><rect x="15" y="6" width="18" height="36" rx="4" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M21 37h6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+            <p class="turn-upright__title" id="turn-upright-title">Turn your phone upright</p>
+            <p>Workforce Macon is made to be read with your phone held upright.</p>
+            <button type="button" class="turn-upright__go">Continue anyway</button>
+        </div>
+    </div>
     <header class="main-header">
         <div class="container">
             <div class="logo">
@@ -230,9 +240,9 @@
                         <ul class="tool-matches" id="job-list" hidden></ul>
                     </label>
                     <div class="seg" id="job-sorts" role="group" aria-label="Rank jobs by">
-                        <button type="button" data-view="common">Most common</button>
+                        <button type="button" data-view="common" aria-label="Most common"><span class="tab-long">Most common</span><span class="tab-short">Common</span></button>
                         <button type="button" data-view="paid">Best paid</button>
-                        <button type="button" data-view="growing">Fastest growing</button>
+                        <button type="button" data-view="growing" aria-label="Fastest growing"><span class="tab-long">Fastest growing</span><span class="tab-short">Growing</span></button>
                     </div>
                     <ol class="rank-list" id="job-rank"></ol>
                 </div>
@@ -305,7 +315,7 @@
                     <div class="seg" id="ind-views" role="group" aria-label="Show">
                         <button type="button" data-view="biggest">Biggest</button>
                         <button type="button" data-view="specialties">Specialties</button>
-                        <button type="button" data-view="commuters" aria-label="What commuters come for"><span class="ind-views__long">What commuters come for</span><span class="ind-views__short">Commuters</span></button>
+                        <button type="button" data-view="commuters" aria-label="What commuters come for"><span class="tab-long">What commuters come for</span><span class="tab-short">Commuters</span></button>
                     </div>
                     <div class="donut-side" data-pane="biggest">
                         <p class="pane-note">Click a sector to see the industries inside it.</p>

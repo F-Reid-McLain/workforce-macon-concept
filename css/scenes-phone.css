@@ -133,7 +133,7 @@ html.scenes #industries .tool-panel--donut [data-pane][hidden] { display: none; 
    beside it (js/lookups.js). Under the donut: its size and color as two labeled dropdowns (the
    phone's own picker), then the three views as underlined tabs, and the view's list, which
    scrolls in its own box. No glows: on a phone screen they read as a blur. */
-.ind-find, .ind-views__short, .donut-pick, .pane-cap { display: none; }
+.ind-find, .tab-short, .donut-pick, .pane-cap { display: none; }
 html.scenes #industries { padding-top: calc(env(safe-area-inset-top) + 24px); }
 html.scenes #industries .stop-label { min-height: 44px; align-items: center; padding-right: 112px; }
 html.scenes #industries .ind-find {
@@ -166,19 +166,19 @@ html.scenes .dsel select {
 html.scenes .dsel select:focus-visible { outline: 2px solid var(--ch-gold); outline-offset: 2px; }
 html.scenes .dsel:first-child { --dsel-label: 2rem; }
 
-/* the views: underlined tabs across the full width */
-html.scenes #industries #ind-views {
+/* the views (and Jobs' rankings): underlined tabs across the full width */
+html.scenes :is(#industries #ind-views, #job-sorts) {
     display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin: 0; padding: 0; overflow: visible;
     border-bottom: 1px solid rgba(255, 255, 255, 0.12); -webkit-mask-image: none; mask-image: none;
 }
-html.scenes #industries #ind-views .seg__pill { display: none; }
-html.scenes #industries #ind-views button {
+html.scenes :is(#industries #ind-views, #job-sorts) .seg__pill { display: none; }
+html.scenes :is(#industries #ind-views, #job-sorts) button {
     min-height: 44px; padding: 0 4px; border: 0; border-radius: 0; background: none; box-shadow: none; transform: none;
     color: var(--color-text-secondary); font: 600 0.9rem var(--font-body); border-bottom: 2px solid transparent; margin-bottom: -1px;
 }
-html.scenes #industries #ind-views button.is-on { color: var(--ch-gold); border-bottom-color: var(--ch-gold); }
-html.scenes .ind-views__long { display: none; }
-html.scenes .ind-views__short { display: inline; }
+html.scenes :is(#industries #ind-views, #job-sorts) button.is-on { color: var(--ch-gold); border-bottom-color: var(--ch-gold); }
+html.scenes .tab-long { display: none; }
+html.scenes .tab-short { display: inline; }
 
 /* each list: a one-line caption rather than a paragraph */
 html.scenes #industries [data-pane="specialties"] > .pane-note, html.scenes #industries [data-pane="commuters"] > .pane-note,
@@ -223,4 +223,48 @@ html.scenes #sector-commute-bars .demo-bar-fill { transform: none !important; }
     html.scenes .dsel span { letter-spacing: 0.06em; }
     html.scenes .dsel select { padding: 0 22px 0 calc(10px + 6px + var(--dsel-label, 2.45rem)); font-size: 0.88rem; }
     html.scenes .dsel:first-child { --dsel-label: 1.9rem; }
+}
+
+/* ----- The ☰ menu covers the whole screen, scrolling itself if it must ----- */
+html.scenes .main-nav { height: 100dvh; box-sizing: border-box; overflow-y: auto; overscroll-behavior: contain; }
+/* (the header is see-through here: its blur would make it, 0px tall, the frame the menu sizes to) */
+html.scenes .main-header { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+
+/* ----- The regional map's card: room for a picked county's numbers (the map refits above it), the
+   county's name left to the dropdown that already says it, and a soft foot when there's more ----- */
+html.scenes .ci-step--map .ci-card {
+    max-height: 56dvh; padding-bottom: 18px;
+    -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 18px), transparent);
+            mask-image: linear-gradient(to bottom, #000 calc(100% - 18px), transparent);
+}
+html.scenes .ci-step--map #cty-card > h3 { display: none; }
+
+/* ----- Where the page itself scrolls (custom research, the footer), a soft dark band behind the top
+   bar (under the header's buttons, which sit at 300 and up) so passing text never runs under the menu button ----- */
+html.scenes body::before {
+    content: ''; position: fixed; z-index: 299; pointer-events: none; left: 0; right: 0; top: 0; height: calc(env(safe-area-inset-top) + 72px);
+    background: linear-gradient(to bottom, rgba(14, 20, 32, 0.96) 55%, rgba(14, 20, 32, 0));
+    opacity: 0; transition: opacity 0.3s;
+}
+html.scenes[data-scene="tool"] body::before { opacity: 1; }
+
+/* ----- A phone turned sideways: too short for the maps and tools, so a card asks to turn it upright
+   ("Continue anyway" sets html.upright-ok, js/scenes-phone.js) ----- */
+.turn-upright { display: none; }
+@media (pointer: coarse) and (orientation: landscape) and (max-height: 500px) {
+    html:not(.upright-ok) .turn-upright {
+        display: flex; position: fixed; inset: 0; z-index: 1000; align-items: center; justify-content: center;
+        padding: 24px calc(24px + env(safe-area-inset-right)) 24px calc(24px + env(safe-area-inset-left)); background: #0e1420; text-align: center;
+    }
+    html:not(.upright-ok) body { overflow: hidden; }
+}
+.turn-upright__card { max-width: 420px; color: var(--color-text-secondary); }
+.turn-upright__card svg { color: var(--ch-gold, #f2c46b); animation: turn-upright 2.4s ease-in-out infinite; }
+@keyframes turn-upright { 0%, 30% { transform: rotate(-90deg); } 60%, 100% { transform: rotate(0); } }
+@media (prefers-reduced-motion: reduce) { .turn-upright__card svg { animation: none; } }
+.turn-upright__title { margin: 10px 0 6px; font: 700 1.35rem/1.2 var(--font-heading); color: #fff; }
+.turn-upright__card p { margin: 0 0 4px; }
+.turn-upright__go {
+    margin-top: 16px; min-height: 44px; padding: 0 18px; border-radius: 999px; cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.2); background: transparent; color: #fff; font: 600 0.95rem var(--font-body);
 }

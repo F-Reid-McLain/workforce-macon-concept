@@ -111,7 +111,8 @@
                 return { x: (L + R) / 2, y: H * 0.52, w: (R - L) / W, h: 0.86, at: CENTER }; }
             // Phones: the map has its own screen, after the text (css/chapters.css)
             // zoomed in on the plants (south and east Macon-Bibb), so they spread out and read at thumb size
-            return { x: W / 2, y: H * 0.48, w: 1.3, h: 0.95, at: CENTER };
+            // (a little lower on short screens, clear of the year and its hint at the top)
+            return { x: W / 2, y: H * (H < 600 ? 0.55 : 0.48), w: 1.3, h: 0.95, at: CENTER };
         },
         shieldReach: wide => wide ? 0.42 : 0.62,   // phones: zoomed in, so out past the plants
         layer({ svg, proj, W, H, wide, bounds, bibbRings, DOWNTOWN }) {
