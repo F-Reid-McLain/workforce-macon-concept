@@ -52,6 +52,8 @@
     .ci-name b { font-size: 11px; }
     .ci-name--bibb { font-size: 13px; }
     .ci-name--bibb b { font-size: 15px; }
+    /* a label stepping aside for a bigger county's (js placeNames) fades rather than pops */
+    .ci-name { transition: opacity 0.35s ease; }
 }
 /* ----- The finished map's labels: HTML pinned over the canvas, for crisp small text ----- */
 .ci-maplabels, .ci-hwylabels { position: absolute; inset: 0; z-index: 2; pointer-events: none; will-change: opacity; }
@@ -166,7 +168,7 @@ body.ci-presenting .ci-present-hint { display: block; }
 .ci-poster { display: none; }
 @media (max-width: 700px) {
     .ci-poster {
-        --poster-w: 277.5px; --poster-dx: 0.3px; --poster-dy: 55.5px;
+        --poster-w: 277.7px; --poster-dx: 0.3px; --poster-dy: 55.5px;
         display: block; position: absolute; z-index: 0; pointer-events: none;
         left: calc(50% + var(--poster-dx)); top: calc(50% + var(--poster-dy)); width: var(--poster-w); height: auto;
         transform: translate(-50%, -50%); transition: opacity 0.8s ease;
