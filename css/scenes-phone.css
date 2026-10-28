@@ -115,7 +115,7 @@ html.calm .stop-intro--map .stop-intro__inner > :not(.intro-source) { transition
 html.scenes #industries .stop-label__text, html.scenes #industries .tool-upsell, html.scenes #industries .cap-more { display: none; }
 html.scenes #industries .tool-panel--donut { display: flex; flex-direction: column; align-items: stretch; flex: 1 1 0; min-height: 0; gap: 12px; }
 html.scenes #industries .tool-panel--donut > * { flex-shrink: 0; }
-html.scenes #industries .donut { width: clamp(150px, calc(100dvh - 470px), 260px); }
+html.scenes #industries .donut { width: clamp(170px, calc(100dvh - 400px), 250px); }
 /* a small donut (short screens) gets smaller words in its middle */
 @media (max-height: 700px) {
     html.scenes #industries .donut-center b { font-size: 1.55rem; }
@@ -136,3 +136,34 @@ html.scenes #industries .tool-panel--donut [data-pane] {
 }
 html.scenes #industries .tool-panel--donut [data-pane] > * { flex-shrink: 0; }
 html.scenes #industries .tool-panel--donut [data-pane][hidden] { display: none; }
+
+/* ----- Industries, laid out for one phone screen -----
+   The title shares the top row with the menu button, and the look-up opens from a round button
+   beside it (js/lookups.js), so the screen is the donut, one row of switches, the three views and
+   their list (which scrolls in its own box) */
+.ind-find, .ind-views__short { display: none; }
+html.scenes #industries { padding-top: calc(env(safe-area-inset-top) + 24px); }
+html.scenes #industries .stop-label { min-height: 44px; align-items: center; padding-right: 112px; }
+html.scenes #industries .ind-find {
+    display: flex; align-items: center; justify-content: center; position: absolute; z-index: 5;
+    top: calc(env(safe-area-inset-top) + 14px); right: 64px; width: 44px; height: 44px; padding: 0; border-radius: 50%;
+    background: rgba(14, 20, 32, 0.55); border: 1px solid rgba(255, 255, 255, 0.14); color: #fff; cursor: pointer;
+}
+html.scenes #industries.is-finding .ind-find { color: #1b1608; background: var(--ch-gold); border-color: transparent; }
+html.scenes #industries .tool-search { display: none; }
+html.scenes #industries.is-finding .tool-search { display: block; }
+/* one row of switches, no labels, nothing to swipe to */
+html.scenes #industries .donut-ctrl { justify-content: center; gap: 10px; margin: 0; padding: 0; overflow: visible; -webkit-mask-image: none; mask-image: none; }
+html.scenes #industries .donut-ctrl__label { display: none; }
+/* each switch reads as one toggle: its choices in a single outlined track */
+html.scenes #industries .donut-ctrl .seg { gap: 0; padding: 2px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.16); background: rgba(255, 255, 255, 0.03); }
+html.scenes #industries .donut-ctrl .seg button { padding: 0.4rem 0.62rem; min-height: 38px; font-size: 0.78rem; border-color: transparent; background: transparent; }
+/* the views: three equal tabs */
+html.scenes #industries #ind-views { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 0; padding: 0; overflow: visible; -webkit-mask-image: none; mask-image: none; }
+html.scenes #industries #ind-views button { padding-left: 4px; padding-right: 4px; font-size: 0.84rem; }
+html.scenes .ind-views__long { display: none; }
+html.scenes .ind-views__short { display: inline; }
+@media (max-width: 359px) {
+    html.scenes #industries .donut-ctrl { gap: 6px; }
+    html.scenes #industries .donut-ctrl .seg button { min-width: 40px; padding: 0.4rem 0.45rem; font-size: 0.72rem; }
+}

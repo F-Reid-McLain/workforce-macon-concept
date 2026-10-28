@@ -161,8 +161,9 @@ const device = args.device || 'iPhone 15', base = args.base || 'http://localhost
             await tapOn('.d-ring path'); await wait(600);
             ok('tapping a donut slice opens its sector', await page.evaluate(() => document.getElementById('donut').classList.contains('is-drilled')));
             if (scenes) {
-                ok('Industries fits one screen, its list scrolling in its own box', await page.evaluate(() => { const s = document.getElementById('industries'), pane = [...s.querySelectorAll('[data-pane]')].find(x => !x.hidden); return s.scrollHeight <= s.clientHeight + 1 && pane.scrollHeight > pane.clientHeight; }));
-                await tapOn('#strength-q'); await page.keyboard.type('hosp', { delay: 40 }); await wait(600);
+                ok('Industries fits one screen, nothing off its edges, its list scrolling in its own box', await page.evaluate(() => { const s = document.getElementById('industries'), pane = [...s.querySelectorAll('[data-pane]')].find(x => !x.hidden); return s.scrollHeight <= s.clientHeight + 1 && pane.scrollHeight > pane.clientHeight && ![...s.querySelectorAll('button')].some(b => { const r = b.getBoundingClientRect(); return r.width && r.top < innerHeight && (r.right > innerWidth || r.left < 0); }); }));
+                // (the look-up opens from its button beside the menu)
+                await tapOn('#industries .ind-find'); await page.keyboard.type('hosp', { delay: 40 }); await wait(600);
                 await tapOn('#strength-qlist li');
                 ok("an industry's card pops up", await page.evaluate(() => { const r = document.getElementById('strength-result').getBoundingClientRect(); return document.getElementById('industries').classList.contains('has-pop') && r.bottom <= innerHeight + 1 && r.top > 0; }));
                 await tapOn('#industries .pop-close');

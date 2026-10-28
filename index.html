@@ -260,6 +260,8 @@
             <div class="stop-label">
                 <p class="chapter-kicker">Industries <span class="info-btn-wrap"><button type="button" class="info-btn" aria-label="About this data">i</button><span class="info-popover"><strong>What this shows</strong><span>Payroll jobs and average annual wage by industry (QCEW-based), grouped into sectors. Concentration compares each industry's share of jobs here with its share nationally (location quotient). What commuters come in for uses U.S. Census Bureau LODES 2023.</span></span></span></p>
                 <p class="stop-label__text">Click into the donut, switch views, or look up any industry.</p>
+                <!-- Phone swipe scenes: the look-up opens from a button beside the menu (css/scenes-phone.css) -->
+                <button type="button" class="ind-find" aria-label="Look up an industry" aria-expanded="false" aria-controls="strength-q"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
             </div>
             <div class="tool-panel tool-panel--donut">
                 <div class="donut-wrap">
@@ -298,7 +300,7 @@
                     <div class="seg" id="ind-views" role="group" aria-label="Show">
                         <button type="button" data-view="biggest">Biggest</button>
                         <button type="button" data-view="specialties">Specialties</button>
-                        <button type="button" data-view="commuters">What commuters come for</button>
+                        <button type="button" data-view="commuters" aria-label="What commuters come for"><span class="ind-views__long">What commuters come for</span><span class="ind-views__short">Commuters</span></button>
                     </div>
                     <div class="donut-side" data-pane="biggest">
                         <p class="pane-note">Click a sector to see the industries inside it.</p>
