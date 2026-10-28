@@ -23,7 +23,8 @@
     if (!section || !window.deck || !window.d3) return;
 
     const BIBB = '13021';
-    const mobile = window.innerWidth < 700;
+    // (a phone opened sideways is still a phone: it's in the swipe scenes, and its camera refits when it turns upright)
+    const mobile = window.innerWidth < 700 || document.documentElement.classList.contains('scenes');
     const reducedMotion = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
     // Marketing stills (?render=1, shot by tools/render-story.js): one fixed moment of the day,
     // no page around it, no labels unless asked; optional camera (cam=lon,lat,zoom,pitch,bearing),

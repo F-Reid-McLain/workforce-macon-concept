@@ -56,6 +56,15 @@ It saves a screenshot of every stop to `phone-check/` (don't commit that folder)
 
 Run it after any change to the homepage's layout or scripts; every line should say `ok`. For load speed on a slow phone, run Lighthouse's mobile audit (`npx lighthouse <url> --form-factor=mobile`), with the Chrome flag `--use-angle=metal`. Without it, Chrome draws the 3D story in software, and the scores come out far worse than a real phone.
 
+## `phone-sweep.js`: every screen, on every phone shape
+
+`phone-check.js` asks whether things work; this one is for looking. It walks the whole homepage on six iPhone screen shapes (from a 320-px-wide page, as Display Zoom gives, to a Pro Max), through every swipe scene and the states inside them: a county picked, each Jobs ranking, search, a job's card, a plant tapped, the menu, the page's foot. Each screen is flagged for anything past the screen's edge, text under the top buttons, and a tool that doesn't fit one screen, and all of them land on one contact sheet per phone (`phone-sweep/sheet-*.png`, not for committing).
+
+    node tools/phone-sweep.js              (all six phones, Reduce Motion on)
+    node tools/phone-sweep.js 15 motion    (the iPhone 15, full motion)
+
+The flags catch what can be measured; look over the sheets too. At the page's foot, the footer passing under the menu button is expected (it fades out there).
+
 ## Scroll recorder: `?debug=scroll`
 
 For scrolling that feels wrong on a real device, which no simulator can show: open the homepage with `?debug=scroll` at the end of the address (for example `index.html?debug=scroll`). A small panel in the corner records every wheel, touch and scroll event with its timing, plus every decision the page's own scrolling makes (settling onto a stop, holding at a stop, moving between phone scenes). Reproduce the problem, tap **Copy log**, and paste it. Nothing is sent anywhere, and without `?debug=scroll` the recorder doesn't run (`js/debug-scroll.js`).

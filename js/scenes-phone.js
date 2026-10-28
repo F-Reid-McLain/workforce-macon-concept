@@ -24,9 +24,13 @@
     'use strict';
     const root = document.documentElement;
     if (!root.classList.contains('scenes')) return;
-    // Turned into a tablet or landscape: the plain page suits that better
-    const fits = window.matchMedia('(max-width: 700px) and (pointer: coarse)');
+    // Resized into a tablet's shape: the plain page suits that better. (A phone turned sideways stays
+    // in scenes behind a card asking to turn it upright, so turning it back finds them again.)
+    const fits = window.matchMedia('(pointer: coarse) and (max-width: 700px), (pointer: coarse) and (orientation: landscape) and (max-height: 500px)');
     fits.addEventListener && fits.addEventListener('change', () => { if (!fits.matches) location.reload(); });
+    const upright = document.querySelector('.turn-upright');
+    const askingUpright = () => upright && getComputedStyle(upright).display !== 'none';
+    if (upright) upright.querySelector('.turn-upright__go').addEventListener('click', () => root.classList.add('upright-ok'));
 
     // Every visit opens on the first scene (Safari would otherwise restore an old scroll position,
     // partway between scenes), unless the link is to a section
@@ -174,6 +178,7 @@
     };
     function decide(e, dx, dy) {
         // a pop-up is open (a job's card): its own scrolling only, the scenes hold still
+        if (askingUpright()) return 'held';                                // the turn-upright card
         if (root.classList.contains('has-popup')) return scrollsItself(e.target, dy) ? 'native' : 'held';
         if (glide) return 'scene';                                        // mid-glide: a swipe moves on, it doesn't scroll
         if (Math.abs(dx) > Math.abs(dy)) return 'native';                 // sideways: rows of switches
