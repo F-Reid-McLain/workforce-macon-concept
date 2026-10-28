@@ -1,5 +1,5 @@
 /* ===== PHONES: THE HOMEPAGE AS SWIPE SCENES (js/scenes-phone.js) =====
-   Only under html.scenes (set in index.html's <head> on phones, not with reduced motion), so
+   Only under html.scenes (set in index.html's <head> on phones; html.calm too with Reduce Motion), so
    nothing here touches desktop or the plain phone page. Full screen like an app: no header
    bar (just a floating menu button), a progress bar across the top, every scene exactly the
    visible screen (100dvh), and safe-area room for the notch and the home bar. */
@@ -95,3 +95,15 @@ html.scenes .donut-ctrl, html.scenes .tool-panel--donut #ind-views { margin: 0 -
 /* ----- The close and custom research: a full screen each ----- */
 html.scenes .stop-intro--close { min-height: 100dvh; }
 html.scenes #custom-research { min-height: 100dvh; box-sizing: border-box; padding-top: calc(env(safe-area-inset-top) + 72px); }
+
+/* ----- Reduce Motion (html.calm): scenes fade from one to the next; nothing slides, zooms or drifts ----- */
+.scene-veil { display: none; }
+html.scenes .scene-veil {
+    display: block; position: fixed; inset: 0; z-index: 300; pointer-events: none;
+    background: #0e1420; opacity: 0; transition: opacity 0.22s ease;
+}
+html.scenes .scene-veil.is-on { opacity: 1; }
+html.calm .stop-intro--map .intro-map,
+html.calm .stop-intro--map.is-map .intro-map.is-drawn { transform: none; animation: none; }
+html.calm .stop-intro--map.is-map .stop-intro__inner > :not(.intro-source) { transform: none; }
+html.calm .stop-intro--map .stop-intro__inner > :not(.intro-source) { transition: opacity 0.5s ease; }

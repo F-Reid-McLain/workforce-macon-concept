@@ -37,7 +37,8 @@
 window.WFIntroMap = (function () {
     'use strict';
     if (!window.d3) return null;
-    const reduce = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+    // (phone scenes still draw their maps with Reduce Motion on: lines drawing on, no movement)
+    const reduce = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) && !document.documentElement.classList.contains('scenes');
     const DOWNTOWN = [-83.6290, 32.8380];   // downtown Macon, for slides that mark it
     const INTERSTATES = new Set(['I-75', 'I-16', 'I-475']);
     const US_ROUTES = new Set(['US-41', 'US-80', 'US-129', 'US-23']);

@@ -10,6 +10,7 @@
      node tools/phone-check.js                 (iPhone 15; screens saved to phone-check/)
      node tools/phone-check.js --device "iPhone SE"   (any Playwright device name)
      node tools/phone-check.js --base http://localhost:8765/ --out /tmp/shots
+     node tools/phone-check.js --reduce-motion on   (as a phone with Reduce Motion on: calm scenes)
 
    It reports page errors, sideways scrolling, tap targets under 40 px, whether each stop's
    key interaction works (pick a county, search a job, open a sector, tap a plant), and saves
@@ -22,13 +23,14 @@ const fs = require('fs');
 
 const args = {};
 process.argv.slice(2).forEach((a, i, all) => { if (a.startsWith('--')) args[a.slice(2)] = all[i + 1]; });
+const reduce = args['reduce-motion'] === 'on';
 const device = args.device || 'iPhone 15', base = args.base || 'http://localhost:8765/', out = args.out || 'phone-check';
 
 (async () => {
     if (!devices[device]) { console.error(`Unknown device "${device}". Try "iPhone 15", "iPhone SE" or "iPhone 15 Pro Max".`); process.exit(1); }
     fs.mkdirSync(out, { recursive: true });
     const browser = await webkit.launch();
-    const page = await (await browser.newContext({ ...devices[device] })).newPage();
+    const page = await (await browser.newContext({ ...devices[device], reducedMotion: reduce ? 'reduce' : 'no-preference' })).newPage();
     const errors = [];
     page.on('pageerror', e => errors.push(e.message));
     page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
@@ -51,7 +53,7 @@ const device = args.device || 'iPhone 15', base = args.base || 'http://localhost
     await page.goto(base + 'index.html');
     await wait(3500);
     const vp = await page.evaluate(() => `${innerWidth} x ${innerHeight}`);
-    console.log(`${device} in WebKit, visible area ${vp}\n`);
+    console.log(`${device} in WebKit, visible area ${vp}${reduce ? ', Reduce Motion on' : ''}\n`);
 
     // ----- Layout -----
     ok('no sideways scrolling', !(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)));
@@ -80,6 +82,7 @@ const device = args.device || 'iPhone 15', base = args.base || 'http://localhost
     // a tool, or the close, reached the way that page reaches it
     const scenes = await page.evaluate(() => document.documentElement.classList.contains('scenes'));
     console.log(scenes ? '  (swipe scenes)' : '  (plain scrolling page)');
+    if (reduce) ok('Reduce Motion: calm swipe scenes (fades, no glides)', scenes && await page.evaluate(() => document.documentElement.classList.contains('calm')));
     if (scenes) {
         const list = await page.evaluate(() => WFScenes.list());
         ok('every scene is listed', list.length === 13, list.map(x => x.kind).join(' '));
