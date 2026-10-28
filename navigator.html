@@ -154,10 +154,12 @@
                     <p class="finder-count" id="finder-count" aria-live="polite"></p>
                     <button type="button" class="finder-clear" id="finder-clear">Clear all</button>
                 </div>
+                <!-- What's narrowing the list, each with its own × (js/navigator-finder.js) -->
+                <div class="finder-active" id="finder-active" hidden></div>
                 <ol class="ftiles" id="finder-fields" aria-label="Browse programs by field"></ol>
                 <ol class="pcards" id="finder-programs" hidden></ol>
                 <button type="button" class="finder-more" id="finder-more" hidden></button>
-                <p class="finder-empty" id="finder-empty" hidden>No programs match all of those. Try fewer filters, or <button type="button" class="finder-linkbtn" id="finder-empty-clear">clear them</button>.</p>
+                <p class="finder-empty" id="finder-empty" hidden><span id="finder-empty-text">No programs match all of those.</span> <button type="button" class="finder-linkbtn" id="finder-empty-wider" hidden></button> <span id="finder-empty-else">Try fewer filters, or <button type="button" class="finder-linkbtn" id="finder-empty-clear">clear them</button>.</span></p>
             </section>
 
             <!-- Organizations (support or employers) -->

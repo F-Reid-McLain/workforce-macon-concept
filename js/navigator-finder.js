@@ -194,11 +194,37 @@
         more.hidden = shownPrograms.length <= limit;
         more.textContent = `Show more (${(shownPrograms.length - limit).toLocaleString()} more)`;
         document.getElementById('finder-empty').hidden = shownPrograms.length > 0;
+        if (!shownPrograms.length) emptyHelp();
         const orgCount = new Set(shownPrograms.map(p => p.org)).size;
         const inTown = state.place && window.WFWhere ? ` in ${WFWhere.label(state.place)}` : '';
         document.getElementById('finder-count').textContent = filtering()
             ? `${shownPrograms.length.toLocaleString()} of ${programs.length.toLocaleString()} programs${inTown}, from ${orgCount} organization${orgCount === 1 ? '' : 's'}`
             : `All ${programs.length.toLocaleString()} programs, from ${orgCount} organizations`;
+    }
+    // Nothing matches: if the search alone finds programs, say how many and offer them, so a search
+    // made inside a field (or with filters on) never just reads as "there's nothing here"
+    function emptyHelp() {
+        const q = state.q.trim(), wider = document.getElementById('finder-empty-wider');
+        const others = state.field || state.online || state.len.size || state.earn.size || state.place;
+        let n = 0;
+        if (q && others) { const pats = patterns(q.toLowerCase().split(/\s+/)); n = programs.filter(p => score(p, pats) >= 0).length; }
+        wider.hidden = !n;
+        document.getElementById('finder-empty-else').hidden = !!n;
+        document.getElementById('finder-empty-text').textContent = n ? `No “${q}” programs with these filters.` : 'No programs match all of those.';
+        if (n) wider.textContent = `See all ${n} “${q}” program${n === 1 ? '' : 's'} →`;
+    }
+    // What's narrowing the list, each with an × to take it off
+    function renderActive() {
+        const box = document.getElementById('finder-active');
+        const items = [];
+        if (state.q.trim()) items.push(['q', '', `“${state.q.trim()}”`]);
+        if (state.field) items.push(['field', '', FIELDS[state.field] || state.field]);
+        state.len.forEach(v => items.push(['len', v, (LENGTHS.find(l => l.id === v) || {}).label || v]));
+        state.earn.forEach(v => items.push(['earn', v, earnLabel(v)]));
+        if (state.online) items.push(['online', '', 'Online']);
+        if (state.place) items.push(['place', '', window.WFWhere ? WFWhere.label(state.place) : state.place]);
+        box.hidden = !items.length;
+        box.innerHTML = items.map(([k, v, label]) => `<button type="button" class="fact" data-kind="${k}" data-value="${esc(v)}" aria-label="Remove ${esc(label)}">${esc(label)}<span aria-hidden="true">×</span></button>`).join('');
     }
     function orgHTML([id, a]) {
         return `<li data-key="${esc(id)}" data-org="${esc(id)}"><article class="ocard">
@@ -237,7 +263,8 @@
             const listing = filtering();
             ['finder-programs', 'finder-status'].forEach(id => { document.getElementById(id).hidden = !listing; });
             document.getElementById('finder-fields').hidden = listing;
-            if (listing) renderPrograms();
+            document.getElementById('finder-active').hidden = !listing;
+            if (listing) { renderPrograms(); renderActive(); }
             else { shownPrograms = filterPrograms(); ['finder-more', 'finder-empty'].forEach(id => { document.getElementById(id).hidden = true; }); }
             lit = listing ? Array.from(new Set(shownPrograms.map(p => p.org))) : null;
         } else {
@@ -293,6 +320,22 @@
     const clearAll = () => { state.q = ''; state.field = ''; state.online = false; state.place = ''; state.len.clear(); state.earn.clear(); qEl.value = ''; fieldEl.value = ''; onlineEl.checked = false; limit = PAGE; update(); };
     document.getElementById('finder-clear').addEventListener('click', clearAll);
     document.getElementById('finder-empty-clear').addEventListener('click', clearAll);
+    // the empty list's way out: the same search, everything else off
+    document.getElementById('finder-empty-wider').addEventListener('click', () => {
+        state.field = ''; state.online = false; state.place = ''; state.len.clear(); state.earn.clear(); fieldEl.value = ''; onlineEl.checked = false; limit = PAGE; update();
+    });
+    document.getElementById('finder-active').addEventListener('click', e => {
+        const b = e.target.closest('.fact');
+        if (!b) return;
+        const k = b.dataset.kind, v = b.dataset.value;
+        if (k === 'q') { state.q = ''; qEl.value = ''; }
+        else if (k === 'field') { state.field = ''; fieldEl.value = ''; }
+        else if (k === 'len') state.len.delete(v);
+        else if (k === 'earn') state.earn.delete(v);
+        else if (k === 'online') { state.online = false; onlineEl.checked = false; }
+        else if (k === 'place') state.place = '';
+        limit = PAGE; update();
+    });
 
     // Hovering a program or organization picks out its organization on the map; its name opens the details
     const finder = document.querySelector('.finder-main');
@@ -312,7 +355,37 @@
     finder.addEventListener('click', e => {
         const b = e.target.closest('.ocard__more');
         if (b) openAssetModal(b.dataset.org, { sheet: true });
+        // Touch screens: a program opens its details here first (there's no hover to show them),
+        // with the program's own page a tap away
+        const card = e.target.closest('.pcard');
+        if (card && window.matchMedia && matchMedia('(hover: none)').matches) {
+            const p = programs.find(x => x.id === card.parentElement.dataset.key);
+            if (p) { e.preventDefault(); openProgram(p); }
+        }
     });
+    // (the program sheet sits outside the finder: its "Offered by" opens that organization's details)
+    document.addEventListener('click', e => {
+        const about = e.target.closest('.psheet__org');
+        if (about) openAssetModal(about.dataset.org, { sheet: true });
+    });
+    function openProgram(p) {
+        const modal = document.getElementById('asset-modal'), title = document.getElementById('modal-title'), content = document.getElementById('modal-content');
+        if (!modal || !title || !content) { window.open(p.url, '_blank', 'noopener'); return; }
+        const towns = (p.places || []).length;
+        const rows = [
+            ['Length', p.length], ['Cost', p.cost],
+            ['Where', towns > 1 ? `${towns} campuses${p.campus ? ': ' + p.campus : ''}` : p.campus], ['Online', p.online ? 'Yes, there is an online option' : ''],
+            ['Options', (p.options || []).join(', ')], ['Leads to', p.leadsTo],
+        ].filter(([, v]) => v && v !== 'See the program page');
+        title.textContent = p.name;
+        content.innerHTML = `<p class="psheet__earn"><b class="earn earn--${esc(p.earn)}">${esc(earnLabel(p.earn))}</b>${p.credential && p.credential !== earnLabel(p.earn) ? ` <span>${esc(p.credential)}</span>` : ''}</p>
+            <dl class="psheet__facts">${rows.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>
+            ${p.verify ? '<p class="psheet__note">Details change: call the school to confirm.</p>' : ''}
+            <a class="psheet__go" href="${esc(p.url)}" target="_blank" rel="noopener">Visit the program page <span aria-hidden="true">↗</span></a>
+            <button type="button" class="psheet__org" data-org="${esc(p.org)}"><span class="psheet__logo">${logo(p.org)}</span><span>Offered by <b>${esc(orgName(p.org))}</b></span><span aria-hidden="true">›</span></button>`;
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    }
 
     // ----- Start once both the programs and the organizations are loaded -----
     let gotAssets = typeof assetData !== 'undefined' && Object.keys(assetData).length > 0;

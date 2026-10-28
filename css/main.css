@@ -1543,3 +1543,8 @@ body.embed-mode .viz-container {
 @media (max-width: 768px) {
     .submission-form { padding: 1.5rem; }
 }
+
+/* Touch screens: the footer's links are thumb-sized too */
+@media (pointer: coarse) {
+    .main-footer a { display: inline-flex; align-items: center; min-height: 44px; }
+}
