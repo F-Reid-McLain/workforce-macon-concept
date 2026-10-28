@@ -76,8 +76,15 @@ html.scenes .stop-intro--map.is-map .intro-source { opacity: 1; }
 html.scenes .stop-intro--map .intro-cue { margin-top: 2.6rem; }
 html.scenes .gm-tip, html.scenes .gm-tip.is-below { bottom: calc(76px + env(safe-area-inset-bottom)); }
 
-/* ----- The tools: edge to edge, starting under the progress bar and menu button ----- */
-html.scenes .stop { min-height: 100dvh; padding: calc(env(safe-area-inset-top) + 64px) 16px calc(28px + env(safe-area-inset-bottom)); justify-content: flex-start; }
+/* ----- The tools: edge to edge, starting under the progress bar and menu button -----
+   Each is exactly one screen that scrolls inside itself, as an app's screen does: a flick's
+   momentum stops at the tool's edge instead of carrying the page on past the next scene
+   (on an iPhone the coasting is strong, and the page would then be pulled back) */
+html.scenes .stop {
+    height: 100dvh; min-height: 0; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain;
+    padding: calc(env(safe-area-inset-top) + 64px) 16px calc(28px + env(safe-area-inset-bottom)); justify-content: flex-start;
+}
+html.scenes .stop > * { flex-shrink: 0; }
 @media (max-height: 620px) { html.scenes .stop { padding-top: calc(env(safe-area-inset-top) + 58px); gap: 10px; } }
 html.scenes .tool-panel { padding: 0; border: 0; border-radius: 0; background: transparent; }
 html.scenes .donut-ctrl, html.scenes .tool-panel--donut #ind-views { margin: 0 -16px; }

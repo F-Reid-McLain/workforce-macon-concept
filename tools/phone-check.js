@@ -139,6 +139,7 @@ const device = args.device || 'iPhone 15', base = args.base || 'http://localhost
         const tool = i === 0 ? 'jobs' : 'industries';
         await to(tool);
         await fills(tool);
+        if (scenes) ok(`${tool}: one screen that scrolls inside itself`, await page.evaluate(id => { const e = document.getElementById(id), r = e.getBoundingClientRect(); return Math.abs(r.top) <= 1 && Math.abs(r.height - innerHeight) <= 1 && getComputedStyle(e).overflowY === 'auto'; }, tool));
         if (i === 0) {
             await tapOn('#jobs input[type=search]'); await page.keyboard.type('nurse', { delay: 40 }); await wait(600);
             await tapOn('#jobs .tool-matches li');
@@ -152,7 +153,8 @@ const device = args.device || 'iPhone 15', base = args.base || 'http://localhost
                 ok('× closes it', await page.evaluate(() => !document.getElementById('jobs').classList.contains('has-pop')));
             }
         } else {
-            await page.evaluate(() => { const e = document.getElementById('donut'); const r = e.getBoundingClientRect(); if (r.top < 60 || r.bottom > innerHeight) window.scrollTo(0, r.top + scrollY - 80); }); await wait(1500);
+            // (in scenes the tool scrolls inside itself, so this brings the donut into view either way)
+            await page.evaluate(() => { const e = document.getElementById('donut'); const r = e.getBoundingClientRect(); if (r.top < 60 || r.bottom > innerHeight) e.scrollIntoView({ block: 'center', behavior: 'instant' }); }); await wait(1500);
             await tapOn('.d-ring path'); await wait(600);
             ok('tapping a donut slice opens its sector', await page.evaluate(() => document.getElementById('donut').classList.contains('is-drilled')));
         }
