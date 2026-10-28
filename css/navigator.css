@@ -264,3 +264,46 @@ body.embed-mode .minimap .visualization-section { flex: 1; display: flex; }
     .finder-toggle input { width: 22px; height: 22px; margin: 0; }
     .viz-info-close { min-width: 44px; min-height: 44px; }
 }
+
+/* ----- Phones: the map, opened, fills the screen; a switch between the six groups and every
+   organization; a hint; a tapped group's organizations listed in the bottom panel ----- */
+.mapbar__hint, .mapbar__switch { display: none; }
+@media (max-width: 768px) {
+    .minimap.is-open { padding: 0; animation: none; background: var(--color-bg-surface-deep); }
+    .minimap.is-open .visualization-section { border: 0; border-radius: 0; }
+    .minimap.is-open .viz-controls, .minimap.is-open .viz-fullscreen-btn { display: none !important; }
+    .minimap.is-open .minimap__close { top: calc(env(safe-area-inset-top) + 12px); right: 12px; width: 44px; height: 44px; }
+    .minimap.is-open .viz-zoom-controls { top: calc(env(safe-area-inset-top) + 64px); right: 12px; }
+    .minimap.is-open .mapbar__hint {
+        display: block; position: absolute; z-index: 10; top: calc(env(safe-area-inset-top) + 18px); left: 16px; right: 72px; margin: 0;
+        font-size: 0.86rem; line-height: 1.35; color: var(--color-text-secondary); pointer-events: none;
+    }
+    .minimap.is-open .mapbar__switch {
+        display: flex; position: absolute; z-index: 10; left: 50%; bottom: calc(env(safe-area-inset-bottom) + 18px); transform: translateX(-50%);
+        padding: 3px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.16); background: rgba(14, 20, 32, 0.92);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+    .mapbar__switch button {
+        min-width: 104px; min-height: 40px; padding: 0 18px; border: 0; border-radius: 999px; cursor: pointer;
+        background: transparent; color: var(--color-text-secondary); font: 600 0.9rem var(--font-body);
+    }
+    .mapbar__switch button.is-on { background: var(--ch-gold); color: #1b1608; }
+    /* (the list or an organization's details take the foot of the screen) */
+    .minimap.is-open:has(.viz-info-panel.open) .mapbar__switch { display: none; }
+
+    /* the banner's map: bigger (the button above it opens it, and so does a tap on it) */
+    .nav-hero { grid-template-rows: auto 260px; }
+}
+.mapgroup__dek { margin: 0 0 8px; font-size: 0.85rem; color: var(--color-text-secondary); }
+.mapgroup { list-style: none; margin: 0; padding: 0; }
+.mapgroup button {
+    display: flex; align-items: center; gap: 12px; width: 100%; min-height: 56px; padding: 8px 4px; cursor: pointer; text-align: left;
+    border: 0; border-top: 1px solid var(--color-border); background: none; color: var(--color-text-secondary); font: 400 0.82rem var(--font-body);
+}
+.mapgroup li:first-child button { border-top: 0; }
+.mapgroup__logo { flex: none; width: 40px; height: 40px; border-radius: 50%; overflow: hidden; background: #fff; }
+.mapgroup__logo img { width: 100%; height: 100%; object-fit: cover; }
+.mapgroup__logo img.is-contain { object-fit: contain; }
+.mapgroup__text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.mapgroup__text b { color: #fff; font-size: 0.95rem; }
+.mapgroup__go { font-size: 1.4rem; color: var(--color-text-muted); }

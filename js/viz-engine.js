@@ -44,6 +44,16 @@ let revealAssetInMobileView = () => {};
 // leaves the panel — see the assignment further down for what this does.
 let dismissMobileFocus = () => {};
 
+// Phones can also see every organization at once ("Everyone"): each category's
+// orgs pinned in a tight ring around it, the categories in a 2 x 3 grid that
+// suits a tall screen, everything fitted to it; names fade in as you pinch in.
+// collapseCategoriesOnMobile is false in this mode (everything is visible),
+// so this flag is what tells it apart from the desktop's free layout.
+// setMobileMapView('groups' | 'everyone') switches (the Navigator's switch,
+// js/navigator-minimap.js); assigned once init finishes, like the others.
+let everyoneOnMobile = false;
+let setMobileMapView = () => {};
+
 function isNodeVisible(d) {
   if (d.type !== "asset") return true;
   if (!collapseCategoriesOnMobile) return true;
@@ -114,7 +124,8 @@ function computeFitTransform(width, height, padding = 45) {
 function fitVizView(duration = 0) {
   if (!svg || !zoom) return;
   const r = document.getElementById('network-visualization').getBoundingClientRect();
-  const transform = computeFitTransform(r.width, r.height);
+  // (a phone's small banner map is a preview: framed tighter, so it reads at that size)
+  const transform = computeFitTransform(r.width, r.height, window.innerWidth <= 768 && r.height < 320 ? 14 : 45);
   if (duration > 0) svg.transition().duration(duration).call(zoom.transform, transform);
   else svg.call(zoom.transform, transform);
 }
@@ -316,7 +327,11 @@ const structuralLinks = [
   zoom = d3.zoom()
     .scaleExtent([0.3, 3])
     .filter(event => event.type !== 'wheel' && !event.ctrlKey && !event.button)
-    .on("zoom", (event) => { g.attr("transform", event.transform); currentZoomScale = event.transform.k; });
+    .on("zoom", (event) => {
+      g.attr("transform", event.transform);
+      const was = currentZoomScale; currentZoomScale = event.transform.k;
+      if (everyoneOnMobile && (Math.abs(was - currentZoomScale) > 0.01)) updateZoomLabels();
+    });
   svg.call(zoom);
 
   g = svg.append("g");
@@ -665,6 +680,7 @@ const structuralLinks = [
       if (expandedCategoryId) {
         if (d.type === "major-group") return d.id === expandedCategoryId ? 1 : MOBILE_FADE_OPACITY;
         if (d.type === "hub") return MOBILE_FADE_OPACITY;
+        if (d.type === "asset" && d.category !== expandedCategoryId && isNodeVisible(d)) return MOBILE_FADE_OPACITY;
       }
       return isNodeVisible(d) ? 1 : 0;
     };
@@ -684,11 +700,32 @@ const structuralLinks = [
     if (particle) particle.style("display", d => (isNodeVisible(d.source) && isNodeVisible(d.target)) ? null : "none");
     node.filter(d => d.type === "major-group")
       .style("cursor", collapseCategoriesOnMobile ? "pointer" : "default");
-    const isExpandedChild = d => d.type === "asset" && d.category === expandedCategoryId;
+    const isExpandedChild = d => d.type === "asset" && (d.category === expandedCategoryId || everyoneOnMobile);
     node.select(".node-label")
       .style("opacity", null)
       .text(d => isExpandedChild(d) ? truncateLabel(d.name, 16) : (d.type === "asset" ? truncateLabel(d.name, 24) : d.name))
       .attr("dy", d => isExpandedChild(d) ? d.size + 18 + (d.__labelStagger ? 15 : 0) : d.size + 18);
+    updateZoomLabels();
+  }
+
+  // Everyone: zoomed out, the categories (and the hub) keep a short name at a
+  // steady 11px on screen and the orgs' names hide; pinched in past 0.8x,
+  // everything shows at its own size. Elsewhere labels are left as they are.
+  const SHORT_CATEGORY = {
+    "colleges": "Colleges", "faith-based": "Faith-based", "special-population": "Re-entry",
+    "job-training": "Job training", "community-dev": "Community", "k12-secondary": "K-12"
+  };
+  function updateZoomLabels() {
+    if (!everyoneOnMobile) return;
+    const k = currentZoomScale, near = k >= 0.8;
+    node.select(".node-label").each(function (d) {
+      const t = d3.select(this);
+      if (d.type === "asset") { t.style("display", near || d === focusedNode ? null : "none").attr("font-size", "11px"); return; }
+      const px = near ? (d.type === "hub" ? 14 : 11) : 11 / k;
+      t.style("display", null).attr("font-size", px + "px")
+        .text(d.type === "major-group" && !near ? (SHORT_CATEGORY[d.id] || d.name) : d.name)
+        .attr("dy", d.size + (near ? 18 : 13 / k));
+    });
   }
 
   // Snaps a category's orgs back onto it (using its CURRENT position, which
@@ -774,9 +811,112 @@ const structuralLinks = [
       const radius = expandCategory(catNode);
       expandedCategoryId = catNode.id;
       updateMobileVisibility(true);
+      listGroup(catNode);
       focusOnCluster(catNode.x, catNode.y, radius + 50, 700);
     }
   }
+
+  // The page lists a tapped group's orgs (in the map's own bottom panel, which
+  // the camera already frames around) when it provides window.WFMapGroup
+  function listGroup(catNode) {
+    if (typeof window.WFMapGroup !== "function" || window.innerWidth > MOBILE_BREAKPOINT) return;
+    window.WFMapGroup(catNode, workforceData.nodes.filter(n => n.type === "asset" && n.category === catNode.id));
+  }
+
+  // Everyone: a group is already ringed out, so a tap only lights it up, lists it, and moves in
+  function toggleGroupFocus(catNode) {
+    if (expandedCategoryId === catNode.id) { dismissMobileFocus(); return; }
+    if (focusedNode) { removeBranchGroup(); focusedNode = null; setFocusDim(false); }
+    expandedCategoryId = catNode.id;
+    updateMobileVisibility(true);
+    listGroup(catNode);
+    focusOnCluster(catNode.x, catNode.y, (catNode.__ring || 100) + 45, 700, true);
+  }
+
+  // ----- Everyone (phones): every org at once, fitted to a tall screen -----
+  function everyoneTargets() {
+    const sizeScale = typeof currentSizeScale === "number" ? currentSizeScale : 1;
+    const hub = workforceData.nodes.find(n => n.id === "hub");
+    const cats = workforceData.nodes.filter(n => n.type === "major-group");
+    const kids = c => workforceData.nodes.filter(n => n.type === "asset" && n.category === c.id);
+    const childR = Math.max(20, ...workforceData.nodes.filter(n => n.type === "asset").map(n => (originalSizes[n.id] || n.size) * sizeScale));
+    // each group's ring: wide enough that neighbors in it don't touch
+    const ring = c => {
+      const n = kids(c).length, least = c.size + childR + 14;
+      return n < 2 ? least : Math.max(least, (2 * childR + childR * 0.35) / (2 * Math.sin(Math.PI / n)));
+    };
+    cats.forEach(c => { c.__ring = ring(c); });
+    // two columns, three rows, the hub between the middle pair; spacing from the rings themselves
+    const GAP = 2 * childR + 22;
+    const rows = [cats.slice(0, 2), cats.slice(2, 4), cats.slice(4, 6)];
+    const halfX = Math.max(...rows.map(rw => ((rw[0] ? rw[0].__ring : 0) + (rw[1] ? rw[1].__ring : 0) + GAP) / 2), hub.size + 60);
+    const rowGap = (a, b) => Math.max(...[0, 1].map(i => ((a[i] ? a[i].__ring : 0) + (b[i] ? b[i].__ring : 0) + GAP)));
+    const y0 = -rowGap(rows[0], rows[1]), y2 = rowGap(rows[1], rows[2]);
+    const out = new Map(), cx = width / 2, cy = height / 2;
+    out.set(hub, [cx, cy]);
+    rows.forEach((rw, ri) => rw.forEach((c, ci) => {
+      const x = cx + (ci ? halfX : -halfX), y = cy + [y0, 0, y2][ri];
+      out.set(c, [x, y]);
+      const list = kids(c), away = Math.atan2(y - cy, x - cx);
+      list.forEach((n, i) => {
+        const a = away + (i / Math.max(1, list.length)) * 2 * Math.PI;
+        out.set(n, [x + c.__ring * Math.cos(a), y + c.__ring * Math.sin(a)]);
+        n.__labelStagger = i % 2;
+      });
+    }));
+    return out;
+  }
+  // Frames where a layout is going (not where its nodes are mid-glide), moving the camera alongside them
+  function fitToTargets(targets, ms) {
+    const was = new Map();
+    targets.forEach(([x, y], n) => { was.set(n, [n.x, n.y]); n.x = x; n.y = y; });
+    const r = document.getElementById('network-visualization').getBoundingClientRect();
+    const t = computeFitTransform(r.width, r.height);
+    was.forEach(([x, y], n) => { n.x = x; n.y = y; });
+    if (ms > 0 && !prefersReducedMotion) svg.transition().duration(ms).call(zoom.transform, t);
+    else svg.call(zoom.transform, t);
+  }
+  // Moves every node to where a layout puts it, gliding there unless motion is reduced, and pins it
+  function glideTo(targets, ms, done) {
+    const from = new Map();
+    targets.forEach((to, n) => { from.set(n, [n.x, n.y]); });
+    const settle = k => targets.forEach(([x, y], n) => {
+      const [x0, y0] = from.get(n), e = k >= 1 ? 1 : d3.easeCubicInOut(k);
+      n.x = x0 + (x - x0) * e; n.y = y0 + (y - y0) * e; n.fx = n.x; n.fy = n.y; n.vx = 0; n.vy = 0;
+    });
+    if (prefersReducedMotion || !ms) { settle(1); renderTick(); if (done) done(); return; }
+    const t = d3.timer(el => { const k = Math.min(1, el / ms); settle(k); renderTick(); if (k >= 1) { t.stop(); if (done) done(); } });
+  }
+  setMobileMapView = function (mode) {
+    if (window.innerWidth > MOBILE_BREAKPOINT) return;
+    const everyone = mode === "everyone";
+    if (everyone === everyoneOnMobile && collapseCategoriesOnMobile === !everyone) return;
+    closeInfoPanel();
+    if (focusedNode) { removeBranchGroup(); focusedNode = null; setFocusDim(false); }
+    expandedCategoryId = null;
+    simulation.stop();
+    if (everyone) {
+      // released from their categories first, so they visibly fan out of them
+      collapseCategoriesOnMobile = false; everyoneOnMobile = true;
+      updateMobileVisibility(true);
+      zoom.scaleExtent([0.15, 3]);
+      const targets = everyoneTargets();
+      fitToTargets(targets, 650);
+      glideTo(targets, 650);
+    } else {
+      everyoneOnMobile = false;
+      const hub = workforceData.nodes.find(n => n.id === "hub"), cats = workforceData.nodes.filter(n => n.type === "major-group");
+      const targets = new Map([[hub, [width / 2, height / 2]]]);
+      cats.forEach((c, i) => { const a = (i / cats.length) * 2 * Math.PI - Math.PI / 2; targets.set(c, [width / 2 + 150 * Math.cos(a), height / 2 + 150 * Math.sin(a)]); });
+      workforceData.nodes.filter(n => n.type === "asset").forEach(n => { const c = cats.find(x => x.id === n.category); const p = c && targets.get(c); if (p) targets.set(n, [p[0] + (n.id.charCodeAt(0) % 7) - 3, p[1] + (n.id.charCodeAt(0) % 7) - 3]); });
+      node.select(".node-label").style("display", null).attr("font-size", d => d.type === "hub" ? "14px" : "11px");
+      collapseCategoriesOnMobile = true;   // (read by the fit: only the hub and groups count)
+      fitToTargets(targets, 650);
+      collapseCategoriesOnMobile = false;
+      glideTo(targets, 650, () => { collapseCategoriesOnMobile = true; updateMobileVisibility(true); zoom.scaleExtent([0.3, 3]); });
+    }
+    document.dispatchEvent(new CustomEvent("map:view", { detail: { mode: everyone ? "everyone" : "groups" } }));
+  };
 
   // Exposed at module scope so the "Show Full Map" toggle button (wired in
   // main.js-adjacent markup, queried below) can flip modes; also called by
@@ -927,7 +1067,7 @@ const structuralLinks = [
     // canvas leaves a lot of empty space around a single small node on a
     // phone. Only raised while the mobile category view is active; "Show
     // Full Map" mode and desktop keep the original cap.
-    const maxScale = collapseCategoriesOnMobile ? 4.5 : 2.5;
+    const maxScale = collapseCategoriesOnMobile || everyoneOnMobile ? 4.5 : 2.5;
     // `extent` alone assumes a square, (cx,cy)-centered footprint — fine for
     // a ring or a single node, but a branch-out fan is both wider than it is
     // tall (or vice versa) AND lopsided around the node itself (e.g. a fan
@@ -1111,7 +1251,7 @@ const structuralLinks = [
     // is innermost, or the category would linger open underneath.
     if (focusedNode) collapseBranch();
     if (expandedCategoryId) {
-      collapseCategory(expandedCategoryId);
+      if (collapseCategoriesOnMobile) collapseCategory(expandedCategoryId);
       expandedCategoryId = null;
       updateMobileVisibility(true);
     }
@@ -1125,6 +1265,7 @@ const structuralLinks = [
   function goHomeMobile() {
     closeInfoPanel();
     if (focusedNode) collapseBranch();
+    if (everyoneOnMobile) { dismissMobileFocus(); return; }   // Everyone stays Everyone: back to its overview
     if (!collapseCategoriesOnMobile) { setCategoriesCollapsed(true); return; } // re-fits internally
     if (expandedCategoryId) {
       collapseCategory(expandedCategoryId);
@@ -1151,6 +1292,7 @@ const structuralLinks = [
         }
         if (d.type === "major-group") {
           if (collapseCategoriesOnMobile) toggleCategoryExpansion(d);
+          else if (everyoneOnMobile) toggleGroupFocus(d);
           return;
         }
         if (d.type !== "asset") return;
@@ -1164,7 +1306,7 @@ const structuralLinks = [
       })
       .style("cursor", d => {
         if (d.type === "asset") return "pointer";
-        if (d.type === "major-group" && collapseCategoriesOnMobile) return "pointer";
+        if (d.type === "major-group" && (collapseCategoriesOnMobile || window.innerWidth <= MOBILE_BREAKPOINT)) return "pointer";
         if (d.type === "hub" && window.innerWidth <= MOBILE_BREAKPOINT) return "pointer";
         return "default";
       });
@@ -1272,7 +1414,7 @@ const structuralLinks = [
     if (collapseCategoriesOnMobile) {
       layoutCategoriesRadially();
       pinAllAssetsToCategories();
-    }
+    } else if (everyoneOnMobile) glideTo(everyoneTargets(), 0);
     updateMobileVisibility(false);
     renderTick();
     fitVizView(duration);
