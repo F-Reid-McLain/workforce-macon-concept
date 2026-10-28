@@ -1,7 +1,6 @@
 /* ===== PHONES: THE HOMEPAGE AS SWIPE SCENES =====
-   On phones (and not with reduced motion; the inline script in index.html's <head> sets
-   html.scenes before anything paints) the homepage plays as full-screen scenes, one per
-   swipe, instead of a scrolling page:
+   On phones (the inline script in index.html's <head> sets html.scenes before anything
+   paints) the homepage plays as full-screen scenes, one per swipe, instead of a scrolling page:
 
      the story's cards (welcome, 6 AM, rush hour, midday, the regional map) ·
      nurses: words, then map · Jobs · manufacturing: words, then map · Industries ·
@@ -16,6 +15,9 @@
    its top or bottom edge moves on. The custom research section scrolls the page on to its
    foot, and a scroll that ends between scenes settles onto the nearest.
    A bar of segments across the top shows where you are.
+
+   With Reduce Motion on (html.calm) a swipe fades to the next scene instead of gliding there,
+   and the title slides' words and maps cross-fade without moving.
 
    window.WFScenes { list, go, index } is for tests (tools/phone-check.js). */
 (function () {
@@ -39,6 +41,10 @@
     const top = el => el.getBoundingClientRect().top + scrollY;
     const STORY_MS = 1400, STORY_PER_PX = 1.6, STORY_MAX = 3600;   // as desktop present mode: the camera's flight plays out
     const FLIP_MS = 900, MOVE_MS = 1000;
+    const calm = root.classList.contains('calm'), VEIL_MS = 220;   // Reduce Motion: fade out, move, fade in
+    const veil = document.createElement('div');
+    veil.className = 'scene-veil';
+    document.body.appendChild(veil);
 
     let scenes = [], index = 0, heading = -1, glide = null;
 
@@ -95,7 +101,7 @@
     }
 
     // ----- Going to a scene: a glide, never a jump -----
-    function stop() { if (glide) { cancelAnimationFrame(glide); glide = null; } }
+    function stop() { if (glide) { cancelAnimationFrame(glide); glide = null; } veil.classList.remove('is-on'); }
     function go(i) {
         if (!scenes.length) build();
         if (!scenes.length) return;
@@ -113,6 +119,19 @@
         if (s.kind === 'words' || s.kind === 'map') setFlip(s.el, s.kind === 'map');
         const dist = y - from;
         if (Math.abs(dist) < 2) { heading = -1; return; }
+        if (calm) {
+            // a title slide's two states share one pinned screen: the page moves under it at once
+            if (was && was.el === s.el) { window.scrollTo(0, y); heading = -1; flips(); return; }
+            veil.classList.add('is-on');
+            const t0 = performance.now();
+            const wait = now => {
+                if (now - t0 < VEIL_MS) { glide = requestAnimationFrame(wait); return; }
+                window.scrollTo(0, y); glide = null; heading = -1; flips();
+                veil.classList.remove('is-on');
+            };
+            glide = requestAnimationFrame(wait);
+            return;
+        }
         const ms = s.kind === 'story' && was && was.kind === 'story' ? Math.min(STORY_MAX, STORY_MS + Math.abs(dist) * STORY_PER_PX)
             : was && was.el === s.el ? FLIP_MS : MOVE_MS;
         const t0 = performance.now();

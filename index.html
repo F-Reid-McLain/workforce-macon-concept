@@ -24,9 +24,11 @@
     <script>
       // Phones: the homepage as full-screen swipe scenes (js/scenes-phone.js, css/scenes-phone.css),
       // set before anything paints (and after the viewport tag, or a phone still measures 980px
-      // wide). Reduced motion keeps the plain scrolling page.
-      if (window.matchMedia && matchMedia('(max-width: 700px) and (pointer: coarse)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      // wide). With Reduce Motion on, the scenes are calm: they fade from one to the next, with
+      // no camera flights or drifting (html.calm).
+      if (window.matchMedia && matchMedia('(max-width: 700px) and (pointer: coarse)').matches) {
         document.documentElement.classList.add('scenes');
+        if (matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('calm');
       }
     </script>
     <meta name="theme-color" content="#0e1420">
