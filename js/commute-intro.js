@@ -479,9 +479,13 @@
                 byRank.forEach(n => {
                     if (!n.pos || n.alpha < 0.02) return;
                     const w = Math.max(n.name.length, (n.chg || '').length) * (n.bibb ? 8.5 : 6) + 6, h = n.bibb ? 34 : 25;
-                    const b = [n.xy[0] - w / 2, n.xy[1] - h / 2, n.xy[0] + w / 2, n.xy[1] + h / 2];
-                    if (boxes.some(o => b[0] < o[2] && b[2] > o[0] && b[1] < o[3] && b[3] > o[1])) return;
-                    boxes.push(b); shown.add(n);
+                    // (a label showing keeps its place through a slight overlap, and a hidden one
+                    // needs clear room to come back, so they don't flicker as the camera moves)
+                    const g = n.shown ? -5 : 5;
+                    const b = [n.xy[0] - w / 2 - g, n.xy[1] - h / 2 - g, n.xy[0] + w / 2 + g, n.xy[1] + h / 2 + g];
+                    n.shown = !boxes.some(o => b[0] < o[2] && b[2] > o[0] && b[1] < o[3] && b[3] > o[1]);
+                    if (!n.shown) return;
+                    boxes.push([n.xy[0] - w / 2, n.xy[1] - h / 2, n.xy[0] + w / 2, n.xy[1] + h / 2]); shown.add(n);
                 });
             }
             names.forEach(n => { if (n.pos) n.el.style.opacity = (mobile && !shown.has(n) ? 0 : n.alpha).toFixed(3); });
@@ -507,7 +511,9 @@
             // Vertical swipes on the map scroll the page (on phones the map fills the screen);
             // taps still reach it, to pick a county on the finished map
             touchAction: 'pan-y',
-            useDevicePixels: Math.min(window.devicePixelRatio || 1, 2),
+            // Up to 2x, or as sharp as the screen while that stays within about 5.5 million pixels:
+            // a 3x iPhone drawn at 2x left the thin edges and dots soft
+            useDevicePixels: Math.min(window.devicePixelRatio || 1, Math.max(2, Math.sqrt(5.5e6 / Math.max(1, innerWidth * innerHeight)))),
             effects: [new deck.LightingEffect({ ambient, sun })],
             onAfterRender: ctx => { placeNames(); if (wantReady && drawnYet(ctx)) { wantReady = false; requestAnimationFrame(() => section.classList.add('is-ready')); } },
             onHover: showTip,

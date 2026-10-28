@@ -22,7 +22,7 @@ process.argv.slice(2).forEach((a, i, all) => {
     const [k, v] = a.slice(2).split('=');
     args[k] = v !== undefined ? v : all[i + 1];
 });
-const W = +args.w || 390, H = +args.h || 844, SCALE = 2;
+const W = +args.w || 390, H = +args.h || 844, SCALE = +args.scale || 3;   // 3: as sharp as an iPhone screen
 const base = args.base || 'http://localhost:8765/';
 const OUT = 'assets/story/opening-phone.png';
 
