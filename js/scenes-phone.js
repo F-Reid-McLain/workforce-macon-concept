@@ -103,6 +103,7 @@
         Array.from(bar.children).forEach((seg, i) => { seg.classList.toggle('is-on', i === index); seg.classList.toggle('is-done', i < index); });
         const s = scenes[index];
         root.dataset.scene = s ? s.kind : '';
+        root.dataset.sceneId = s && s.el.id || '';
     }
 
     // ----- Going to a scene: a glide, never a jump -----
