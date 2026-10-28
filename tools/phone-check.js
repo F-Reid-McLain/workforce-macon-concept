@@ -144,6 +144,13 @@ const device = args.device || 'iPhone 15', base = args.base || 'http://localhost
             await tapOn('#jobs .tool-matches li');
             ok('job search opens a job', await page.evaluate(() => { const r = document.querySelector('#jobs .tool-result'); return !!r && !r.hidden; }));
             ok('keyboard closes after the pick', await page.evaluate(() => document.activeElement.tagName !== 'INPUT'));
+            // phones and tablets: the job's card pops up over the tool; × closes it
+            if (await page.evaluate(() => innerWidth <= 900)) {
+                ok("the job's card pops up", await page.evaluate(() => document.getElementById('jobs').classList.contains('has-pop')));
+                await shot('6b-job-popup');
+                await tapOn('.job-pop-close');
+                ok('× closes it', await page.evaluate(() => !document.getElementById('jobs').classList.contains('has-pop')));
+            }
         } else {
             await page.evaluate(() => { const e = document.getElementById('donut'); const r = e.getBoundingClientRect(); if (r.top < 60 || r.bottom > innerHeight) window.scrollTo(0, r.top + scrollY - 80); }); await wait(1500);
             await tapOn('.d-ring path'); await wait(600);

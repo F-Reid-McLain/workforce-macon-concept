@@ -151,6 +151,8 @@
         return false;
     };
     function decide(e, dx, dy) {
+        // a pop-up is open (a job's card): its own scrolling only, the scenes hold still
+        if (root.classList.contains('has-popup')) return scrollsItself(e.target, dy) ? 'native' : 'held';
         if (Math.abs(dx) > Math.abs(dy)) return 'native';                 // sideways: rows of switches
         if (scrollsItself(e.target, dy)) return 'native';                 // the map card, a long list
         const s = scenes[here()], y = scrollY;
@@ -169,7 +171,7 @@
         if (mode === 'native' || !scenes.length) return;
         const t = e.touches[0], dx = t.clientX - sx, dy = t.clientY - sy;
         if (mode === null) { mode = decide(e, dx, dy); if (window.WFDebug) WFDebug.log('swipe is', { mode, dy: Math.round(dy) }); }
-        if (mode === 'scene' && e.cancelable) e.preventDefault();
+        if ((mode === 'scene' || mode === 'held') && e.cancelable) e.preventDefault();
     }, { passive: false });
     addEventListener('touchend', e => {
         const was = mode; mode = null;

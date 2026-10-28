@@ -78,6 +78,7 @@ html.scenes .gm-tip, html.scenes .gm-tip.is-below { bottom: calc(76px + env(safe
 
 /* ----- The tools: edge to edge, starting under the progress bar and menu button ----- */
 html.scenes .stop { min-height: 100dvh; padding: calc(env(safe-area-inset-top) + 64px) 16px calc(28px + env(safe-area-inset-bottom)); justify-content: flex-start; }
+@media (max-height: 620px) { html.scenes .stop { padding-top: calc(env(safe-area-inset-top) + 58px); gap: 10px; } }
 html.scenes .tool-panel { padding: 0; border: 0; border-radius: 0; background: transparent; }
 html.scenes .donut-ctrl, html.scenes .tool-panel--donut #ind-views { margin: 0 -16px; }
 
