@@ -215,3 +215,52 @@ body.embed-mode .finder { flex: 1; min-height: 0; display: flex; max-width: none
 body.embed-mode .nav-hero { flex: 1; min-height: 0; height: auto; display: flex; margin: 0; border: 0; border-radius: 0; background: none; }
 body.embed-mode .minimap { flex: 1; min-height: 0; height: auto; display: flex; }
 body.embed-mode .minimap .visualization-section { flex: 1; display: flex; }
+
+/* ----- What's narrowing the list: one chip each, × to take it off (js/navigator-finder.js renderActive) ----- */
+.finder-active { display: flex; flex-wrap: wrap; gap: 8px; margin: -4px 0 14px; }
+.finder-active[hidden] { display: none; }
+.fact {
+    display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 8px 0 14px; border-radius: 999px; cursor: pointer;
+    border: 1px solid rgba(242, 196, 107, 0.45); background: rgba(242, 196, 107, 0.1); color: #fff; font: 600 0.85rem var(--font-body);
+}
+.fact span { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: rgba(255, 255, 255, 0.1); font-size: 1rem; line-height: 1; }
+.fact:hover span { background: rgba(255, 255, 255, 0.22); }
+.finder-empty [hidden] { display: none; }
+
+/* ----- A program's details, on touch screens (the sheet the organizations use; js/navigator-finder.js openProgram) ----- */
+.psheet__earn { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 14px; }
+.psheet__earn span { font-size: 0.9rem; color: var(--color-text-secondary); }
+.psheet__facts { margin: 0 0 16px; }
+.psheet__facts div { display: grid; grid-template-columns: 6.5rem 1fr; gap: 12px; padding: 10px 0; border-top: 1px solid var(--color-border); }
+.psheet__facts dt { margin: 0; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-muted); padding-top: 2px; }
+.psheet__facts dd { margin: 0; font-size: 0.95rem; color: #fff; }
+.psheet__note { margin: 0 0 14px; font-size: 0.85rem; color: var(--color-text-secondary); }
+#modal-content .psheet__go {
+    display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 48px; margin: 0 0 12px; border-radius: 12px;
+    background: var(--ch-gold); color: #1b1608; font: 700 1rem var(--font-body); text-decoration: none;
+}
+.psheet__org {
+    display: flex; align-items: center; gap: 12px; width: 100%; min-height: 56px; padding: 8px 12px; border-radius: 12px; cursor: pointer; text-align: left;
+    border: 1px solid var(--color-border); background: rgba(255, 255, 255, 0.03); color: var(--color-text-secondary); font: 400 0.9rem var(--font-body);
+}
+.psheet__org b { color: #fff; }
+.psheet__org > span:nth-child(2) { flex: 1; }
+.psheet__org > span:last-child { font-size: 1.4rem; color: var(--color-text-muted); }
+.psheet__logo { flex: none; width: 36px; height: 36px; border-radius: 8px; overflow: hidden; background: rgba(255, 255, 255, 0.06); }
+.psheet__logo img { width: 100%; height: 100%; object-fit: cover; }
+.psheet__logo img.is-contain { object-fit: contain; }
+
+/* ----- Touch screens: everything tappable is at least thumb-sized (44px) ----- */
+@media (pointer: coarse) {
+    .fchip { min-height: 40px; padding-left: 14px; padding-right: 14px; }
+    .fact { min-height: 40px; }
+    .finder-clear, .finder-linkbtn { min-height: 44px; padding: 0 4px; }
+    .ocard__actions { gap: 8px; margin-top: 6px; }
+    .ocard__actions a, .ocard__more { display: inline-flex; align-items: center; min-height: 44px; padding: 0 10px; margin-left: -10px; }
+    .ocard__actions a { margin-left: 0; }
+    .finder-fine a { display: inline-flex; align-items: center; min-height: 44px; }
+    .minimap.is-open .minimap__close { width: 44px; height: 44px; }
+    .finder-toggle { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; }
+    .finder-toggle input { width: 22px; height: 22px; margin: 0; }
+    .viz-info-close { min-width: 44px; min-height: 44px; }
+}
