@@ -85,7 +85,7 @@ const device = args.device || 'iPhone 15', base = args.base || 'http://localhost
     if (reduce) ok('Reduce Motion: calm swipe scenes (fades, no glides)', scenes && await page.evaluate(() => document.documentElement.classList.contains('calm')));
     if (scenes) {
         const list = await page.evaluate(() => WFScenes.list());
-        ok('every scene is listed', list.length === 13, list.map(x => x.kind).join(' '));
+        ok('every scene is listed', list.length === 15, list.map(x => x.kind).join(' '));
     }
     const to = async (name, n = 0, ms = 1800) => {
         if (scenes) {

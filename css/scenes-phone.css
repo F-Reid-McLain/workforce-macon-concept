@@ -25,11 +25,11 @@ html.scenes .main-nav {
     padding-top: calc(env(safe-area-inset-top) + 66px); background: rgb(14, 20, 32);
 }
 
-/* ----- Where you are: a segment per scene ----- */
+/* ----- Where you are: a segment per scene, along the foot of the screen ----- */
 .scene-bar { display: none; }
 html.scenes .scene-bar {
     display: flex; gap: 3px; position: fixed; z-index: 310; pointer-events: none;
-    top: calc(env(safe-area-inset-top) + 6px); left: 12px; right: 12px;
+    bottom: calc(env(safe-area-inset-bottom) + 8px); left: 16px; right: 16px;
 }
 html.scenes .scene-bar i { flex: 1; height: 3px; border-radius: 2px; background: rgba(255, 255, 255, 0.16); transition: background 0.5s; }
 html.scenes .scene-bar i.is-done { background: rgba(255, 255, 255, 0.5); }
@@ -37,7 +37,7 @@ html.scenes .scene-bar i.is-on { background: #f2c46b; }
 
 /* ----- The story fills the screen ----- */
 html.scenes .ci-stage { height: 100dvh; }
-html.scenes .ci-time { top: calc(env(safe-area-inset-top) + 18px); right: auto; left: 12px; }
+html.scenes .ci-time { top: calc(env(safe-area-inset-top) + 20px); right: auto; left: 12px; }
 html.scenes .ci-tools { top: calc(env(safe-area-inset-top) + 66px); }
 html.scenes .ci-step.ci-step--welcome { padding-top: calc(env(safe-area-inset-top) + 12vh); }
 /* short screens (iPhone SE): the headline sits higher and a little smaller, clear of Macon-Bibb below */
@@ -74,7 +74,7 @@ html.scenes .stop-intro--map .stop-intro__inner {
 html.scenes .stop-intro--map .stop-intro__inner > :not(.intro-source) { transition: opacity 0.5s ease, transform 0.7s cubic-bezier(0.4, 0, 0.2, 1); }
 html.scenes .stop-intro--map.is-map .stop-intro__inner { pointer-events: none; }   /* taps reach the plants */
 html.scenes .stop-intro--map.is-map .stop-intro__inner > :not(.intro-source) { opacity: 0; transform: translateY(-56px); }
-html.scenes .stop-intro--map .intro-source { opacity: 0; transition: opacity 0.6s ease 0.3s; bottom: calc(12px + env(safe-area-inset-bottom)); }
+html.scenes .stop-intro--map .intro-source { opacity: 0; transition: opacity 0.6s ease 0.3s; bottom: calc(24px + env(safe-area-inset-bottom)); }
 html.scenes .stop-intro--map.is-map .intro-source { opacity: 1; }
 html.scenes .stop-intro--map .intro-cue { margin-top: 2.6rem; }
 html.scenes .gm-tip, html.scenes .gm-tip.is-below { bottom: calc(76px + env(safe-area-inset-bottom)); }
@@ -268,3 +268,11 @@ html.scenes[data-scene="tool"] body::before { opacity: 1; }
     margin-top: 16px; min-height: 44px; padding: 0 18px; border-radius: 999px; cursor: pointer;
     border: 1px solid rgba(255, 255, 255, 0.2); background: transparent; color: #fff; font: 600 0.95rem var(--font-body);
 }
+
+/* ----- The story plays the whole day on phones: the 8:30 pay and 5:45 evening moments are scenes
+   too, each with its one-line caption (the progress bar at the foot replaces the caption's own dots) ----- */
+html.scenes .ci-step.ci-step--full { display: flex !important; }
+html.scenes .ci-step--full .ci-card > :not(.ci-when):not(h2):not(.ci-short) { display: none; }
+html.scenes .ci-caption__dots { display: none; }
+html.scenes .ci-caption { padding-bottom: calc(1.9rem + env(safe-area-inset-bottom)); }
+html.scenes .main-footer { padding-bottom: calc(28px + env(safe-area-inset-bottom)); }
