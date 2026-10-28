@@ -59,6 +59,12 @@
             <div class="minimap" id="minimap">
               <button type="button" class="minimap__open" id="minimap-open" aria-label="Open the full map of how these organizations connect"></button>
               <button type="button" class="minimap__close" id="minimap-close" aria-label="Close the map">&times;</button>
+              <!-- Phones, with the map open: what to do, and the two ways to see it (js/navigator-minimap.js) -->
+              <p class="mapbar__hint" id="map-hint" aria-live="polite">Pinch to zoom · tap a group to list it</p>
+              <div class="mapbar__switch" role="group" aria-label="Show on the map">
+                  <button type="button" data-mode="groups" aria-pressed="false">Groups</button>
+                  <button type="button" data-mode="everyone" aria-pressed="true" class="is-on">Everyone</button>
+              </div>
         <section class="visualization-section">
             <div class="container">
                 <div class="viz-header">
