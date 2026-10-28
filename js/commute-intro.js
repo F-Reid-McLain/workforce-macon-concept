@@ -752,7 +752,7 @@
         const capB = capEl && capEl.querySelector('b'), capS = capEl && capEl.querySelector('span'), capDots = capEl && capEl.querySelector('.ci-caption__dots');
         let capShown = null, capSwap = null;
         function caption(y) {
-            if (!capEl || capEl.offsetParent === null) return;
+            if (!capEl || !capEl.getClientRects().length) return;   // (not in use: wider screens hide it)
             const told = anchors.filter(a => !a.el.matches('.ci-step--welcome, .ci-step--map'));
             const mapStep = anchors.find(a => a.el.matches('.ci-step--map'));
             let k = -1;
