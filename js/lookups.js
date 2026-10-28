@@ -324,7 +324,16 @@
         // Phone swipe scenes: Industries is one screen, so an industry's card pops up over it
         const openPop = popUp(document.getElementById('industries'), out, 'Industry details',
             () => document.documentElement.classList.contains('scenes'));
-        const pick = i => { input.value = i.name; show(i); remember('industries', i.name); openPop(); };
+        // and its look-up opens from a button beside the menu, closing again once it's done with
+        const sec = document.getElementById('industries'), find = sec.querySelector('.ind-find');
+        const finding = on => { sec.classList.toggle('is-finding', on); find.setAttribute('aria-expanded', on); };
+        find.addEventListener('click', () => {
+            const on = !sec.classList.contains('is-finding');
+            finding(on);
+            if (on) input.focus({ preventScroll: true }); else input.blur();
+        });
+        input.addEventListener('blur', () => setTimeout(() => { if (!input.value.trim() && document.activeElement !== input) finding(false); }, 200));
+        const pick = i => { input.value = i.name; show(i); remember('industries', i.name); finding(false); openPop(); };
         // An industry's slice in the donut opens the same card (js/workforce-data.js)
         if (window.WFDonut) WFDonut.onIndustry = naics => { const i = inds.find(x => x.naics === naics); if (i) pick(i); };
         // Specialties: much more concentrated here than nationally, and big enough to matter
