@@ -161,7 +161,7 @@ const device = args.device || 'iPhone 15', base = args.base || 'http://localhost
             await tapOn('.d-ring path'); await wait(600);
             ok('tapping a donut slice opens its sector', await page.evaluate(() => document.getElementById('donut').classList.contains('is-drilled')));
             if (scenes) {
-                ok('Industries fits one screen, nothing off its edges, its list scrolling in its own box', await page.evaluate(() => { const s = document.getElementById('industries'), pane = [...s.querySelectorAll('[data-pane]')].find(x => !x.hidden); return s.scrollHeight <= s.clientHeight + 1 && pane.scrollHeight > pane.clientHeight && ![...s.querySelectorAll('button')].some(b => { const r = b.getBoundingClientRect(); return r.width && r.top < innerHeight && (r.right > innerWidth || r.left < 0); }); }));
+                ok('Industries fits one screen, nothing off its edges, its list scrolling in its own box', await page.evaluate(() => { const s = document.getElementById('industries'), pane = [...s.querySelectorAll('[data-pane]')].find(x => !x.hidden); return s.scrollHeight <= s.clientHeight + 1 && pane.scrollHeight > pane.clientHeight && ![...s.querySelectorAll('*')].some(b => { const r = b.getBoundingClientRect(); return r.width && r.top < innerHeight && (r.right > innerWidth + 0.5 || r.left < -0.5); }); }));
                 // (the look-up opens from its button beside the menu)
                 await tapOn('#industries .ind-find'); await page.keyboard.type('hosp', { delay: 40 }); await wait(600);
                 await tapOn('#strength-qlist li');

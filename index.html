@@ -288,6 +288,11 @@
                             </div>
                         </div>
                     </div>
+                    <!-- Phone swipe scenes: the two switches as dropdowns that open the phone's own picker (js/lookups.js) -->
+                    <div class="donut-pick">
+                        <label class="dsel"><span>Size</span><select id="donut-size-pick"><option value="jobs">Jobs</option><option value="wages">Wages</option></select></label>
+                        <label class="dsel"><span>Color</span><select id="donut-mode-pick"><option value="sector">Sectors</option><option value="pay">Pay</option><option value="growth">Growth</option></select></label>
+                    </div>
                     <p class="donut-key" id="donut-key" hidden></p>
                 </div>
                 <div class="tool-col tool-col--fit">
@@ -309,10 +314,12 @@
                     </div>
                     <div data-pane="specialties" hidden>
                         <p class="pane-note">Industries far more concentrated here than in the U.S. as a whole. Click one for detail.</p>
+                        <p class="pane-cap">Times as concentrated here as in the U.S.</p>
                         <ol class="strength-list" id="strength-list"></ol>
                     </div>
                     <div data-pane="commuters" hidden>
                         <p class="pane-note" id="find-sectors">Health care draws the most commuters.</p>
+                        <p class="pane-cap">Jobs here held by commuters, at least</p>
                         <div id="sector-commute-bars"></div>
                         <p class="chart-note">Jobs here held by people who live outside Macon-Bibb, at minimum: jobs located here minus Macon-Bibb residents working in that industry anywhere (LODES 2023). The true numbers are higher.</p>
                     </div>

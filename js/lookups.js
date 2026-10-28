@@ -334,6 +334,15 @@
         });
         input.addEventListener('blur', () => setTimeout(() => { if (!input.value.trim() && document.activeElement !== input) finding(false); }, 200));
         const pick = i => { input.value = i.name; show(i); remember('industries', i.name); finding(false); openPop(); };
+        // and the donut's size and color switches are two dropdowns, kept in step with the switches
+        [['donut-size-pick', 'donut-size'], ['donut-mode-pick', 'donut-mode']].forEach(([pickId, segId]) => {
+            const sel = document.getElementById(pickId), seg = document.getElementById(segId);
+            if (!sel || !seg) return;
+            sel.addEventListener('change', () => { const b = seg.querySelector(`[data-view="${sel.value}"]`); if (b) b.click(); });
+            const sync = () => { const on = seg.querySelector('.is-on'); if (on) sel.value = on.dataset.view; };
+            new MutationObserver(sync).observe(seg, { subtree: true, attributes: true, attributeFilter: ['class'] });
+            sync();
+        });
         // An industry's slice in the donut opens the same card (js/workforce-data.js)
         if (window.WFDonut) WFDonut.onIndustry = naics => { const i = inds.find(x => x.naics === naics); if (i) pick(i); };
         // Specialties: much more concentrated here than nationally, and big enough to matter
