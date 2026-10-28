@@ -11,9 +11,10 @@
    eased, so each arrival plays out (between the story's cards the camera flies and the
    clock runs, as in desktop present mode). A title slide is one pinned screen: swiping from
    its words to its map lifts the words away while the map comes in and draws
-   (css/scenes-phone.css; js/intro-map.js plays it from the slide's .is-map). Inside a tool
-   (and the custom research section) you scroll normally; a swipe past its top or bottom
-   edge moves on, and a scroll that ends between scenes settles onto the nearest.
+   (css/scenes-phone.css; js/intro-map.js plays it from the slide's .is-map). A tool is one
+   screen that scrolls inside itself, so a flick's momentum stops at its edge; a swipe from
+   its top or bottom edge moves on. The custom research section scrolls the page on to its
+   foot, and a scroll that ends between scenes settles onto the nearest.
    A bar of segments across the top shows where you are.
 
    window.WFScenes { list, go, index } is for tests (tools/phone-check.js). */
@@ -59,10 +60,10 @@
             } else if (el.classList.contains('stop-intro')) {
                 out.push({ el, kind: 'close', y: Math.round(top(el) + el.offsetHeight / 2 - innerHeight / 2) });
             } else {
-                // a tool (or the closing section, which runs on to the page's foot): its top, and
-                // the stretch you can scroll through inside it
+                // a tool: one screen, which scrolls inside itself (css/scenes-phone.css); the closing
+                // section runs on to the page's foot, the stretch of page you can scroll through in it
                 const a = Math.round(top(el));
-                const b = Math.round(el === last ? root.scrollHeight - innerHeight : top(el) + el.offsetHeight - innerHeight);
+                const b = el === last ? Math.round(root.scrollHeight - innerHeight) : a;
                 out.push({ el, kind: 'tool', y: a, end: Math.max(a, b) });
             }
         });
@@ -103,6 +104,8 @@
         // a tool is entered at the edge you come to it from (its foot, coming back up), and a
         // scroll that ran past one of its edges settles back onto that edge
         const y = s.kind === 'tool' ? Math.max(s.y, Math.min(s.end, from)) : s.y;
+        // and a tool that scrolls inside itself opens at its top, or at its foot coming back up
+        if (s.kind === 'tool' && s.el !== (was && was.el) && s.el.scrollHeight > s.el.clientHeight + 1) s.el.scrollTop = from > s.y ? s.el.scrollHeight : 0;
         index = i; heading = i; drawBar();
         if (window.WFDebug) WFDebug.log('scene go', { to: i, kind: s.kind, target: Math.round(y) });
         stop();
@@ -153,8 +156,9 @@
     function decide(e, dx, dy) {
         // a pop-up is open (a job's card): its own scrolling only, the scenes hold still
         if (root.classList.contains('has-popup')) return scrollsItself(e.target, dy) ? 'native' : 'held';
+        if (glide) return 'scene';                                        // mid-glide: a swipe moves on, it doesn't scroll
         if (Math.abs(dx) > Math.abs(dy)) return 'native';                 // sideways: rows of switches
-        if (scrollsItself(e.target, dy)) return 'native';                 // the map card, a long list
+        if (scrollsItself(e.target, dy)) return 'native';                 // a tool with more to read, the map card, a list
         const s = scenes[here()], y = scrollY;
         if (s && s.kind === 'tool') {
             if (dy < 0 && y < s.end - 1) return 'native';                 // more of the tool below
