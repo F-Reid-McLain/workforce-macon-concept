@@ -107,3 +107,32 @@ html.calm .stop-intro--map .intro-map,
 html.calm .stop-intro--map.is-map .intro-map.is-drawn { transform: none; animation: none; }
 html.calm .stop-intro--map.is-map .stop-intro__inner > :not(.intro-source) { transform: none; }
 html.calm .stop-intro--map .stop-intro__inner > :not(.intro-source) { transition: opacity 0.5s ease; }
+
+/* ----- Industries: the whole tool on one screen -----
+   The donut is sized to the screen's height, and the list under the views (sectors, specialties,
+   commuters) takes the room left and scrolls in its own box, every row in it (no "Show every
+   sector"). The instruction line repeats the donut's own hint, and custom research is the next scene. */
+html.scenes #industries .stop-label__text, html.scenes #industries .tool-upsell, html.scenes #industries .cap-more { display: none; }
+html.scenes #industries .tool-panel--donut { display: flex; flex-direction: column; align-items: stretch; flex: 1 1 0; min-height: 0; gap: 12px; }
+html.scenes #industries .tool-panel--donut > * { flex-shrink: 0; }
+html.scenes #industries .donut { width: clamp(150px, calc(100dvh - 470px), 260px); }
+/* a small donut (short screens) gets smaller words in its middle */
+@media (max-height: 700px) {
+    html.scenes #industries .donut-center b { font-size: 1.55rem; }
+    html.scenes #industries .donut-center span { font-size: 0.8rem; }
+}
+@media (max-height: 620px) {
+    html.scenes #industries .donut-center b { font-size: 1.15rem; }
+    html.scenes #industries .donut-center span { font-size: 0.68rem; }
+    html.scenes #industries .donut-center small { display: none; }
+}
+html.scenes #industries [data-pane="biggest"] > .pane-note { display: none; }   /* the donut says "Tap a slice" */
+html.scenes #donut-legend, html.scenes #strength-list { --cap: none; }
+html.scenes #industries .tool-panel--donut [data-pane] {
+    flex: 1 1 0; min-height: 0; overflow-y: auto; overscroll-behavior: contain; gap: 8px;
+    -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 28px), transparent);
+            mask-image: linear-gradient(to bottom, #000 calc(100% - 28px), transparent);
+    padding-bottom: 20px;
+}
+html.scenes #industries .tool-panel--donut [data-pane] > * { flex-shrink: 0; }
+html.scenes #industries .tool-panel--donut [data-pane][hidden] { display: none; }

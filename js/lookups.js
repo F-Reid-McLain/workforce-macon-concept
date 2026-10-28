@@ -45,6 +45,41 @@
         new MutationObserver(fit).observe(listEl, { childList: true });
         label(); fit();
     }
+    // A card that pops up over its tool (sec) instead of taking room in it, while when() holds: a
+    // sheet from the bottom on phones, a centered card on tablets (css/chapters.css, .has-pop).
+    // ×, the backdrop or Esc closes it, and so does leaving the tool (the menu, a link, a scene
+    // change), so it never follows you away. Returns the function that opens it.
+    function popUp(sec, card, label, when) {
+        const root = document.documentElement;
+        const backdrop = document.createElement('div');
+        backdrop.className = 'pop-backdrop';
+        sec.appendChild(backdrop);
+        const closeBtn = document.createElement('button');
+        closeBtn.type = 'button'; closeBtn.className = 'pop-close'; closeBtn.setAttribute('aria-label', 'Close'); closeBtn.textContent = '×';
+        card.prepend(closeBtn);
+        let returnFocus = null;
+        function open() {
+            if (!when() || sec.classList.contains('has-pop')) return;
+            returnFocus = document.activeElement;
+            sec.classList.add('has-pop');
+            root.classList.add('has-popup');   // phone scenes hold still (js/scenes-phone.js)
+            card.setAttribute('role', 'dialog'); card.setAttribute('aria-modal', 'true'); card.setAttribute('aria-label', label);
+            closeBtn.focus({ preventScroll: true });
+        }
+        function close() {
+            if (!sec.classList.contains('has-pop')) return;
+            sec.classList.remove('has-pop');
+            root.classList.remove('has-popup');
+            card.removeAttribute('role'); card.removeAttribute('aria-modal');
+            if (returnFocus && returnFocus.focus && returnFocus.tagName !== 'INPUT') returnFocus.focus({ preventScroll: true });
+        }
+        backdrop.addEventListener('click', close);
+        closeBtn.addEventListener('click', close);
+        addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+        addEventListener('resize', () => { if (!when()) close(); });
+        if ('IntersectionObserver' in window) new IntersectionObserver(es => { if (!es[0].isIntersecting) close(); }).observe(sec);
+        return open;
+    }
     phoneCap(document.getElementById('job-rank'), 'Show 3 more');
     phoneCap(document.getElementById('strength-list'), 'Show all specialties');
     phoneCap(document.getElementById('donut-legend'), 'Show every sector');
@@ -212,39 +247,10 @@
         let current = jobs[0], ranked = [], view = 'common';
 
         // Phones and tablets (900px and narrower): a job's card pops up over the tool instead of
-        // sitting below the list, so the tool itself fits one screen. A sheet from the bottom on
-        // phones, a centered card on tablets (css/chapters.css); × , the backdrop or Esc closes it.
-        // Wider screens keep the card beside the list.
-        const jobsSec = document.getElementById('jobs'), resCol = out.closest('.tool-col--result');
-        const narrow = () => window.matchMedia('(max-width: 900px)').matches;
-        const backdrop = document.createElement('div');
-        backdrop.className = 'job-pop-backdrop';
-        jobsSec.appendChild(backdrop);
-        const closeBtn = document.createElement('button');
-        closeBtn.type = 'button'; closeBtn.className = 'job-pop-close'; closeBtn.setAttribute('aria-label', 'Close'); closeBtn.textContent = '×';
-        resCol.prepend(closeBtn);
-        let returnFocus = null;
-        function openPop() {
-            if (!narrow() || jobsSec.classList.contains('has-pop')) return;
-            returnFocus = document.activeElement;
-            jobsSec.classList.add('has-pop');
-            document.documentElement.classList.add('has-popup');   // phone scenes hold still (js/scenes-phone.js)
-            resCol.setAttribute('role', 'dialog'); resCol.setAttribute('aria-modal', 'true'); resCol.setAttribute('aria-label', 'Job details');
-            closeBtn.focus({ preventScroll: true });
-        }
-        function closePop() {
-            if (!jobsSec.classList.contains('has-pop')) return;
-            jobsSec.classList.remove('has-pop');
-            document.documentElement.classList.remove('has-popup');
-            resCol.removeAttribute('role'); resCol.removeAttribute('aria-modal');
-            if (returnFocus && returnFocus.focus && returnFocus.tagName !== 'INPUT') returnFocus.focus({ preventScroll: true });
-        }
-        backdrop.addEventListener('click', closePop);
-        closeBtn.addEventListener('click', closePop);
-        addEventListener('keydown', e => { if (e.key === 'Escape') closePop(); });
-        addEventListener('resize', () => { if (!narrow()) closePop(); });
-        // and it never follows you away: leaving Jobs (the menu, a link, a scene change) closes it
-        if ('IntersectionObserver' in window) new IntersectionObserver(es => { if (!es[0].isIntersecting) closePop(); }).observe(jobsSec);
+        // sitting below the list, so the tool itself fits one screen. Wider screens keep the card
+        // beside the list.
+        const openPop = popUp(document.getElementById('jobs'), out.closest('.tool-col--result'), 'Job details',
+            () => window.matchMedia('(max-width: 900px)').matches);
         function show(j, quiet) {
             const changed = current !== j;
             current = j;
@@ -315,7 +321,10 @@
             swap(out);
             D().focusSector(i.naics);   // swing the donut to this industry's sector
         }
-        const pick = i => { input.value = i.name; show(i); remember('industries', i.name); };
+        // Phone swipe scenes: Industries is one screen, so an industry's card pops up over it
+        const openPop = popUp(document.getElementById('industries'), out, 'Industry details',
+            () => document.documentElement.classList.contains('scenes'));
+        const pick = i => { input.value = i.name; show(i); remember('industries', i.name); openPop(); };
         // An industry's slice in the donut opens the same card (js/workforce-data.js)
         if (window.WFDonut) WFDonut.onIndustry = naics => { const i = inds.find(x => x.naics === naics); if (i) pick(i); };
         // Specialties: much more concentrated here than nationally, and big enough to matter
@@ -335,7 +344,7 @@
         document.querySelector('#ind-views [data-view="specialties"]').addEventListener('click', growBars, { once: true });
         if (indView.current() === 'specialties') { lightFor('specialties'); growBars(); }
         typeahead({ input, list: document.getElementById('strength-qlist'), items: inds, label: i => i.name, onPick: pick });
-        register('industries', s => { const i = inds.find(i => slug(i.name) === s); if (i) { input.value = i.name; show(i); } return !!i; });
+        register('industries', s => { const i = inds.find(i => slug(i.name) === s); if (i) { input.value = i.name; show(i); openPop(); } return !!i; });
     }).catch(err => console.error('Industry lookup failed to load', err));
 
     // Shared with js/county-explorer.js (the fourth stop)

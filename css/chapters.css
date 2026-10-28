@@ -553,8 +553,9 @@ body.page-home .demo-bar-row { padding: 5px 0; font-size: 0.86rem; }
     /* Tools: long lists show their top few, with a button for the rest (js/lookups.js phoneCap) */
     #job-rank, #strength-list { --cap: 5; }
     #donut-legend { --cap: 6; }
-    #strength-list.is-capped:not(.is-open) > li:nth-child(n+6),
-    #donut-legend.is-capped:not(.is-open) > li:nth-child(n+8) { display: none; }   /* (the legend's first row is its header) */
+    /* (the legend's first row is its header; phone swipe scenes show every row in a box that scrolls) */
+    html:not(.scenes) #strength-list.is-capped:not(.is-open) > li:nth-child(n+6),
+    html:not(.scenes) #donut-legend.is-capped:not(.is-open) > li:nth-child(n+8) { display: none; }
     .cap-more:not([hidden]) {
         display: block; width: 100%; margin: 8px 0 0; padding: 10px 12px; border-radius: 10px;
         border: 1px solid rgba(255, 255, 255, 0.14); background: rgba(255, 255, 255, 0.04);
@@ -638,10 +639,11 @@ body.page-home .demo-bar-row { padding: 5px 0; font-size: 0.86rem; }
 }
 @media (max-width: 700px) and (prefers-reduced-motion: reduce) { .intro-cue::after { animation: none; } }
 
-/* ----- Jobs: a job's card pops up on phones and tablets (js/lookups.js), so the tool fits one screen ----- */
-.job-pop-backdrop, .job-pop-close { display: none; }
+/* ----- Cards that pop up over their tool (js/lookups.js popUp), so the tool fits one screen: a job's
+   on phones and tablets, an industry's in the phone swipe scenes ----- */
+.pop-backdrop, .pop-close { display: none; }
 @media (max-width: 900px) {
-    #jobs .tool-col--result {
+    #jobs .tool-col--result, html.scenes #strength-result {
         position: fixed; z-index: 400; left: 0; right: 0; bottom: 0; max-height: 82vh; max-height: 82dvh; overflow-y: auto; overscroll-behavior: contain;
         padding: 18px 16px calc(18px + env(safe-area-inset-bottom)); box-sizing: border-box;
         background: #121a26; border-radius: 20px 20px 0 0; border-top: 1px solid rgba(255, 255, 255, 0.12);
@@ -649,16 +651,18 @@ body.page-home .demo-bar-row { padding: 5px 0; font-size: 0.86rem; }
         transform: translateY(105%); visibility: hidden;
         transition: transform 0.38s cubic-bezier(0.2, 0.7, 0.2, 1), visibility 0s linear 0.38s;
     }
-    #jobs.has-pop .tool-col--result { transform: none; visibility: visible; transition: transform 0.38s cubic-bezier(0.2, 0.7, 0.2, 1), visibility 0s; }
+    #jobs.has-pop .tool-col--result, html.scenes #industries.has-pop #strength-result { transform: none; visibility: visible; transition: transform 0.38s cubic-bezier(0.2, 0.7, 0.2, 1), visibility 0s; }
+    html.scenes #strength-result { margin: 0; padding-top: 22px; }
+    html.scenes #strength-result h3 { padding-right: 48px; font-size: 1.2rem; }
     #jobs .tool-col--result .tool-result { border: 0; background: none; padding: 4px 40px 0 0; }
     #jobs .tool-col--result .tool-result h3 { font-size: 1.2rem; }
     #jobs .tool-col--result .pay-gauge { margin-top: 26px; }   /* room for the average's label above the bar */
-    .job-pop-backdrop {
+    .pop-backdrop {
         display: block; position: fixed; inset: 0; z-index: 399; background: rgba(5, 8, 12, 0.6);
         opacity: 0; pointer-events: none; transition: opacity 0.3s;
     }
-    #jobs.has-pop .job-pop-backdrop { opacity: 1; pointer-events: auto; }
-    .job-pop-close {
+    .has-pop > .pop-backdrop { opacity: 1; pointer-events: auto; }
+    .pop-close {
         display: flex; align-items: center; justify-content: center; position: absolute; top: 12px; right: 12px; z-index: 1;
         width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.16); cursor: pointer;
         background: rgba(255, 255, 255, 0.06); color: #fff; font: 400 1.5rem/1 var(--font-body);
