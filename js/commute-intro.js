@@ -26,6 +26,9 @@
     // (a phone opened sideways is still a phone: it's in the swipe scenes, and its camera refits when it turns upright)
     const mobile = window.innerWidth < 700 || document.documentElement.classList.contains('scenes');
     const reducedMotion = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+    // Phone scenes with Reduce Motion on (html.calm): the day still plays out between swipes, the
+    // dots traveling and the counties rising and falling, but the camera holds still
+    const CALM = document.documentElement.classList.contains('calm');
     // Marketing stills (?render=1, shot by tools/render-story.js): one fixed moment of the day,
     // no page around it, no labels unless asked; optional camera (cam=lon,lat,zoom,pitch,bearing),
     // longer comet trails (trail=) and bigger dots (dot=)
@@ -741,7 +744,7 @@
             target = t; step = idx;
             caption(y);
             // A big jump (link, scrollbar drag) lands directly instead of fast-forwarding the day
-            if (reducedMotion || Math.abs(t - hour) > 2.5) hour = t;
+            if ((reducedMotion && !CALM) || Math.abs(t - hour) > 2.5) hour = t;
             wake();
         }
         // ----- Phones: captions as subtitles -----
@@ -840,7 +843,7 @@
                 else { swayClock += dt; const want = SWAY * ease * Math.sin(swayClock / 3800); orbit += (wrap180(want - orbit)) * (1 - Math.exp(-dt / 500)); }
                 busy = true;
             }
-            const c = RENDER && RENDER.cam ? V(...RENDER.cam) : orbitAround(storyCamera(hour), orbit * free);
+            const c = RENDER && RENDER.cam ? V(...RENDER.cam) : orbitAround(storyCamera(CALM ? (hour < 5.5 ? 5 : 6) : hour), orbit * free);
             const vs = {
                 longitude: lerp(c.longitude, f.longitude, e), latitude: lerp(c.latitude, f.latitude, e), zoom: lerp(c.zoom, f.zoom, e),
                 pitch: Math.max(0, lerp(c.pitch, 0, e) - tilt.y * 5 * free), bearing: lerpAngle(c.bearing, 0, e) + tilt.x * 7 * free,

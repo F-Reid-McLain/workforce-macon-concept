@@ -44,7 +44,7 @@ const FLAGS = () => {
       userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1' });
     const p = await ctx.newPage(); const errs = []; p.on('pageerror', e => errs.push(e.message)); p.on('console', m => { if (m.type() === 'error') errs.push(m.text()); });
     await p.goto(BASE + 'index.html'); await wait(5000);
-    const files = []; const T = mode === 'calm' ? 1600 : 4200;
+    const files = []; const T = 4200;   // (calm scenes glide through the day too)
     const snap = async tag => { const f = `${OUT}/${name}-${mode}-${String(files.length).padStart(2, '0')}-${tag}.png`; await p.screenshot({ path: f }); files.push(f);
       const fl = await p.evaluate(FLAGS); console.log(`${(name + ' ' + mode).padEnd(16)} ${String(files.length - 1).padStart(2)} ${tag.padEnd(16)} ${fl.length ? fl.join(' | ') : 'ok'}`); };
     const scenes = await p.evaluate(() => WFScenes.list());

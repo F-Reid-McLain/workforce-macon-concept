@@ -2,7 +2,7 @@
    On phones (the inline script in index.html's <head> sets html.scenes before anything
    paints) the homepage plays as full-screen scenes, one per swipe, instead of a scrolling page:
 
-     the story's cards (welcome, 6 AM, rush hour, midday, the regional map) ·
+     the story's moments (welcome, 6 AM, rush hour, 8:30 pay, midday, evening, the regional map) ·
      nurses: words, then map · Jobs · manufacturing: words, then map · Industries ·
      631,000 · custom research
 
@@ -16,8 +16,9 @@
    foot, and a scroll that ends between scenes settles onto the nearest.
    A bar of segments across the top shows where you are.
 
-   With Reduce Motion on (html.calm) a swipe fades to the next scene instead of gliding there,
-   and the title slides' words and maps cross-fade without moving.
+   With Reduce Motion on (html.calm) a swipe fades to the next scene instead of gliding there
+   (except between the day's moments, where the day still plays out under a camera that holds
+   still), and the title slides' words and maps cross-fade without moving.
 
    window.WFScenes { list, go, index } is for tests (tools/phone-check.js). */
 (function () {
@@ -123,7 +124,10 @@
         if (s.kind === 'words' || s.kind === 'map') setFlip(s.el, s.kind === 'map');
         const dist = y - from;
         if (Math.abs(dist) < 2) { heading = -1; return; }
-        if (calm) {
+        // (calm: between the day's moments the page glides as usual, so the day plays out under the
+        // pinned map, whose camera holds still; to and from the opening and the finished map, a fade)
+        const dayToDay = s.kind === 'story' && was && was.kind === 'story' && ![s, was].some(x => x.el.matches('.ci-step--welcome, .ci-step--map'));
+        if (calm && !dayToDay) {
             // a title slide's two states share one pinned screen: the page moves under it at once
             if (was && was.el === s.el) { window.scrollTo(0, y); heading = -1; flips(); return; }
             veil.classList.add('is-on');
