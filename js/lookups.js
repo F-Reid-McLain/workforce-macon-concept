@@ -210,6 +210,41 @@
             <p class="pay-gauge__cap"></p>`;
         const last = {};
         let current = jobs[0], ranked = [], view = 'common';
+
+        // Phones and tablets (900px and narrower): a job's card pops up over the tool instead of
+        // sitting below the list, so the tool itself fits one screen. A sheet from the bottom on
+        // phones, a centered card on tablets (css/chapters.css); × , the backdrop or Esc closes it.
+        // Wider screens keep the card beside the list.
+        const jobsSec = document.getElementById('jobs'), resCol = out.closest('.tool-col--result');
+        const narrow = () => window.matchMedia('(max-width: 900px)').matches;
+        const backdrop = document.createElement('div');
+        backdrop.className = 'job-pop-backdrop';
+        jobsSec.appendChild(backdrop);
+        const closeBtn = document.createElement('button');
+        closeBtn.type = 'button'; closeBtn.className = 'job-pop-close'; closeBtn.setAttribute('aria-label', 'Close'); closeBtn.textContent = '×';
+        resCol.prepend(closeBtn);
+        let returnFocus = null;
+        function openPop() {
+            if (!narrow() || jobsSec.classList.contains('has-pop')) return;
+            returnFocus = document.activeElement;
+            jobsSec.classList.add('has-pop');
+            document.documentElement.classList.add('has-popup');   // phone scenes hold still (js/scenes-phone.js)
+            resCol.setAttribute('role', 'dialog'); resCol.setAttribute('aria-modal', 'true'); resCol.setAttribute('aria-label', 'Job details');
+            closeBtn.focus({ preventScroll: true });
+        }
+        function closePop() {
+            if (!jobsSec.classList.contains('has-pop')) return;
+            jobsSec.classList.remove('has-pop');
+            document.documentElement.classList.remove('has-popup');
+            resCol.removeAttribute('role'); resCol.removeAttribute('aria-modal');
+            if (returnFocus && returnFocus.focus && returnFocus.tagName !== 'INPUT') returnFocus.focus({ preventScroll: true });
+        }
+        backdrop.addEventListener('click', closePop);
+        closeBtn.addEventListener('click', closePop);
+        addEventListener('keydown', e => { if (e.key === 'Escape') closePop(); });
+        addEventListener('resize', () => { if (!narrow()) closePop(); });
+        // and it never follows you away: leaving Jobs (the menu, a link, a scene change) closes it
+        if ('IntersectionObserver' in window) new IntersectionObserver(es => { if (!es[0].isIntersecting) closePop(); }).observe(jobsSec);
         function show(j, quiet) {
             const changed = current !== j;
             current = j;
@@ -234,16 +269,16 @@
             });
             show(current, true);
         }
-        list.addEventListener('click', e => { const b = e.target.closest('button'); if (b) { show(ranked[+b.dataset.i]); remember('jobs', current.name); } });
+        list.addEventListener('click', e => { const b = e.target.closest('button'); if (b) { show(ranked[+b.dataset.i]); remember('jobs', current.name); openPop(); } });
         const count = document.getElementById('job-count');
         if (count) count.textContent = jobs.length.toLocaleString();
         typeahead({ input: document.getElementById('job-q'), list: document.getElementById('job-list'), items: jobs, label: j => j.name,
                     aliases: { ceo: 'chief executives', rn: 'registered nurses', lpn: 'licensed practical', cna: 'nursing assistants', cdl: 'truck drivers', 'truck driver': 'truck drivers' },
-                    onPick: j => { show(j); remember('jobs', j.name); } });
+                    onPick: j => { show(j); remember('jobs', j.name); openPop(); } });
         const sortBy = segmented(document.getElementById('job-sorts'), rank);
         sortBy('common');
         show(current, true);
-        register('jobs', s => { const j = jobs.find(j => slug(j.name) === s); if (j) show(j); return !!j; });
+        register('jobs', s => { const j = jobs.find(j => slug(j.name) === s); if (j) { show(j); openPop(); } return !!j; });
     }).catch(err => console.error('Job lookup failed to load', err));
 
     // ----- Industries -----

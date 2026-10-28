@@ -547,7 +547,6 @@ body.page-home .demo-bar-row { padding: 5px 0; font-size: 0.86rem; }
     /* Tools: long lists show their top few, with a button for the rest (js/lookups.js phoneCap) */
     #job-rank, #strength-list { --cap: 5; }
     #donut-legend { --cap: 6; }
-    #job-rank.is-capped:not(.is-open) > li:nth-child(n+6),
     #strength-list.is-capped:not(.is-open) > li:nth-child(n+6),
     #donut-legend.is-capped:not(.is-open) > li:nth-child(n+8) { display: none; }   /* (the legend's first row is its header) */
     .cap-more:not([hidden]) {
@@ -632,4 +631,46 @@ body.page-home .demo-bar-row { padding: 5px 0; font-size: 0.86rem; }
     }
 }
 @media (max-width: 700px) and (prefers-reduced-motion: reduce) { .intro-cue::after { animation: none; } }
+
+/* ----- Jobs: a job's card pops up on phones and tablets (js/lookups.js), so the tool fits one screen ----- */
+.job-pop-backdrop, .job-pop-close { display: none; }
+@media (max-width: 900px) {
+    #jobs .tool-col--result {
+        position: fixed; z-index: 400; left: 0; right: 0; bottom: 0; max-height: 82vh; max-height: 82dvh; overflow-y: auto; overscroll-behavior: contain;
+        padding: 18px 16px calc(18px + env(safe-area-inset-bottom)); box-sizing: border-box;
+        background: #121a26; border-radius: 20px 20px 0 0; border-top: 1px solid rgba(255, 255, 255, 0.12);
+        box-shadow: 0 -14px 40px rgba(0, 0, 0, 0.5);
+        transform: translateY(105%); visibility: hidden;
+        transition: transform 0.38s cubic-bezier(0.2, 0.7, 0.2, 1), visibility 0s linear 0.38s;
+    }
+    #jobs.has-pop .tool-col--result { transform: none; visibility: visible; transition: transform 0.38s cubic-bezier(0.2, 0.7, 0.2, 1), visibility 0s; }
+    #jobs .tool-col--result .tool-result { border: 0; background: none; padding: 4px 40px 0 0; }
+    #jobs .tool-col--result .tool-result h3 { font-size: 1.2rem; }
+    #jobs .tool-col--result .pay-gauge { margin-top: 26px; }   /* room for the average's label above the bar */
+    .job-pop-backdrop {
+        display: block; position: fixed; inset: 0; z-index: 399; background: rgba(5, 8, 12, 0.6);
+        opacity: 0; pointer-events: none; transition: opacity 0.3s;
+    }
+    #jobs.has-pop .job-pop-backdrop { opacity: 1; pointer-events: auto; }
+    .job-pop-close {
+        display: flex; align-items: center; justify-content: center; position: absolute; top: 12px; right: 12px; z-index: 1;
+        width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.16); cursor: pointer;
+        background: rgba(255, 255, 255, 0.06); color: #fff; font: 400 1.5rem/1 var(--font-body);
+    }
+    /* phones: the list is the tool now, so all eight fit (short phones keep a "show more") */
+    #job-rank { --cap: 8; }
+}
+@media (max-width: 700px) and (max-height: 620px) {
+    #job-rank { --cap: 5; }
+    #job-rank.is-capped:not(.is-open) > li:nth-child(n+6) { display: none; }
+}
+/* tablets: a centered card rather than a sheet */
+@media (min-width: 701px) and (max-width: 900px) {
+    #jobs .tool-col--result {
+        left: 50%; right: auto; top: 50%; bottom: auto; width: min(520px, 90vw); max-height: 80vh; border-radius: 18px; border: 1px solid rgba(255, 255, 255, 0.12);
+        transform: translate(-50%, -46%); opacity: 0;
+        transition: transform 0.3s ease, opacity 0.3s ease, visibility 0s linear 0.3s;
+    }
+    #jobs.has-pop .tool-col--result { transform: translate(-50%, -50%); opacity: 1; transition: transform 0.3s ease, opacity 0.3s ease, visibility 0s; }
+}
 
