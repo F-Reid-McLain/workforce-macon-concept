@@ -81,7 +81,7 @@ html.scenes .gm-tip, html.scenes .gm-tip.is-below { bottom: calc(76px + env(safe
    momentum stops at the tool's edge instead of carrying the page on past the next scene
    (on an iPhone the coasting is strong, and the page would then be pulled back) */
 html.scenes .stop {
-    height: 100dvh; min-height: 0; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain;
+    height: 100dvh; min-height: 0; margin: 0 auto; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain;
     padding: calc(env(safe-area-inset-top) + 64px) 16px calc(28px + env(safe-area-inset-bottom)); justify-content: flex-start;
 }
 html.scenes .stop > * { flex-shrink: 0; }
