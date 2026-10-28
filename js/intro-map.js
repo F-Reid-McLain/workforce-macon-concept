@@ -193,7 +193,8 @@ window.WFIntroMap = (function () {
         // (css/scenes-phone.css): there it plays while the slide shows its map state.
         const scenes = document.documentElement.classList.contains('scenes');
         function aim() {
-            if (scenes) { const t = slide.classList.contains('is-map') ? 1 : 0; if (t !== target) animateTo(t); return; }
+            // (not before its data is in: a swipe that arrives first gets the draw once it's loaded)
+            if (scenes) { if (!parts) return; const t = slide.classList.contains('is-map') ? 1 : 0; if (t !== target) animateTo(t); return; }
             const narrow = innerWidth <= 900, ON = narrow ? 0.7 : 0.92, OFF = narrow ? 0.35 : 0.9;
             const p = progress(), t = p >= ON ? 1 : p < OFF ? 0 : target;
             if (t !== target) animateTo(t);

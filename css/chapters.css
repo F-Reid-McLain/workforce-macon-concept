@@ -515,7 +515,13 @@ body.page-home .demo-bar-row { padding: 5px 0; font-size: 0.86rem; }
         -webkit-mask-image: linear-gradient(to bottom, transparent, #000 10%, #000 90%, transparent);
                 mask-image: linear-gradient(to bottom, transparent, #000 10%, #000 90%, transparent);
     }
-    .stop { min-height: 0; padding: 16px 16px 24px; scroll-margin-top: 70px; }
+    /* each tool gets the screen under the header to itself, with clear space before and after,
+       so the map before it or the next slide doesn't crowd in (phone swipe scenes size their own
+       in css/scenes-phone.css) */
+    .stop {
+        min-height: calc(100vh - 64px); min-height: calc(100svh - 64px); margin: 14vh auto; margin: 14svh auto;
+        padding: 16px 16px 24px; justify-content: center; scroll-margin-top: 70px;
+    }
 }
 .cap-more { display: none; }
 /* ----- Phones: the section bar gives way to "On this page" links in the ☰ menu (index.html) ----- */
