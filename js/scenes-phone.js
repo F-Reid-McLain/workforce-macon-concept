@@ -219,8 +219,12 @@
 
     // A scroll that ends between scenes (momentum out of a tool, a link, the menu) settles onto the nearest
     let settleT = null;
+    // While a search box (or a dropdown) is in use, the phone's keyboard moves the page to keep it in
+    // view, and settling would pull the page back each time: it holds still until typing's done
+    const typing = () => { const a = document.activeElement; return !!a && a.matches('input:not([type=checkbox]):not([type=radio]):not([type=range]), textarea, select'); };
+    document.addEventListener('focusout', () => setTimeout(() => { if (!typing()) settle(); }, 350));
     const settle = () => {
-        if (glide || mode) return;
+        if (glide || mode || typing()) return;
         build();
         const i = here(), s = scenes[i], y = scrollY;
         if (!s) return;

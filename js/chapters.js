@@ -91,7 +91,11 @@
     let from = scrollY, glideTo = null, pending = null, quietUntil = 0, lastInput = 0;
     const STILL = 260;   // ms without wheel or touch input before the page settles
     const land = y => { from = y; glideTo = null; held = null; quietUntil = performance.now() + 450; };
+    // While a search box (or a dropdown) is in use, a tablet's keyboard moves the page to keep it in
+    // view; settling would pull it back each time, so it waits until typing's done
+    const typing = () => { const a = document.activeElement; return !!a && a.matches('input:not([type=checkbox]):not([type=radio]):not([type=range]), textarea, select'); };
     function settle() {
+        if (typing()) return;
         const wait = STILL - (performance.now() - lastInput);
         if (wait > 0) { pending = setTimeout(settle, wait); return; }   // the wheel is still turning
         const y = scrollY;
