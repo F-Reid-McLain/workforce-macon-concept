@@ -111,7 +111,7 @@
 .ci-paykey i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 0.35rem; }
 
 /* ----- Present mode and moment links ----- */
-.ci-present { position: absolute; z-index: 3; top: 18px; left: 18px; opacity: calc(1 - var(--ci-map)); }
+.ci-present { position: absolute; z-index: 3; top: 62px; right: 18px; opacity: calc(1 - var(--ci-map)); }   /* under the clock: the story's cards pass down the left */
 .ci.is-map .ci-present { pointer-events: none; }
 .ci-present-hint {
     position: absolute; z-index: 3; left: 50%; bottom: 18px; transform: translateX(-50%); display: none;
@@ -159,6 +159,14 @@ body.ci-presenting .ci-present-hint { display: block; }
 .ci-stats span, .ci-key__title { font-size: 0.56rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #9aa3b2; }
 .ci-key { right: 12px; display: grid; gap: 0.3rem; font-size: 0.72rem; color: #e6e9ee; }
 .ci-key i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 0.45rem; vertical-align: -1px; }
+/* Phones and small tablets: the card sits over the bottom of the map, where the key was, so the key moves into the card */
+.ci-key-inline { display: none; }
+.ci-maplabel.is-under { visibility: hidden; }
+@media (max-width: 768px) {
+    .ci-overlay.ci-key { display: none; }
+    .ci-key-inline { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; margin: -0.2rem 0 0.7rem; font-size: 0.78rem; color: #c3cad6; }
+    .ci-key-inline i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 0.4rem; vertical-align: -1px; }
+}
 
 /* The map fades in once its data has loaded */
 .ci-stage #ci-map { opacity: 0; transition: opacity 0.8s ease; }

@@ -337,8 +337,24 @@
         function cardRoomNow(H) {
             const card = section.querySelector('.ci-step--map .ci-card');
             const h = card ? card.offsetHeight : 0;
-            return h ? Math.min(Math.round(H * 0.5), h + 30) : Math.round(H * 0.42);
+            // the card's own height (its max-height already caps it), the space under it (the home bar's too), and air
+            const under = card ? parseFloat(getComputedStyle(card.parentElement).paddingBottom) || 0 : 0;
+            return h ? Math.min(Math.round(H * 0.64), Math.round(h + under + 14)) : Math.round(H * 0.42);
         }
+        // Phones: the map's top clears its Highways and PNG buttons (lower on a phone with a notch)
+        const toolsEl = section.querySelector('.ci-tools');
+        const phoneTop = () => Math.max(56, toolsEl ? toolsEl.offsetTop + toolsEl.offsetHeight + 10 : 56);
+        // Phones: a picked county and Macon-Bibb fill the map above the card (the rest of the
+        // region would be too small to read there), easing between the whole region and the pair
+        const pairBounds = fips => {
+            const pts = rings.filter(r => r.fips === fips || r.fips === BIBB).flatMap(r => r.ring);
+            const x0 = d3.min(pts, p => p[0]), x1 = d3.max(pts, p => p[0]), y0 = d3.min(pts, p => p[1]), y1 = d3.max(pts, p => p[1]);
+            const mx = (x1 - x0) * 0.06, my = (y1 - y0) * 0.06;
+            return [[x0 - mx, y0 - my], [x1 + mx, y1 + my]];
+        };
+        const mixBounds = (a, b, k) => a.map((c, i) => c.map((v, j) => lerp(v, b[i][j], k)));
+        let focusFrom = null, focusTo = null, focusK = 1;
+        const focusBounds = () => mixBounds(focusFrom || bounds, focusTo || bounds, focusK);
         function phoneCardRoom(H) { return (roomUsed = cardRoom !== null ? cardRoom : cardRoomNow(H)); }
         function computeFlat() {
             const W = stage.clientWidth, H = stage.clientHeight;
@@ -346,7 +362,7 @@
             const padLeft = W > +(stage.dataset.padBreakpoint || Infinity) ? +(stage.dataset.padLeft || 0) : W > 768 ? Math.min(400, Math.round(W * 0.47)) : 0;
             const vp = new deck.WebMercatorViewport({ width: W, height: H })
                 // phones: the map fits the top half, above the card (which holds the county tool)
-                .fitBounds(bounds, { padding: { top: 56, bottom: W <= 700 ? phoneCardRoom(H) : W <= 768 ? Math.round(H * 0.5) : 40, left: W <= 700 ? 12 : 24 + padLeft, right: W <= 700 ? 12 : 24 } });
+                .fitBounds(W <= 700 ? focusBounds() : bounds, { padding: { top: W <= 700 ? phoneTop() : 56, bottom: W <= 700 ? phoneCardRoom(H) : W <= 768 ? Math.round(H * 0.5) : 40, left: W <= 700 ? 12 : 24 + padLeft, right: W <= 700 ? 12 : 24 } });
             flatView = { longitude: vp.longitude, latitude: vp.latitude, zoom: vp.zoom, pitch: 0, bearing: 0 };
             // Highway badges that land on top of each other get pushed apart (in screen space);
             // an interstate keeps its spot and the other badge moves
@@ -365,7 +381,17 @@
                 }
             }
             pts.forEach((p, i) => { const el = hwyEls[i]; el.style.left = p.xy[0] + 'px'; el.style.top = p.xy[1] + 'px'; });
-            counties.forEach((c, i) => { const xy = fv.project(center.get(c.fips)); countyEls[i].style.left = xy[0] + 'px'; countyEls[i].style.top = xy[1] + 'px'; });
+            // (phones: a name that would sit half under the card is left off)
+            // or under the map's buttons or the menu button (zoomed in on a county, the region runs up behind them)
+            const cardTop = W <= 700 && roomUsed !== null ? H - roomUsed : Infinity;
+            const sr = stage.getBoundingClientRect();
+            const blocks = W <= 700 ? [toolsEl, document.querySelector('.nav-toggle')].filter(Boolean).map(el => el.getBoundingClientRect())
+                .filter(r => r.width).map(r => ({ l: r.left - sr.left - 44, r: r.right - sr.left + 44, t: r.top - sr.top - 12, b: r.bottom - sr.top + 12 })) : [];
+            counties.forEach((c, i) => {
+                const xy = fv.project(center.get(c.fips)), el = countyEls[i];
+                el.style.left = xy[0] + 'px'; el.style.top = xy[1] + 'px';
+                el.classList.toggle('is-under', xy[1] > cardTop - 14 || blocks.some(b => xy[0] > b.l && xy[0] < b.r && xy[1] > b.t && xy[1] < b.b));
+            });
         }
         // The finished map's labels are plain HTML pinned over the canvas (crisper than
         // canvas text at these small sizes); the camera is static by the time they show
@@ -536,13 +562,14 @@
             // Phones: the card grows with the county's numbers (or shrinks back), so the map eases
             // to fit the room left above it instead of disappearing under the card
             if (!mobile) return;
+            // (and zooms in on the picked county and Macon-Bibb, or back out to the whole region)
             requestAnimationFrame(() => {
                 const H = stage.clientHeight, to = cardRoomNow(H), from = roomUsed === null ? to : roomUsed;
-                if (Math.abs(to - from) < 4) return;
-                const t0 = performance.now();
+                focusFrom = focusBounds(); focusTo = sel && stage.clientWidth <= 700 ? pairBounds(sel.fips) : null; focusK = 0;
+                const t0 = performance.now(), ms = reducedMotion ? 1 : 700;
                 const t = d3.timer(() => {
-                    const k = Math.min(1, (performance.now() - t0) / 450);
-                    cardRoom = from + (to - from) * d3.easeCubicInOut(k);
+                    const k = Math.min(1, (performance.now() - t0) / ms), e = d3.easeCubicInOut(k);
+                    cardRoom = from + (to - from) * e; focusK = e;
                     computeFlat(); lastScene = ''; wake();
                     if (k >= 1) { t.stop(); cardRoom = null; }
                 });

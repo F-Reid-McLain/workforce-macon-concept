@@ -64,24 +64,23 @@
     // ----- The page held in place while a search box or a pop-up is in use -----
     // Tapping a text box makes iOS Safari scroll the page itself to keep the box above the keyboard,
     // and the scenes would then settle onto whichever scene the page had been moved to. From the tap
-    // until the search and its card are closed, the page is pinned (html.is-pinned fixes the body
-    // where it was, so nothing can scroll it), and afterwards it's put back exactly where it was.
+    // until the search and its card are closed, the page is pinned: any scroll, iOS's or anyone's, is
+    // put straight back, so the page (and everything that follows its scroll position, like the
+    // story's clock behind the county dropdown) stays exactly where it was.
     let pinned = null;
     const inUse = () => typing() || root.classList.contains('is-searching') || root.classList.contains('has-popup');
     function pin() {
         if (pinned) return;
         pinned = { y: scrollY };
-        root.style.setProperty('--pin-top', -scrollY + 'px');
-        root.classList.add('is-pinned');
         if (window.WFDebug) WFDebug.log('pinned', pinned);
     }
+    addEventListener('scroll', () => { if (pinned && Math.abs(scrollY - pinned.y) > 0.5) window.scrollTo(0, pinned.y); }, { passive: true });
     let unpinT = null;
     function unpinSoon() {
         clearTimeout(unpinT);
         unpinT = setTimeout(() => {
             if (!pinned || inUse()) return;
             const y = pinned.y;
-            root.classList.remove('is-pinned');
             window.scrollTo(0, y);
             pinned = null; index = here(); drawBar(); flips();
             if (window.WFDebug) WFDebug.log('unpinned', { y });
