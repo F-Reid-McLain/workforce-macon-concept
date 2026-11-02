@@ -38,6 +38,13 @@
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     if (!location.hash) window.scrollTo(0, 0);
 
+    // The scenes' height (--sh, css/scenes-phone.css): the screen's, updated as it really changes
+    // (turning the phone, Safari's toolbar) but never while a box has the keyboard up, which shrinks
+    // the screen and would shrink every scene with it, carrying the page past where it was
+    const typing = () => { const a = document.activeElement; return !!a && a.matches('input:not([type=checkbox]):not([type=radio]):not([type=range]), textarea, select'); };
+    const sceneH = () => parseFloat(root.style.getPropertyValue('--sh')) || innerHeight;
+    const lockHeight = () => { if (!typing() && Math.abs(sceneH() - innerHeight) > 1) root.style.setProperty('--sh', innerHeight + 'px'); };
+
     // The opening's prompt says what a phone does here
     const cue = document.querySelector('.ci-scroll');
     if (cue && cue.firstChild && cue.firstChild.nodeType === 3) cue.firstChild.textContent = 'Swipe up to watch a workday';
@@ -60,21 +67,21 @@
         story.forEach(a => {
             // the regional map lands with its card at the foot of the screen
             const map = a.el.classList.contains('ci-step--map');
-            out.push({ el: a.el, kind: 'story', y: Math.max(0, Math.round(map ? top(a.el) + a.el.offsetHeight - innerHeight : a.y)) });
+            out.push({ el: a.el, kind: 'story', y: Math.max(0, Math.round(map ? top(a.el) + a.el.offsetHeight - sceneH() : a.y)) });
         });
         const last = document.getElementById('custom-research');
         document.querySelectorAll('.stop-intro, .stop, #custom-research').forEach(el => {
             if (el.classList.contains('stop-intro--map')) {
                 const t = top(el);
                 out.push({ el, kind: 'words', y: Math.round(t) });
-                out.push({ el, kind: 'map', y: Math.round(t + el.offsetHeight - innerHeight) });
+                out.push({ el, kind: 'map', y: Math.round(t + el.offsetHeight - sceneH()) });
             } else if (el.classList.contains('stop-intro')) {
-                out.push({ el, kind: 'close', y: Math.round(top(el) + el.offsetHeight / 2 - innerHeight / 2) });
+                out.push({ el, kind: 'close', y: Math.round(top(el) + el.offsetHeight / 2 - sceneH() / 2) });
             } else {
                 // a tool: one screen, which scrolls inside itself (css/scenes-phone.css); the closing
                 // section runs on to the page's foot, the stretch of page you can scroll through in it
                 const a = Math.round(top(el));
-                const b = el === last ? Math.round(root.scrollHeight - innerHeight) : a;
+                const b = el === last ? Math.round(root.scrollHeight - sceneH()) : a;
                 out.push({ el, kind: 'tool', y: a, end: Math.max(a, b) });
             }
         });
@@ -163,7 +170,7 @@
     function flips() {
         document.querySelectorAll('.stop-intro--map').forEach(sl => {
             const r = sl.getBoundingClientRect();
-            setFlip(sl, r.top <= -innerHeight * 0.5 && r.bottom >= innerHeight * 0.5);
+            setFlip(sl, r.top <= -sceneH() * 0.5 && r.bottom >= sceneH() * 0.5);
         });
     }
     addEventListener('scroll', () => { if (!glide) flips(); if (!glide) { const i = here(); if (i !== index) { index = i; drawBar(); } } }, { passive: true });
@@ -221,8 +228,8 @@
     let settleT = null;
     // While a search box (or a dropdown) is in use, the phone's keyboard moves the page to keep it in
     // view, and settling would pull the page back each time: it holds still until typing's done
-    const typing = () => { const a = document.activeElement; return !!a && a.matches('input:not([type=checkbox]):not([type=radio]):not([type=range]), textarea, select'); };
-    document.addEventListener('focusout', () => setTimeout(() => { if (!typing()) settle(); }, 350));
+    // (then the height catches up with the screen, and the page settles)
+    document.addEventListener('focusout', () => setTimeout(() => { if (!typing()) { lockHeight(); build(); settle(); } }, 350));
     const settle = () => {
         if (glide || mode || typing()) return;
         build();
@@ -233,7 +240,17 @@
     };
     if ('onscrollend' in window) addEventListener('scrollend', () => { clearTimeout(settleT); settleT = setTimeout(settle, 60); });
     else addEventListener('scroll', () => { clearTimeout(settleT); settleT = setTimeout(settle, 180); }, { passive: true });
-    addEventListener('resize', () => { clearTimeout(settleT); settleT = setTimeout(() => { build(); flips(); }, 200); });
+    addEventListener('resize', () => {
+        if (typing()) return;   // the keyboard coming and going: nothing about the scenes has changed
+        // the screen really changed size: every scene with it, so the page re-lands on the one it was on
+        const was = scenes[index];
+        clearTimeout(settleT); settleT = setTimeout(() => {
+            lockHeight(); build();
+            const i = was ? scenes.findIndex(x => x.el === was.el && x.kind === was.kind) : -1;
+            if (i >= 0 && !glide) { index = i; window.scrollTo(0, scenes[i].y); drawBar(); }
+            flips();
+        }, 200);
+    });
 
     // The story's cards are known once its data has loaded
     const ready = setInterval(() => {

@@ -29,6 +29,8 @@
       // (a phone turned sideways counts too: it's asked to turn upright, and turning back finds the scenes)
       if (window.matchMedia && matchMedia('(pointer: coarse) and (max-width: 700px), (pointer: coarse) and (orientation: landscape) and (min-width: 480px) and (max-height: 500px)').matches) {
         document.documentElement.classList.add('scenes');
+        // every scene's height, locked in pixels (js/scenes-phone.js keeps it, but not while someone types)
+        document.documentElement.style.setProperty('--sh', innerHeight + 'px');
         if (matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('calm');
         // A short phone (an SE, or Display Zoom), judged by its screen, not the visible area: the
         // keyboard shrinks that, and short-screen layouts mustn't switch on while someone types
