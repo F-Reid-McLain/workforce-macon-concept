@@ -1548,3 +1548,10 @@ body.embed-mode .viz-container {
 @media (pointer: coarse) {
     .main-footer a { display: inline-flex; align-items: center; min-height: 44px; }
 }
+
+/* Touch screens: every text box and dropdown at 16px at least. iOS Safari zooms the page in on
+   any box smaller than that when it's tapped, and the zoom throws the phone's swipe scenes
+   (and the layout around a search) off. */
+@media (pointer: coarse) {
+    input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=hidden]), select, textarea { font-size: 16px !important; }
+}

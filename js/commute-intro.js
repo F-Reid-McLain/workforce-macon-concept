@@ -733,7 +733,7 @@
         const measure = () => {
             setTop();
             steps = allSteps.filter(el => el.offsetParent !== null);
-            anchors = steps.map(el => { const r = el.getBoundingClientRect(); return { t: +el.dataset.time, y: r.top + scrollY + r.height / 2 - innerHeight / 2, el }; });
+            anchors = steps.map(el => { const r = el.getBoundingClientRect(); return { t: +el.dataset.time, y: r.top + scrollY + r.height / 2 - document.documentElement.clientHeight / 2, el }; });
         };
         function onScroll() {
             if (RENDER) { wake(); return; }   // a still: the moment doesn't follow the scroll
@@ -744,7 +744,7 @@
                 for (let i = 1; i < anchors.length; i++) if (y <= anchors[i].y) { const a = anchors[i - 1], b = anchors[i]; t = a.t + (b.t - a.t) * (y - a.y) / (b.y - a.y); break; }
             }
             let idx = 0;
-            anchors.forEach((a, i) => { if (y >= a.y - innerHeight * 0.35) idx = i; });
+            anchors.forEach((a, i) => { if (y >= a.y - document.documentElement.clientHeight * 0.35) idx = i; });
             anchors.forEach((a, i) => a.el.classList.toggle('is-active', i === idx));
             target = t; step = idx;
             caption(y);

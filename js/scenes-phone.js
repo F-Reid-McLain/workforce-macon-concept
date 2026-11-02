@@ -38,20 +38,59 @@
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     if (!location.hash) window.scrollTo(0, 0);
 
-    // The scenes' height (--sh, css/scenes-phone.css): the screen's, updated as it really changes
-    // (turning the phone, Safari's toolbar) but never while a box has the keyboard up, which shrinks
-    // the screen and would shrink every scene with it, carrying the page past where it was
+    // The scenes' height (--sh, css/scenes-phone.css): the screen's when the page opened, changed
+    // only when the phone is turned (the width changes). The keyboard and Safari's toolbar change
+    // the height alone, and the scenes ignore them: a height that followed the keyboard shrank every
+    // scene and carried the page off the one it was on.
     const typing = () => { const a = document.activeElement; return !!a && a.matches('input:not([type=checkbox]):not([type=radio]):not([type=range]), textarea, select'); };
-    const sceneH = () => parseFloat(root.style.getPropertyValue('--sh')) || innerHeight;
-    // (the keyboard is told apart by its shape: it takes away a lot of height, 150px or more, and no
-    // width; Safari's toolbar changes far less, and turning the phone changes the width. It counts as
-    // the keyboard even once the box has let go, while the keyboard is still on its way down.)
-    let lockedW = innerWidth;
-    const keyboardUp = () => innerWidth === lockedW && sceneH() - innerHeight > 150;
-    const lockHeight = () => {
-        if (typing() || keyboardUp() || Math.abs(sceneH() - innerHeight) <= 1) return;
-        root.style.setProperty('--sh', innerHeight + 'px'); lockedW = innerWidth;
-    };
+    // (sizes from the page's layout, not innerWidth/innerHeight: on an iPhone those shrink as you
+    // pinch to zoom, which isn't the screen changing)
+    const layoutW = () => root.clientWidth, layoutH = () => root.clientHeight;
+    const sceneH = () => parseFloat(root.style.getPropertyValue('--sh')) || layoutH();
+    let lockedW = layoutW();
+    // Pinched in: the scenes step aside (no swipes between scenes, no settling) so the zoomed page
+    // pans freely; pinching back out settles onto the nearest scene
+    const vvp = window.visualViewport;
+    const zoomed = () => !!vvp && vvp.scale > 1.02;
+    let wasZoomed = false;
+    if (vvp) vvp.addEventListener('resize', () => {
+        const z = zoomed();
+        if (z === wasZoomed) return;
+        wasZoomed = z;
+        if (window.WFDebug) WFDebug.log(z ? 'zoomed in' : 'zoomed out');
+        if (!z) setTimeout(() => { if (!zoomed()) settle(); }, 300);
+    });
+
+    // ----- The page held in place while a search box or a pop-up is in use -----
+    // Tapping a text box makes iOS Safari scroll the page itself to keep the box above the keyboard,
+    // and the scenes would then settle onto whichever scene the page had been moved to. From the tap
+    // until the search and its card are closed, the page is pinned (html.is-pinned fixes the body
+    // where it was, so nothing can scroll it), and afterwards it's put back exactly where it was.
+    let pinned = null;
+    const inUse = () => typing() || root.classList.contains('is-searching') || root.classList.contains('has-popup');
+    function pin() {
+        if (pinned) return;
+        pinned = { y: scrollY };
+        root.style.setProperty('--pin-top', -scrollY + 'px');
+        root.classList.add('is-pinned');
+        if (window.WFDebug) WFDebug.log('pinned', pinned);
+    }
+    let unpinT = null;
+    function unpinSoon() {
+        clearTimeout(unpinT);
+        unpinT = setTimeout(() => {
+            if (!pinned || inUse()) return;
+            const y = pinned.y;
+            root.classList.remove('is-pinned');
+            window.scrollTo(0, y);
+            pinned = null; index = here(); drawBar(); flips();
+            if (window.WFDebug) WFDebug.log('unpinned', { y });
+        }, 400);
+    }
+    document.addEventListener('focusin', () => { if (typing()) pin(); });
+    document.addEventListener('focusout', unpinSoon);
+    new MutationObserver(() => { if (inUse()) { clearTimeout(unpinT); pin(); } else unpinSoon(); })
+        .observe(root, { attributes: true, attributeFilter: ['class'] });
 
     // The opening's prompt says what a phone does here
     const cue = document.querySelector('.ci-scroll');
@@ -181,7 +220,7 @@
             setFlip(sl, r.top <= -sceneH() * 0.5 && r.bottom >= sceneH() * 0.5);
         });
     }
-    addEventListener('scroll', () => { if (!glide) flips(); if (!glide) { const i = here(); if (i !== index) { index = i; drawBar(); } } }, { passive: true });
+    addEventListener('scroll', () => { if (pinned || zoomed()) return; if (!glide) flips(); if (!glide) { const i = here(); if (i !== index) { index = i; drawBar(); } } }, { passive: true });
 
     // ----- Swipes -----
     // Decided on the gesture's first move (after that the browser won't let a scroll be stopped):
@@ -199,7 +238,7 @@
     function decide(e, dx, dy) {
         // a pop-up is open (a job's card): its own scrolling only, the scenes hold still
         if (askingUpright()) return 'held';                                // the turn-upright card
-        if (root.classList.contains('has-popup') || root.classList.contains('is-searching')) return scrollsItself(e.target, dy) ? 'native' : 'held';
+        if (pinned || inUse()) return scrollsItself(e.target, dy) ? 'native' : 'held';
         if (glide) return 'scene';                                        // mid-glide: a swipe moves on, it doesn't scroll
         if (Math.abs(dx) > Math.abs(dy)) return 'native';                 // sideways: rows of switches
         if (scrollsItself(e.target, dy)) return 'native';                 // a tool with more to read, the map card, a list
@@ -211,12 +250,13 @@
         return 'scene';
     }
     addEventListener('touchstart', e => {
-        if (e.touches.length !== 1) { mode = 'native'; return; }
+        if (e.touches.length !== 1) { mode = 'native'; if (glide) { stop(); heading = -1; } return; }   // a pinch
         sx = e.touches[0].clientX; sy = e.touches[0].clientY; st = performance.now(); mode = null;
         if (!scenes.length) build();
     }, { passive: true });
     addEventListener('touchmove', e => {
         if (mode === 'native' || !scenes.length) return;
+        if (mode === null && zoomed()) { mode = 'native'; return; }   // pinched in: the finger pans the zoomed page
         const t = e.touches[0], dx = t.clientX - sx, dy = t.clientY - sy;
         if (mode === null) { mode = decide(e, dx, dy); if (window.WFDebug) WFDebug.log('swipe is', { mode, dy: Math.round(dy) }); }
         if ((mode === 'scene' || mode === 'held') && e.cancelable) e.preventDefault();
@@ -234,12 +274,8 @@
 
     // A scroll that ends between scenes (momentum out of a tool, a link, the menu) settles onto the nearest
     let settleT = null;
-    // While a search box (or a dropdown) is in use, the phone's keyboard moves the page to keep it in
-    // view, and settling would pull the page back each time: it holds still until typing's done
-    // (then the height catches up with the screen, and the page settles)
-    document.addEventListener('focusout', () => setTimeout(() => { if (!typing()) { lockHeight(); build(); settle(); } }, 350));
     const settle = () => {
-        if (glide || mode || typing()) return;
+        if (glide || mode || pinned || inUse() || zoomed()) return;
         build();
         const i = here(), s = scenes[i], y = scrollY;
         if (!s) return;
@@ -249,15 +285,16 @@
     if ('onscrollend' in window) addEventListener('scrollend', () => { clearTimeout(settleT); settleT = setTimeout(settle, 60); });
     else addEventListener('scroll', () => { clearTimeout(settleT); settleT = setTimeout(settle, 180); }, { passive: true });
     addEventListener('resize', () => {
-        if (typing() || keyboardUp()) return;   // the keyboard coming and going: nothing about the scenes has changed
-        // the screen really changed size: every scene with it, so the page re-lands on the one it was on
+        // only turning the phone changes the scenes; the page then re-lands on the scene it was on
+        if (layoutW() === lockedW || pinned || zoomed()) return;
         const was = scenes[index];
         clearTimeout(settleT); settleT = setTimeout(() => {
-            lockHeight(); build();
+            if (pinned || zoomed()) return;
+            root.style.setProperty('--sh', layoutH() + 'px'); lockedW = layoutW(); build();
             const i = was ? scenes.findIndex(x => x.el === was.el && x.kind === was.kind) : -1;
             if (i >= 0 && !glide) { index = i; window.scrollTo(0, scenes[i].y); drawBar(); }
             flips();
-        }, 200);
+        }, 250);
     });
 
     // The story's cards are known once its data has loaded

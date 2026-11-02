@@ -10,6 +10,9 @@
 
 html.scenes { overscroll-behavior: none; scroll-behavior: auto; }
 html.scenes body { overscroll-behavior: none; }
+/* A search box or a pop-up in use: the page pinned where it was, so iOS can't scroll it to
+   follow the keyboard (js/scenes-phone.js puts it back afterwards) */
+html.scenes.is-pinned body { position: fixed; top: var(--pin-top, 0px); left: 0; right: 0; }
 
 /* ----- The header gives way to a floating menu button ----- */
 html.scenes .main-header {
