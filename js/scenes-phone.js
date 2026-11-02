@@ -27,7 +27,7 @@
     if (!root.classList.contains('scenes')) return;
     // Resized into a tablet's shape: the plain page suits that better. (A phone turned sideways stays
     // in scenes behind a card asking to turn it upright, so turning it back finds them again.)
-    const fits = window.matchMedia('(pointer: coarse) and (max-width: 700px), (pointer: coarse) and (orientation: landscape) and (max-height: 500px)');
+    const fits = window.matchMedia('(pointer: coarse) and (max-width: 700px), (pointer: coarse) and (orientation: landscape) and (min-width: 480px) and (max-height: 500px)');
     fits.addEventListener && fits.addEventListener('change', () => { if (!fits.matches) location.reload(); });
     const upright = document.querySelector('.turn-upright');
     const askingUpright = () => upright && getComputedStyle(upright).display !== 'none';
