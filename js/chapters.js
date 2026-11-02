@@ -94,6 +94,28 @@
     // While a search box (or a dropdown) is in use, a tablet's keyboard moves the page to keep it in
     // view; settling would pull it back each time, so it waits until typing's done
     const typing = () => { const a = document.activeElement; return !!a && a.matches('input:not([type=checkbox]):not([type=radio]):not([type=range]), textarea, select'); };
+    // The page's sections are sized by the screen, which the keyboard shrinks (and closing it
+    // restores): while a box is in use, and just after, the page scrolls by however much that moved
+    // the box, so it stays where it was instead of the page carrying it off (an iPad's homepage)
+    let inUse = null;
+    document.addEventListener('focusin', e => {
+        if (!e.target.matches || !typing()) return;
+        inUse = { el: e.target, top: e.target.getBoundingClientRect().top };
+    });
+    document.addEventListener('focusout', () => { const was = inUse; setTimeout(() => { if (inUse === was && !typing()) inUse = null; }, 1500); });
+    // (where it stays: where it was, unless that's now behind the keyboard, then just above it; a
+    // scroll of the visitor's or the browser's own, not caused by a resize, becomes the new place)
+    let lastResize = 0, ownScroll = 0;
+    addEventListener('scroll', () => {
+        const now = performance.now();
+        if (inUse && now - lastResize > 150 && now - ownScroll > 150) inUse.top = inUse.el.getBoundingClientRect().top;
+    }, { passive: true });
+    addEventListener('resize', () => { lastResize = performance.now(); requestAnimationFrame(() => {
+        if (!inUse || !inUse.el.isConnected) return;
+        const r = inUse.el.getBoundingClientRect();
+        const want = Math.max(60, Math.min(inUse.top, innerHeight - Math.min(r.height, innerHeight * 0.5) - 24));
+        if (Math.abs(r.top - want) > 2) { ownScroll = performance.now(); scrollTo({ top: scrollY + r.top - want, behavior: 'instant' }); }
+    }); });
     function settle() {
         if (typing()) return;
         const wait = STILL - (performance.now() - lastInput);
