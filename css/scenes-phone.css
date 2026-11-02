@@ -2,7 +2,11 @@
    Only under html.scenes (set in index.html's <head> on phones; html.calm too with Reduce Motion), so
    nothing here touches desktop or the plain phone page. Full screen like an app: no header
    bar (just a floating menu button), a progress bar across the top, every scene exactly the
-   visible screen (100dvh), and safe-area room for the notch and the home bar. */
+   visible screen, and safe-area room for the notch and the home bar.
+   Every scene's height is --sh: the screen's height in pixels, set in index.html's <head> and
+   kept by js/scenes-phone.js, which leaves it alone while someone types. Units that follow the
+   screen live (dvh, svh, vh) shrank every scene when the keyboard opened, and the page, still at
+   the same scroll position, showed a section further down. */
 
 html.scenes { overscroll-behavior: none; scroll-behavior: auto; }
 html.scenes body { overscroll-behavior: none; }
@@ -36,10 +40,10 @@ html.scenes .scene-bar i.is-done { background: rgba(255, 255, 255, 0.5); }
 html.scenes .scene-bar i.is-on { background: #f2c46b; }
 
 /* ----- The story fills the screen ----- */
-html.scenes .ci-stage { height: 100dvh; }
+html.scenes .ci-stage { height: var(--sh, 100dvh); }
 html.scenes .ci-time { top: calc(env(safe-area-inset-top) + 20px); right: auto; left: 12px; }
 html.scenes .ci-tools { top: calc(env(safe-area-inset-top) + 66px); }
-html.scenes .ci-step.ci-step--welcome { padding-top: calc(env(safe-area-inset-top) + 12vh); }
+html.scenes .ci-step.ci-step--welcome { padding-top: calc(env(safe-area-inset-top) + var(--sh, 100vh) * 0.12); }
 /* short phones (iPhone SE; html.short, set from the screen's size in index.html, so the keyboard can't
    switch it on): the headline sits higher and a little smaller, clear of Macon-Bibb below */
 html.scenes.short .ci-step.ci-step--welcome { padding-top: calc(env(safe-area-inset-top) + 64px); }
@@ -54,9 +58,9 @@ html.scenes .ci-step { padding-bottom: calc(14px + env(safe-area-inset-bottom));
    The slide keeps two screens of scroll (the scene player's two stops), but both its words and
    its map stick to the screen the whole way: swiping on lifts the words away while the map
    comes in from a little closer and draws (js/intro-map.js reads .is-map) */
-html.scenes .stop-intro--map { display: block; min-height: 200dvh; padding: 0; overflow: clip; }
+html.scenes .stop-intro--map { display: block; min-height: calc(var(--sh, 100dvh) * 2); padding: 0; overflow: clip; }
 html.scenes .stop-intro--map .intro-map {
-    position: sticky; inset: auto; top: 0; display: block; width: 100%; height: 100dvh;
+    position: sticky; inset: auto; top: 0; display: block; width: 100%; height: var(--sh, 100dvh);
     opacity: 0; transform: scale(1.08); transform-origin: 50% 55%;
     transition: opacity 0.7s ease, transform 1.2s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
@@ -65,7 +69,7 @@ html.scenes .stop-intro--map.is-map .intro-map { opacity: 1; transform: none; }
 html.scenes .stop-intro--map.is-map .intro-map.is-drawn { animation: scene-drift 14s ease-in-out infinite alternate; }
 @keyframes scene-drift { from { transform: scale(1); } to { transform: scale(1.045); } }
 html.scenes .stop-intro--map .stop-intro__inner {
-    position: sticky; top: 0; height: 100dvh; min-height: 0; margin: -100dvh 0 0; box-sizing: border-box;
+    position: sticky; top: 0; height: var(--sh, 100dvh); min-height: 0; margin: calc(-1 * var(--sh, 100dvh)) 0 0; box-sizing: border-box;
     display: flex; flex-direction: column; justify-content: center; max-width: none;
     padding: calc(env(safe-area-inset-top) + 40px) 20px calc(40px + env(safe-area-inset-bottom));
     animation: none !important;
@@ -83,7 +87,7 @@ html.scenes .gm-tip, html.scenes .gm-tip.is-below { bottom: calc(76px + env(safe
    momentum stops at the tool's edge instead of carrying the page on past the next scene
    (on an iPhone the coasting is strong, and the page would then be pulled back) */
 html.scenes .stop {
-    height: 100dvh; min-height: 0; margin: 0 auto; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain;
+    height: var(--sh, 100dvh); min-height: 0; margin: 0 auto; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain;
     padding: calc(env(safe-area-inset-top) + 64px) 16px calc(28px + env(safe-area-inset-bottom)); justify-content: flex-start;
 }
 html.scenes .stop > * { flex-shrink: 0; }
@@ -92,8 +96,8 @@ html.scenes .tool-panel { padding: 0; border: 0; border-radius: 0; background: t
 html.scenes .donut-ctrl, html.scenes .tool-panel--donut #ind-views { margin: 0 -16px; }
 
 /* ----- The close and custom research: a full screen each ----- */
-html.scenes .stop-intro--close { min-height: 100dvh; }
-html.scenes #custom-research { min-height: 100dvh; box-sizing: border-box; padding-top: calc(env(safe-area-inset-top) + 72px); }
+html.scenes .stop-intro--close { min-height: var(--sh, 100dvh); }
+html.scenes #custom-research { min-height: var(--sh, 100dvh); box-sizing: border-box; padding-top: calc(env(safe-area-inset-top) + 72px); }
 
 /* ----- Reduce Motion (html.calm): scenes fade from one to the next; nothing slides, zooms or drifts ----- */
 .scene-veil { display: none; }
@@ -114,7 +118,7 @@ html.calm .stop-intro--map .stop-intro__inner > :not(.intro-source) { transition
 html.scenes #industries .stop-label__text, html.scenes #industries .tool-upsell, html.scenes #industries .cap-more { display: none; }
 html.scenes #industries .tool-panel--donut { display: flex; flex-direction: column; align-items: stretch; flex: 1 1 0; min-height: 0; gap: 12px; }
 html.scenes #industries .tool-panel--donut > * { flex-shrink: 0; }
-html.scenes #industries .donut { width: clamp(170px, calc(100dvh - 400px), 250px); }
+html.scenes #industries .donut { width: clamp(170px, calc(var(--sh, 100dvh) - 400px), 250px); }
 /* (its middle's words scale with it: see the end of this file) */
 html.scenes #industries [data-pane="biggest"] > .pane-note { display: none; }   /* the donut says "Tap a slice" */
 html.scenes #donut-legend, html.scenes #strength-list { --cap: none; }
@@ -225,14 +229,14 @@ html.scenes #sector-commute-bars .demo-bar-fill { transform: none !important; }
 }
 
 /* ----- The ☰ menu covers the whole screen, scrolling itself if it must ----- */
-html.scenes .main-nav { height: 100dvh; box-sizing: border-box; overflow-y: auto; overscroll-behavior: contain; }
+html.scenes .main-nav { height: var(--sh, 100dvh); box-sizing: border-box; overflow-y: auto; overscroll-behavior: contain; }
 /* (the header is see-through here: its blur would make it, 0px tall, the frame the menu sizes to) */
 html.scenes .main-header { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
 
 /* ----- The regional map's card: room for a picked county's numbers (the map refits above it), the
    county's name left to the dropdown that already says it, and a soft foot when there's more ----- */
 html.scenes .ci-step--map .ci-card {
-    max-height: 56dvh; padding-bottom: 18px;
+    max-height: calc(var(--sh, 100dvh) * 0.56); padding-bottom: 18px;
     -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 18px), transparent);
             mask-image: linear-gradient(to bottom, #000 calc(100% - 18px), transparent);
 }
@@ -276,3 +280,9 @@ html.scenes .ci-step--full .ci-card > :not(.ci-when):not(h2):not(.ci-short) { di
 html.scenes .ci-caption__dots { display: none; }
 html.scenes .ci-caption { padding-bottom: calc(1.9rem + env(safe-area-inset-bottom)); }
 html.scenes .main-footer { padding-bottom: calc(28px + env(safe-area-inset-bottom)); }
+
+/* ----- The story's own phone sizes, on the locked height too (css/commute-intro.css sizes them by the screen) ----- */
+html.scenes .ci-steps { margin-top: calc(-1 * var(--sh, 100svh)); }
+html.scenes .ci-step { min-height: calc(var(--sh, 100svh) * 0.9); }
+html.scenes .ci-step--welcome { min-height: var(--sh, 100svh); }
+html.scenes .ci-step:last-child { min-height: calc(var(--sh, 100vh) * 1.1); }
