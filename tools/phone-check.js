@@ -56,6 +56,10 @@ const device = args.device || 'iPhone 15', base = args.base || 'http://localhost
     console.log(`${device} in WebKit, visible area ${vp}${reduce ? ', Reduce Motion on' : ''}\n`);
 
     // ----- Layout -----
+    // iOS zooms the page in on a text box under 16px when it's tapped, which throws the scenes off
+    const tinyBoxes = await page.evaluate(() => [...document.querySelectorAll('input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=hidden]), select, textarea')]
+        .filter(e => parseFloat(getComputedStyle(e).fontSize) < 16).map(e => `${e.id || e.name || e.type} ${getComputedStyle(e).fontSize}`));
+    ok('text boxes 16px or larger (no zoom on tap)', !tinyBoxes.length, tinyBoxes.join(' · '));
     ok('no sideways scrolling', !(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)));
     const small = await page.evaluate(() => {
         const seen = new Map();

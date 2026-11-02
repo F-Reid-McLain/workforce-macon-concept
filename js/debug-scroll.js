@@ -22,6 +22,17 @@
     addEventListener('scroll', () => { const n = performance.now(); if (n - lastScroll > 50) { lastScroll = n; add('scroll'); } }, { passive: true });
     addEventListener('scrollend', () => add('scrollend'));
     addEventListener('resize', () => add(`resize ${innerWidth}x${innerHeight}`));
+    // what a search and its card involve: taps, focus, the keyboard (the visible area), the page's state
+    const what = el => el && el.nodeType === 1 ? (el.tagName.toLowerCase() + (el.id ? '#' + el.id : '') + (el.className && typeof el.className === 'string' ? '.' + el.className.trim().split(/\s+/).slice(0, 2).join('.') : '')) : String(el);
+    document.addEventListener('click', e => add(`click ${what(e.target)} "${(e.target.textContent || '').trim().slice(0, 30)}"`), true);
+    document.addEventListener('focusin', e => add(`focusin ${what(e.target)}`));
+    document.addEventListener('focusout', e => add(`focusout ${what(e.target)}`));
+    if (window.visualViewport) visualViewport.addEventListener('resize', () => add(`visible area ${Math.round(visualViewport.width)}x${Math.round(visualViewport.height)} top${Math.round(visualViewport.offsetTop)}`));
+    let cls = document.documentElement.className;
+    new MutationObserver(() => { const c = document.documentElement.className; if (c !== cls) { add(`html class: ${c}`); cls = c; } })
+        .observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    let sceneId = '';
+    setInterval(() => { const id = document.documentElement.dataset.sceneId || ''; if (id !== sceneId) { add(`scene now ${id}`); sceneId = id; } }, 100);
 
     const panel = document.createElement('div');
     panel.style.cssText = 'position:fixed;z-index:9999;left:8px;bottom:8px;display:flex;gap:6px;align-items:center;padding:6px 8px;border-radius:8px;background:rgba(0,0,0,.8);color:#fff;font:12px system-ui';
