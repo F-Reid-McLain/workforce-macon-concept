@@ -50,10 +50,15 @@
 
         // ----- The card -----
         // Kept short: the jobs its residents hold here, how much of its workforce that is, then one line on the rest
+        // (phones: just the two flows, side by side, in the map's gold and white, css/chapters.css)
         card.innerHTML = `<h3></h3>
             <div class="cty-big"><b data-k="in" data-f="int"></b><span>jobs in <span class="nw">Macon-Bibb</span> are held by <span data-name></span> residents</span></div>
             <div class="cty-share"><div class="cty-share__bar"><i></i></div><span data-share></span></div>
             <p class="cty-more" data-more></p>
+            <div class="cty-pair">
+                <div class="cty-pair__in"><b data-pin></b><span><span data-name></span> residents work in <span class="nw">Macon-Bibb</span></span></div>
+                <div class="cty-pair__out"><b data-pout></b><span><span class="nw">Macon-Bibb</span> residents work in <span data-name></span></span></div>
+            </div>
             <button type="button" class="cty-back">← Back to the whole picture</button>`;
         const last = {}, localOver = region.localPay[2] / d3.sum(region.localPay);
         let current = null;
@@ -71,7 +76,9 @@
             card.hidden = false;
             if (storyCard) storyCard.classList.add('has-county');
             card.querySelector('h3').textContent = c.name;
-            card.querySelector('[data-name]').textContent = c.name;
+            card.querySelectorAll('[data-name]').forEach(el => { el.textContent = c.name; });
+            card.querySelector('[data-pin]').textContent = fmt(c.in || 0);
+            card.querySelector('[data-pout]').textContent = fmt(c.out || 0);
             card.querySelector('[data-k="in"]').dataset.num = c.in || 0;
             T.countIn(card, last);
             card.querySelector('.cty-share__bar i').style.width = pct(c.share);

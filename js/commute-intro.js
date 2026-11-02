@@ -395,7 +395,9 @@
             counties.forEach((c, i) => {
                 const xy = fv.project(center.get(c.fips)), el = countyEls[i];
                 el.style.left = xy[0] + 'px'; el.style.top = xy[1] + 'px';
-                el.classList.toggle('is-under', xy[1] > cardTop - 14 || blocks.some(b => xy[0] > b.l && xy[0] < b.r && xy[1] > b.t && xy[1] < b.b));
+                const half = W <= 700 ? (el.offsetWidth || 60) / 2 : 0;   // (and a name the screen's edge would cut)
+                el.classList.toggle('is-under', xy[1] > cardTop - 14 || blocks.some(b => xy[0] > b.l && xy[0] < b.r && xy[1] > b.t && xy[1] < b.b)
+                    || (W <= 700 && (xy[0] - half < 2 || xy[0] + half > W - 2)));
             });
         }
         // The finished map's labels are plain HTML pinned over the canvas (crisper than

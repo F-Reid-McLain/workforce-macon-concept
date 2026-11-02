@@ -126,7 +126,7 @@ const device = args.device || 'iPhone 15', base = args.base || 'http://localhost
     ok('map card fits on screen', card.bottom <= card.vh && card.top >= 60, `${Math.round(card.top)}..${Math.round(card.bottom)} of ${card.vh}`);
     const select = page.locator('.ci-step--map select').first();
     await select.selectOption(await select.evaluate(s => s.options[3].value)); await wait(900);
-    ok('picking a county shows its numbers', /jobs/i.test(await page.locator('.ci-step--map .ci-card').innerText()));
+    ok('picking a county shows its numbers', /\d[\s\S]*residents work in/i.test(await page.locator('.ci-step--map .ci-card').innerText()));
     await shot('3-map');
 
     // Title slides: each one's words, then its map, which draws itself
