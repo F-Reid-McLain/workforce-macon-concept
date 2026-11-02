@@ -286,3 +286,25 @@ html.scenes .ci-steps { margin-top: calc(-1 * var(--sh, 100svh)); }
 html.scenes .ci-step { min-height: calc(var(--sh, 100svh) * 0.9); }
 html.scenes .ci-step--welcome { min-height: var(--sh, 100svh); }
 html.scenes .ci-step:last-child { min-height: calc(var(--sh, 100vh) * 1.1); }
+
+/* ----- Searching on a phone (js/lookups.js typeahead): the search box opens as a full-screen
+   search over the visible area (--vvh/--vvt, from visualViewport, so above the keyboard), the box at
+   the top with Cancel beside it and its matches scrolling below ----- */
+.tool-search__cancel { display: none; }
+html.scenes .tool-search.is-open {
+    position: fixed; z-index: 460; left: 0; right: 0; top: var(--vvt, 0px); height: var(--vvh, 100dvh);
+    display: flex !important; flex-wrap: wrap; align-content: flex-start; align-items: center; gap: 10px 8px; margin: 0;
+    padding: calc(env(safe-area-inset-top) + 12px) 16px 10px; box-sizing: border-box; background: #0e1420;
+}
+html.scenes .tool-search.is-open input { flex: 1 1 0; min-width: 0; order: 0; }
+html.scenes .tool-search.is-open .tool-search__cancel { order: 1; }   /* (beside the box; the matches go below both) */
+html.scenes .tool-search.is-open .tool-matches { order: 2; }
+html.scenes .tool-search.is-open .tool-search__cancel {
+    display: block; flex: none; min-height: 44px; padding: 0 6px; border: 0; background: none; cursor: pointer;
+    color: var(--ch-gold); font: 600 0.95rem var(--font-body);
+}
+html.scenes .tool-search.is-open .tool-matches {
+    position: static; flex: 0 0 100%; margin: 0; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none;
+    max-height: calc(var(--vvh, 100dvh) - env(safe-area-inset-top) - 84px); overflow-y: auto; overscroll-behavior: contain;
+}
+html.scenes .tool-search.is-open .tool-matches button { min-height: 48px; padding: 10px 6px; border-bottom: 1px solid rgba(255, 255, 255, 0.07); border-radius: 0; font-size: 1rem; }
