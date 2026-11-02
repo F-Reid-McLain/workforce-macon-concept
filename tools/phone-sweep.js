@@ -11,7 +11,8 @@
    Needs Playwright's WebKit (see tools/README.md) and Python with Pillow for the sheets. */
 const { webkit } = require('playwright'); const fs = require('fs');
 const BASE = process.env.BASE || 'http://localhost:8765/', OUT = process.env.OUT || 'phone-sweep'; const wait = ms => new Promise(r => setTimeout(r, ms)); const { execSync } = require('child_process');
-const phones = [['zoomed-15', 320, 600], ['SE-2nd-3rd', 375, 553], ['13-mini', 375, 629], ['15', 393, 659], ['16-Pro', 402, 674], ['15-Pro-Max', 430, 739]];
+// each: name, Safari's visible area, and the screen's own height (which decides html.short, index.html)
+const phones = [['zoomed-15', 320, 600, 693], ['SE-2nd-3rd', 375, 553, 667], ['13-mini', 375, 629, 812], ['15', 393, 659, 852], ['16-Pro', 402, 674, 874], ['15-Pro-Max', 430, 739, 932]];
 const only = process.argv[2] && process.argv[2] !== 'all' ? process.argv[2] : null, mode = process.argv[3] || 'calm';
 const FLAGS = () => {
   const W = innerWidth, H = innerHeight, out = new Set();
@@ -39,8 +40,8 @@ const FLAGS = () => {
   return [...out];
 };
 (async () => { fs.mkdirSync(OUT, { recursive: true }); const b = await webkit.launch();
-  for (const [name, w, h] of phones.filter(p => !only || p[0] === only)) {
-    const ctx = await b.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 2, isMobile: true, hasTouch: true, reducedMotion: mode === 'calm' ? 'reduce' : 'no-preference',
+  for (const [name, w, h, sh] of phones.filter(p => !only || p[0] === only)) {
+    const ctx = await b.newContext({ viewport: { width: w, height: h }, screen: { width: w, height: sh }, deviceScaleFactor: 2, isMobile: true, hasTouch: true, reducedMotion: mode === 'calm' ? 'reduce' : 'no-preference',
       userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1' });
     const p = await ctx.newPage(); const errs = []; p.on('pageerror', e => errs.push(e.message)); p.on('console', m => { if (m.type() === 'error') errs.push(m.text()); });
     await p.goto(BASE + 'index.html'); await wait(5000);

@@ -677,9 +677,10 @@ body.page-home .demo-bar-row { padding: 5px 0; font-size: 0.86rem; }
     /* phones: the list is the tool now, so all eight fit (short phones keep a "show more") */
     #job-rank { --cap: 8; }
 }
-@media (max-width: 700px) and (max-height: 620px) {
-    #job-rank { --cap: 5; }
-    #job-rank.is-capped:not(.is-open) > li:nth-child(n+6) { display: none; }
+/* short phones (html.short, from the screen's size, so opening the keyboard to search can't switch it on mid-typing) */
+@media (max-width: 700px) {
+    html.short #job-rank { --cap: 5; }
+    html.short #job-rank.is-capped:not(.is-open) > li:nth-child(n+6) { display: none; }
 }
 /* tablets: a centered card rather than a sheet */
 @media (min-width: 701px) and (max-width: 900px) {
