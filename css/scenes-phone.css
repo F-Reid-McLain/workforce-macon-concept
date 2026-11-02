@@ -40,11 +40,10 @@ html.scenes .ci-stage { height: 100dvh; }
 html.scenes .ci-time { top: calc(env(safe-area-inset-top) + 20px); right: auto; left: 12px; }
 html.scenes .ci-tools { top: calc(env(safe-area-inset-top) + 66px); }
 html.scenes .ci-step.ci-step--welcome { padding-top: calc(env(safe-area-inset-top) + 12vh); }
-/* short screens (iPhone SE): the headline sits higher and a little smaller, clear of Macon-Bibb below */
-@media (max-height: 620px) {
-    html.scenes .ci-step.ci-step--welcome { padding-top: calc(env(safe-area-inset-top) + 64px); }
-    html.scenes .ci-welcome h1 { font-size: 1.85rem; margin-bottom: 0.9rem; }
-}
+/* short phones (iPhone SE; html.short, set from the screen's size in index.html, so the keyboard can't
+   switch it on): the headline sits higher and a little smaller, clear of Macon-Bibb below */
+html.scenes.short .ci-step.ci-step--welcome { padding-top: calc(env(safe-area-inset-top) + 64px); }
+html.scenes.short .ci-welcome h1 { font-size: 1.85rem; margin-bottom: 0.9rem; }
 /* the captions ride the screen's own bottom edge: pinned to the stage, they drifted above it or
    slipped under it on an iPhone while Safari's toolbar came and went (the stage's height follows late) */
 html.scenes .ci-caption { position: fixed; z-index: 5; padding-bottom: calc(1.4rem + env(safe-area-inset-bottom)); }
@@ -88,7 +87,7 @@ html.scenes .stop {
     padding: calc(env(safe-area-inset-top) + 64px) 16px calc(28px + env(safe-area-inset-bottom)); justify-content: flex-start;
 }
 html.scenes .stop > * { flex-shrink: 0; }
-@media (max-height: 620px) { html.scenes .stop { padding-top: calc(env(safe-area-inset-top) + 58px); gap: 10px; } }
+html.scenes.short .stop { padding-top: calc(env(safe-area-inset-top) + 58px); gap: 10px; }   /* (short phones: html.short) */
 html.scenes .tool-panel { padding: 0; border: 0; border-radius: 0; background: transparent; }
 html.scenes .donut-ctrl, html.scenes .tool-panel--donut #ind-views { margin: 0 -16px; }
 
