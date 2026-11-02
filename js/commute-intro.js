@@ -530,9 +530,9 @@
         new MutationObserver(untab).observe(mapEl, { attributes: true, attributeFilter: ['tabindex'] });
         const MASK = new deck.MaskExtension();
         // The county open in the map's card: outlined in gold, with its commute drawn as arcs
-        let sel = (window.WFCounty && window.WFCounty.current) || null;
+        let sel = (window.WFCounty && window.WFCounty.current) || null, selAt = 0;
         document.addEventListener('county:selected', e => {
-            sel = e.detail; lastScene = ''; wake();
+            sel = e.detail; selAt = performance.now(); lastScene = ''; wake();
             // Phones: the card grows with the county's numbers (or shrinks back), so the map eases
             // to fit the room left above it instead of disappearing under the card
             if (!mobile) return;
@@ -650,23 +650,6 @@
                     getWidth: d => HWY[d.cls].width, getColor: d => [255, 255, 255, Math.round(255 * HWY[d.cls].alpha)],
                     capRounded: true, jointRounded: true, extensions: [MASK], maskId: 'mask-region' }),
             );
-            // The open county's commute: gold arcs in to Macon-Bibb (wider for more jobs), a white one back out
-            if (S.live && sel) {
-                const w = n => 1.5 + 7 * Math.sqrt(n / 10833);   // 10,833: Houston, the biggest flow
-                const arcs = [{ from: sel.fips, to: BIBB, n: sel.in, color: [242, 196, 107, 235] }]
-                    .concat(sel.out ? [{ from: BIBB, to: sel.fips, n: sel.out, color: [232, 236, 243, 200] }] : []);
-                // Flat curves (the map looks straight down, so arcs would flatten into one line): in on one side, out on the other
-                const curve = (a, b) => {
-                    const k = Math.cos(a[1] * Math.PI / 180), A = [a[0] * k, a[1]], B = [b[0] * k, b[1]];
-                    const dx = B[0] - A[0], dy = B[1] - A[1], len = Math.hypot(dx, dy) || 1, bend = len * 0.32;
-                    const C = [(A[0] + B[0]) / 2 - dy / len * bend, (A[1] + B[1]) / 2 + dx / len * bend];
-                    return d3.range(25).map(i => { const u = i / 24, v = 1 - u;
-                        return [(v * v * A[0] + 2 * v * u * C[0] + u * u * B[0]) / k, v * v * A[1] + 2 * v * u * C[1] + u * u * B[1], 60]; });
-                };
-                out.push(new deck.PathLayer({ id: 'county-arcs', data: arcs, getPath: d => curve(center.get(d.from), center.get(d.to)),
-                    getColor: d => d.color, getWidth: d => w(d.n), widthUnits: 'pixels', capRounded: true, jointRounded: true,
-                    parameters: { depthCompare: 'always' } }));
-            }
             return out;
         }
 
@@ -699,14 +682,63 @@
             pulseChg.classList.toggle('is-up', d >= 0.005);
         }
 
-        let lastScene = '';
+        // ----- The open county's commute, as commuters on the move -----
+        // A faint track each way between the county and Macon-Bibb (in on one side, out on the
+        // other, curved since the map looks straight down), drawn in when the county is picked,
+        // with dots travelling along it: gold ones coming in to work, white ones going out, more
+        // dots for more commuters. The tracks stop short of both counties' names.
+        const FLOW_MS = 3200;                                  // one trip along a track as long as Putnam's
+        const FLOW_MAX = window.matchMedia && matchMedia('(hover: hover)').matches ? 120000 : 45000;   // touch screens: the dots rest after a while (battery)
+        const flowCurve = (a, b, u0, u1) => {
+            const k = Math.cos(a[1] * Math.PI / 180), A = [a[0] * k, a[1]], B = [b[0] * k, b[1]];
+            const dx = B[0] - A[0], dy = B[1] - A[1], len = Math.hypot(dx, dy) || 1, bend = len * 0.28;
+            const C = [(A[0] + B[0]) / 2 - dy / len * bend, (A[1] + B[1]) / 2 + dx / len * bend];
+            return u => { const t = u0 + (u1 - u0) * u, v = 1 - t;
+                return [(v * v * A[0] + 2 * v * t * C[0] + t * t * B[0]) / k, v * v * A[1] + 2 * v * t * C[1] + t * t * B[1], 60]; };
+        };
+        const flowsMoving = now => !!sel && !reducedMotion && now - selAt < FLOW_MAX;
+        function flowLayers(now) {
+            if (!sel || !stagesOf(morphAt(hour)).live) return [];
+            const age = now - selAt, grow = reducedMotion ? 1 : d3.easeCubicOut(Math.min(1, age / 700));
+            const clock = reducedMotion ? 0 : Math.min(age, FLOW_MAX);
+            const flows = [{ from: sel.fips, to: BIBB, n: sel.in, color: [242, 196, 107] }]
+                .concat(sel.out ? [{ from: BIBB, to: sel.fips, n: sel.out, color: [236, 240, 247] }] : []);
+            const tracks = [], dots = [];
+            flows.forEach(f => {
+                // trimmed off each county's name: a little at the county's end, more at Macon-Bibb's (its label is bigger)
+                const at = f.to === BIBB ? flowCurve(center.get(f.from), center.get(f.to), 0.12, 0.84) : flowCurve(center.get(f.from), center.get(f.to), 0.16, 0.88);
+                tracks.push({ path: d3.range(25).map(i => at(i / 24 * grow)), color: f.color.concat(70), w: 2 + 4 * Math.sqrt(f.n / 10833) });
+                // more dots for more commuters (Houston, the biggest flow: 10,833), spaced by the track's
+                // length so a short track isn't a string of beads, all moving at the same pace
+                const a0 = center.get(f.from), b0 = center.get(f.to), len = Math.hypot((b0[0] - a0[0]) * Math.cos(a0[1] * Math.PI / 180), b0[1] - a0[1]);
+                const count = Math.max(2, Math.round((2 + 12 * Math.sqrt(f.n / 10833)) * Math.min(1, len / 0.8)));
+                const trip = FLOW_MS * Math.max(0.6, len / 0.8);
+                for (let i = 0; i < count; i++) {
+                    const u = ((clock / trip) + i / count) % 1;
+                    if (u > grow) continue;
+                    const fade = Math.min(1, u / 0.12, (1 - u) / 0.12);          // dots fade in leaving, fade out arriving
+                    dots.push({ pos: at(u), color: f.color, a: fade * grow, r: 2.4 + 2.2 * Math.sqrt(f.n / 10833) });
+                }
+            });
+            return [
+                new deck.PathLayer({ id: 'flow-tracks', data: tracks, getPath: d => d.path, getColor: d => d.color, getWidth: d => d.w,
+                    widthUnits: 'pixels', capRounded: true, jointRounded: true, parameters: { depthCompare: 'always' } }),
+                new deck.ScatterplotLayer({ id: 'flow-glow', data: dots, getPosition: d => d.pos, getRadius: d => d.r * 2.3, radiusUnits: 'pixels',
+                    getFillColor: d => d.color.concat(Math.round(55 * d.a)), parameters: { depthCompare: 'always' } }),
+                new deck.ScatterplotLayer({ id: 'flow-dots', data: dots, getPosition: d => d.pos, getRadius: d => d.r, radiusUnits: 'pixels',
+                    getFillColor: d => d.color.concat(Math.round(255 * d.a)), parameters: { depthCompare: 'always' } }),
+            ];
+        }
+
+        let lastScene = '', baseLayers = [], flowsShown = false;
         function render() {
             const m = morphAt(hour), S = stagesOf(m);
             const sceneKey = [hour.toFixed(4), rise.toFixed(3), hwy.toFixed(3), step, sel ? sel.fips : ''].join();
-            if (sceneKey !== lastScene) {
-                lastScene = sceneKey;
-                setLight(hour, S.light);
-                deckgl.setProps({ layers: layers() });
+            const now = performance.now(), moving = S.live && flowsMoving(now);
+            if (sceneKey !== lastScene || moving || flowsShown !== !!(S.live && sel)) {
+                if (sceneKey !== lastScene) { lastScene = sceneKey; setLight(hour, S.light); baseLayers = layers(); }
+                flowsShown = !!(S.live && sel);
+                deckgl.setProps({ layers: baseLayers.concat(flowLayers(now)) });
             }
             timeLabel.textContent = fmtTime(Math.min(hour, 20.75));
             timeIcon.textContent = hour >= 6.5 && hour < 19 ? '☀' : '☾';
@@ -855,6 +887,7 @@
             };
             const viewKey = [vs.longitude, vs.latitude, vs.zoom, vs.pitch, vs.bearing].map(v => v.toFixed(5)).join();
             if (viewKey !== lastView) { lastView = viewKey; deckgl.setProps({ viewState: vs }); }
+            if (S.live && flowsMoving(now)) busy = true;   // the open county's commuters travelling
             render();
             if (onScreen && busy) loopRAF = requestAnimationFrame(frame);
         }
