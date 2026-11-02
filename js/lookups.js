@@ -285,7 +285,12 @@
         sortBy('common');
         show(current, true);
         register('jobs', s => { const j = jobs.find(j => slug(j.name) === s); if (j) { show(j); openPop(); } return !!j; });
-    }).catch(err => console.error('Job lookup failed to load', err));
+    }).catch(err => {
+        console.error('Job lookup failed to load', err);
+        // (say so where the jobs would be, rather than leave an empty list)
+        const list = document.getElementById('job-rank');
+        if (list) list.outerHTML = '<p class="tool-error" role="alert">The job data didn\'t load. Refresh the page to try again.</p>';
+    });
 
     // ----- Industries -----
     const D = () => window.WFDonut || { light() {}, focusSector() {}, sectorOf() {} };
@@ -363,7 +368,11 @@
         if (indView.current() === 'specialties') { lightFor('specialties'); growBars(); }
         typeahead({ input, list: document.getElementById('strength-qlist'), items: inds, label: i => i.name, onPick: pick });
         register('industries', s => { const i = inds.find(i => slug(i.name) === s); if (i) { input.value = i.name; show(i); openPop(); } return !!i; });
-    }).catch(err => console.error('Industry lookup failed to load', err));
+    }).catch(err => {
+        console.error('Industry lookup failed to load', err);
+        const box = document.getElementById('strength-list');
+        if (box) box.outerHTML = '<p class="tool-error" role="alert">The industry list didn\'t load. Refresh the page to try again.</p>';
+    });
 
     // Shared with js/county-explorer.js (the fourth stop)
     window.WFTools = { register, remember, countIn, swap, slug, segmented };

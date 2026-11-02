@@ -523,6 +523,11 @@
             onHover: showTip,
             getCursor: ({ isHovering }) => isHovering && stagesOf(morphAt(hour)).live ? 'pointer' : 'default',
         });
+        // (the map library makes its box keyboard-focusable; the story takes no keys there, and the
+        // box is hidden from screen readers, so it stays out of the tab order)
+        const untab = () => { if (mapEl.getAttribute('tabindex') !== '-1') mapEl.setAttribute('tabindex', '-1'); };
+        untab();
+        new MutationObserver(untab).observe(mapEl, { attributes: true, attributeFilter: ['tabindex'] });
         const MASK = new deck.MaskExtension();
         // The county open in the map's card: outlined in gold, with its commute drawn as arcs
         let sel = (window.WFCounty && window.WFCounty.current) || null;
@@ -1014,5 +1019,9 @@
         const settleDraw = setInterval(() => deckgl.redraw('settle'), 120);
         setTimeout(() => clearInterval(settleDraw), 4000);
         setTimeout(() => section.classList.add('is-ready'), 8000);   // whatever happens, don't hold the map back for good
-    }).catch(err => console.error('Commuting intro failed to load', err));
+    }).catch(err => {
+        console.error('Commuting intro failed to load', err);
+        const stage = document.getElementById('ci-stage');
+        if (stage) stage.insertAdjacentHTML('beforeend', '<p class="tool-error ci-error" role="alert">The commuting map didn\'t load. Refresh the page to try again.</p>');
+    });
 })();

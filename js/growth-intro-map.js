@@ -165,6 +165,8 @@
             tick.append('text').attr('class', 'gm-year-cap').attr('y', 16).text('new & expanding plants');
             const hint = tick.append('text').attr('class', 'gm-hint').attr('y', 32).text(touch ? 'Tap a plant for its story' : 'Hover a plant for its story');
 
+            // Screen readers get the plants (each a labeled button); the roads, names and year are decoration
+            Array.from(svg.node().children).forEach(el => { if (!el.classList.contains('gm-plants') && el.tagName !== 'defs') el.setAttribute('aria-hidden', 'true'); });
             return (p, stage) => {
                 tick.style('opacity', stage(0.28, 0.36));
                 hint.style('opacity', stage(0.9, 1));
