@@ -27,7 +27,7 @@
       // wide). With Reduce Motion on, the scenes are calm: they fade from one to the next, with
       // no camera flights or drifting (html.calm).
       // (a phone turned sideways counts too: it's asked to turn upright, and turning back finds the scenes)
-      if (window.matchMedia && matchMedia('(pointer: coarse) and (max-width: 700px), (pointer: coarse) and (orientation: landscape) and (max-height: 500px)').matches) {
+      if (window.matchMedia && matchMedia('(pointer: coarse) and (max-width: 700px), (pointer: coarse) and (orientation: landscape) and (min-width: 480px) and (max-height: 500px)').matches) {
         document.documentElement.classList.add('scenes');
         if (matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('calm');
       }

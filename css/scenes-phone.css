@@ -249,9 +249,10 @@ html.scenes body::before {
 html.scenes[data-scene-id="custom-research"] body::before { opacity: 1; }   /* (Jobs and Industries keep their own title row clear) */
 
 /* ----- A phone turned sideways: too short for the maps and tools, so a card asks to turn it upright
-   ("Continue anyway" sets html.upright-ok, js/scenes-phone.js) ----- */
+   ("Continue anyway" sets html.upright-ok, js/scenes-phone.js). "Sideways" needs the width too: an
+   upright phone with its keyboard open is also wider than it is tall, but never 480px wide. ----- */
 .turn-upright { display: none; }
-@media (pointer: coarse) and (orientation: landscape) and (max-height: 500px) {
+@media (pointer: coarse) and (orientation: landscape) and (min-width: 480px) and (max-height: 500px) {
     html:not(.upright-ok) .turn-upright {
         display: flex; position: fixed; inset: 0; z-index: 1000; align-items: center; justify-content: center;
         padding: 24px calc(24px + env(safe-area-inset-right)) 24px calc(24px + env(safe-area-inset-left)); background: #0e1420; text-align: center;
