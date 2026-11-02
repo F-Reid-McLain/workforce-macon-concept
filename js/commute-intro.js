@@ -203,8 +203,9 @@
         const arrivalOrder = region.flows.filter(f => f.to === BIBB).sort((a, b) => b.jobs - a.jobs).map(f => f.from);
         const arriveAt = (fips, h) => {
             if (fips === BIBB) return 1;
-            const i = Math.max(0, arrivalOrder.indexOf(fips));
-            return smooth(5.05 + 0.05 * i, 5.3 + 0.05 * i, h);
+            // one after another, the last (Taylor, the smallest flow) up by 5:51: at 6 AM everyone stands level
+            const i = Math.max(0, arrivalOrder.indexOf(fips)), step = 0.55 / Math.max(1, arrivalOrder.length - 1);
+            return smooth(5.05 + step * i, 5.3 + step * i, h);
         };
 
         // ----- The regional map's colors (net commuting, LODES) -----
@@ -240,6 +241,10 @@
         const timePill = section.querySelector('.ci-time');
         const timeLabel = document.getElementById('ci-time-label');
         const timeIcon = document.getElementById('ci-time-icon');
+        // the clock's sun and moon, drawn as line icons (the text symbols render as emoji on phones)
+        const SUN = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.55 1.55M17.15 17.15l1.55 1.55M5.3 18.7l1.55-1.55M17.15 6.85l1.55-1.55"/></svg>';
+        const MOON = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.6A8.2 8.2 0 0 1 9.4 4a8.2 8.2 0 1 0 10.6 10.6z"/></svg>';
+        let shownDay = null;
         const hwyBtn = document.getElementById('ci-hwy');
         const pngBtn = document.getElementById('ci-png');
 
@@ -624,9 +629,16 @@
             );
             // Commuters on the road right now, each trailing a short comet tail
             const onRoad = (d, h) => (h > d.t0 && h < d.t0 + TRAVEL) || (h > d.t1 && h < d.t1 + TRAVEL);
+            // Resting on a moment, the dots on the road keep going: each loops along its route (fading
+            // out as it arrives, setting off again from home), a little further each frame (dotLoop,
+            // in trips); the story's counts don't change. While the clock moves, the loop holds still.
+            const fadeEnds = p => dotLoop ? Math.min(1, p / 0.08, (1 - p) / 0.08) : 1;
+            const tripAt = (d, h) => (h < d.t1 ? (h - d.t0) : (h - d.t1)) / TRAVEL;            // 0..1 along the trip
+            const looped = (d, k) => { const p = tripAt(d, hour) + dotLoop - k * 0.014 / TRAVEL; return p - Math.floor(p); };
             const tops = new Map(counties.map(c => [c.fips, fullTop(c.fips)]));   // once per frame, not per dot
-            const dotPosAt = (d, h) => {
-                const u = clamp01(h < d.t1 ? (h - d.t0) / TRAVEL : 1 - (h - d.t1) / TRAVEL);   // 0 = home, 1 = work
+            const dotPosAt = (d, h, p) => {
+                const u = p === undefined ? clamp01(h < d.t1 ? (h - d.t0) / TRAVEL : 1 - (h - d.t1) / TRAVEL)   // 0 = home, 1 = work
+                    : (hour < d.t1 ? p : 1 - p);
                 const za = d.from === EDGE ? 0 : tops.get(d.from), zb = d.to === EDGE ? 0 : tops.get(d.to);
                 return [d.ax + (d.bx - d.ax) * u, d.ay + (d.by - d.ay) * u, za + (zb - za) * u + Math.sin(Math.PI * u) * ARC];
             };
@@ -640,17 +652,18 @@
             const moving = m < 0.15 ? commuters.filter(d => onRoad(d, hour)) : [];
             if (moving.length && rise > 0.9) {
                 const TRAIL = RENDER ? RENDER.trail : 4, STEP = 0.014;
-                const trail = moving.flatMap(d => d3.range(1, TRAIL + 1).filter(k => onRoad(d, hour - k * STEP)).map(k => ({ d, k })));
+                const trail = moving.flatMap(d => d3.range(1, TRAIL + 1).filter(k => dotLoop ? looped(d, k) < looped(d, 0) : onRoad(d, hour - k * STEP)).map(k => ({ d, k })));
+                const loopKey = geoKey + '|' + dotLoop.toFixed(4);
                 out.push(
-                    new deck.ScatterplotLayer({ id: 'trails', data: trail, getPosition: t => dotPosAt(t.d, hour - t.k * STEP),
-                        getFillColor: t => dotColor(t.d).concat(Math.round((t.d.edge ? 120 : 200) * (1 - t.k / (TRAIL + 1)))),
+                    new deck.ScatterplotLayer({ id: 'trails', data: trail, getPosition: t => dotLoop ? dotPosAt(t.d, hour, looped(t.d, t.k)) : dotPosAt(t.d, hour - t.k * STEP),
+                        getFillColor: t => dotColor(t.d).concat(Math.round((t.d.edge ? 120 : 200) * (1 - t.k / (TRAIL + 1)) * fadeEnds(looped(t.d, t.k)))),
                         radiusUnits: 'pixels', getRadius: t => dotSize(t.d) * 0.9 * (1 - 0.1 * t.k), billboard: true,
-                        parameters: { depthCompare: 'always' }, updateTriggers: { getPosition: geoKey, getFillColor: payMix } }),
-                    new deck.ScatterplotLayer({ id: 'dots', data: moving, getPosition: d => dotPosAt(d, hour),
-                        getFillColor: d => dotColor(d).concat(dotAlpha(d)),
-                        stroked: true, getLineColor: [40, 35, 25, 200], lineWidthUnits: 'pixels', getLineWidth: 0.6,
+                        parameters: { depthCompare: 'always' }, updateTriggers: { getPosition: loopKey, getFillColor: payMix + '|' + loopKey } }),
+                    new deck.ScatterplotLayer({ id: 'dots', data: moving, getPosition: d => dotLoop ? dotPosAt(d, hour, looped(d, 0)) : dotPosAt(d, hour),
+                        getFillColor: d => dotColor(d).concat(Math.round(dotAlpha(d) * fadeEnds(looped(d, 0)))),
+                        stroked: true, getLineColor: d => [40, 35, 25, Math.round(200 * fadeEnds(looped(d, 0)))], lineWidthUnits: 'pixels', getLineWidth: 0.6,
                         radiusUnits: 'pixels', getRadius: dotSize, billboard: true,
-                        parameters: { depthCompare: 'always' }, updateTriggers: { getPosition: geoKey, getFillColor: payMix } }),
+                        parameters: { depthCompare: 'always' }, updateTriggers: { getPosition: loopKey, getFillColor: payMix + '|' + loopKey, getLineColor: loopKey } }),
                 );
             }
             // Story labels: county name and its change right now (text rebuilt only when a figure changes)
@@ -757,10 +770,11 @@
             ];
         }
 
+        let dotLoop = 0;   // how far (in trips) the resting dots have looped, see onRoad
         let lastScene = '', baseLayers = [], flowsShown = false;
         function render() {
             const m = morphAt(hour), S = stagesOf(m);
-            const sceneKey = [hour.toFixed(4), rise.toFixed(3), hwy.toFixed(3), step, sel ? sel.fips : ''].join();
+            const sceneKey = [hour.toFixed(4), rise.toFixed(3), hwy.toFixed(3), step, sel ? sel.fips : '', dotLoop.toFixed(4)].join();
             const now = performance.now(), moving = S.live && flowsMoving(now);
             if (sceneKey !== lastScene || moving || flowsShown !== !!(S.live && sel)) {
                 if (sceneKey !== lastScene) { lastScene = sceneKey; setLight(hour, S.light); baseLayers = layers(); }
@@ -768,7 +782,8 @@
                 deckgl.setProps({ layers: baseLayers.concat(flowLayers(now)) });
             }
             timeLabel.textContent = fmtTime(Math.min(hour, 20.75));
-            timeIcon.textContent = hour >= 6.5 && hour < 19 ? '☀' : '☾';
+            const day = hour >= 6.5 && hour < 19;
+            if (day !== shownDay) { shownDay = day; timeIcon.innerHTML = day ? SUN : MOON; }
             timePill.style.opacity = String(1 - smooth(0.4, 0.7, m));
             section.style.setProperty('--ci-map', S.overlays.toFixed(3));
             section.style.setProperty('--ci-maplabels', S.mapLabels.toFixed(3));
@@ -857,7 +872,7 @@
         const canHover = !!(window.matchMedia && matchMedia('(hover: hover)').matches);
         // Phones in swipe scenes (js/scenes-phone.js) keep the gentle sway between swipes: the movement is the point
         const SCENES = document.documentElement.classList.contains('scenes');
-        const IDLE_MS = 2000, IDLE_MAX = canHover ? 120000 : 30000;
+        const IDLE_MS = 2000, IDLE_MAX = canHover ? 120000 : 30000, DOTS_MAX = canHover ? 600000 : 90000;
         const SPIN = 360 / 75000, SWAY = 8;            // degrees per ms; degrees either way
         let lastInput = performance.now(), orbit = 0, swayClock = 0, idleTimer = null;
         const wrap180 = d => ((d % 360) + 540) % 360 - 180;
@@ -914,6 +929,10 @@
             };
             const viewKey = [vs.longitude, vs.latitude, vs.zoom, vs.pitch, vs.bearing].map(v => v.toFixed(5)).join();
             if (viewKey !== lastView) { lastView = viewKey; deckgl.setProps({ viewState: vs }); }
+            // Resting on a moment with commuters on the road: they keep travelling (a trip every 4 s; on
+            // touch screens they rest after a minute and a half, for the battery)
+            if (!reducedMotion && !RENDER && rise >= 1 && S.settle < 0.01 && Math.abs(target - hour) < 0.001 && since < DOTS_MAX && morphAt(hour) < 0.15
+                && ((hour > 6.1 && hour < 10.6) || (hour > 16.4 && hour < 19.6))) { dotLoop = (dotLoop + dt / 4000) % 1; busy = true; }
             if (S.live && flowsMoving(now)) busy = true;   // the open county's commuters travelling
             render();
             if (onScreen && busy) loopRAF = requestAnimationFrame(frame);
@@ -1015,7 +1034,7 @@
         const momentFor = id => { const name = String(id).split('/')[0]; return momentStep(name === 'counties' ? 'map' : name); };
         const goToHash = () => { const el = momentFor(decodeURIComponent(location.hash.slice(1))); if (el) goToStep(el, false); };
         // anchors: the story's visible cards and the scroll position of each (js/scenes-phone.js steps through them)
-        window.WFStory = { goTo(id) { const el = momentFor(id); if (el) goToStep(el, false); return !!el; }, anchors: () => { measure(); return anchors.slice(); } };
+        window.WFStory = { goTo(id) { const el = momentFor(id); if (el) goToStep(el, false); return !!el; }, anchors: () => { measure(); return anchors.slice(); }, layers: () => deckgl.props.layers };   // (layers: for tests)
         addEventListener('hashchange', goToHash);
         allSteps.filter(el => el.dataset.moment).forEach(el => {
             const card = el.querySelector('.ci-card');
