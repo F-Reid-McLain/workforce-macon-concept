@@ -144,10 +144,19 @@ const device = args.device || 'iPhone 15', base = args.base || 'http://localhost
         await fills(tool);
         if (scenes) ok(`${tool}: one screen that scrolls inside itself`, await page.evaluate(id => { const e = document.getElementById(id), r = e.getBoundingClientRect(); return Math.abs(r.top) <= 1 && Math.abs(r.height - innerHeight) <= 1 && getComputedStyle(e).overflowY === 'auto'; }, tool));
         if (i === 0) {
-            await tapOn('#jobs input[type=search]'); await page.keyboard.type('nurse', { delay: 40 }); await wait(600);
-            await tapOn('#jobs .tool-matches li');
-            ok('job search opens a job', await page.evaluate(() => { const r = document.querySelector('#jobs .tool-result'); return !!r && !r.hidden; }));
+            // The whole search as a person does it: tap the box, the keyboard rises (the visible screen
+            // shrinks; Playwright has no keyboard), type, tap a match, the keyboard drops
+            const vp = page.viewportSize(), KB = Math.round(vp.height * 0.5);
+            await tapOn('#jobs input[type=search]'); await page.setViewportSize({ width: vp.width, height: vp.height - KB }); await wait(500);
+            await page.keyboard.type('nurs', { delay: 60 }); await wait(600);
+            if (scenes) ok('search opens full screen, its matches all above the keyboard', await page.evaluate(() => {
+                const box = document.querySelector('#jobs .tool-search'), l = box.querySelector('.tool-matches').getBoundingClientRect();
+                return box.classList.contains('is-open') && l.bottom <= innerHeight + 1 && document.querySelectorAll('#jobs .tool-matches li').length > 0; }));
+            const want = await page.evaluate(() => { const b = document.querySelectorAll('#jobs .tool-matches button')[2]; return b ? b.textContent : ''; });
+            await tapOn('#jobs .tool-matches li:nth-child(3) button'); await page.setViewportSize(vp); await wait(1500);
+            ok('tapping a match opens that job', await page.evaluate(w => { const r = document.querySelector('#jobs .tool-result'); return !!r && !r.hidden && r.querySelector('h3').textContent === w; }, want), want);
             ok('keyboard closes after the pick', await page.evaluate(() => document.activeElement.tagName !== 'INPUT'));
+            if (scenes) ok('…and the page stays on Jobs', await page.evaluate(() => WFScenes.list()[WFScenes.index()].id === 'jobs' && Math.abs(document.getElementById('jobs').getBoundingClientRect().top) < 3 && !document.querySelector('#jobs .tool-search').classList.contains('is-open')));
             // phones and tablets: the job's card pops up over the tool; × closes it
             if (await page.evaluate(() => innerWidth <= 900)) {
                 ok("the job's card pops up", await page.evaluate(() => document.getElementById('jobs').classList.contains('has-pop')));

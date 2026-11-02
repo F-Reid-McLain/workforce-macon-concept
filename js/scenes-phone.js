@@ -43,7 +43,15 @@
     // the screen and would shrink every scene with it, carrying the page past where it was
     const typing = () => { const a = document.activeElement; return !!a && a.matches('input:not([type=checkbox]):not([type=radio]):not([type=range]), textarea, select'); };
     const sceneH = () => parseFloat(root.style.getPropertyValue('--sh')) || innerHeight;
-    const lockHeight = () => { if (!typing() && Math.abs(sceneH() - innerHeight) > 1) root.style.setProperty('--sh', innerHeight + 'px'); };
+    // (the keyboard is told apart by its shape: it takes away a lot of height, 150px or more, and no
+    // width; Safari's toolbar changes far less, and turning the phone changes the width. It counts as
+    // the keyboard even once the box has let go, while the keyboard is still on its way down.)
+    let lockedW = innerWidth;
+    const keyboardUp = () => innerWidth === lockedW && sceneH() - innerHeight > 150;
+    const lockHeight = () => {
+        if (typing() || keyboardUp() || Math.abs(sceneH() - innerHeight) <= 1) return;
+        root.style.setProperty('--sh', innerHeight + 'px'); lockedW = innerWidth;
+    };
 
     // The opening's prompt says what a phone does here
     const cue = document.querySelector('.ci-scroll');
@@ -191,7 +199,7 @@
     function decide(e, dx, dy) {
         // a pop-up is open (a job's card): its own scrolling only, the scenes hold still
         if (askingUpright()) return 'held';                                // the turn-upright card
-        if (root.classList.contains('has-popup')) return scrollsItself(e.target, dy) ? 'native' : 'held';
+        if (root.classList.contains('has-popup') || root.classList.contains('is-searching')) return scrollsItself(e.target, dy) ? 'native' : 'held';
         if (glide) return 'scene';                                        // mid-glide: a swipe moves on, it doesn't scroll
         if (Math.abs(dx) > Math.abs(dy)) return 'native';                 // sideways: rows of switches
         if (scrollsItself(e.target, dy)) return 'native';                 // a tool with more to read, the map card, a list
@@ -241,7 +249,7 @@
     if ('onscrollend' in window) addEventListener('scrollend', () => { clearTimeout(settleT); settleT = setTimeout(settle, 60); });
     else addEventListener('scroll', () => { clearTimeout(settleT); settleT = setTimeout(settle, 180); }, { passive: true });
     addEventListener('resize', () => {
-        if (typing()) return;   // the keyboard coming and going: nothing about the scenes has changed
+        if (typing() || keyboardUp()) return;   // the keyboard coming and going: nothing about the scenes has changed
         // the screen really changed size: every scene with it, so the page re-lands on the one it was on
         const was = scenes[index];
         clearTimeout(settleT); settleT = setTimeout(() => {

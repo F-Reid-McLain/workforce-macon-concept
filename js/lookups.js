@@ -184,8 +184,30 @@
     // Nurses above Nursery workers); within each, biggest first. aliases turn common
     // short forms into the words in the data ("ceo" -> "chief executives").
     const words = s => s.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
+    // Phones (the swipe scenes): a search box opens as a full-screen search, the box at the top with
+    // Cancel beside it and its matches filling the room above the keyboard (the visible area, from
+    // visualViewport), scrolling inside it; picking one closes it. A dropdown under the box ran
+    // behind the keyboard, and dragging to reach it swiped the page to the next scene.
+    const root = document.documentElement, vv = window.visualViewport;
+    const searchSheet = () => root.classList.contains('scenes');
+    const fitVisible = () => { if (!vv) return; root.style.setProperty('--vvh', vv.height + 'px'); root.style.setProperty('--vvt', vv.offsetTop + 'px'); };
+    if (vv) { vv.addEventListener('resize', fitVisible); vv.addEventListener('scroll', fitVisible); }
     function typeahead({ input, list, items, label, onPick, aliases = {} }) {
         let matches = [];
+        const box = input.closest('.tool-search');
+        const opened = on => {
+            if (!box) return;
+            box.classList.toggle('is-open', on); root.classList.toggle('is-searching', on);
+            if (on) fitVisible();
+        };
+        if (box) {
+            const cancel = document.createElement('button');
+            cancel.type = 'button'; cancel.className = 'tool-search__cancel'; cancel.textContent = 'Cancel';
+            cancel.addEventListener('mousedown', e => e.preventDefault());
+            cancel.addEventListener('click', () => { input.value = ''; show(); input.blur(); opened(false); });
+            box.appendChild(cancel);
+            input.addEventListener('focus', () => { if (searchSheet()) opened(true); });
+        }
         const show = () => {
             let q = input.value.trim().toLowerCase();
             if (aliases[q]) q = aliases[q];
@@ -195,7 +217,7 @@
                 if (!toks.every(t => ws.some(w => w.startsWith(t)))) return null;
                 const whole = toks.every(t => ws.some(w => w === t || w === t + 's' || w === t + 'es'));
                 return { it, i, score: (name.startsWith(q) ? 0 : 2) + (whole ? 0 : 1) };
-            }).filter(Boolean).sort((a, b) => a.score - b.score || a.i - b.i).slice(0, 6).map(m => m.it);
+            }).filter(Boolean).sort((a, b) => a.score - b.score || a.i - b.i).slice(0, searchSheet() ? 12 : 6).map(m => m.it);
             list.innerHTML = matches.map((it, i) => `<li><button type="button" data-i="${i}">${esc(label(it))}</button></li>`).join('');
             list.hidden = !matches.length;
         };
@@ -206,9 +228,9 @@
         });
         list.addEventListener('mousedown', e => e.preventDefault());   // keep focus in the box so the click lands
         list.addEventListener('click', e => { const b = e.target.closest('button'); if (b) pick(matches[+b.dataset.i]); });
-        input.addEventListener('blur', () => setTimeout(() => { list.hidden = true; }, 150));
+        input.addEventListener('blur', () => setTimeout(() => { list.hidden = true; if (document.activeElement !== input) opened(false); }, 150));
         // On touch screens the keyboard goes away with the pick, so it doesn't cover the result
-        function pick(it) { input.value = label(it); list.hidden = true; if (matchMedia('(hover: none)').matches) input.blur(); onPick(it); }
+        function pick(it) { input.value = label(it); list.hidden = true; opened(false); if (matchMedia('(hover: none)').matches) input.blur(); onPick(it); }
     }
 
     // ----- Jobs -----
