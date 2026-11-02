@@ -129,7 +129,9 @@ window.WFIntroMap = (function () {
             // (shieldReach: how far out from the middle they may sit, as a share of the smaller side;
             // a slide zoomed in close pushes them further out, clear of what it puts in the middle)
             const reach = Math.min(W, H) * ((opts.shieldReach && opts.shieldReach(wide)) || 0.42);
-            const inView = q => wide || (q[0] > 26 && q[0] < W - 26 && q[1] > 80 && q[1] < H - 70);   // phones: on screen, clear of the credits
+            // phones: on screen, and clear of the credits at the foot (measured: they grow with what they credit)
+            const credits = slide.querySelector('.intro-source'), foot = Math.max(70, (credits ? credits.offsetHeight : 0) + 46);
+            const inView = q => wide || (q[0] > 26 && q[0] < W - 26 && q[1] > 80 && q[1] < H - foot);
             const shieldAt = (route, pick) => {
                 const options = halves.filter(h => h.route === route)
                     .map(h => h.pts.find(q => dist(q, center) < reach && inView(q)) || h.pts[h.pts.length - 1]);

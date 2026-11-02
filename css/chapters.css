@@ -704,3 +704,10 @@ body.page-home .demo-bar-row { padding: 5px 0; font-size: 0.86rem; }
 .donut-up[hidden] { display: none; }
 @keyframes donut-up-in { from { opacity: 0; transform: translateX(6px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .donut-up { animation: none; } }
+
+/* ----- A tool whose data didn't load says so (js/lookups.js, js/workforce-data.js, js/commute-intro.js) ----- */
+.tool-error {
+    margin: 12px 0; padding: 14px 16px; border-radius: 12px; border: 1px dashed rgba(255, 255, 255, 0.2);
+    color: var(--color-text-secondary); font-size: 0.95rem; text-align: center;
+}
+.ci-error { position: absolute; z-index: 6; left: 50%; bottom: 18%; transform: translateX(-50%); width: min(420px, calc(100% - 32px)); margin: 0; background: rgba(14, 20, 32, 0.9); }

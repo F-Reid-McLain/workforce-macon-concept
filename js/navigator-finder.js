@@ -417,7 +417,7 @@
     function failed(err) {
         console.error('Navigator data failed to load', err);
         const box = document.getElementById('finder-fields');
-        if (box) box.outerHTML = '<p class="finder-empty" role="alert">The program list didn\'t load. Refresh the page to try again.</p>';
+        if (box) box.outerHTML = '<p class="finder-empty" role="alert">The Navigator\'s list of programs and organizations didn\'t load. Refresh the page to try again.</p>';
     }
     document.addEventListener('assets:failed', e => failed(e.detail), { once: true });
     if (!gotAssets) document.addEventListener('assets:loaded', () => { gotAssets = true; start(); }, { once: true });

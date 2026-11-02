@@ -472,6 +472,9 @@
         writeFindings(totalRow, occRows);
     }).catch(err => {
         console.error('Workforce data load error:', err);
+        // (say so where the donut would be, rather than leave a blank space)
+        const donut = document.getElementById('donut');
+        if (donut && !document.getElementById('donut-error')) donut.insertAdjacentHTML('afterend', '<p class="tool-error" id="donut-error" role="alert">The industry data didn\'t load. Refresh the page to try again.</p>');
     });
     d3.json('data/commute-sectors.json').then(renderCommuteSectors).catch(err => console.error('Commuting-by-industry load error:', err));
 

@@ -191,7 +191,7 @@
                     <div class="ci-county" id="counties-tool">
                         <label class="ci-county__pick">
                             <span class="ci-long">See how your county trades workers with <span class="nw">Macon-Bibb</span>, or click it on the map</span><span class="ci-short">Pick your county</span>
-                            <select id="cty-select"><option value="">Pick a county</option></select>
+                            <select id="cty-select" aria-label="Pick a county"><option value="">Pick a county</option></select>
                         </label>
                         <div class="cty-card" id="cty-card" aria-live="polite" hidden></div>
                     </div>
@@ -261,7 +261,7 @@
         <!-- Stop 3 · Industries: a title slide, then the tool -->
         <div class="stop-intro stop-intro--map stop-intro--grow">
             <!-- Drawn by js/growth-intro-map.js: Macon-Bibb, its interstates, and the new manufacturers rising year by year (hover one for its story) -->
-            <svg class="intro-map" id="grow-intro-map" aria-hidden="true"></svg>
+            <svg class="intro-map" id="grow-intro-map" role="group" aria-label="Map of new and expanding manufacturers in Macon-Bibb, 2015 to 2026"></svg>
             <div class="stop-intro__inner">
                 <p class="chapter-kicker">Industries · What's growing</p>
                 <h2 class="chapter-finding" id="find-industries"><em>Manufacturing</em> is growing <em>three times</em> as fast as health care in <span class="nw">Macon-Bibb</span>.</h2>
