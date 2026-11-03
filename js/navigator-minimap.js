@@ -19,8 +19,14 @@
     const exploreBtn = document.getElementById('minimap-explore');
     let lastFocus = null;
 
-    function setOpen(open) {
+    // The open map is a step in the browser's history, so the phone's back button closes it rather
+    // than leaving the page; closing it any other way takes that step back off
+    let pushed = false;
+    addEventListener('popstate', () => { if (pushed) { pushed = false; setOpen(false, true); } });
+    function setOpen(open, fromHistory) {
         if (open === frame.classList.contains('is-open')) return;
+        if (open && !pushed) { history.pushState({ wfMap: true }, ''); pushed = true; }
+        if (!open && pushed && !fromHistory) { pushed = false; history.back(); }
         if (open) lastFocus = document.activeElement;
         frame.classList.toggle('is-open', open);
         document.body.classList.toggle('minimap-open', open);
@@ -57,7 +63,7 @@
     // The banner shows every organization too, so the whole ecosystem is there on the page
     // (laid out for the banner's shape; opening the map re-lays it out for the full screen)
     const banner = () => { if (phone() && !frame.classList.contains('is-open')) setView('everyone', true); };
-    document.addEventListener('viz:ready', () => setTimeout(banner, 60));
+    document.addEventListener('viz:ready', () => { setTimeout(banner, 60); setTimeout(banner, 900); });   // (again once the page has settled)
     if (typeof nodeSelection !== 'undefined' && nodeSelection) setTimeout(banner, 60);
 
     // A tapped group's organizations, listed in the map's bottom panel; a tap opens one's details
