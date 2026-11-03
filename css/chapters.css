@@ -262,6 +262,9 @@ body.page-home .demo-bar-row { padding: 5px 0; font-size: 0.86rem; }
 .pane-note { margin: 0 0 6px; font-size: 0.9rem; line-height: 1.5; color: var(--color-text-secondary); }
 .pane-note em { font-style: normal; font-weight: 700; color: #fff; }
 [data-pane][hidden] { display: none; }
+/* The lists that scroll inside a tool scroll up and down only: a scroll box allows sideways too, and
+   iOS lets a slightly diagonal drag pull the whole list side to side (and spring back) */
+.donut-side, .tool-col--fit [data-pane], #donut-legend, #job-rank, .tool-matches, .ci-step--map .ci-card, #strength-result, #jobs .tool-col--result { overflow-x: hidden; touch-action: pan-y pinch-zoom; overscroll-behavior-x: none; }
 .tool-empty { margin: 8px 0; color: var(--color-text-muted); font-size: 0.9rem; }
 
 /* A row of choices, one on at a time; a gold pill slides to the one that's on (js/lookups.js) */
