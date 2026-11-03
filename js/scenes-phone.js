@@ -226,8 +226,8 @@
     // a swipe that would move between scenes is the player's; scrolling inside a tool, a list or
     // card that scrolls itself, or sideways along a row of buttons stays the browser's.
     let sx = 0, sy = 0, st = 0, mode = null;
-    const scrollsItself = (el, dy) => {
-        for (let n = el; n && n !== document.body; n = n.parentElement) {
+    const scrollsItself = (el, dy, within) => {
+        for (let n = el; n && n !== document.body && n !== (within && within.parentElement); n = n.parentElement) {
             const cs = getComputedStyle(n);
             if (!/(auto|scroll)/.test(cs.overflowY) || n.scrollHeight <= n.clientHeight + 1) continue;
             if (dy < 0 ? n.scrollTop + n.clientHeight < n.scrollHeight - 1 : n.scrollTop > 0) return true;
@@ -237,7 +237,11 @@
     function decide(e, dx, dy) {
         // a pop-up is open (a job's card): its own scrolling only, the scenes hold still
         if (askingUpright()) return 'held';                                // the turn-upright card
-        if (pinned || inUse()) return scrollsItself(e.target, dy) ? 'native' : 'held';
+        // (a pop-up or the search sheet: only the card or the list itself scrolls, never the tool behind it)
+        if (pinned || inUse()) {
+            const top = document.querySelector('[aria-modal="true"], .tool-search.is-open');
+            return top && top.contains(e.target) && scrollsItself(e.target, dy, top) ? 'native' : 'held';
+        }
         if (glide) return 'scene';                                        // mid-glide: a swipe moves on, it doesn't scroll
         if (Math.abs(dx) > Math.abs(dy)) return 'native';                 // sideways: rows of switches
         if (scrollsItself(e.target, dy)) return 'native';                 // a tool with more to read, the map card, a list
