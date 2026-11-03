@@ -250,7 +250,11 @@
             usPaths.attr('fill-opacity', (d, j) => i >= 0 ? (j === i ? 1 : 0.3) : 1);
             legendRows.forEach((b, j) => b.classList.toggle('is-dim', i < 0 && !!lit && !lit.has(pie[j].data.sector.id)));
         };
+        // An industry picked (its card open) stays lit, whatever hover and focus do (the card's own
+        // button takes the focus, which would otherwise put the slice out while the card is up)
+        let picked = -1;
         const highlight = i => {
+            if (i < 0) i = picked;
             hot = i;
             draw(donutBuilt, hot);
             paint(i);
@@ -296,6 +300,7 @@
         renderDonut.snapshot = () => ({ node, pie: pie.map(d => ({ startAngle: d.startAngle, endAngle: d.endAngle, padAngle: d.padAngle, fill: colorOf(d.data), sector: d.data.sector, name: d.data.name })) });
         renderDonut.draw = (a, z) => draw(a, hot, z === undefined ? zNow : z);
         renderDonut.hot = highlight;
+        renderDonut.pick = i => { picked = i; highlight(i); };
         renderDonut.indexOf = naics => { const k = pie.findIndex(d => d.data.naics === naics); return k >= 0 ? k : pie.findIndex(d => d.data.other); };
         paint(-1);
         setCenter(-1);
@@ -393,14 +398,14 @@
             donutLit = ids && ids.length ? new Set(ids) : null;
             if (!hierarchy) return;
             if (donutNode !== hierarchy) animateTo(hierarchy);
-            else if (renderDonut.hot) renderDonut.hot(-1);
+            else if (renderDonut.pick) renderDonut.pick(-1);
         },
         focusSector(naics) {
             if (!hierarchy) { pendingFocus = naics; return; }
             const sector = hierarchy.children.find(g => g.id === sectorFor(String(naics)));
             if (!sector) return;
             donutLit = null;
-            const lightIt = () => { const k = renderDonut.indexOf(String(naics)); if (k >= 0) renderDonut.hot(k); };
+            const lightIt = () => { const k = renderDonut.indexOf(String(naics)); if (k >= 0) renderDonut.pick(k); };
             if (donutNode === sector) { lightIt(); return; }
             animateTo(sector);
             setTimeout(lightIt, donutAnim ? 780 : 0);

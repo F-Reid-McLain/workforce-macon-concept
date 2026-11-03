@@ -681,6 +681,9 @@ body.page-home .demo-bar-row { padding: 5px 0; font-size: 0.86rem; }
         opacity: 0; pointer-events: none; transition: opacity 0.3s;
     }
     .has-pop > .pop-backdrop { opacity: 1; pointer-events: auto; }
+    /* an industry's card up: the donut stays above the dimming, its industry lit, so you can see which one
+       it is (it lets taps through to the backdrop, which closes the card) */
+    html.scenes #industries.has-pop .donut { position: relative; z-index: 400; pointer-events: none; }
     .pop-close {
         display: flex; align-items: center; justify-content: center; position: absolute; top: 12px; right: 12px; z-index: 1;
         width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.16); cursor: pointer;
