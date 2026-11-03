@@ -207,6 +207,21 @@
             cancel.addEventListener('click', () => { input.value = ''; show(); input.blur(); opened(false); });
             box.appendChild(cancel);
             input.addEventListener('focus', () => { if (searchSheet()) opened(true); });
+            // A tap opens the search first and only then puts the cursor in the box: the box is already
+            // at the top when the keyboard comes up, so iOS has no reason to scroll the page to it (left
+            // to the focus, iOS scrolled the page while the box moved up, and the page stuttered)
+            let tx = 0, ty = 0;
+            input.addEventListener('touchstart', e => { tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, { passive: true });
+            input.addEventListener('touchend', e => {
+                if (!searchSheet() || box.classList.contains('is-open') || document.activeElement === input) return;
+                const t = e.changedTouches[0];
+                if (Math.abs(t.clientX - tx) > 10 || Math.abs(t.clientY - ty) > 10) return;   // a drag, not a tap
+                e.preventDefault();
+                opened(true);
+                void box.offsetHeight;                     // (laid out at the top before the focus)
+                input.focus({ preventScroll: true });
+            });
+            box.wfOpen = () => { if (searchSheet()) { opened(true); void box.offsetHeight; } };   // for a button that opens the search (Industries' 🔍)
         }
         const show = () => {
             let q = input.value.trim().toLowerCase();
@@ -357,7 +372,7 @@
         find.addEventListener('click', () => {
             const on = !sec.classList.contains('is-finding');
             finding(on);
-            if (on) input.focus({ preventScroll: true }); else input.blur();
+            if (on) { const b = input.closest('.tool-search'); if (b && b.wfOpen) b.wfOpen(); input.focus({ preventScroll: true }); } else input.blur();
         });
         input.addEventListener('blur', () => setTimeout(() => { if (!input.value.trim() && document.activeElement !== input) finding(false); }, 200));
         const pick = i => { input.value = i.name; show(i); remember('industries', i.name); finding(false); openPop(); };
