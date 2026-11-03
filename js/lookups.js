@@ -71,7 +71,7 @@
             sec.classList.remove('has-pop');
             root.classList.remove('has-popup');
             card.removeAttribute('role'); card.removeAttribute('aria-modal');
-            if (returnFocus && returnFocus.focus && returnFocus.tagName !== 'INPUT') returnFocus.focus({ preventScroll: true });
+            if (returnFocus && returnFocus.focus && !/^(INPUT|SELECT|TEXTAREA)$/.test(returnFocus.tagName)) returnFocus.focus({ preventScroll: true });   // (not a box or dropdown: on a phone that brings up the keyboard or picker)
         }
         backdrop.addEventListener('click', close);
         closeBtn.addEventListener('click', close);

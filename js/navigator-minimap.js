@@ -31,7 +31,8 @@
             // Leave any open details and branched-out programs behind with the big map
             const panel = document.getElementById('viz-info-panel');
             if (panel && panel.classList.contains('open')) document.getElementById('viz-info-close').click();
-            if (lastFocus && lastFocus.focus) lastFocus.focus();
+            // (focus back where it was, unless that's a box or dropdown on a touch screen: it would bring up the keyboard or picker)
+            if (lastFocus && lastFocus.focus && !(matchMedia('(hover: none)').matches && /^(INPUT|SELECT|TEXTAREA)$/.test(lastFocus.tagName))) lastFocus.focus();
         }
         document.dispatchEvent(new CustomEvent('minimap:toggle', { detail: { open } }));
         // (after the map has re-fitted itself to its new size)
