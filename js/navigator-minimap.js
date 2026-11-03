@@ -8,7 +8,7 @@
    Phones: opened, the map fills the screen and shows every organization at once
    ("Everyone", js/viz-engine.js setMobileMapView), with a switch back to the six
    groups; tapping a group lists its organizations in the map's bottom panel
-   (window.WFMapGroup, called by the map). Closed, the banner shows the groups. */
+   (window.WFMapGroup, called by the map). Closed, the banner shows every organization too. */
 (function () {
     'use strict';
     if (document.body.classList.contains('embed-mode')) return;
@@ -36,7 +36,8 @@
         }
         document.dispatchEvent(new CustomEvent('minimap:toggle', { detail: { open } }));
         // (after the map has re-fitted itself to its new size)
-        if (phone()) setTimeout(() => setView(open ? view : 'groups', true), 160);
+        if (phone()) setTimeout(() => setView(open ? view : 'everyone', true), 160);
+        if (phone() && !open) setTimeout(banner, 520);   // (and again once the banner has settled back to its size)
     }
 
     // ----- Phones: Groups | Everyone -----
@@ -53,6 +54,11 @@
         if (hint) hint.textContent = HINTS[view];
     }
     switchBtns.forEach(b => b.addEventListener('click', () => setView(b.dataset.mode)));
+    // The banner shows every organization too, so the whole ecosystem is there on the page
+    // (laid out for the banner's shape; opening the map re-lays it out for the full screen)
+    const banner = () => { if (phone() && !frame.classList.contains('is-open')) setView('everyone', true); };
+    document.addEventListener('viz:ready', () => setTimeout(banner, 60));
+    if (typeof nodeSelection !== 'undefined' && nodeSelection) setTimeout(banner, 60);
 
     // A tapped group's organizations, listed in the map's bottom panel; a tap opens one's details
     const esc = t => String(t == null ? '' : t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
