@@ -105,6 +105,7 @@
     document.body.appendChild(veil);
 
     let scenes = [], index = 0, heading = -1, glide = null;
+    let inTool = null;   // the tool being scrolled through, whose edges hold (see the scroll handler below)
 
     // ----- The scenes, from the page as it's laid out now -----
     function build() {
@@ -162,6 +163,7 @@
     // ----- Going to a scene: a glide, never a jump -----
     function stop() { if (glide) { cancelAnimationFrame(glide); glide = null; } veil.classList.remove('is-on'); }
     function go(i) {
+        inTool = null;   // (leaving a tool, or moving within it: no edge to hold)
         if (!scenes.length) build();
         if (!scenes.length) return;
         i = Math.max(0, Math.min(scenes.length - 1, i));
@@ -219,6 +221,17 @@
             setFlip(sl, r.top <= -sceneH() * 0.5 && r.bottom >= sceneH() * 0.5);
         });
     }
+    // Scrolling through a tool taller than the screen (Custom research and the footer), the page stops
+    // at the tool's edges, even mid-flick, rather than running on into the next scene and being pulled
+    // back: leaving a tool is a swipe, which glides, the same going back as going forward
+    let lastY = scrollY;
+    addEventListener('scroll', () => {
+        const jump = Math.abs(scrollY - lastY) > sceneH(); lastY = scrollY;
+        if (jump) inTool = null;   // a link or the menu took the page elsewhere
+        if (!inTool || glide || pinned || zoomed()) return;
+        if (scrollY < inTool.y - 0.5) window.scrollTo(0, inTool.y);
+        else if (scrollY > inTool.end + 0.5) window.scrollTo(0, inTool.end);
+    }, { passive: true });
     addEventListener('scroll', () => { if (pinned || zoomed()) return; if (!glide) flips(); if (!glide) { const i = here(); if (i !== index) { index = i; drawBar(); } } }, { passive: true });
 
     // ----- Swipes -----
@@ -235,6 +248,7 @@
         return false;
     };
     function decide(e, dx, dy) {
+        inTool = null;   // (set again below if this gesture scrolls within a tool)
         // a pop-up is open (a job's card): its own scrolling only, the scenes hold still
         if (askingUpright()) return 'held';                                // the turn-upright card
         // (a pop-up or the search sheet: only the card or the list itself scrolls, never the tool behind it)
@@ -247,8 +261,8 @@
         if (scrollsItself(e.target, dy)) return 'native';                 // a tool with more to read, the map card, a list
         const s = scenes[here()], y = scrollY;
         if (s && s.kind === 'tool') {
-            if (dy < 0 && y < s.end - 1) return 'native';                 // more of the tool below
-            if (dy > 0 && y > s.y + 1) return 'native';                   // more of it above
+            if (dy < 0 && y < s.end - 1) { inTool = s; return 'native'; }   // more of the tool below
+            if (dy > 0 && y > s.y + 1) { inTool = s; return 'native'; }     // more of it above
         }
         return 'scene';
     }
