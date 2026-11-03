@@ -34,7 +34,11 @@
     };
     // A plain fit, brought a little closer around the middle
     function restTransform() {
-        const [W, H] = mapSize(), fit = computeFitTransform(W, H);
+        const [W, H] = mapSize();
+        // phones: the banner shows every organization, already laid out to fill it (js/viz-engine.js
+        // everyoneTargets): framed as the map frames it, not brought closer (which would crop it)
+        if (window.innerWidth <= 768) { const r = document.getElementById('network-visualization').getBoundingClientRect(); return computeFitTransform(W, H, fitPadding(r)); }
+        const fit = computeFitTransform(W, H);
         const k = fit.k * CLOSER;
         return d3.zoomIdentity.translate(CLOSER * (fit.x - W / 2) + W / 2, CLOSER * (fit.y - H / 2) + H / 2).scale(k);
     }

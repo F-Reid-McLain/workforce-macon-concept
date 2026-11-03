@@ -121,12 +121,14 @@ function computeFitTransform(width, height, padding = 45) {
 
 // Called on load and by main.js's Reset View so the graph re-frames to fit
 // the current container instead of resetting to an arbitrary 1:1 view.
+// The margin a fit leaves: a phone's small banner map is a preview, framed tighter so it reads at that size
+// (the one rule for every fit, so they agree: fitVizView, fitToTargets, js/navigator-hero.js)
+function fitPadding(r) { return window.innerWidth <= 768 && r.height < 320 ? 14 : 45; }
 function fitVizView(duration = 0) {
   if (!svg || !zoom) return;
   const r = document.getElementById('network-visualization').getBoundingClientRect();
-  // (a phone's small banner map is a preview: framed tighter, so it reads at that size)
-  const transform = computeFitTransform(r.width, r.height, window.innerWidth <= 768 && r.height < 320 ? 14 : 45);
-  if (duration > 0) svg.transition().duration(duration).call(zoom.transform, transform);
+  const transform = computeFitTransform(r.width, r.height, fitPadding(r));
+  if (duration > 0 && !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) svg.transition().duration(duration).call(zoom.transform, transform);
   else svg.call(zoom.transform, transform);
 }
 
@@ -913,7 +915,7 @@ const structuralLinks = [
     };
     // the box the map is shown in (its fit leaves the same padding: computeFitTransform / fitVizView)
     const box = document.getElementById('network-visualization').getBoundingClientRect();
-    const pad = window.innerWidth <= 768 && box.height < 320 ? 14 : 45;
+    const pad = fitPadding(box);
     const W = Math.max(100, box.width - 2 * pad), H = Math.max(100, box.height - 2 * pad);
     const search = () => {
       const most = Math.max(...seq.map(it => it.ex)) * 2.4;
@@ -954,7 +956,7 @@ const structuralLinks = [
     const was = new Map();
     targets.forEach(([x, y], n) => { was.set(n, [n.x, n.y]); n.x = x; n.y = y; });
     const r = document.getElementById('network-visualization').getBoundingClientRect();
-    const t = computeFitTransform(r.width, r.height);
+    const t = computeFitTransform(r.width, r.height, fitPadding(r));
     was.forEach(([x, y], n) => { n.x = x; n.y = y; });
     if (ms > 0 && !prefersReducedMotion) svg.transition().duration(ms).call(zoom.transform, t);
     else svg.call(zoom.transform, t);
