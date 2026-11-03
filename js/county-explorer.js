@@ -98,7 +98,8 @@
             if (location.hash.startsWith('#counties/')) history.replaceState(null, '', '#counties');
         }
         select.addEventListener('change', () => choose(neighbors.find(c => c.fips === select.value), true));
-        card.querySelector('.cty-back').addEventListener('click', () => { clear(); select.focus(); });
+        // (focus back on the dropdown for keyboard users; on a touch screen that would open its picker)
+        card.querySelector('.cty-back').addEventListener('click', () => { clear(); if (!matchMedia('(hover: none)').matches) select.focus({ preventScroll: true }); });
         document.addEventListener('county:pick', e => {
             const c = neighbors.find(c => c.fips === e.detail.fips);
             if (c && c !== current) choose(c, true); else if (c) clear();   // clicking the selected county again lets it go
