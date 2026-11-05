@@ -121,14 +121,12 @@ function computeFitTransform(width, height, padding = 45) {
 
 // Called on load and by main.js's Reset View so the graph re-frames to fit
 // the current container instead of resetting to an arbitrary 1:1 view.
-// The margin a fit leaves: a phone's small banner map is a preview, framed tighter so it reads at that size
-// (the one rule for every fit, so they agree: fitVizView, fitToTargets, js/navigator-hero.js)
-function fitPadding(r) { return window.innerWidth <= 768 && r.height < 320 ? 14 : 45; }
 function fitVizView(duration = 0) {
   if (!svg || !zoom) return;
   const r = document.getElementById('network-visualization').getBoundingClientRect();
-  const transform = computeFitTransform(r.width, r.height, fitPadding(r));
-  if (duration > 0 && !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) svg.transition().duration(duration).call(zoom.transform, transform);
+  // (a phone's small banner map is a preview: framed tighter, so it reads at that size)
+  const transform = computeFitTransform(r.width, r.height, window.innerWidth <= 768 && r.height < 320 ? 14 : 45);
+  if (duration > 0) svg.transition().duration(duration).call(zoom.transform, transform);
   else svg.call(zoom.transform, transform);
 }
 
@@ -723,14 +721,10 @@ const structuralLinks = [
     node.select(".node-label").each(function (d) {
       const t = d3.select(this);
       if (d.type === "asset") { t.style("display", near || d === focusedNode ? null : "none").attr("font-size", "11px"); return; }
-      // (the page's small banner: smaller names, so they don't crowd its small logos)
-      const small = document.getElementById('network-visualization').getBoundingClientRect().height < 320 ? 9 : 11;
-      const px = near ? (d.type === "hub" ? 14 : 11) : small / k;
-      // a group's name heads its ring; the hub's sits below it
-      const up = d.type === "major-group" && d.__labelUp;
+      const px = near ? (d.type === "hub" ? 14 : 11) : 11 / k;
       t.style("display", null).attr("font-size", px + "px")
         .text(d.type === "major-group" && !near ? (SHORT_CATEGORY[d.id] || d.name) : d.name)
-        .attr("dy", up ? -up : d.size + (near ? 18 : 13 / k));
+        .attr("dy", d.size + (near ? 18 : 13 / k));
     });
   }
 
@@ -839,124 +833,45 @@ const structuralLinks = [
     focusOnCluster(catNode.x, catNode.y, (catNode.__ring || 100) + 45, 700, true);
   }
 
-  // ----- Everyone (phones): every org at once, as big as the map's box allows -----
-  // Each group is a ring of its organizations with the group's name above it, as a heading; a group much bigger than the rest (Job Training's 11) is a tall pill shape instead, no wider than the
-  // others, so it doesn't set the width (and so the size) of everything. The groups zigzag down the
-  // box, left and right in turn with the hub in the middle of the run, interlocking as far as they can
-  // without touching; how far apart the two sides sit is chosen to make everything as large as
-  // possible in the box it's shown in (a tall phone screen opened, the page's wider banner closed).
+  // ----- Everyone (phones): every org at once, fitted to a tall screen -----
   function everyoneTargets() {
     const sizeScale = typeof currentSizeScale === "number" ? currentSizeScale : 1;
     const hub = workforceData.nodes.find(n => n.id === "hub");
     const cats = workforceData.nodes.filter(n => n.type === "major-group");
     const kids = c => workforceData.nodes.filter(n => n.type === "asset" && n.category === c.id);
     const childR = Math.max(20, ...workforceData.nodes.filter(n => n.type === "asset").map(n => (originalSizes[n.id] || n.size) * sizeScale));
-    const LABEL_GAP = 0;                                // (a full ring: the group's name sits above it)
-    const HEAD = 22;                                    // room above a ring for its name
-    const CHORD = 2 * childR + childR * 0.35;           // neighbors in a ring, center to center
-    // a ring's radius: wide enough that neighbors in it don't touch
-    const circle = c => {
+    // each group's ring: wide enough that neighbors in it don't touch
+    const ring = c => {
       const n = kids(c).length, least = c.size + childR + 14;
-      if (n < 2) return least;
-      return Math.max(least, CHORD / (2 * Math.sin((2 * Math.PI - LABEL_GAP) / n / 2)));
+      return n < 2 ? least : Math.max(least, (2 * childR + childR * 0.35) / (2 * Math.sin(Math.PI / n)));
     };
-    // n points evenly spaced by distance round a pill (two half-circles of radius r joined by straight
-    // sides of length L; L = 0 is a ring), from the top; on the straight sides neighbors keep their full
-    // spacing, where an oval's tight ends bunch them up
-    const pillLength = (r, L) => 2 * Math.PI * r + 2 * L;
-    const onPill = (r, L, n) => d3.range(n).map(i => {
-      let d = pillLength(r, L) * i / n;
-      const arc = Math.PI * r;
-      if (d < arc / 2) { const a = -Math.PI / 2 + d / r; return [r * Math.cos(a), -L / 2 + r * Math.sin(a)]; }   // top, rightward
-      d -= arc / 2;
-      if (d < L) return [r, -L / 2 + d];                                                                      // right side, down
-      d -= L;
-      if (d < arc) { const a = d / r; return [r * Math.cos(a), L / 2 + r * Math.sin(a)]; }                    // bottom
-      d -= arc;
-      if (d < L) return [-r, L / 2 - d];                                                                      // left side, up
-      d -= L; { const a = Math.PI + d / r; return [r * Math.cos(a), -L / 2 + r * Math.sin(a)]; }              // top, back to the start
-    });
-    const closest = ps => Math.min(...ps.map((q, i) => { const r = ps[(i + 1) % ps.length]; return Math.hypot(q[0] - r[0], q[1] - r[1]); }));
-    const rs = cats.map(circle), cap = rs.slice().sort((a, b) => b - a)[1] || rs[0];   // the second-biggest ring
-    cats.forEach((c, i) => {
-      let r = rs[i], L = 0;
-      if (rs[i] > cap * 1.15) {   // too wide: as wide as the next biggest, drawn out tall enough to hold them all
-        r = cap;
-        const n = kids(c).length;
-        while (closest(onPill(r, L, n)) < CHORD && L < r * 12) L += 2;
-      }
-      c.__r = r; c.__L = L;
-      c.__rx = r; c.__ry = r + L / 2; c.__ring = Math.max(c.__rx, c.__ry);
-    });
-    // the run down the box: group, group, group, hub, group, group, group (sides alternate around the hub)
-    const half = Math.ceil(cats.length / 2);
-    const seq = [...cats.slice(0, half).map((c, i) => ({ n: c, side: i % 2 ? 1 : -1 })), { n: hub, side: 0 },
-                 ...cats.slice(half).map((c, i) => ({ n: c, side: (half + i) % 2 ? 1 : -1 }))];
-    seq.forEach(it => {
-      if (it.n === hub) { it.ex = hub.size + 72; it.ey = hub.size + 30; it.up = it.ey; return; }   // (its name sits below it, wider than it is)
-      it.ex = it.n.__rx + childR; it.ey = it.n.__ry + childR; it.up = it.ey + HEAD;
-      it.n.__labelUp = it.n.__ry + childR + 8;           // the name's baseline, above the ring (updateZoomLabels)
-    });
-    const GAP = 18;
-    const place = dx => {
-      seq.forEach((it, i) => {
-        it.x = it.side * dx;
-        it.y = 0;
-        // clear of everything above it (an oval's clearance, so tall shapes can tuck in beside each other)
-        for (let j = 0; j < i; j++) {
-          const o = seq[j], ax = it.ex + o.ex + GAP, ay = it.up + o.ey + GAP, q = (it.x - o.x) / ax;
-          it.y = Math.max(it.y, o.y + ay * Math.sqrt(Math.max(0, 1 - q * q)));
-        }
-        if (i) it.y = Math.max(it.y, seq[i - 1].y);
-      });
-      const x0 = Math.min(...seq.map(it => it.x - it.ex)), x1 = Math.max(...seq.map(it => it.x + it.ex));
-      const y0 = Math.min(...seq.map(it => it.y - it.up)), y1 = Math.max(...seq.map(it => it.y + it.ey)) + 16;
-      return { w: x1 - x0, h: y1 - y0, mx: (x0 + x1) / 2, my: (y0 + y1) / 2 };
-    };
-    // the box the map is shown in (its fit leaves the same padding: computeFitTransform / fitVizView)
-    const box = document.getElementById('network-visualization').getBoundingClientRect();
-    const pad = fitPadding(box);
-    const W = Math.max(100, box.width - 2 * pad), H = Math.max(100, box.height - 2 * pad);
-    const search = () => {
-      const most = Math.max(...seq.map(it => it.ex)) * 2.4;
-      let best = null;
-      for (let k = 0; k <= 60; k++) {
-        const dx = most * k / 60, b = place(dx), fit = Math.min(W / b.w, H / b.h);
-        if (!best || fit > best.fit + 1e-6) best = { dx, fit };
-      }
-      return best;
-    };
-    // The hub's name is a fixed size on screen (updateZoomLabels), so how much of the map it covers
-    // depends on the zoom: laid out once to find the zoom, then again with room for the name at it
-    // ("Workforce Macon" is about 95px wide at 11px, 78px at the banner's 9px)
-    let best = search();
-    const hubIt = seq.find(it => it.n === hub), halfName = (pad === 14 ? 78 : 95) / 2 + 10;
-    hubIt.ex = Math.max(hubIt.ex, halfName / Math.min(best.fit, 1.35));
-    best = search();
-    const b = place(best.dx);
-    const out = new Map(), cx = width / 2 - b.mx, cy = height / 2 - b.my;
-    seq.forEach(it => {
-      const x = cx + it.x, y = cy + it.y;
-      out.set(it.n, [x, y]);
-      if (it.n === hub) return;
-      const list = kids(it.n);
-      if (list.length === 1) { out.set(list[0], [x, y - it.n.__ry]); list[0].__labelStagger = 0; return; }
-      // evenly spaced round the ring (or pill) by distance
-      const ps = onPill(it.n.__r, it.n.__L, list.length);
+    cats.forEach(c => { c.__ring = ring(c); });
+    // two columns, three rows, the hub between the middle pair; spacing from the rings themselves
+    const GAP = 2 * childR + 22;
+    const rows = [cats.slice(0, 2), cats.slice(2, 4), cats.slice(4, 6)];
+    const halfX = Math.max(...rows.map(rw => ((rw[0] ? rw[0].__ring : 0) + (rw[1] ? rw[1].__ring : 0) + GAP) / 2), hub.size + 60);
+    const rowGap = (a, b) => Math.max(...[0, 1].map(i => ((a[i] ? a[i].__ring : 0) + (b[i] ? b[i].__ring : 0) + GAP)));
+    const y0 = -rowGap(rows[0], rows[1]), y2 = rowGap(rows[1], rows[2]);
+    const out = new Map(), cx = width / 2, cy = height / 2;
+    out.set(hub, [cx, cy]);
+    rows.forEach((rw, ri) => rw.forEach((c, ci) => {
+      const x = cx + (ci ? halfX : -halfX), y = cy + [y0, 0, y2][ri];
+      out.set(c, [x, y]);
+      const list = kids(c), away = Math.atan2(y - cy, x - cx);
       list.forEach((n, i) => {
-        out.set(n, [x + ps[i][0], y + ps[i][1]]);
+        const a = away + (i / Math.max(1, list.length)) * 2 * Math.PI;
+        out.set(n, [x + c.__ring * Math.cos(a), y + c.__ring * Math.sin(a)]);
         n.__labelStagger = i % 2;
       });
-    });
+    }));
     return out;
   }
-
   // Frames where a layout is going (not where its nodes are mid-glide), moving the camera alongside them
   function fitToTargets(targets, ms) {
     const was = new Map();
     targets.forEach(([x, y], n) => { was.set(n, [n.x, n.y]); n.x = x; n.y = y; });
     const r = document.getElementById('network-visualization').getBoundingClientRect();
-    const t = computeFitTransform(r.width, r.height, fitPadding(r));
+    const t = computeFitTransform(r.width, r.height);
     was.forEach(([x, y], n) => { n.x = x; n.y = y; });
     if (ms > 0 && !prefersReducedMotion) svg.transition().duration(ms).call(zoom.transform, t);
     else svg.call(zoom.transform, t);
@@ -975,12 +890,7 @@ const structuralLinks = [
   setMobileMapView = function (mode) {
     if (window.innerWidth > MOBILE_BREAKPOINT) return;
     const everyone = mode === "everyone";
-    if (everyone === everyoneOnMobile && collapseCategoriesOnMobile === !everyone) {
-      // already showing everyone, but its box may have changed (the banner opening full screen, or
-      // closing back): laid out again for the new shape
-      if (everyone && !focusedNode && !expandedCategoryId) { const targets = everyoneTargets(); fitToTargets(targets, 500); glideTo(targets, 500, () => { updateZoomLabels(); fitVizView(250); }); }
-      return;
-    }
+    if (everyone === everyoneOnMobile && collapseCategoriesOnMobile === !everyone) return;
     closeInfoPanel();
     if (focusedNode) { removeBranchGroup(); focusedNode = null; setFocusDim(false); }
     expandedCategoryId = null;
@@ -992,7 +902,7 @@ const structuralLinks = [
       zoom.scaleExtent([0.15, 3]);
       const targets = everyoneTargets();
       fitToTargets(targets, 650);
-      glideTo(targets, 650, () => { updateZoomLabels(); fitVizView(250); });   // (names placed for the layout, and framed again once there, in case the box changed under the glide)
+      glideTo(targets, 650);
     } else {
       everyoneOnMobile = false;
       const hub = workforceData.nodes.find(n => n.id === "hub"), cats = workforceData.nodes.filter(n => n.type === "major-group");
