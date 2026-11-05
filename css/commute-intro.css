@@ -161,7 +161,7 @@ body.ci-presenting .ci-present-hint { display: block; }
 .ci-key i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 0.45rem; vertical-align: -1px; }
 /* Phones and small tablets: the card sits over the bottom of the map, where the key was, so the key moves into the card */
 .ci-key-inline { display: none; }
-.ci-maplabel.is-under { visibility: hidden; }
+.ci-maplabel.is-under, .ci-maplabel.is-crowded { visibility: hidden; }
 @media (max-width: 768px) {
     .ci-overlay.ci-key { display: none; }
     .ci-key-inline { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; margin: -0.2rem 0 0.7rem; font-size: 0.78rem; color: #c3cad6; }
