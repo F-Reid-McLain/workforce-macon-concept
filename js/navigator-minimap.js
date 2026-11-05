@@ -66,7 +66,7 @@
         const a = id => (typeof assetData !== 'undefined' && assetData[id]) || {};
         return `<ul class="mapgroup">${members.map(m => {
             const d = a(m.id), img = d.image || m.image;
-            return `<li><button type="button" data-id="${esc(m.id)}"><span class="mapgroup__logo"${d.logoBg ? ` style="background:${esc(d.logoBg)}"` : ''}>${img ? `<img src="${esc(img)}" alt="" loading="lazy"${d.logoFit === 'contain' ? ' class="is-contain"' : ''}>` : ''}</span><span class="mapgroup__text"><b>${esc(d.name || m.name)}</b>${d.bestFor ? `<small>${esc(d.bestFor)}</small>` : ''}</span><span class="mapgroup__go" aria-hidden="true">›</span></button></li>`;
+            return `<li><button type="button" data-id="${esc(m.id)}"><span class="mapgroup__logo${!img && d.placeholder === 'dots' ? ' is-dots' : ''}"${d.logoBg ? ` style="background:${esc(d.logoBg)}"` : ''}>${img ? `<img src="${esc(img)}" alt="" loading="lazy"${d.logoFit === 'contain' ? ' class="is-contain"' : ''}>` : d.placeholder === 'dots' ? '…' : ''}</span><span class="mapgroup__text"><b>${esc(d.name || m.name)}</b>${d.bestFor ? `<small>${esc(d.bestFor)}</small>` : ''}</span><span class="mapgroup__go" aria-hidden="true">›</span></button></li>`;
         }).join('')}</ul>`;
     };
     const dek = n => `<p class="mapgroup__dek">${n} organization${n === 1 ? '' : 's'} · tap one for details</p>`;

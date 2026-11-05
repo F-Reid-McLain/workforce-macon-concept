@@ -45,8 +45,10 @@
         if (regionEl && pop.size) regionEl.textContent = (Math.round(d3.sum([...pop.values()]) / 1000) * 1000).toLocaleString();
 
         // ----- The list (alphabetical, so people can find their own county) -----
+        // (phones: "jobs" alone, so the picked county's line fits the box; the card under it says where)
+        const where = matchMedia('(max-width: 700px)').matches ? '' : ' in Macon-Bibb';
         select.innerHTML = '<option value="">Pick a county</option>' + neighbors.slice().sort((a, b) => a.name.localeCompare(b.name))
-            .map(c => `<option value="${c.fips}">${c.name}: ${fmt(c.in)} jobs in Macon-Bibb</option>`).join('');
+            .map(c => `<option value="${c.fips}">${c.name}: ${fmt(c.in)} jobs${where}</option>`).join('');
 
         // ----- The card -----
         // Kept short: the jobs its residents hold here, how much of its workforce that is, then one line on the rest
