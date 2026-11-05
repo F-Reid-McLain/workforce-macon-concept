@@ -349,25 +349,15 @@
         // Phones: the map's top clears its Highways and PNG buttons (lower on a phone with a notch)
         const toolsEl = section.querySelector('.ci-tools');
         const phoneTop = () => Math.max(56, toolsEl ? toolsEl.offsetTop + toolsEl.offsetHeight + 10 : 56);
-        // Phones: a picked county and Macon-Bibb fill the map above the card (the rest of the
-        // region would be too small to read there), easing between the whole region and the pair
-        const pairBounds = fips => {
-            const pts = rings.filter(r => r.fips === fips || r.fips === BIBB).flatMap(r => r.ring);
-            const x0 = d3.min(pts, p => p[0]), x1 = d3.max(pts, p => p[0]), y0 = d3.min(pts, p => p[1]), y1 = d3.max(pts, p => p[1]);
-            const mx = (x1 - x0) * 0.06, my = (y1 - y0) * 0.06;
-            return [[x0 - mx, y0 - my], [x1 + mx, y1 + my]];
-        };
-        const mixBounds = (a, b, k) => a.map((c, i) => c.map((v, j) => lerp(v, b[i][j], k)));
-        let focusFrom = null, focusTo = null, focusK = 1;
-        const focusBounds = () => mixBounds(focusFrom || bounds, focusTo || bounds, focusK);
-        function phoneCardRoom(H) { return (roomUsed = cardRoom !== null ? cardRoom : cardRoomNow(H)); }
+
+        function phoneCardRoom(H) { return (roomUsed = cardRoom !== null ? cardRoom : Math.max(roomUsed || 0, cardRoomNow(H))); }   // (never less room: the map stays put)
         function computeFlat() {
             const W = stage.clientWidth, H = stage.clientHeight;
             // room on the left for the card wherever it sits beside the map (above 768px; below, it sits under it)
             const padLeft = W > +(stage.dataset.padBreakpoint || Infinity) ? +(stage.dataset.padLeft || 0) : W > 768 ? Math.min(400, Math.round(W * 0.47)) : 0;
             const vp = new deck.WebMercatorViewport({ width: W, height: H })
                 // phones: the map fits the top half, above the card (which holds the county tool)
-                .fitBounds(W <= 700 ? focusBounds() : bounds, { padding: { top: W <= 700 ? phoneTop() : 56, bottom: W <= 700 ? phoneCardRoom(H) : W <= 768 ? Math.round(H * 0.5) : 40, left: W <= 700 ? 12 : 24 + padLeft, right: W <= 700 ? 12 : 24 } });
+                .fitBounds(bounds, { padding: { top: W <= 700 ? phoneTop() : 56, bottom: W <= 700 ? phoneCardRoom(H) : W <= 768 ? Math.round(H * 0.5) : 40, left: W <= 700 ? 12 : 24 + padLeft, right: W <= 700 ? 12 : 24 } });
             flatView = { longitude: vp.longitude, latitude: vp.latitude, zoom: vp.zoom, pitch: 0, bearing: 0 };
             // Highway badges that land on top of each other get pushed apart (in screen space);
             // an interstate keeps its spot and the other badge moves
@@ -482,7 +472,17 @@
                 tip.innerHTML = `<b>${nameOf.get(fips)}</b>Residents: <span>${fmt(pop.get(fips))}</span>` +
                     (Math.abs(d) >= 1 ? `<br>Here right now: <span>${fmt(now)}</span> (${d > 0 ? '+' : ''}${fmt(d)})` : '');
             }
-            tip.style.left = (info.x + 14) + 'px'; tip.style.top = (info.y + 12) + 'px'; tip.style.display = 'block';
+            // beside the finger or pointer, but always on screen, and on phones clear of the map's card
+            // (flipped to the other side of the finger where there isn't room)
+            tip.style.display = 'block';
+            const W = stage.clientWidth, H = stage.clientHeight, w = tip.offsetWidth, h = tip.offsetHeight;
+            const card = mobile && m >= 0.97 && section.querySelector('.ci-step--map .ci-card');
+            const floor = card ? Math.min(H, card.getBoundingClientRect().top - stage.getBoundingClientRect().top) - 8 : H - 8;
+            let x = info.x + 14, y = info.y + 12;
+            if (x + w > W - 8) x = info.x - w - 14;
+            if (y + h > floor) y = info.y - h - 12;
+            tip.style.left = Math.max(8, Math.min(W - w - 8, x)) + 'px';
+            tip.style.top = Math.max(8, Math.min(floor - h, y)) + 'px';
         }
         const toggleHighways = () => { hwyOn = !hwyOn; hwyBtn.setAttribute('aria-pressed', String(hwyOn)); hwyBtn.classList.add('is-used'); wake(); };
         hwyBtn.addEventListener('click', toggleHighways);
@@ -502,27 +502,35 @@
             if (namesEl.style.opacity === '0') return;
             const vp = deckgl.getViewports()[0];
             if (!vp) return;
+            const put = (n, dx, dy) => { n.el.style.transform = `translate(${(n.xy[0] + dx).toFixed(1)}px, ${(n.xy[1] + dy).toFixed(1)}px) translate(-50%, -50%)`; };
             names.forEach(n => {
                 if (!n.pos) return;
-                const [x, y] = vp.project(n.pos);
-                n.el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) translate(-50%, -50%)`;
-                n.xy = [x, y];
+                n.xy = vp.project(n.pos);
+                if (!mobile) put(n, 0, 0);
             });
-            // Phones: the region is small, so labels that would sit on top of a more important one
-            // (Macon-Bibb first, then the biggest counties) step aside
+            // Phones: the region is small, so a name that would sit on a more important one (Macon-Bibb
+            // first, then the biggest counties) moves to a free spot beside its county instead: just
+            // above or below, then to a side, kept on the screen. A name that has a spot keeps it while
+            // it stays free, so they don't hop about as the camera drifts; one with no room hides.
             const shown = new Set();
             if (mobile) {
-                const boxes = [];
+                const boxes = [], W = stage.clientWidth, H = stage.clientHeight;
                 byRank.forEach(n => {
                     if (!n.pos || n.alpha < 0.02) return;
                     const w = Math.max(n.name.length, (n.chg || '').length) * (n.bibb ? 8.5 : 6) + 6, h = n.bibb ? 34 : 25;
-                    // (a label showing keeps its place through a slight overlap, and a hidden one
-                    // needs clear room to come back, so they don't flicker as the camera moves)
-                    const g = n.shown ? -5 : 5;
-                    const b = [n.xy[0] - w / 2 - g, n.xy[1] - h / 2 - g, n.xy[0] + w / 2 + g, n.xy[1] + h / 2 + g];
-                    n.shown = !boxes.some(o => b[0] < o[2] && b[2] > o[0] && b[1] < o[3] && b[3] > o[1]);
-                    if (!n.shown) return;
-                    boxes.push([n.xy[0] - w / 2, n.xy[1] - h / 2, n.xy[0] + w / 2, n.xy[1] + h / 2]); shown.add(n);
+                    const spots = [[0, 0], [0, -h * 0.85], [0, h * 0.85], [-w * 0.6, 0], [w * 0.6, 0], [-w * 0.5, -h * 0.8], [w * 0.5, -h * 0.8], [-w * 0.5, h * 0.8], [w * 0.5, h * 0.8]];
+                    const free = ([dx, dy], g) => {
+                        const x = n.xy[0] + dx, y = n.xy[1] + dy, b = [x - w / 2 - g, y - h / 2 - g, x + w / 2 + g, y + h / 2 + g];
+                        return x - w / 2 >= 4 && x + w / 2 <= W - 4 && y - h / 2 >= 4 && y + h / 2 <= H - 4
+                            && !boxes.some(o => b[0] < o[2] && b[2] > o[0] && b[1] < o[3] && b[3] > o[1]);
+                    };
+                    // (the spot it had keeps it through a slight overlap; a new one needs clear room)
+                    const at = n.spot && free(n.spot, -5) ? n.spot : spots.find(sp => free(sp, 4));
+                    n.spot = at || null;
+                    if (!at) return;
+                    put(n, at[0], at[1]);
+                    const x = n.xy[0] + at[0], y = n.xy[1] + at[1];
+                    boxes.push([x - w / 2, y - h / 2, x + w / 2, y + h / 2]); shown.add(n);
                 });
             }
             names.forEach(n => { if (n.pos) n.el.style.opacity = (mobile && !shown.has(n) ? 0 : n.alpha).toFixed(3); });
@@ -569,14 +577,15 @@
             // Phones: the card grows with the county's numbers (or shrinks back), so the map eases
             // to fit the room left above it instead of disappearing under the card
             if (!mobile) return;
-            // (and zooms in on the picked county and Macon-Bibb, or back out to the whole region)
+            // (only ever making more room, never less: the whole-picture card is the taller one, so
+            // switching between counties leaves the map, and its names, exactly where they are)
             requestAnimationFrame(() => {
-                const H = stage.clientHeight, to = cardRoomNow(H), from = roomUsed === null ? to : roomUsed;
-                focusFrom = focusBounds(); focusTo = sel && stage.clientWidth <= 700 ? pairBounds(sel.fips) : null; focusK = 0;
-                const t0 = performance.now(), ms = reducedMotion ? 1 : 700;
+                const H = stage.clientHeight, from = roomUsed === null ? cardRoomNow(H) : roomUsed, to = Math.max(from, cardRoomNow(H));
+                if (Math.abs(to - from) < 4) return;
+                const t0 = performance.now(), ms = reducedMotion ? 1 : 450;
                 const t = d3.timer(() => {
-                    const k = Math.min(1, (performance.now() - t0) / ms), e = d3.easeCubicInOut(k);
-                    cardRoom = from + (to - from) * e; focusK = e;
+                    const k = Math.min(1, (performance.now() - t0) / ms);
+                    cardRoom = from + (to - from) * d3.easeCubicInOut(k);
                     computeFlat(); lastScene = ''; wake();
                     if (k >= 1) { t.stop(); cardRoom = null; }
                 });
@@ -861,7 +870,8 @@
             else { capEl.classList.add('is-swapping'); capSwap = setTimeout(fill, 180); }
         }
         addEventListener('scroll', onScroll, { passive: true });
-        addEventListener('resize', () => { measure(); computeFlat(); if (mobile) fitPhoneCamera(); lastScene = ''; onScroll(); });
+        let roomW = stage.clientWidth;   // (turning the phone starts the card's room afresh)
+        addEventListener('resize', () => { if (stage.clientWidth !== roomW) { roomW = stage.clientWidth; roomUsed = null; } measure(); computeFlat(); if (mobile) fitPhoneCamera(); lastScene = ''; onScroll(); });
 
         // ----- Idle drift: when nobody's scrolling, the 3D view keeps moving -----
         // On the opening view the camera circles Macon-Bibb, so the county turns in place
