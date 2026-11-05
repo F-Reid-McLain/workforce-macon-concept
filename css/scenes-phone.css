@@ -42,7 +42,7 @@ html.scenes .scene-bar i.is-on { background: #f2c46b; }
 /* ----- The story fills the screen ----- */
 html.scenes .ci-stage { height: var(--sh, 100dvh); }
 html.scenes .ci-time { top: calc(env(safe-area-inset-top) + 20px); right: auto; left: 12px; }
-html.scenes .ci-tools { top: calc(env(safe-area-inset-top) + 66px); }
+html.scenes .ci-tools { top: calc(env(safe-area-inset-top) + 18px); left: 12px; right: auto; }   /* (on the menu button's row, so the map can start just under it) */
 html.scenes .ci-step.ci-step--welcome { padding-top: calc(env(safe-area-inset-top) + var(--sh, 100vh) * 0.12); }
 /* short phones (iPhone SE; html.short, set from the screen's size in index.html, so the keyboard can't
    switch it on): the headline sits higher and a little smaller, clear of Macon-Bibb below */

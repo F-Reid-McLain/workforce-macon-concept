@@ -389,6 +389,23 @@
                 el.classList.toggle('is-under', xy[1] > cardTop - 14 || blocks.some(b => xy[0] > b.l && xy[0] < b.r && xy[1] > b.t && xy[1] < b.b)
                     || (W <= 700 && (xy[0] - half < 2 || xy[0] + half > W - 2)));
             });
+            // Phones: names centered on their counties; one that would sit on a more important one
+            // (Macon-Bibb first, then the biggest counties) is drawn a size or two smaller, and only
+            // hides when even that doesn't fit (the map holds still, so this is settled once per fit)
+            const order = counties.map((c, i) => ({ c, el: countyEls[i] }))
+                .sort((a, b) => (b.c.fips === BIBB) - (a.c.fips === BIBB) || (pop.get(b.c.fips) || 0) - (pop.get(a.c.fips) || 0));
+            const placed = [];
+            order.forEach(({ el }) => {
+                el.style.transform = '';
+                if (W > 700 || el.classList.contains('is-under')) { el.classList.remove('is-crowded'); return; }
+                const w = el.offsetWidth, h = el.offsetHeight, x = parseFloat(el.style.left), y = parseFloat(el.style.top);
+                // (boxes may touch by 2px: a label's box has room around its letters)
+                const k = [1, 0.85, 0.72].find(k => !placed.some(o => x - w * k / 2 < o[2] - 2 && x + w * k / 2 > o[0] + 2 && y - h * k / 2 < o[3] - 2 && y + h * k / 2 > o[1] + 2));
+                el.classList.toggle('is-crowded', !k);
+                if (!k) return;
+                if (k < 1) el.style.transform = `translate(-50%, -50%) scale(${k})`;
+                placed.push([x - w * k / 2, y - h * k / 2, x + w * k / 2, y + h * k / 2]);
+            });
         }
         // The finished map's labels are plain HTML pinned over the canvas (crisper than
         // canvas text at these small sizes); the camera is static by the time they show
@@ -502,35 +519,42 @@
             if (namesEl.style.opacity === '0') return;
             const vp = deckgl.getViewports()[0];
             if (!vp) return;
-            const put = (n, dx, dy) => { n.el.style.transform = `translate(${(n.xy[0] + dx).toFixed(1)}px, ${(n.xy[1] + dy).toFixed(1)}px) translate(-50%, -50%)`; };
             names.forEach(n => {
                 if (!n.pos) return;
                 n.xy = vp.project(n.pos);
-                if (!mobile) put(n, 0, 0);
+                n.el.style.transform = `translate(${n.xy[0].toFixed(1)}px, ${n.xy[1].toFixed(1)}px) translate(-50%, -50%)${n.form === 'small' ? ' scale(0.82)' : n.form === 'tiny' ? ' scale(0.7)' : ''}`;
             });
             // Phones: the region is small, so a name that would sit on a more important one (Macon-Bibb
-            // first, then the biggest counties) moves to a free spot beside its county instead: just
-            // above or below, then to a side, kept on the screen. A name that has a spot keeps it while
-            // it stays free, so they don't hop about as the camera drifts; one with no room hides.
+            // first, then the biggest counties) stays centered on its county but gets smaller: first
+            // without its change line, then two sizes down; only with no room even then does it hide.
+            // A label keeps its form while it still fits, so they don't flicker as the camera drifts.
             const shown = new Set();
             if (mobile) {
-                const boxes = [], W = stage.clientWidth, H = stage.clientHeight;
+                const boxes = [], FORMS = ['full', 'name', 'small', 'tiny'], SCALE = { small: 0.82, tiny: 0.7 };
                 byRank.forEach(n => {
                     if (!n.pos || n.alpha < 0.02) return;
-                    const w = Math.max(n.name.length, (n.chg || '').length) * (n.bibb ? 8.5 : 6) + 6, h = n.bibb ? 34 : 25;
-                    const spots = [[0, 0], [0, -h * 0.85], [0, h * 0.85], [-w * 0.6, 0], [w * 0.6, 0], [-w * 0.5, -h * 0.8], [w * 0.5, -h * 0.8], [-w * 0.5, h * 0.8], [w * 0.5, h * 0.8]];
-                    const free = ([dx, dy], g) => {
-                        const x = n.xy[0] + dx, y = n.xy[1] + dy, b = [x - w / 2 - g, y - h / 2 - g, x + w / 2 + g, y + h / 2 + g];
-                        return x - w / 2 >= 4 && x + w / 2 <= W - 4 && y - h / 2 >= 4 && y + h / 2 <= H - 4
-                            && !boxes.some(o => b[0] < o[2] && b[2] > o[0] && b[1] < o[3] && b[3] > o[1]);
+                    // (the name's own size, measured once; its change line's from its length)
+                    if (!n.nameBox) { const b = n.el.firstChild; n.nameBox = [b.offsetWidth || n.name.length * 6.5, b.offsetHeight || 14]; }
+                    const size = form => {
+                        const [nw, nh] = n.nameBox, line = n.bibb ? 15 : 12;
+                        if (form === 'full') return [Math.max(nw, (n.chg || '').length * (n.bibb ? 7.5 : 6) + 2), nh + (n.chg ? line : 0)];
+                        return SCALE[form] ? [nw * SCALE[form], nh * SCALE[form]] : [nw, nh];
                     };
-                    // (the spot it had keeps it through a slight overlap; a new one needs clear room)
-                    const at = n.spot && free(n.spot, -5) ? n.spot : spots.find(sp => free(sp, 4));
-                    n.spot = at || null;
-                    if (!at) return;
-                    put(n, at[0], at[1]);
-                    const x = n.xy[0] + at[0], y = n.xy[1] + at[1];
-                    boxes.push([x - w / 2, y - h / 2, x + w / 2, y + h / 2]); shown.add(n);
+                    const fits = (form, g) => {
+                        const [w, h] = size(form), b = [n.xy[0] - w / 2 - g, n.xy[1] - h / 2 - g, n.xy[0] + w / 2 + g, n.xy[1] + h / 2 + g];
+                        return !boxes.some(o => b[0] < o[2] && b[2] > o[0] && b[1] < o[3] && b[3] > o[1]);
+                    };
+                    // (the form it had keeps it through a slight overlap; a fuller one needs clear room)
+                    const keep = n.form && FORMS.indexOf(n.form) >= 0 && fits(n.form, -6) && !FORMS.slice(0, FORMS.indexOf(n.form)).some(f => fits(f, 3));
+                    const form = keep ? n.form : FORMS.find(f => fits(f, 1));
+                    if (form !== n.form) {
+                        n.form = form;
+                        n.chgEl.style.display = form && form !== 'full' ? 'none' : '';
+                        n.el.style.transform = `translate(${n.xy[0].toFixed(1)}px, ${n.xy[1].toFixed(1)}px) translate(-50%, -50%)${SCALE[form] ? ` scale(${SCALE[form]})` : ''}`;
+                    }
+                    if (!form) return;
+                    const [w, h] = size(form);
+                    boxes.push([n.xy[0] - w / 2, n.xy[1] - h / 2, n.xy[0] + w / 2, n.xy[1] + h / 2]); shown.add(n);
                 });
             }
             names.forEach(n => { if (n.pos) n.el.style.opacity = (mobile && !shown.has(n) ? 0 : n.alpha).toFixed(3); });
