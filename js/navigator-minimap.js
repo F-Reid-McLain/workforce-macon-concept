@@ -62,28 +62,107 @@
 
     // A tapped group's organizations, listed in the map's bottom panel; a tap opens one's details
     const esc = t => String(t == null ? '' : t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const rows = members => {
+        const a = id => (typeof assetData !== 'undefined' && assetData[id]) || {};
+        return `<ul class="mapgroup">${members.map(m => {
+            const d = a(m.id), img = d.image || m.image;
+            return `<li><button type="button" data-id="${esc(m.id)}"><span class="mapgroup__logo"${d.logoBg ? ` style="background:${esc(d.logoBg)}"` : ''}>${img ? `<img src="${esc(img)}" alt="" loading="lazy"${d.logoFit === 'contain' ? ' class="is-contain"' : ''}>` : ''}</span><span class="mapgroup__text"><b>${esc(d.name || m.name)}</b>${d.bestFor ? `<small>${esc(d.bestFor)}</small>` : ''}</span><span class="mapgroup__go" aria-hidden="true">›</span></button></li>`;
+        }).join('')}</ul>`;
+    };
+    const dek = n => `<p class="mapgroup__dek">${n} organization${n === 1 ? '' : 's'} · tap one for details</p>`;
     window.WFMapGroup = (cat, members) => {
         const panel = document.getElementById('viz-info-panel');
         if (!panel) return;
-        const a = id => (typeof assetData !== 'undefined' && assetData[id]) || {};
         document.getElementById('viz-info-title').textContent = cat.name;
-        document.getElementById('viz-info-body').innerHTML = `<p class="mapgroup__dek">${members.length} organization${members.length === 1 ? '' : 's'} · tap one for details</p>
-            <ul class="mapgroup">${members.map(m => {
-                const d = a(m.id), img = d.image || m.image;
-                return `<li><button type="button" data-id="${esc(m.id)}"><span class="mapgroup__logo"${d.logoBg ? ` style="background:${esc(d.logoBg)}"` : ''}>${img ? `<img src="${esc(img)}" alt="" loading="lazy"${d.logoFit === 'contain' ? ' class="is-contain"' : ''}>` : ''}</span><span class="mapgroup__text"><b>${esc(d.name || m.name)}</b>${d.bestFor ? `<small>${esc(d.bestFor)}</small>` : ''}</span><span class="mapgroup__go" aria-hidden="true">›</span></button></li>`;
-            }).join('')}</ul>`;
+        document.getElementById('viz-info-body').innerHTML = dek(members.length) + rows(members);
         panel.scrollTop = 0;
         panel.classList.add('open');
     };
     document.addEventListener('click', e => {
         const b = e.target.closest('.mapgroup button');
-        if (!b || typeof nodeSelection === 'undefined' || !nodeSelection) return;
+        if (!b || b.closest('.orgsheet') || typeof nodeSelection === 'undefined' || !nodeSelection) return;
         nodeSelection.filter(d => d.id === b.dataset.id).dispatch('click');
     });
 
-    openBtn.addEventListener('click', () => setOpen(true));
+    // ----- Phones: the banner is a picture of the six groups, and the organizations are a list -----
+    // (a zoomable map of 29 small logos is slow work on a phone; the list it led to is the useful part)
+    // Tapping a group in the banner lists its organizations in a sheet from the bottom; "Explore"
+    // lists every group's. An organization opens its details (js/directory.js openAssetModal), over
+    // the list, and closing them comes back to it. The back button closes the top one.
+    const phoneOnly = () => window.innerWidth <= 768;
+    const sheet = document.createElement('div');
+    sheet.className = 'orgsheet'; sheet.hidden = true;
+    sheet.innerHTML = `<div class="orgsheet__backdrop"></div>
+        <div class="orgsheet__panel" role="dialog" aria-modal="true" aria-labelledby="orgsheet-title">
+            <div class="orgsheet__head"><h3 id="orgsheet-title"></h3><button type="button" class="orgsheet__close" aria-label="Close">&times;</button></div>
+            <div class="orgsheet__body"></div>
+        </div>`;
+    document.body.appendChild(sheet);
+    const sheetBody = sheet.querySelector('.orgsheet__body'), sheetClose = sheet.querySelector('.orgsheet__close');
+    const groups = () => (typeof workforceData !== 'undefined' && workforceData ? workforceData.nodes : []).filter(n => n.type === 'major-group');
+    const membersOf = id => workforceData.nodes.filter(n => n.type === 'asset' && n.category === id);
+    const modal = document.getElementById('asset-modal');
+    const modalOpen = () => !!modal && modal.style.display === 'block';
+    // the browser's history: one step for the list, one for an organization's details over it
+    let steps = 0, quietPops = 0, sheetFocus = null;
+    const step = () => { history.pushState({ wfSheet: true }, ''); steps++; };
+    const unstep = () => { if (steps > 0) { steps--; quietPops++; history.back(); } };
+    function openSheet(catId) {
+        const all = groups(); if (!all.length) return;
+        const cat = catId && all.find(c => c.id === catId);
+        document.getElementById('orgsheet-title').textContent = cat ? cat.name : 'Every organization, by group';
+        sheetBody.innerHTML = cat ? dek(membersOf(cat.id).length) + rows(membersOf(cat.id))
+            : all.map(c => `<h4 class="orgsheet__group">${esc(c.name)} <span>${membersOf(c.id).length}</span></h4>` + rows(membersOf(c.id))).join('');
+        sheetBody.scrollTop = 0;
+        if (sheet.hidden) { sheetFocus = document.activeElement; sheet.hidden = false; document.body.classList.add('orgsheet-open'); step(); }
+        sheetClose.focus({ preventScroll: true });
+    }
+    function closeSheet(fromHistory) {
+        if (sheet.hidden) return;
+        sheet.hidden = true; document.body.classList.remove('orgsheet-open');
+        if (!fromHistory) unstep();
+        if (sheetFocus && sheetFocus.focus && !matchMedia('(hover: none)').matches) sheetFocus.focus({ preventScroll: true });
+    }
+    sheetClose.addEventListener('click', () => closeSheet());
+    sheet.querySelector('.orgsheet__backdrop').addEventListener('click', () => closeSheet());
+    sheetBody.addEventListener('click', e => {
+        const b = e.target.closest('.mapgroup button');
+        if (!b || typeof openAssetModal !== 'function') return;
+        openAssetModal(b.dataset.id, { sheet: true });
+        if (modalOpen()) step();
+    });
+    // the details closed their own way (×, outside, Esc): their history step comes off too
+    if (modal) new MutationObserver(() => { if (!modalOpen() && steps > (sheet.hidden ? 0 : 1)) unstep(); })
+        .observe(modal, { attributes: true, attributeFilter: ['style'] });
+    addEventListener('popstate', () => {
+        if (quietPops) { quietPops--; return; }
+        if (!steps) return;
+        steps--;
+        if (modalOpen()) { closeAssetModal(modal); return; }
+        closeSheet(true);
+    });
+    // (before the details' own Esc, so one Esc closes only the top one)
+    addEventListener('keydown', e => { if (e.key === 'Escape' && !sheet.hidden && !modalOpen()) closeSheet(); }, true);
+
+    // A tap on the banner: the group under it (or near it), or every group if it's between them
+    function bannerTap(e) {
+        let best = null, bestD = Infinity;
+        document.querySelectorAll('#network-visualization g').forEach(g => {
+            if (!g.__data__ || g.__data__.type !== 'major-group') return;
+            const c = g.querySelector('circle'); if (!c) return;
+            const r = c.getBoundingClientRect(), d = Math.hypot(e.clientX - (r.left + r.width / 2), e.clientY - (r.top + r.height / 2));
+            if (d < Math.max(30, r.width * 0.9) && d < bestD) { best = g.__data__.id; bestD = d; }
+        });
+        openSheet(best);
+    }
+    if (phoneOnly()) {
+        openBtn.setAttribute('aria-label', 'Browse the organizations by group');
+        if (exploreBtn) exploreBtn.innerHTML = 'See every organization <span aria-hidden="true">›</span>';
+    }
+
+    openBtn.addEventListener('click', e => { if (phoneOnly()) bannerTap(e); else setOpen(true); });
     closeBtn.addEventListener('click', () => setOpen(false));
-    if (exploreBtn) exploreBtn.addEventListener('click', () => setOpen(true));
+    if (exploreBtn) exploreBtn.addEventListener('click', () => { if (phoneOnly()) openSheet(null); else setOpen(true); });
     document.addEventListener('keydown', e => {
         // The map's own Esc handling (details panel) goes first; a second Esc closes the overlay
         if (e.key !== 'Escape' || !frame.classList.contains('is-open')) return;
