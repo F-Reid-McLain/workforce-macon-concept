@@ -1113,21 +1113,6 @@
         // anchors: the story's visible cards and the scroll position of each (js/scenes-phone.js steps through them)
         window.WFStory = { goTo(id) { const el = momentFor(id); if (el) goToStep(el, false); return !!el; }, anchors: () => { measure(); return anchors.slice(); }, layers: () => deckgl.props.layers };   // (layers: for tests)
         addEventListener('hashchange', goToHash);
-        allSteps.filter(el => el.dataset.moment).forEach(el => {
-            const card = el.querySelector('.ci-card');
-            if (!card) return;
-            const btn = document.createElement('button');
-            btn.type = 'button'; btn.className = 'ci-linkbtn'; btn.textContent = 'Link to this moment';
-            btn.addEventListener('click', () => {
-                const url = location.origin + location.pathname + '#' + el.dataset.moment;
-                const reset = () => setTimeout(() => { btn.textContent = 'Link to this moment'; }, 1800);
-                const copied = () => { btn.textContent = 'Link copied'; reset(); };
-                const fallback = () => { history.replaceState(null, '', '#' + el.dataset.moment); btn.textContent = 'Link is in the address bar'; reset(); };
-                if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(url).then(copied, fallback); else fallback();
-            });
-            card.appendChild(btn);
-        });
-
         let presenting = false;
         function setPresenting(on) {
             if (on === presenting) return;

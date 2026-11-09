@@ -152,13 +152,8 @@
     position: absolute; z-index: 3; left: 50%; bottom: 18px; transform: translateX(-50%); display: none;
     padding: 0.35rem 0.8rem; border-radius: 999px; background: rgba(0, 0, 0, 0.55); color: #cfd6e2; font-size: 0.75rem;
 }
-body.ci-presenting .main-header, body.ci-presenting .page-jumpnav, body.ci-presenting .ci-present, body.ci-presenting .ci-linkbtn { display: none !important; }
+body.ci-presenting .main-header, body.ci-presenting .page-jumpnav, body.ci-presenting .ci-present { display: none !important; }
 body.ci-presenting .ci-present-hint { display: block; }
-.ci-linkbtn {
-    margin-top: 0.7rem; padding: 0; border: 0; background: none; cursor: pointer;
-    font: 600 0.75rem var(--font-body); color: #9fb1c9; text-decoration: underline; text-underline-offset: 3px;
-}
-.ci-linkbtn:hover { color: #f2c46b; }
 .ci-method { margin-top: 0.8rem; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 0.6rem; }
 .ci-method summary { cursor: pointer; font-size: 0.8rem; font-weight: 600; color: #9fb1c9; }
 .ci-method summary:hover { color: #f2c46b; }
@@ -295,7 +290,7 @@ body.ci-on-screen .page-jumpnav { opacity: 0; pointer-events: none; }
 .ci-short { display: none; }
 .ci-step:not(.ci-step--map) .ci-short { display: block; }   /* the story's cards: one sentence, every width */
 @media (max-width: 700px) {
-    .ci-step--full, .ci-long, .ci-pulse, .ci-linkbtn { display: none !important; }
+    .ci-step--full, .ci-long, .ci-pulse { display: none !important; }
     .ci-welcome :is(.ci-eyebrow, .ci-lede) { display: none; }   /* the opening is just the headline (the header carries the name) */
     .ci-welcome h1 { margin-bottom: 1.4rem; }
     .ci-step.ci-step--welcome { align-items: flex-start; padding-top: 9vh; padding-top: 9svh; }   /* the words up top, the county turning below them */
