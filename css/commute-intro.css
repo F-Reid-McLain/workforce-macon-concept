@@ -59,9 +59,6 @@
 .ci-maplabels, .ci-hwylabels { position: absolute; inset: 0; z-index: 2; pointer-events: none; will-change: opacity; }
 .ci-maplabels { opacity: calc(var(--ci-maplabels, 0) * (1 - var(--ci-hwy, 0))); }   /* county labels step aside for highways, as on the old map */
 .ci-hwylabels { opacity: var(--ci-hwy, 0); }
-/* the opening's I-75 and I-16 shields, with its crossroads */
-.ci-storyshields { position: absolute; inset: 0; z-index: 2; pointer-events: none; opacity: calc(var(--ci-story-hwy, 0) * 0.85); }
-.ci-storyshields .ci-hwybadge { position: absolute; left: 0; top: 0; }
 .ci-maplabel {
     position: absolute; transform: translate(-50%, -50%); text-align: center; white-space: nowrap;
     display: flex; flex-direction: column; align-items: center; line-height: 1.2;
@@ -322,5 +319,5 @@ body.ci-on-screen .page-jumpnav { opacity: 0; pointer-events: none; }
 /* Marketing stills (?render=1): just the 3D stage, filling the window */
 html.ci-render .main-header, html.ci-render .page-jumpnav, html.ci-render .ci-steps, html.ci-render .ci-time,
 html.ci-render .ci-tip, html.ci-render .ci-present, html.ci-render .ci-present-hint, html.ci-render .ci-pulse,
-html.ci-render .ci-overlay, html.ci-render .ci-maplabels, html.ci-render .ci-hwylabels, html.ci-render .ci-storyshields { display: none !important; }
+html.ci-render .ci-overlay, html.ci-render .ci-maplabels, html.ci-render .ci-hwylabels { display: none !important; }
 html.ci-render .ci { --ci-top: 0px !important; }

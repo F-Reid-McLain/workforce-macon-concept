@@ -227,19 +227,7 @@
         const insideRegion = pt => rings.some(r => inRing(pt, r.ring));
         const hwyFeatures = highways ? highways.features.filter(f => HWY[f.properties.class]) : [];
         const hwyPaths = hwyFeatures.flatMap(f => (f.geometry.type === 'LineString' ? [f.geometry.coordinates] : f.geometry.coordinates)
-            .map(path => ({ cls: f.properties.class, route: f.properties.route, path }))).sort((a, b) => HWY[a.cls].order - HWY[b.cls].order);
-        // ----- The opening's crossroads: I-75, I-16 and I-475 meeting at Macon -----
-        // Still, faint gold lines on the ground under the welcome (the Macon-Bibb block hides the
-        // stretches behind and under it), with I-75 and I-16 shields; gone by 6 AM
-        const CROSS = new Set(['I-75', 'I-16', 'I-475']);
-        const crossPaths = hwyPaths.filter(h => CROSS.has(h.route));
-        const kx = Math.cos(bc[1] * Math.PI / 180), kmFrom = pt => Math.hypot((pt[0] - bc[0]) * kx, pt[1] - bc[1]) * 111;
-        // A shield rides on I-75 south of Macon and on I-16 east of it (low on the screen, clear of the
-        // headline): each route's points on that side, in order out from Macon; placeShields() picks one on screen
-        const outward = (route, side) => crossPaths.filter(h => h.route === route).flatMap(h => h.path)
-            .filter(side).filter(pt => kmFrom(pt) > 16).sort((a, b) => kmFrom(a) - kmFrom(b));
-        const storyShieldsGeo = [['I-75', pt => pt[1] < bc[1]], ['I-16', pt => pt[0] > bc[0]]]
-            .map(([route, side]) => ({ route, out: outward(route, side), at: null })).filter(d => d.out.length);
+            .map(path => ({ cls: f.properties.class, path }))).sort((a, b) => HWY[a.cls].order - HWY[b.cls].order);
         // One badge per route, at a point of the route that's inside the region
         const hwyLabelsGeo = Array.from(d3.group(hwyFeatures.filter(f => f.properties.route), f => f.properties.route), ([route, feats]) => {
             const pts = feats.flatMap(f => f.geometry.type === 'LineString' ? f.geometry.coordinates : f.geometry.coordinates.flat()).filter(insideRegion);
@@ -456,17 +444,7 @@
             return { el, chgEl, chg: null, pos: null, alpha: 0, name: nameOf.get(c.fips), bibb: c.fips === BIBB, rank: c.fips === BIBB ? Infinity : pop.get(c.fips) || 0 };
         });
         const byRank = names.slice().sort((a, b) => b.rank - a.rank);
-        const shieldsEl = document.createElement('div');
-        shieldsEl.className = 'ci-storyshields';
-        shieldsEl.setAttribute('aria-hidden', 'true');
-        const shieldEls = storyShieldsGeo.map(d => {
-            const el = document.createElement('span');
-            el.className = 'ci-hwybadge ci-hwybadge--interstate';
-            el.textContent = d.route;
-            shieldsEl.appendChild(el);
-            return el;
-        });
-        mapEl.after(namesEl, hwyLayerEl, shieldsEl, labelsEl);
+        mapEl.after(namesEl, hwyLayerEl, labelsEl);
         computeFlat();
 
         // ----- Hand-off: the story becomes the map, staged across the evening -----
@@ -487,8 +465,6 @@
         const posterShown = !!poster && getComputedStyle(poster).display !== 'none';
         let target = RENDER ? RENDER.hour : 5, hour = target, step = 0, rise = reducedMotion || RENDER || posterShown ? 1 : 0;
         let hwyOn = false, hwy = 0;
-        // The opening's crossroads (see crossPaths), fading out as 6 AM arrives
-        let hwyStory = 0;
         const tilt = { x: 0, y: 0, tx: 0, ty: 0 };
         if (!reducedMotion && matchMedia('(hover: hover)').matches) {
             stage.addEventListener('mousemove', e => {
@@ -539,32 +515,7 @@
         });
         // Pin the story's labels to their counties after every frame the map draws (the camera
         // drifts and orbits between scene changes, so this can't wait for the layers to change)
-        let shieldKey = '';
-        function placeShields() {
-            if (hwyStory < 0.01) return;
-            const vp = deckgl.getViewports()[0];
-            if (!vp) return;
-            const W = stage.clientWidth, H = stage.clientHeight, key = W + 'x' + H;
-            // once per screen size, after the opening rise: the point three-quarters of the way out
-            // along the stretch of road that's on screen in the lower part of the view
-            if (rise >= 1 && shieldKey !== key) {
-                shieldKey = key;
-                storyShieldsGeo.forEach(d => {
-                    const ok = d.out.map(pt => { const [x, y] = vp.project([pt[0], pt[1], 60]); return x > 44 && x < W - 44 && y > H * 0.58 && y < H - 44; });
-                    const last = ok.lastIndexOf(true), first = ok.indexOf(true);
-                    d.at = last < 0 ? null : d.out[Math.max(first, Math.round(first + (last - first) * 0.75))];
-                });
-            }
-            storyShieldsGeo.forEach((d, i) => {
-                const el = shieldEls[i];
-                if (!d.at) { el.style.visibility = 'hidden'; return; }
-                const [x, y] = vp.project([d.at[0], d.at[1], 60]);
-                el.style.visibility = x > 20 && x < W - 20 && y > 20 && y < H - 20 ? '' : 'hidden';
-                el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) translate(-50%, -50%)`;
-            });
-        }
         function placeNames() {
-            placeShields();
             if (namesEl.style.opacity === '0') return;
             const vp = deckgl.getViewports()[0];
             if (!vp) return;
@@ -768,12 +719,7 @@
                     if (chg !== n.chg) { n.chg = chg; n.chgEl.textContent = chg; }
                 });
             }
-            // The opening's crossroads: still, on the ground, under the Macon-Bibb block
-            if (hwyStory > 0.01 && crossPaths.length) out.push(
-                new deck.PathLayer({ id: 'crossroads', data: crossPaths, opacity: hwyStory, getPath: d => lift(d.path, 60), widthUnits: 'pixels',
-                    getWidth: d => d.route === 'I-475' ? 1.1 : 1.6, getColor: [242, 196, 107, 150], capRounded: true, jointRounded: true }),
-            );
-            // Highways on the finished map (its button), flat and clipped to the region; badges stay whole
+            // Highways (click the finished map), clipped to the region; badges stay whole
             if (hwy > 0.01 && hwyPaths.length) out.push(
                 new deck.PathLayer({ id: 'highways', data: hwyPaths, opacity: hwy, getPath: d => d.path, widthUnits: 'pixels',
                     getWidth: d => HWY[d.cls].width, getColor: d => [255, 255, 255, Math.round(255 * HWY[d.cls].alpha)],
@@ -863,7 +809,7 @@
         let lastScene = '', baseLayers = [], flowsShown = false;
         function render() {
             const m = morphAt(hour), S = stagesOf(m);
-            const sceneKey = [hour.toFixed(4), rise.toFixed(3), hwy.toFixed(3), hwyStory.toFixed(3), step, sel ? sel.fips : '', dotLoop.toFixed(4)].join();
+            const sceneKey = [hour.toFixed(4), rise.toFixed(3), hwy.toFixed(3), step, sel ? sel.fips : '', dotLoop.toFixed(4)].join();
             const now = performance.now(), moving = S.live && flowsMoving(now);
             if (sceneKey !== lastScene || moving || flowsShown !== !!(S.live && sel)) {
                 if (sceneKey !== lastScene) { lastScene = sceneKey; setLight(hour, S.light); baseLayers = layers(); }
@@ -877,7 +823,6 @@
             section.style.setProperty('--ci-map', S.overlays.toFixed(3));
             section.style.setProperty('--ci-maplabels', S.mapLabels.toFixed(3));
             section.style.setProperty('--ci-hwy', hwy.toFixed(3));
-            section.style.setProperty('--ci-story-hwy', hwyStory.toFixed(3));
             section.style.setProperty('--ci-settle', S.settle.toFixed(3));
             section.style.setProperty('--ci-bg', smooth(0.5, 0.9, m).toFixed(3));   // stage fades into the page as the map forms
             section.style.setProperty('--ci-pulse', (smooth(5.6, 5.95, hour) * (1 - smooth(18.9, 19.5, hour))).toFixed(3));
@@ -997,9 +942,6 @@
             if (rise < 1) { rise = reducedMotion ? 1 : smooth(0, 1, (now - riseStart) / 1400); busy = true; }
             // Leaving the finished map turns its Highways button back off, so the story runs clean going back
             if (hwyOn && !stagesOf(morphAt(hour)).live) { hwyOn = false; hwyBtn.setAttribute('aria-pressed', 'false'); }
-            // The opening's crossroads fade out as 6 AM arrives
-            const storyWant = RENDER ? 0 : rise * (1 - smooth(5.45, 5.95, hour));
-            if (Math.abs(storyWant - hwyStory) > 0.005) { hwyStory += (storyWant - hwyStory) * (1 - Math.exp(-dt / 120)); busy = true; } else hwyStory = storyWant;
             const hTarget = hwyOn ? 1 : 0;
             if (Math.abs(hTarget - hwy) > 0.005) { hwy += (hTarget - hwy) * (1 - Math.exp(-dt / 90)); busy = true; } else hwy = hTarget;
             tilt.x += (tilt.tx - tilt.x) * 0.06; tilt.y += (tilt.ty - tilt.y) * 0.06;
