@@ -260,7 +260,7 @@
         const pct = g => (g > 0 ? '+' : '') + (g * 100).toFixed(1) + '%';
         // Each ranking, with a floor on size where a handful of jobs would swamp it
         const SORTS = {
-            common:   { key: j => j.empl,     min: 0,   val: j => fmt(j.empl) + ' jobs',     note: 'Ranked by jobs in Macon-Bibb.' },
+            common:   { key: j => j.empl,     min: 0,   val: j => fmt(j.empl) + ' jobs',     note: 'Ranked by jobs in Macon.' },
             paid:     { key: j => j.wage,     min: 30,  val: j => money(j.wage),             note: 'Ranked by average pay, among jobs with at least 30 positions here.' },
             growing:  { key: j => j.growth,   min: 100, val: j => pct(j.growth) + ' a year', note: 'Ranked by projected growth a year, among jobs with at least 100 positions here.' },
         };
@@ -273,7 +273,7 @@
         out.innerHTML = `<h3></h3>
             <dl class="tool-stats">
                 <div><dt>Average pay</dt><dd data-k="wage" data-f="money"></dd></div>
-                <div><dt>Jobs in Macon-Bibb</dt><dd data-k="empl" data-f="int"></dd></div>
+                <div><dt>Jobs in Macon</dt><dd data-k="empl" data-f="int"></dd></div>
             </dl>
             <div class="pay-gauge" aria-hidden="true">
                 <div class="pay-gauge__track"><span class="pay-gauge__avg" style="left:${gx(avgPay)}"><em>Avg. job here ${money(avgPay)}</em></span><span class="pay-gauge__me"></span></div>
@@ -296,7 +296,7 @@
             countIn(out, last);
             out.querySelector('.pay-gauge__me').style.left = gx(j.wage);
             const diff = j.wage - avgPay;
-            out.querySelector('.pay-gauge__cap').innerHTML = Math.abs(diff) < 1000 ? 'About the same as the average job located in Macon-Bibb.'
+            out.querySelector('.pay-gauge__cap').innerHTML = Math.abs(diff) < 1000 ? 'About the same as the average job located in Macon.'
                 : `<b>${money(Math.abs(diff))} ${diff > 0 ? 'more' : 'less'}</b> than the average job here.`;
             if (changed && !quiet) swap(out);
             list.querySelectorAll('button').forEach(b => b.classList.toggle('is-hot', ranked[+b.dataset.i] === j));
@@ -344,7 +344,7 @@
         const last = {};
         out.innerHTML = `<h3></h3>
             <dl class="tool-stats">
-                <div><dt>Jobs located in Macon-Bibb</dt><dd data-k="empl" data-f="int"></dd></div>
+                <div><dt>Jobs located in Macon</dt><dd data-k="empl" data-f="int"></dd></div>
                 <div><dt>Average wage</dt><dd data-k="wage" data-f="money"></dd></div>
                 <div><dt>Concentration</dt><dd data-k="conc"></dd></div>
                 <div><dt>Recent change</dt><dd data-k="change"></dd></div>
