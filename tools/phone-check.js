@@ -82,7 +82,7 @@ const device = args.device || 'iPhone 15', base = args.base || 'http://localhost
     await scrollToY(1500); await shot('2-story');
 
     // Phones get the swipe scenes (js/scenes-phone.js); with reduced motion, the plain page.
-    // to(name, n): the map's scene, a title slide's words or map (n: 0 nurses, 1 manufacturing),
+    // to(name, n): the map's scene, a title slide's words or map (n: 0 manufacturing, 1 nurses),
     // a tool, or the close, reached the way that page reaches it
     const scenes = await page.evaluate(() => document.documentElement.classList.contains('scenes'));
     console.log(scenes ? '  (swipe scenes)' : '  (plain scrolling page)');
@@ -137,7 +137,7 @@ const device = args.device || 'iPhone 15', base = args.base || 'http://localhost
         await to('titlemap', i, 6500);
         ok(`title map ${i + 1} draws itself`, await page.evaluate(i => document.querySelectorAll('.intro-map')[i].classList.contains('is-drawn'), i));
         if (scenes) ok(`title map ${i + 1} fills the screen`, await page.evaluate(i => { const r = document.querySelectorAll('.intro-map')[i].getBoundingClientRect(); return r.top <= 1 && r.bottom >= innerHeight - 1 && r.width >= innerWidth - 1; }, i));
-        if (i === 1 && await tapOn('.gm-pin .gm-hit')) {
+        if (await page.evaluate(i => !!document.querySelectorAll('.stop-intro--map')[i].querySelector('.gm-pin'), i) && await tapOn('.gm-pin .gm-hit')) {   // (the plants map, wherever it sits)
             const tip = await page.evaluate(() => { const t = document.querySelector('.gm-tip'), r = t.getBoundingClientRect(); return { on: t.classList.contains('is-on'), top: r.top, bottom: r.bottom, vh: innerHeight }; });
             ok('tapping a plant opens its card on screen', tip.on && tip.top >= 60 && tip.bottom <= tip.vh, `${Math.round(tip.top)}..${Math.round(tip.bottom)}`);
         }
