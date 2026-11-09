@@ -152,7 +152,7 @@
         const a = orgs[org] || {};
         return a.image ? `<img src="${esc(a.image)}" alt="" loading="lazy"${a.logoFit === 'contain' ? ' class="is-contain"' : ''}${a.logoBg ? ` style="background:${esc(a.logoBg)}"` : ''}>` : '<i></i>';
     }
-    // Two lines: the name and what you earn; then length · cost · who · where. The card is the link.
+    // The provider's logo, then two lines: the name and what you earn; then length · cost · who · where. The card is the link.
     const shortLength = t => String(t || '').replace(/\s*\(.*\)$/, '').replace(' full time', '');
     const shortCost = t => String(t || '').replace(/ tuition.*$/, '').replace(/ · .*$/, '');
     function programHTML(p) {
@@ -161,6 +161,7 @@
         const tipBits = [p.credential, p.length, p.cost, p.campus, p.options && p.options.length ? 'Options: ' + p.options.join(', ') : '', p.leadsTo].filter(Boolean);
         const meta = [shortLength(p.length), shortCost(p.cost), orgName(p.org), where, p.online && towns ? 'online too' : ''].filter(Boolean);
         return `<li data-key="${esc(p.id)}" data-org="${esc(p.org)}"><a class="pcard" href="${esc(p.url)}" target="_blank" rel="noopener" title="${esc(tipBits.join('\n'))}">
+            <span class="pcard__logo" aria-hidden="true">${logo(p.org)}</span>
             <span class="pcard__top"><b class="pcard__name">${esc(p.name)}</b><b class="earn earn--${esc(p.earn)}">${esc(earnLabel(p.earn))}</b></span>
             <span class="pcard__meta">${meta.map(esc).join('<i>·</i>')}${p.verify ? '<i>·</i><em>call to confirm</em>' : ''}</span>
             <span class="sr-only"> (program page, opens in a new tab)</span>
