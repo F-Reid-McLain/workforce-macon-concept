@@ -898,18 +898,18 @@
         addEventListener('resize', () => { if (stage.clientWidth !== roomW) { roomW = stage.clientWidth; roomUsed = null; } measure(); computeFlat(); if (mobile) fitPhoneCamera(); lastScene = ''; onScroll(); });
 
         // ----- Idle drift: when nobody's scrolling, the 3D view keeps moving -----
-        // On the opening view the camera circles Macon-Bibb, so the county turns in place
-        // under the headline; on the story's cards it sways gently. It eases back to the
+        // The camera sways gently around Macon-Bibb, a few degrees either way, under the opening
+        // headline and on the story's cards (the county doesn't turn all the way). It eases back to the
         // story's own camera as soon as anyone scrolls, clicks, touches or presses a key,
         // holds still after a couple of idle minutes, and stays off for reduced motion and
         // on the finished (flat) map.
-        // Touch devices (phones, tablets) keep only the opening spin, for half a minute, so the
+        // Touch devices (phones, tablets) keep only the opening's sway, for half a minute, so the
         // loop can sleep and spare the battery; no sway on the cards
         const canHover = !!(window.matchMedia && matchMedia('(hover: hover)').matches);
         // Phones in swipe scenes (js/scenes-phone.js) keep the gentle sway between swipes: the movement is the point
         const SCENES = document.documentElement.classList.contains('scenes');
         const IDLE_MS = 2000, IDLE_MAX = canHover ? 120000 : 30000, DOTS_MAX = canHover ? 600000 : 90000;
-        const SPIN = 360 / 75000, SWAY = 8;            // degrees per ms; degrees either way
+        const SWAY = 8;                                // degrees either way
         let lastInput = performance.now(), orbit = 0, swayClock = 0, idleTimer = null;
         const wrap180 = d => ((d % 360) + 540) % 360 - 180;
         function noteInput() {
@@ -954,8 +954,7 @@
                 swayClock = 0;
             } else if (since < IDLE_MAX && rise >= 1 && Math.abs(target - hour) < 0.001 && (canHover || SCENES || hour < 5.6)) {
                 const ease = smooth(IDLE_MS, IDLE_MS + 2500, since);   // drift starts slowly
-                if (hour < 5.6) orbit += dt * SPIN * ease;            // the opening view: turn all the way around
-                else { swayClock += dt; const want = SWAY * ease * Math.sin(swayClock / 3800); orbit += (wrap180(want - orbit)) * (1 - Math.exp(-dt / 500)); }
+                swayClock += dt; const want = SWAY * ease * Math.sin(swayClock / 3800); orbit += (wrap180(want - orbit)) * (1 - Math.exp(-dt / 500));
                 busy = true;
             }
             const c = RENDER && RENDER.cam ? V(...RENDER.cam) : orbitAround(storyCamera(CALM ? (hour < 5.5 ? 5 : 6) : hour), orbit * free);
