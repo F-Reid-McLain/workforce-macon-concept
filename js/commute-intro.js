@@ -45,11 +45,6 @@
     const mixRGB = (a, b, k) => a.map((v, i) => Math.round(v + (b[i] - v) * k));
     const fmt = n => Math.round(n).toLocaleString();
     const fmtK = n => n >= 1000 ? (n / 1000).toFixed(n < 10000 ? 1 : 0) + 'K' : String(Math.round(n));
-    const fmtTime = t => {
-        const h = Math.floor(t), m = Math.round((t - h) * 4) * 15;
-        const hh = (h + (m === 60 ? 1 : 0)) % 24, mm = m === 60 ? 0 : m;
-        return `${hh % 12 === 0 ? 12 : hh % 12}:${String(mm).padStart(2, '0')} ${hh < 12 ? 'AM' : 'PM'}`;
-    };
     const inRing = ([x, y], ring) => {
         let inside = false;
         for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
@@ -238,13 +233,6 @@
         const stage = document.getElementById('ci-stage');
         const mapEl = document.getElementById('ci-map');
         const tip = document.getElementById('ci-tip');
-        const timePill = section.querySelector('.ci-time');
-        const timeLabel = document.getElementById('ci-time-label');
-        const timeIcon = document.getElementById('ci-time-icon');
-        // the clock's sun and moon, drawn as line icons (the text symbols render as emoji on phones)
-        const SUN = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.55 1.55M17.15 17.15l1.55 1.55M5.3 18.7l1.55-1.55M17.15 6.85l1.55-1.55"/></svg>';
-        const MOON = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.6A8.2 8.2 0 0 1 9.4 4a8.2 8.2 0 1 0 10.6 10.6z"/></svg>';
-        let shownDay = null;
         const hwyBtn = document.getElementById('ci-hwy');
         const pngBtn = document.getElementById('ci-png');
 
@@ -871,10 +859,6 @@
                 flowsShown = !!(S.live && sel);
                 deckgl.setProps({ layers: baseLayers.concat(flowLayers(now)) });
             }
-            timeLabel.textContent = fmtTime(Math.min(hour, 20.75));
-            const day = hour >= 6.5 && hour < 19;
-            if (day !== shownDay) { shownDay = day; timeIcon.innerHTML = day ? SUN : MOON; }
-            timePill.style.opacity = String(1 - smooth(0.4, 0.7, m));
             section.style.setProperty('--ci-map', S.overlays.toFixed(3));
             section.style.setProperty('--ci-maplabels', S.mapLabels.toFixed(3));
             section.style.setProperty('--ci-hwy', hwy.toFixed(3));

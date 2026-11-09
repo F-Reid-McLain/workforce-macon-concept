@@ -127,10 +127,10 @@
     .ci-hud { position: absolute; z-index: 3; right: 18px; bottom: 18px; display: flex; flex-direction: column; gap: 10px; width: 340px; pointer-events: none; }
     .ci-hud .ci-pulse { position: static; }
 }
-/* Tablets: the pulse moves to the top left and the key sits top right, under the clock */
+/* Tablets: the pulse moves to the top left and the key sits top right */
 @media (min-width: 701px) and (max-width: 768px) {
-    .ci-livekey { position: absolute; z-index: 3; top: 52px; right: 10px; max-width: 230px; }
-    .ci-hud .ci-pulse { left: 10px; transform: none; }
+    .ci-livekey { position: absolute; z-index: 3; top: 10px; right: 10px; max-width: 230px; }
+    .ci-hud .ci-pulse { top: 10px; left: 10px; transform: none; }
 }
 /* Phones: a strip of swatches above the caption (the box is hidden) */
 .ci-caption__key { display: none; }
@@ -146,7 +146,7 @@
 }
 
 /* ----- Present mode and moment links ----- */
-.ci-present { position: absolute; z-index: 3; top: 62px; right: 18px; opacity: calc(1 - var(--ci-map)); }   /* under the clock: the story's cards pass down the left */
+.ci-present { position: absolute; z-index: 3; top: 18px; right: 18px; opacity: calc(1 - var(--ci-map)); }   /* top right: the story's cards pass down the left */
 .ci.is-map .ci-present { pointer-events: none; }
 .ci-present-hint {
     position: absolute; z-index: 3; left: 50%; bottom: 18px; transform: translateX(-50%); display: none;
@@ -219,14 +219,6 @@ body.ci-presenting .ci-present-hint { display: block; }
     .ci.is-ready .ci-poster { opacity: 0; }
 }
 
-.ci-time {
-    position: absolute; top: 18px; right: 18px; z-index: 3;
-    display: flex; align-items: center; gap: 0.45rem;
-    padding: 0.4rem 0.8rem; border-radius: 999px;
-    background: rgba(16, 23, 32, 0.75); border: 1px solid rgba(255, 255, 255, 0.12);
-    font: 600 0.95rem/1 var(--font-body); font-variant-numeric: tabular-nums;
-}
-
 .ci-tip {
     position: absolute; z-index: 4; pointer-events: none; display: none;
     background: #10171a; color: #e9ece6; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 8px;
@@ -290,7 +282,6 @@ body.ci-on-screen .page-jumpnav { opacity: 0; pointer-events: none; }
     .ci-step { align-items: flex-end; padding: 0 0.75rem 6vh; }
     .ci-step--welcome { align-items: center; padding-bottom: 0; }
     .ci-card { max-width: none; width: 100%; }
-    .ci-time { top: 10px; right: 10px; font-size: 0.85rem; }
     /* Cards sit at the bottom on phones, so the pulse goes up top */
     .ci-pulse { top: 52px; bottom: auto; right: auto; left: 50%; transform: translateX(-50%); padding: 0.5rem 0.7rem; }
     .ci-pulse__row b { font-size: 1.3rem; }
@@ -352,7 +343,7 @@ body.ci-on-screen .page-jumpnav { opacity: 0; pointer-events: none; }
 }
 
 /* Marketing stills (?render=1): just the 3D stage, filling the window */
-html.ci-render .main-header, html.ci-render .page-jumpnav, html.ci-render .ci-steps, html.ci-render .ci-time,
+html.ci-render .main-header, html.ci-render .page-jumpnav, html.ci-render .ci-steps,
 html.ci-render .ci-tip, html.ci-render .ci-present, html.ci-render .ci-present-hint, html.ci-render .ci-pulse, html.ci-render .ci-livekey,
 html.ci-render .ci-overlay, html.ci-render .ci-maplabels, html.ci-render .ci-hwylabels { display: none !important; }
 html.ci-render .ci { --ci-top: 0px !important; }
