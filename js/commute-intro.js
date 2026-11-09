@@ -228,22 +228,38 @@
         const hwyFeatures = highways ? highways.features.filter(f => HWY[f.properties.class]) : [];
         const hwyPaths = hwyFeatures.flatMap(f => (f.geometry.type === 'LineString' ? [f.geometry.coordinates] : f.geometry.coordinates)
             .map(path => ({ cls: f.properties.class, path }))).sort((a, b) => HWY[a.cls].order - HWY[b.cls].order);
-        // In the 3D story the roads ride on the blocks: each road is cut into stretches by county
-        // (meeting at the midpoint where it crosses a border) and each stretch sits on its county's top
+        // ----- Highways in the story: headlights streaming into Macon -----
+        // Interstates and US routes only. Each road is cut where it passes nearest Macon-Bibb and
+        // both halves run toward that point, so the lights always travel into Macon. Then each half
+        // is cut by county (meeting at the midpoint where it crosses a border) so each stretch can
+        // ride on its county's block; every point keeps its distance along the road (km), which
+        // the moving lights (deck.TripsLayer) use as their clock.
         const countyAt = pt => { const r = rings.find(r => inRing(pt, r.ring)); return r ? r.fips : null; };
-        const hwyRuns = hwyPaths.flatMap(h => {
-            const runs = []; let cur = null, prev = null;
+        const KM = 111, kx = Math.cos(bc[1] * Math.PI / 180);
+        const kmBetween = (a, b) => Math.hypot((a[0] - b[0]) * kx, a[1] - b[1]) * KM;
+        const roadHalves = hwyPaths.filter(h => h.cls !== 'state').flatMap(h => {
+            let near = 0, best = Infinity;
+            h.path.forEach((pt, i) => { const d = kmBetween(pt, bc); if (d < best) { best = d; near = i; } });
+            return [h.path.slice(0, near + 1), h.path.slice(near).reverse()].filter(p => p.length > 1).map(path => ({ cls: h.cls, path }));
+        });
+        const roadRuns = roadHalves.flatMap(h => {
+            const runs = []; let cur = null, prev = null, km = 0, prevKm = 0;
             h.path.forEach(pt => {
+                if (prev) km += kmBetween(prev, pt);
                 const f = countyAt(pt);
                 if (!cur || cur.fips !== f) {
-                    const mid = prev ? [(prev[0] + pt[0]) / 2, (prev[1] + pt[1]) / 2] : null;
-                    if (cur && mid) cur.path.push(mid);
-                    cur = { cls: h.cls, fips: f, path: mid ? [mid] : [] }; runs.push(cur);
+                    const mid = prev ? [(prev[0] + pt[0]) / 2, (prev[1] + pt[1]) / 2] : null, midKm = (prevKm + km) / 2;
+                    if (cur && mid) { cur.path.push(mid); cur.ts.push(midKm); }
+                    cur = { cls: h.cls, fips: f, path: mid ? [mid] : [], ts: mid ? [midKm] : [] }; runs.push(cur);
                 }
-                cur.path.push(pt); prev = pt;
+                cur.path.push(pt); cur.ts.push(km); prev = pt; prevKm = km;
             });
             return runs.filter(r => r.path.length > 1);
         });
+        const ROAD_LOOP = Math.max(60, ...roadRuns.map(r => r.ts[r.ts.length - 1])) + 30;   // km: one round of lights
+        // six waves of lights per road, a sixth of a round apart (plus copies a round behind, so they wrap)
+        const WAVES = 6;
+        const roadTrips = d3.range(WAVES).flatMap(k => [0, -1].flatMap(w => roadRuns.map(r => ({ r, ts: r.ts.map(t => t + (k / WAVES + w) * ROAD_LOOP) }))));
         // One badge per route, at a point of the route that's inside the region
         const hwyLabelsGeo = Array.from(d3.group(hwyFeatures.filter(f => f.properties.route), f => f.properties.route), ([route, feats]) => {
             const pts = feats.flatMap(f => f.geometry.type === 'LineString' ? f.geometry.coordinates : f.geometry.coordinates.flat()).filter(insideRegion);
@@ -481,9 +497,9 @@
         const posterShown = !!poster && getComputedStyle(poster).display !== 'none';
         let target = RENDER ? RENDER.hour : 5, hour = target, step = 0, rise = reducedMotion || RENDER || posterShown ? 1 : 0;
         let hwyOn = false, hwy = 0;
-        // The story's own highways: faint behind the opening, and a brief flash as rush hour arrives
-        let hwyStory = 0, hwyFlashAt = -1e9;
-        const hwyShown = () => Math.max(hwy, hwyStory);
+        // The story's own highways: under the opening, and a brief flash as rush hour arrives;
+        // roadClock (km) moves their headlights
+        let hwyStory = 0, hwyFlashAt = -1e9, roadClock = 0;
         const tilt = { x: 0, y: 0, tx: 0, ty: 0 };
         if (!reducedMotion && matchMedia('(hover: hover)').matches) {
             stage.addEventListener('mousemove', e => {
@@ -738,13 +754,33 @@
                     if (chg !== n.chg) { n.chg = chg; n.chgEl.textContent = chg; }
                 });
             }
-            // Highways (the opening, the rush-hour flash, and the finished map's button), clipped to the
-            // region and lying on the block tops; the badges are the button's alone
-            const hw = hwyShown();
-            if (hw > 0.01 && hwyRuns.length) out.push(
-                new deck.PathLayer({ id: 'highways', data: hwyRuns, opacity: hw, getPath: r => lift(r.path, (r.fips ? fullTop(r.fips) : 0) + 60), widthUnits: 'pixels',
+            // The story's highways: warm, thin roads with headlights streaming in toward Macon. Under the
+            // opening they run on the ground up to Macon-Bibb and stop at its block (the headline sits
+            // over it); at rush hour they ride on every county's block, Macon-Bibb's included.
+            if (hwyStory > 0.01 && roadRuns.length) {
+                const open = 1 - smooth(5.45, 5.95, hour);
+                const z = r => (r.fips ? fullTop(r.fips) : 0) + 60;
+                const shown = r => !(open > 0.5 && r.fips === BIBB);
+                const runs = roadRuns.filter(shown), trips = roadTrips.filter(t => shown(t.r));
+                const inter = r => r.cls === 'interstate';
+                out.push(
+                    new deck.PathLayer({ id: 'road-glow', data: runs, opacity: hwyStory, getPath: r => lift(r.path, z(r)), widthUnits: 'pixels',
+                        getWidth: r => inter(r) ? 7 : 4, getColor: r => [255, 186, 110, inter(r) ? 34 : 20], capRounded: true, jointRounded: true,
+                        parameters: { depthWriteEnabled: false }, updateTriggers: { getPath: geoKey } }),
+                    new deck.PathLayer({ id: 'road-core', data: runs, opacity: hwyStory, getPath: r => lift(r.path, z(r)), widthUnits: 'pixels',
+                        getWidth: r => inter(r) ? 1.4 : 0.9, getColor: r => [255, 214, 165, inter(r) ? 120 : 70], capRounded: true, jointRounded: true,
+                        parameters: { depthWriteEnabled: false }, updateTriggers: { getPath: geoKey } }),
+                    new deck.TripsLayer({ id: 'road-lights', data: trips, opacity: hwyStory, getPath: t => lift(t.r.path, z(t.r) + 20), getTimestamps: t => t.ts,
+                        currentTime: roadClock, trailLength: 28, fadeTrail: true, widthUnits: 'pixels', getWidth: t => inter(t.r) ? 2.6 : 1.8,
+                        getColor: t => inter(t.r) ? [255, 228, 180] : [255, 205, 140], capRounded: true, jointRounded: true,
+                        parameters: { depthWriteEnabled: false }, updateTriggers: { getPath: geoKey } }),
+                );
+            }
+            // Highways on the finished map (its button), flat and clipped to the region; badges stay whole
+            if (hwy > 0.01 && hwyPaths.length) out.push(
+                new deck.PathLayer({ id: 'highways', data: hwyPaths, opacity: hwy, getPath: d => d.path, widthUnits: 'pixels',
                     getWidth: d => HWY[d.cls].width, getColor: d => [255, 255, 255, Math.round(255 * HWY[d.cls].alpha)],
-                    capRounded: true, jointRounded: true, extensions: [MASK], maskId: 'mask-region', updateTriggers: { getPath: geoKey } }),
+                    capRounded: true, jointRounded: true, extensions: [MASK], maskId: 'mask-region' }),
             );
             return out;
         }
@@ -830,7 +866,7 @@
         let lastScene = '', baseLayers = [], flowsShown = false;
         function render() {
             const m = morphAt(hour), S = stagesOf(m);
-            const sceneKey = [hour.toFixed(4), rise.toFixed(3), hwyShown().toFixed(3), step, sel ? sel.fips : '', dotLoop.toFixed(4)].join();
+            const sceneKey = [hour.toFixed(4), rise.toFixed(3), hwy.toFixed(3), hwyStory.toFixed(3), hwyStory > 0.01 ? roadClock.toFixed(2) : '', step, sel ? sel.fips : '', dotLoop.toFixed(4)].join();
             const now = performance.now(), moving = S.live && flowsMoving(now);
             if (sceneKey !== lastScene || moving || flowsShown !== !!(S.live && sel)) {
                 if (sceneKey !== lastScene) { lastScene = sceneKey; setLight(hour, S.light); baseLayers = layers(); }
@@ -964,12 +1000,13 @@
             if (rise < 1) { rise = reducedMotion ? 1 : smooth(0, 1, (now - riseStart) / 1400); busy = true; }
             // Leaving the finished map turns its Highways button back off, so the story runs clean going back
             if (hwyOn && !stagesOf(morphAt(hour)).live) { hwyOn = false; hwyBtn.setAttribute('aria-pressed', 'false'); }
-            // Story highways: 32% under the opening (fading as 6 AM arrives), and a flash for rush hour
-            // (up in 0.4 s, held 1.4 s, gone over 1.2 s)
+            // Story highways: under the opening (fading as 6 AM arrives), and a flash for rush hour
+            // (up in 0.5 s, held 2 s, gone over 1.5 s); their headlights travel 30 km a second
             const ft = now - hwyFlashAt;
-            const flash = ft < 0 || ft > 3000 ? 0 : ft < 400 ? ft / 400 : ft < 1800 ? 1 : Math.max(0, 1 - (ft - 1800) / 1200);
-            const storyWant = RENDER ? 0 : Math.max(0.32 * rise * (1 - smooth(5.45, 5.95, hour)), 0.8 * flash);
+            const flash = ft < 0 || ft > 4000 ? 0 : ft < 500 ? ft / 500 : ft < 2500 ? 1 : Math.max(0, 1 - (ft - 2500) / 1500);
+            const storyWant = RENDER ? 0 : Math.max(rise * (1 - smooth(5.45, 5.95, hour)), flash);
             if (flash > 0) busy = true;
+            if (hwyStory > 0.01 && !reducedMotion && (flash > 0 || now - lastInput < DOTS_MAX)) { roadClock = (roadClock + dt * 0.03) % ROAD_LOOP; busy = true; }
             if (Math.abs(storyWant - hwyStory) > 0.005) { hwyStory += (storyWant - hwyStory) * (1 - Math.exp(-dt / 120)); busy = true; } else hwyStory = storyWant;
             const hTarget = hwyOn ? 1 : 0;
             if (Math.abs(hTarget - hwy) > 0.005) { hwy += (hTarget - hwy) * (1 - Math.exp(-dt / 90)); busy = true; } else hwy = hTarget;
