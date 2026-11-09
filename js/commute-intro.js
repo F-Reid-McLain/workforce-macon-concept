@@ -228,6 +228,22 @@
         const hwyFeatures = highways ? highways.features.filter(f => HWY[f.properties.class]) : [];
         const hwyPaths = hwyFeatures.flatMap(f => (f.geometry.type === 'LineString' ? [f.geometry.coordinates] : f.geometry.coordinates)
             .map(path => ({ cls: f.properties.class, path }))).sort((a, b) => HWY[a.cls].order - HWY[b.cls].order);
+        // In the 3D story the roads ride on the blocks: each road is cut into stretches by county
+        // (meeting at the midpoint where it crosses a border) and each stretch sits on its county's top
+        const countyAt = pt => { const r = rings.find(r => inRing(pt, r.ring)); return r ? r.fips : null; };
+        const hwyRuns = hwyPaths.flatMap(h => {
+            const runs = []; let cur = null, prev = null;
+            h.path.forEach(pt => {
+                const f = countyAt(pt);
+                if (!cur || cur.fips !== f) {
+                    const mid = prev ? [(prev[0] + pt[0]) / 2, (prev[1] + pt[1]) / 2] : null;
+                    if (cur && mid) cur.path.push(mid);
+                    cur = { cls: h.cls, fips: f, path: mid ? [mid] : [] }; runs.push(cur);
+                }
+                cur.path.push(pt); prev = pt;
+            });
+            return runs.filter(r => r.path.length > 1);
+        });
         // One badge per route, at a point of the route that's inside the region
         const hwyLabelsGeo = Array.from(d3.group(hwyFeatures.filter(f => f.properties.route), f => f.properties.route), ([route, feats]) => {
             const pts = feats.flatMap(f => f.geometry.type === 'LineString' ? f.geometry.coordinates : f.geometry.coordinates.flat()).filter(insideRegion);
@@ -465,6 +481,9 @@
         const posterShown = !!poster && getComputedStyle(poster).display !== 'none';
         let target = RENDER ? RENDER.hour : 5, hour = target, step = 0, rise = reducedMotion || RENDER || posterShown ? 1 : 0;
         let hwyOn = false, hwy = 0;
+        // The story's own highways: faint behind the opening, and a brief flash as rush hour arrives
+        let hwyStory = 0, hwyFlashAt = -1e9;
+        const hwyShown = () => Math.max(hwy, hwyStory);
         const tilt = { x: 0, y: 0, tx: 0, ty: 0 };
         if (!reducedMotion && matchMedia('(hover: hover)').matches) {
             stage.addEventListener('mousemove', e => {
@@ -719,11 +738,13 @@
                     if (chg !== n.chg) { n.chg = chg; n.chgEl.textContent = chg; }
                 });
             }
-            // Highways (click the finished map), clipped to the region; badges stay whole
-            if (hwy > 0.01 && hwyPaths.length) out.push(
-                new deck.PathLayer({ id: 'highways', data: hwyPaths, opacity: hwy, getPath: d => d.path, widthUnits: 'pixels',
+            // Highways (the opening, the rush-hour flash, and the finished map's button), clipped to the
+            // region and lying on the block tops; the badges are the button's alone
+            const hw = hwyShown();
+            if (hw > 0.01 && hwyRuns.length) out.push(
+                new deck.PathLayer({ id: 'highways', data: hwyRuns, opacity: hw, getPath: r => lift(r.path, (r.fips ? fullTop(r.fips) : 0) + 60), widthUnits: 'pixels',
                     getWidth: d => HWY[d.cls].width, getColor: d => [255, 255, 255, Math.round(255 * HWY[d.cls].alpha)],
-                    capRounded: true, jointRounded: true, extensions: [MASK], maskId: 'mask-region' }),
+                    capRounded: true, jointRounded: true, extensions: [MASK], maskId: 'mask-region', updateTriggers: { getPath: geoKey } }),
             );
             return out;
         }
@@ -809,7 +830,7 @@
         let lastScene = '', baseLayers = [], flowsShown = false;
         function render() {
             const m = morphAt(hour), S = stagesOf(m);
-            const sceneKey = [hour.toFixed(4), rise.toFixed(3), hwy.toFixed(3), step, sel ? sel.fips : '', dotLoop.toFixed(4)].join();
+            const sceneKey = [hour.toFixed(4), rise.toFixed(3), hwyShown().toFixed(3), step, sel ? sel.fips : '', dotLoop.toFixed(4)].join();
             const now = performance.now(), moving = S.live && flowsMoving(now);
             if (sceneKey !== lastScene || moving || flowsShown !== !!(S.live && sel)) {
                 if (sceneKey !== lastScene) { lastScene = sceneKey; setLight(hour, S.light); baseLayers = layers(); }
@@ -855,6 +876,7 @@
             let idx = 0;
             anchors.forEach((a, i) => { if (y >= a.y - document.documentElement.clientHeight * 0.35) idx = i; });
             anchors.forEach((a, i) => a.el.classList.toggle('is-active', i === idx));
+            if (idx !== step && steps[idx] && steps[idx].dataset.moment === '8am' && !reducedMotion) { hwyFlashAt = performance.now(); wake(); }
             target = t; step = idx;
             caption(y);
             // A big jump (link, scrollbar drag) lands directly instead of fast-forwarding the day
@@ -940,6 +962,15 @@
             // Time glides toward the scroll position (wheel ticks become smooth motion)
             if (Math.abs(target - hour) > 0.0005) { hour += (target - hour) * (1 - Math.exp(-dt / 140)); busy = true; } else hour = target;
             if (rise < 1) { rise = reducedMotion ? 1 : smooth(0, 1, (now - riseStart) / 1400); busy = true; }
+            // Leaving the finished map turns its Highways button back off, so the story runs clean going back
+            if (hwyOn && !stagesOf(morphAt(hour)).live) { hwyOn = false; hwyBtn.setAttribute('aria-pressed', 'false'); }
+            // Story highways: 32% under the opening (fading as 6 AM arrives), and a flash for rush hour
+            // (up in 0.4 s, held 1.4 s, gone over 1.2 s)
+            const ft = now - hwyFlashAt;
+            const flash = ft < 0 || ft > 3000 ? 0 : ft < 400 ? ft / 400 : ft < 1800 ? 1 : Math.max(0, 1 - (ft - 1800) / 1200);
+            const storyWant = RENDER ? 0 : Math.max(0.32 * rise * (1 - smooth(5.45, 5.95, hour)), 0.8 * flash);
+            if (flash > 0) busy = true;
+            if (Math.abs(storyWant - hwyStory) > 0.005) { hwyStory += (storyWant - hwyStory) * (1 - Math.exp(-dt / 120)); busy = true; } else hwyStory = storyWant;
             const hTarget = hwyOn ? 1 : 0;
             if (Math.abs(hTarget - hwy) > 0.005) { hwy += (hTarget - hwy) * (1 - Math.exp(-dt / 90)); busy = true; } else hwy = hTarget;
             tilt.x += (tilt.tx - tilt.x) * 0.06; tilt.y += (tilt.ty - tilt.y) * 0.06;
