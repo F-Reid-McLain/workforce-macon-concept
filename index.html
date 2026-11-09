@@ -113,10 +113,13 @@
                 <div class="ci-time" aria-hidden="true"><span id="ci-time-icon">☾</span><span id="ci-time-label">5:00 AM</span></div>
                 <div class="ci-tip" id="ci-tip"></div>
                 <!-- Phones: the story's captions as subtitles, pinned under the map (js/commute-intro.js) -->
-                <div class="ci-caption" id="ci-caption" aria-hidden="true"><div class="ci-caption__text"><b></b><span></span></div><div class="ci-caption__dots"></div></div>
+                <div class="ci-caption" id="ci-caption" aria-hidden="true"><div class="ci-caption__key" id="ci-capkey"></div><div class="ci-caption__text"><b></b><span></span></div><div class="ci-caption__dots"></div></div>
                 <!-- Present mode: fullscreen, arrow keys step through the cards (js/commute-intro.js) -->
                 <button type="button" class="ci-pill ci-present" id="ci-present" title="Present this story (P)">▶ Present</button>
                 <div class="ci-present-hint" aria-hidden="true">← → to step · Esc to exit</div>
+                <!-- Bottom right: the live key (what the dots and colors mean right now) above the live pulse (js/commute-intro.js) -->
+                <div class="ci-hud">
+                <div class="ci-livekey is-off" id="ci-key" aria-hidden="true"><span class="ci-livekey__label">Key</span><div class="ci-livekey__body"></div></div>
                 <!-- Live pulse: Macon-Bibb's head count through the day -->
                 <div class="ci-pulse">
                     <span class="ci-pulse__label">In Macon-Bibb now · residents ± commuters</span>
@@ -139,6 +142,7 @@
                     <span><i style="background:linear-gradient(90deg, #4e4f72, #a05761)"></i>Net loss of workers (stronger = more)</span>
                     <span class="ci-key__gainer"><i style="background:#1f6a56"></i>Net gain of workers</span>
                 </div>
+                </div>
             </div>
             <div class="ci-steps">
                 <div class="ci-step ci-step--welcome" data-time="5">
@@ -155,37 +159,27 @@
                 <div class="ci-step" data-time="6" id="ci-dawn" data-moment="6am"><div class="ci-card">
                     <div class="ci-when">6:00 AM</div>
                     <h2>Macon and its neighbors</h2>
-                    <p class="ci-short">Everyone is still at home.</p>
-                    <p class="ci-long">Macon-Bibb sits at the center of 16 neighboring counties. At 6 AM they all stand level: everyone is still at home.</p>
+                    <p class="ci-short">16 neighboring counties around Macon-Bibb, and everyone is still at home.</p>
                 </div></div>
                 <div class="ci-step" data-time="7.5" data-moment="8am"><div class="ci-card">
                     <div class="ci-when">7:30 AM</div>
                     <h2>Rush hour</h2>
                     <p class="ci-short">Neighbors stream in to fill <strong data-ci="inFromRegion">26,349</strong> jobs.</p>
-                    <p class="ci-long">By 8 AM, Macon-Bibb is filling up as its neighbors empty out.</p>
-                    <p class="ci-note ci-long"><span class="ci-swatch" style="background:#f2c46b"></span>Gold dots head into Macon-Bibb, <span class="ci-swatch" style="background:#fff"></span>white dots head out; each is <span data-ci="perDot"></span> commuters. Smaller, fainter dots come from or go beyond the map: people who commute farther. A county drops as its dots leave and rises as they land: <span class="ci-swatch" style="background:rgba(52,211,153,0.75)"></span>green is Macon-Bibb's gain, <span class="ci-swatch" style="background:rgba(248,113,113,0.45)"></span>faint red is what each neighbor has lost. Heights exaggerate the change 2.5×; labels show the real change. Timing is illustrative.</p>
                 </div></div>
                 <div class="ci-step ci-step--full" data-time="8.5" data-moment="pay"><div class="ci-card">
                     <div class="ci-when">8:30 AM</div>
                     <h2>Who's coming in</h2>
-                    <p class="ci-short">The dots now show pay: <strong data-ci="payIn"></strong> of the jobs neighbors hold here pay over $3,333 a month.</p>
-                    <p class="ci-long">Now the dots show what each commuter earns. <strong data-ci="payIn"></strong> of the jobs neighbors hold in Macon-Bibb pay more than $3,333 a month, compared with <strong data-ci="payLocal"></strong> of jobs held by people who live and work here.</p>
-                    <p class="ci-paykey ci-long"><span><i style="background:rgb(45,212,191)"></i>More than $3,333/mo</span><span><i style="background:rgb(242,196,107)"></i>$1,251–3,333</span><span><i style="background:rgb(160,170,190)"></i>$1,250 or less</span></p>
-                    <p class="ci-note ci-long">Monthly earnings bands from LODES 2023.</p>
+                    <p class="ci-short"><strong data-ci="payIn"></strong> of the jobs neighbors hold here pay over $3,333 a month, against <strong data-ci="payLocal"></strong> for people who live and work here.</p>
                 </div></div>
                 <div class="ci-step" data-time="12.5" data-moment="noon"><div class="ci-card">
                     <div class="ci-when">12:30 PM</div>
                     <h2>The workday</h2>
-                    <p class="ci-short"><strong data-ci="oneIn"></strong> jobs here goes to a neighbor.</p>
-                    <p class="ci-long">Counting commuters from everywhere, Macon-Bibb holds about <strong data-ci="bibbDay"></strong> people by midday (<span data-ci="bibbPct"></span>), drawn most from <span data-ci="topSources"></span>.</p>
-                    <p class="ci-long"><strong data-ci="oneIn"></strong> jobs here is held by someone from a neighboring county, and about <strong data-ci="farIn"></strong> more are filled by people from farther away.</p>
+                    <p class="ci-short">By midday Macon-Bibb holds about <strong data-ci="bibbDay"></strong> people, and <strong data-ci="oneIn"></strong> jobs here goes to a neighbor.</p>
                 </div></div>
                 <div class="ci-step ci-step--full" data-time="17.75" data-moment="evening"><div class="ci-card">
                     <div class="ci-when">5:45 PM</div>
                     <h2>Heading home</h2>
                     <p class="ci-short">The dots head home, and the region settles back for the night.</p>
-                    <p class="ci-long">The dots reverse, and most of those higher paychecks head home with them. By evening the region settles back into its night-time shape, ready to do it all again tomorrow.</p>
-                    <p class="ci-note ci-long">Commuting: U.S. Census Bureau LODES 2023. Residents: ACS 2024.</p>
                 </div></div>
                 <div class="ci-step ci-step--map" data-time="21" id="section-region" data-moment="map"><div class="ci-card">
                     <div class="ci-when">The whole picture</div>
@@ -202,7 +196,7 @@
                     </div>
                     <details class="ci-method">
                         <summary>About this map and story</summary>
-                        <p class="ci-note">Net commuting = jobs located in the county minus employed residents (LODES 2023). Population: ACS 2024. Click the <b>Highways</b> button for the region's major roads.</p>
+                        <p class="ci-note">Net commuting = jobs located in the county minus employed residents. Commuting and pay: LODES 2023. Population: ACS 2024. In the story, timing is illustrative and heights exaggerate the change 2.5×. Click the <b>Highways</b> button for the region's major roads.</p>
                         <p class="ci-note">Presenting this story? Press <b>P</b> or <b>▶ Present</b> for full screen, and use each card's "Link to this moment" to jump straight to a point in the day.</p>
                         <ul>
                             <li><b>Real data.</b><span> Commuting comes from the U.S. Census Bureau's LODES 2023, which counts jobs, not people: someone with two jobs counts twice. Residents come from the American Community Survey 2024.</span></li>

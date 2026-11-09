@@ -106,9 +106,44 @@
 }
 .ci-pulse__axis { display: flex; justify-content: space-between; font-size: 0.58rem; color: #7d8798; }
 
-/* Pay key in the "Who's coming in" card */
-.ci-paykey { display: flex; flex-wrap: wrap; gap: 0.35rem 0.8rem; font-size: 0.78rem; }
-.ci-paykey i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 0.35rem; }
+/* ----- Live key: what the dots and colors mean right now (js/commute-intro.js) -----
+   Desktop: a box stacked above the live pulse, bottom right; the two share a width */
+.ci-livekey {
+    display: grid; gap: 0.3rem; padding: 0.6rem 0.9rem 0.6rem; border-radius: 12px; pointer-events: none;
+    background: rgba(16, 23, 32, 0.85); border: 1px solid rgba(255, 255, 255, 0.12); transition: opacity 0.35s;
+}
+.ci-livekey.is-off { opacity: 0; }
+.ci-livekey__label { font-size: 0.62rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #9aa3b2; }
+.ci-livekey__body { transition: opacity 0.16s; }
+.ci-livekey.is-swapping .ci-livekey__body { opacity: 0; }
+.ci-livekey ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.28rem; }
+.ci-livekey li { display: flex; align-items: center; gap: 0.55rem; font-size: 0.78rem; line-height: 1.3; color: #d3d9e3; }
+.ci-livekey__sw { flex: none; display: inline-flex; align-items: center; justify-content: center; gap: 3px; width: 22px; }
+.ci-livekey__dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; }
+.ci-livekey__dot.is-faint { width: 6px; height: 6px; opacity: 0.65; }
+.ci-livekey__tile { display: inline-block; width: 15px; height: 10px; border-radius: 2px; }
+.ci-livekey__foot { display: block; margin-top: 0.4rem; font-size: 0.66rem; line-height: 1.35; color: #8792a3; }
+@media (min-width: 769px) {
+    .ci-hud { position: absolute; z-index: 3; right: 18px; bottom: 18px; display: flex; flex-direction: column; gap: 10px; width: 340px; pointer-events: none; }
+    .ci-hud .ci-pulse { position: static; }
+}
+/* Tablets: the pulse moves to the top left and the key sits top right, under the clock */
+@media (min-width: 701px) and (max-width: 768px) {
+    .ci-livekey { position: absolute; z-index: 3; top: 52px; right: 10px; max-width: 230px; }
+    .ci-hud .ci-pulse { left: 10px; transform: none; }
+}
+/* Phones: a strip of swatches above the caption (the box is hidden) */
+.ci-caption__key { display: none; }
+@media (max-width: 700px) {
+    .ci-livekey { display: none; }
+    .ci-caption__key {
+        display: flex; flex-wrap: wrap; gap: 0.3rem 0.85rem; margin-bottom: 0.55rem;
+        font-size: 0.8rem; line-height: 1.3; color: #c7d0dc; transition: opacity 0.16s;
+    }
+    .ci-caption__key.is-off, .ci-caption__key.is-swapping { opacity: 0; }
+    .ci-caption__key.is-off { display: none; }
+    .ci-caption .ci-caption__key span { display: inline-flex; align-items: center; gap: 0.35rem; white-space: nowrap; font-size: 0.82rem; line-height: 1.3; color: #c7d0dc; }
+}
 
 /* ----- Present mode and moment links ----- */
 .ci-present { position: absolute; z-index: 3; top: 62px; right: 18px; opacity: calc(1 - var(--ci-map)); }   /* under the clock: the story's cards pass down the left */
@@ -228,7 +263,6 @@ body.ci-presenting .ci-present-hint { display: block; }
 .ci-card p:last-child { margin-bottom: 0; }
 .ci-card strong { color: #f2c46b; font-variant-numeric: tabular-nums; }
 .ci-card .ci-note { font-size: 0.78rem; color: #93a0b4; }
-.ci-swatch { display: inline-block; width: 0.7em; height: 0.7em; border-radius: 50%; margin-right: 0.3em; vertical-align: baseline; }
 .ci-card a { color: #f2c46b; font-weight: 600; }
 
 /* ----- Welcome: the first step ----- */
@@ -268,6 +302,7 @@ body.ci-on-screen .page-jumpnav { opacity: 0; pointer-events: none; }
    evening cards, the long notes, the live counter and the moment links are for larger screens
    (and presenting); the day still plays through the evening between midday and the map. ----- */
 .ci-short { display: none; }
+.ci-step:not(.ci-step--map) .ci-short { display: block; }   /* the story's cards: one sentence, every width */
 @media (max-width: 700px) {
     .ci-step--full, .ci-long, .ci-pulse, .ci-linkbtn { display: none !important; }
     .ci-welcome :is(.ci-eyebrow, .ci-lede) { display: none; }   /* the opening is just the headline (the header carries the name) */
@@ -318,6 +353,6 @@ body.ci-on-screen .page-jumpnav { opacity: 0; pointer-events: none; }
 
 /* Marketing stills (?render=1): just the 3D stage, filling the window */
 html.ci-render .main-header, html.ci-render .page-jumpnav, html.ci-render .ci-steps, html.ci-render .ci-time,
-html.ci-render .ci-tip, html.ci-render .ci-present, html.ci-render .ci-present-hint, html.ci-render .ci-pulse,
+html.ci-render .ci-tip, html.ci-render .ci-present, html.ci-render .ci-present-hint, html.ci-render .ci-pulse, html.ci-render .ci-livekey,
 html.ci-render .ci-overlay, html.ci-render .ci-maplabels, html.ci-render .ci-hwylabels { display: none !important; }
 html.ci-render .ci { --ci-top: 0px !important; }
