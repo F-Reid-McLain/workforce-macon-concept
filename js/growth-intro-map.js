@@ -37,8 +37,8 @@
         const avg = total ? toNum(total['Avg Ann Wages']) : 0;
         const times = TIMES[Math.round(mfg.pct / hc.pct)];
         const head = document.getElementById('find-industries');
-        if (head && times) head.innerHTML = nw(`<em>Manufacturing</em> is growing <em>${times}</em> as fast as health care in Macon-Bibb.`);
-        else if (head) head.innerHTML = nw(`<em>Manufacturing</em> jobs in Macon-Bibb grew <em>${Math.round(mfg.pct * 100)}%</em> in five years.`);
+        if (head && times) head.innerHTML = nw(`<em>Manufacturing</em> is growing <em>${times}</em> as fast as health care in Macon.`);
+        else if (head) head.innerHTML = nw(`<em>Manufacturing</em> jobs in Macon grew <em>${Math.round(mfg.pct * 100)}%</em> in five years.`);
         rows = [{ label: 'Manufacturing', pct: mfg.pct, cls: 'is-mfg' }, { label: 'Health care', pct: hc.pct, cls: '' }];
         return { mfg, avg };
     });
@@ -49,7 +49,7 @@
         const announced = d3.sum(list.filter(p => p.status === 'coming' && p.year === LAST), p => p.jobs);
         const premium = Math.round((mfg.pay - avg) / 1000) * 1000;
         const dek = document.getElementById('grow-dek');
-        if (dek) dek.innerHTML = nw(`Macon-Bibb added <b>${(Math.round(mfg.change / 100) * 100).toLocaleString()}</b> factory jobs in the past five years, paying <b>$${(Math.round(mfg.pay / 100) * 100).toLocaleString()}</b> on average` +
+        if (dek) dek.innerHTML = nw(`Macon added <b>${(Math.round(mfg.change / 100) * 100).toLocaleString()}</b> factory jobs in the past five years, paying <b>$${(Math.round(mfg.pay / 100) * 100).toLocaleString()}</b> on average` +
             (premium > 0 ? `, about $${premium.toLocaleString()} above the $${(Math.round(avg / 100) * 100).toLocaleString()} average across all industries here` : '') + '.' +
             (announced ? ` And <b>${announced.toLocaleString()}</b> more were announced in ${LAST} alone.` : ''));
         buildBars();
