@@ -154,7 +154,28 @@ body.embed-mode .viz-container {
     .logo h1 { font-size: 1.2rem; letter-spacing: 1px; }
 }
 @media (max-width: 700px) {
-    .logo a { display: block; padding: 10px 0; margin: -10px 0; }   /* a taller tap target, same header */
+    .logo > a:first-child { display: block; padding: 10px 0; margin: -10px 0; }   /* a taller tap target, same header */
+}
+
+/* The Chamber's logo beside the name, after a thin divider: the site's maker */
+.logo { display: flex; align-items: center; }
+.logo-chamber { display: flex; align-items: center; margin-left: 16px; padding-left: 16px; border-left: 1px solid var(--color-border); }
+.logo-chamber img { display: block; height: 26px; width: auto; opacity: 0.9; }
+.logo-chamber { position: relative; }
+.logo-chamber::after { content: ""; position: absolute; inset: -12px -6px -12px 4px; }   /* (a thumb-sized tap area; the divider stays the logo's height) */
+.logo-chamber:hover img { opacity: 1; }
+/* Tablets: the three links need the room, so the name stands alone (the footer carries the logo) */
+@media (min-width: 701px) and (max-width: 1023px) {
+    .logo-chamber { display: none; }
+}
+/* Phones: the name at its compact size, so name, logo and ☰ share one row */
+@media (max-width: 700px) {
+    .logo h1 { font-size: 1.2rem; letter-spacing: 1px; }
+    .logo-chamber { margin-left: 10px; padding-left: 10px; }
+    .logo-chamber img { height: 20px; }
+}
+@media (max-width: 374px) {
+    .logo h1 { letter-spacing: 0.5px; }
 }
 
 .logo .accent {
