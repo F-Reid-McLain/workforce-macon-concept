@@ -59,8 +59,9 @@
     // The day's change on the blocks: Macon-Bibb's gain in see-through green; what each
     // neighbor loses as a faint red ghost of its night-time height
     const GAIN = [52, 211, 153], LOSS = [248, 113, 113];
-    // ≤ $1,250 · $1,251–3,333 · > $3,333 a month: none of them gold or white, which mean in and out before the dots switch to pay
-    const PAY = [[160, 170, 190], [192, 132, 252], [45, 212, 191]];
+    // Pay of the people coming in (≤ $1,250 · $1,251–3,333 · > $3,333 a month): none of them gold or white,
+    // which mean in and out (white stays "heading out" all day)
+    const PAY = [[251, 146, 60], [192, 132, 252], [45, 212, 191]];
     // The finished map matches the story's day: Macon-Bibb in see-through green (its gain),
     // counties that lose workers in see-through red (stronger = bigger net loss), any other
     // gaining county in a lighter green. Colors are pre-blended onto the page navy so they look
@@ -668,8 +669,9 @@
             };
             // "Who's coming in": from 8:10 AM the dots take their pay colors and keep them
             const payMix = smooth(8.1, 8.45, hour);
-            // (dots from farther away have no pay data, so they keep their in/out color)
-            const dotColor = d => { const c = d.to === BIBB ? GOLD : [255, 255, 255]; return d.band < 0 ? c : mixRGB(c, PAY[d.band], payMix); };
+            // Only the dots coming in take pay colors; dots heading out stay white all day (and dots from
+            // farther away have no pay data, so they stay gold)
+            const dotColor = d => d.to !== BIBB ? [255, 255, 255] : d.band < 0 ? GOLD : mixRGB(GOLD, PAY[d.band], payMix);
             // Farther-away dots are a little smaller and fainter: LODES sometimes places jobs at a
             // company's reporting address, so long-distance flows are less certain than local ones
             const dotAlpha = d => d.edge ? 165 : 245, dotSize = d => (mobile ? 2.4 : 3) * (d.edge ? 0.8 : 1) * (RENDER ? RENDER.dot : 1);
@@ -737,16 +739,23 @@
                 strip: [[kDot(GOLD), 'Into Macon'], [kDot(WHITE), 'Heading out'], [kTile(GAIN_T), 'Gain'], [kTile(LOSS_T), 'Loss']],
             },
             pay: {
-                label: 'Key · the dots now show pay',
-                rows: [[kDot(PAY[2]), 'More than $3,333 a month'], [kDot(PAY[1]), '$1,251–3,333'], [kDot(PAY[0]), '$1,250 or less']].concat(gainLoss),
+                label: 'Key · coming in, by pay',
+                rows: [[kDot(PAY[2]), 'Coming in: over $3,333 a month'], [kDot(PAY[1]), 'Coming in: $1,251–3,333'], [kDot(PAY[0]), 'Coming in: $1,250 or less'], [kDot(WHITE), 'Heading out']].concat(gainLoss),
                 foot: perDot + '. Monthly earnings, LODES 2023.',
-                strip: [[kDot(PAY[2]), '$3,333+ a month'], [kDot(PAY[1]), '$1,251–3,333'], [kDot(PAY[0]), 'Less']],
+                strip: [[kDot(PAY[2]), '$3,333+'], [kDot(PAY[1]), '$1,251–3,333'], [kDot(PAY[0]), 'Less'], [kDot(WHITE), 'Out']],
+            },
+            // the evening: the same people, now leaving their Macon-Bibb jobs; residents who work elsewhere come home
+            payHome: {
+                label: 'Key · heading home, by pay',
+                rows: [[kDot(PAY[2]), 'Leaving work here: over $3,333 a month'], [kDot(PAY[1]), 'Leaving work here: $1,251–3,333'], [kDot(PAY[0]), 'Leaving work here: $1,250 or less'], [kDot(WHITE), 'Coming home to Macon-Bibb']].concat(gainLoss),
+                foot: perDot + '. Monthly earnings, LODES 2023.',
+                strip: [[kDot(PAY[2]), '$3,333+'], [kDot(PAY[1]), '$1,251–3,333'], [kDot(PAY[0]), 'Less'], [kDot(WHITE), 'Coming home']],
             },
             midday: { rows: gainLoss, foot: 'Heights exaggerate the change 2.5×; labels show the real change.', strip: [[kTile(GAIN_T), "Macon-Bibb's gain"], [kTile(LOSS_T), "Neighbors' loss"]] },
         };
         const keyStateAt = (h, m) => {
             if (m > 0.05 || h < 5.95) return '';
-            if ((h > 6.1 && h < 10.6) || (h > 16.4 && h < 19.6)) return h >= 8.1 ? 'pay' : 'commute';   // dots on the road
+            if ((h > 6.1 && h < 10.6) || (h > 16.4 && h < 19.6)) return h > 16.4 ? 'payHome' : h >= 8.1 ? 'pay' : 'commute';   // dots on the road
             return h > 6.1 && h < 16.4 ? 'midday' : '';
         };
         let keyShown = null, keySwap = null;
