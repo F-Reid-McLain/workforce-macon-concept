@@ -717,28 +717,27 @@
         }
 
         // ----- Live key: what the dots and colors mean right now -----
-        // Shows only what's on screen: the blocks' height at 6 AM, in/out dots at rush hour, pay colors
+        // Shows only what's on screen: in/out dots at rush hour, pay colors
         // once the dots take them (8:10 AM on, as in layers()), gain and loss at midday; nothing on the
-        // opening or once the map forms (it has its own key). Desktop: a box above the live pulse;
+        // opening, at 6 AM or once the map forms (it has its own key). Desktop: a box above the live pulse;
         // phones: a strip of swatches above the caption. Colors come from the map's own constants.
         const keyEl = document.getElementById('ci-key'), keyBody = keyEl && keyEl.querySelector('.ci-livekey__body');
         const capKeyEl = document.getElementById('ci-capkey');
         const rgb = c => `rgb(${c.join(', ')})`, WHITE = [255, 255, 255];
-        const kDot = (c, faint) => `<i class="ci-livekey__dot${faint ? ' is-faint' : ''}" style="background:${rgb(c)}"></i>`;
+        const kDot = c => `<i class="ci-livekey__dot" style="background:${rgb(c)}"></i>`;
         const kTile = c => `<i class="ci-livekey__tile" style="background:${c}"></i>`;
         const GAIN_T = 'rgba(52, 211, 153, 0.75)', LOSS_T = 'rgba(248, 113, 113, 0.45)';
         const gainLoss = [[kTile(GAIN_T), "Macon-Bibb's gain"], [kTile(LOSS_T), "A county's loss"]];
         const perDot = `Each dot is about ${values.perDot.replace('~', '')} commuters`;
         const KEYS = {
-            home: { rows: [[kTile(rgb(BLUE)), 'Height: people in each county right now']], strip: [[kTile(rgb(BLUE)), 'Height: people there right now']] },
             commute: {
-                rows: [[kDot(GOLD), 'Heading into Macon-Bibb'], [kDot(WHITE), 'Heading out'], [kDot(GOLD, true) + kDot(WHITE, true), 'Smaller: from or to farther away']].concat(gainLoss),
+                rows: [[kDot(GOLD), 'Heading into Macon-Bibb'], [kDot(WHITE), 'Heading out']].concat(gainLoss),
                 foot: perDot + '. Heights exaggerate the change 2.5×.',
                 strip: [[kDot(GOLD), 'Into Macon'], [kDot(WHITE), 'Heading out'], [kTile(GAIN_T), 'Gain'], [kTile(LOSS_T), 'Loss']],
             },
             pay: {
                 label: 'Key · what each commuter earns',
-                rows: [[kDot(PAY[2]), 'More than $3,333 a month'], [kDot(PAY[1]), '$1,251–3,333'], [kDot(PAY[0]), '$1,250 or less'], [kDot(GOLD, true) + kDot(WHITE, true), 'Smaller: farther away (no pay data)']].concat(gainLoss),
+                rows: [[kDot(PAY[2]), 'More than $3,333 a month'], [kDot(PAY[1]), '$1,251–3,333'], [kDot(PAY[0]), '$1,250 or less']].concat(gainLoss),
                 foot: perDot + '. Monthly earnings, LODES 2023.',
                 strip: [[kDot(PAY[2]), '$3,333+ a month'], [kDot(PAY[1]), '$1,251–3,333'], [kDot(PAY[0]), 'Less']],
             },
@@ -747,7 +746,7 @@
         const keyStateAt = (h, m) => {
             if (m > 0.05 || h < 5.95) return '';
             if ((h > 6.1 && h < 10.6) || (h > 16.4 && h < 19.6)) return h >= 8.1 ? 'pay' : 'commute';   // dots on the road
-            return h > 6.1 && h < 16.4 ? 'midday' : 'home';
+            return h > 6.1 && h < 16.4 ? 'midday' : '';
         };
         let keyShown = null, keySwap = null;
         function updateKey(h, m) {
