@@ -59,7 +59,8 @@
     // The day's change on the blocks: Macon-Bibb's gain in see-through green; what each
     // neighbor loses as a faint red ghost of its night-time height
     const GAIN = [52, 211, 153], LOSS = [248, 113, 113];
-    const PAY = [[160, 170, 190], [242, 196, 107], [45, 212, 191]];   // ≤ $1,250 · $1,251–3,333 · > $3,333 a month
+    // ≤ $1,250 · $1,251–3,333 · > $3,333 a month: none of them gold or white, which mean in and out before the dots switch to pay
+    const PAY = [[160, 170, 190], [192, 132, 252], [45, 212, 191]];
     // The finished map matches the story's day: Macon-Bibb in see-through green (its gain),
     // counties that lose workers in see-through red (stronger = bigger net loss), any other
     // gaining county in a lighter green. Colors are pre-blended onto the page navy so they look
@@ -736,7 +737,7 @@
                 strip: [[kDot(GOLD), 'Into Macon'], [kDot(WHITE), 'Heading out'], [kTile(GAIN_T), 'Gain'], [kTile(LOSS_T), 'Loss']],
             },
             pay: {
-                label: 'Key · what each commuter earns',
+                label: 'Key · the dots now show pay',
                 rows: [[kDot(PAY[2]), 'More than $3,333 a month'], [kDot(PAY[1]), '$1,251–3,333'], [kDot(PAY[0]), '$1,250 or less']].concat(gainLoss),
                 foot: perDot + '. Monthly earnings, LODES 2023.',
                 strip: [[kDot(PAY[2]), '$3,333+ a month'], [kDot(PAY[1]), '$1,251–3,333'], [kDot(PAY[0]), 'Less']],
