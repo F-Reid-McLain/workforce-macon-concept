@@ -24,7 +24,11 @@
 
     const BIBB = '13021';
     // (a phone opened sideways is still a phone: it's in the swipe scenes, and its camera refits when it turns upright)
-    const mobile = window.innerWidth < 700 || document.documentElement.classList.contains('scenes');
+    // (phone or not follows the window: a desktop window made narrow gets the phone camera and labels,
+    // and back; only how many commuters a dot stands for stays as it was when the page opened)
+    const isMobile = () => window.innerWidth < 700 || document.documentElement.classList.contains('scenes');
+    let mobile = isMobile();
+    const mobileAtLoad = mobile;
     const reducedMotion = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
     // Phone scenes with Reduce Motion on (html.calm): the day still plays out between swipes, the
     // dots traveling and the counties rising and falling, but the camera holds still
@@ -119,7 +123,7 @@
             return net > 0 ? [{ from: EDGE, to: fips, jobs: net }] : net < 0 ? [{ from: fips, to: EDGE, jobs: -net }] : [];
         });
         const allFlows = region.flows.concat(edgeFlows);
-        const PER_DOT = d3.sum(allFlows, f => f.jobs) / (mobile ? 180 : 480);   // fewer, larger groups on phones
+        const PER_DOT = d3.sum(allFlows, f => f.jobs) / (mobileAtLoad ? 180 : 480);   // fewer, larger groups on phones
         let seed = 3; const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296;
         // Each dot also carries a pay band (LODES earnings), split in proportion to its flow's mix
         const bandAt = (pay, q) => { const tot = d3.sum(pay); let acc = 0; for (let b = 0; b < pay.length; b++) { acc += pay[b] / tot; if (q < acc) return b; } return pay.length - 1; };
@@ -267,7 +271,7 @@
 
         // ----- Camera: keyframed by time of day, so it only moves as you scroll -----
         const V = (lon, lat, zoom, pitch, bearing) => ({ longitude: lon, latitude: lat, zoom: zoom - (mobile ? 0.9 : 0), pitch, bearing });
-        const CAMERA = [
+        const CAMERA_AT = () => [
             [5,     V(bc[0], bc[1] + 0.2, 9.55, 58, -10)],   // welcome: Macon-Bibb alone, low in the frame under the headline
             [6,     V(-83.62, 32.62, 8.3, 54, 0)],     // its neighbors have arrived; everyone home
             [7.5,   V(-83.63, 32.68, 8.45, 60, -8)],   // rush hour
@@ -275,10 +279,12 @@
             [12.5,  V(-83.62, 32.68, 8.4, 60, 6)],     // the workday
             [17.75, V(-83.62, 32.64, 8.3, 56, 0)],     // heading home
         ];
+        const CAMERA = CAMERA_AT();
         // Phones: the desktop camera pulled back still spilled the region off a tall, narrow screen
         // and sat it low. Each moment after the welcome is fitted instead: a little flatter, the
         // whole region across the width, centered between the clock and the caption below.
         if (mobile) fitPhoneCamera();
+        let camMobile = mobile;
         function fitPhoneCamera() {
             const W = stage.clientWidth, H = stage.clientHeight;
             if (!W || !H) return;
@@ -944,7 +950,14 @@
         }
         addEventListener('scroll', onScroll, { passive: true });
         let roomW = stage.clientWidth;   // (turning the phone starts the card's room afresh)
-        addEventListener('resize', () => { if (stage.clientWidth !== roomW) { roomW = stage.clientWidth; roomUsed = null; } measure(); computeFlat(); if (mobile) fitPhoneCamera(); lastScene = ''; onScroll(); });
+        addEventListener('resize', () => {
+            if (stage.clientWidth !== roomW) { roomW = stage.clientWidth; roomUsed = null; }
+            measure(); computeFlat();
+            // the camera starts afresh from the desktop or phone keyframes for the new window
+            mobile = isMobile();
+            if (mobile || mobile !== camMobile) { CAMERA.splice(0, CAMERA.length, ...CAMERA_AT()); if (mobile) fitPhoneCamera(); camMobile = mobile; }
+            lastScene = ''; onScroll();
+        });
 
         // ----- Idle drift: when nobody's scrolling, the 3D view keeps moving -----
         // The camera sways gently around Macon-Bibb, a few degrees either way, under the opening
