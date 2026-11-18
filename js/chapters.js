@@ -116,6 +116,46 @@
         const want = Math.max(60, Math.min(inUse.top, innerHeight - Math.min(r.height, innerHeight * 0.5) - 24));
         if (Math.abs(r.top - want) > 2) { ownScroll = performance.now(); scrollTo({ top: scrollY + r.top - want, behavior: 'instant' }); }
     }); });
+    // A window that changes size (maximized, restored, dragged) resizes every section with it, but
+    // the browser keeps the same scroll offset, so the page jumped somewhere else (maximizing on
+    // Jobs landed back in the story). So the page remembers what's in the middle of the screen and
+    // how far through it, and puts that back after a resize; resting on a stop, it stays on that stop
+    let anchor = null, anchorQueued = false, reanchorAgain = null;
+    function remember() {
+        anchorQueued = false;
+        if (performance.now() - lastResize < 400) return;   // scrolls the resize itself caused
+        const mid = innerHeight / 2;
+        const el = [...document.querySelectorAll('main > *, footer')].find(e => { const r = e.getBoundingClientRect(); return r.top <= mid && r.bottom > mid; });
+        if (!el) { anchor = null; return; }
+        const r = el.getBoundingClientRect(), tall = r.height > innerHeight + 1;
+        anchor = {
+            el,
+            run: tall ? -r.top / (r.height - innerHeight) : null,   // how far through a section taller than the screen (the story)
+            mid: (mid - r.top) / r.height,                            // otherwise, where the screen's middle falls in it
+            atTop: Math.abs(r.top) <= HEADER + 2,                     // a tool read from its top stays at its top
+            onStop: enabled() && points().some(p => Math.abs(p - scrollY) <= 2),
+        };
+    }
+    addEventListener('scroll', () => { if (!anchorQueued) { anchorQueued = true; requestAnimationFrame(remember); } }, { passive: true });
+    const tallRun = (a, r) => a.run !== null && r.height > innerHeight + 1;
+    function reanchor() {
+        if (!anchor || !anchor.el.isConnected || inUse || document.documentElement.classList.contains('scenes')) return;
+        const r = anchor.el.getBoundingClientRect(), t = r.top + scrollY;
+        let y = tallRun(anchor, r)
+            ? t + anchor.run * (r.height - innerHeight)
+            : t + anchor.mid * r.height - innerHeight / 2;
+        if (anchor.atTop && !tallRun(anchor, r)) y = t;
+        if (anchor.onStop && enabled()) y = points().reduce((a, b) => Math.abs(b - y) < Math.abs(a - y) ? b : a);
+        y = Math.round(y);
+        clearTimeout(pending); glideTo = null; held = null; from = y;
+        if (Math.abs(scrollY - y) > 1) { ownScroll = performance.now(); scrollTo({ top: y, behavior: 'instant' }); }
+    }
+    addEventListener('resize', () => {
+        requestAnimationFrame(reanchor);
+        // (and once more when the window's done changing: maps and charts redraw a moment later)
+        clearTimeout(reanchorAgain); reanchorAgain = setTimeout(reanchor, 450);
+    });
+    remember();
     function settle() {
         if (typing()) return;
         const wait = STILL - (performance.now() - lastInput);
