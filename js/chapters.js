@@ -125,7 +125,7 @@
         anchorQueued = false;
         if (performance.now() - lastResize < 400) return;   // scrolls the resize itself caused
         const mid = innerHeight / 2;
-        const el = [...document.querySelectorAll('main > *, footer')].find(e => { const r = e.getBoundingClientRect(); return r.top <= mid && r.bottom > mid; });
+        const el = [...document.querySelectorAll('main > *, footer')].find(e => { const r = e.getBoundingClientRect(); return r.top <= mid && r.bottom > mid && getComputedStyle(e).position !== 'fixed'; });   // (not the side dots)
         if (!el) { anchor = null; return; }
         const r = el.getBoundingClientRect(), tall = r.height > innerHeight + 1;
         anchor = {
@@ -139,6 +139,7 @@
     addEventListener('scroll', () => { if (!anchorQueued) { anchorQueued = true; requestAnimationFrame(remember); } }, { passive: true });
     const tallRun = (a, r) => a.run !== null && r.height > innerHeight + 1;
     function reanchor() {
+        if (window.WFDebug) WFDebug.log('reanchor', { w: innerWidth, h: innerHeight, el: anchor && (anchor.el.id || anchor.el.className), run: anchor && anchor.run, mid: anchor && anchor.mid, onStop: anchor && anchor.onStop, inUse: !!inUse });
         if (!anchor || !anchor.el.isConnected || inUse || document.documentElement.classList.contains('scenes')) return;
         const r = anchor.el.getBoundingClientRect(), t = r.top + scrollY;
         let y = tallRun(anchor, r)
@@ -147,6 +148,7 @@
         if (anchor.atTop && !tallRun(anchor, r)) y = t;
         if (anchor.onStop && enabled()) y = points().reduce((a, b) => Math.abs(b - y) < Math.abs(a - y) ? b : a);
         y = Math.round(y);
+        if (window.WFDebug) WFDebug.log('reanchor to', { y, was: Math.round(scrollY) });
         clearTimeout(pending); glideTo = null; held = null; from = y;
         if (Math.abs(scrollY - y) > 1) { ownScroll = performance.now(); scrollTo({ top: y, behavior: 'instant' }); }
     }
