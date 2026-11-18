@@ -471,9 +471,12 @@
             stage.addEventListener('mouseleave', () => { tilt.tx = 0; tilt.ty = 0; wake(); });
         }
 
+        // The opening (Macon-Bibb alone under the headline) is a title, not the map: no county
+        // pop-ups until the story's first card, when the neighbors have arrived
+        const storyBegun = () => hour >= 5.9;
         function showTip(info) {
             const fips = info.object && info.object.fips;
-            if (!fips || rise < 0.9) { tip.style.display = 'none'; return; }
+            if (!fips || rise < 0.9 || !storyBegun()) { tip.style.display = 'none'; return; }
             const m = morphAt(hour);
             if (m > 0.05 && m < 0.97) { tip.style.display = 'none'; return; }   // mid-transition: no tooltip
             if (m >= 0.97) {
@@ -885,7 +888,7 @@
             section.classList.toggle('is-map', S.live);
             // The map's buttons fade in with it; until they're showing, keyboard focus skips them
             section.querySelectorAll('.ci-overlay').forEach(el => { el.inert = S.overlays < 0.5; });
-            if (m > 0.05 && m < 0.97) tip.style.display = 'none';
+            if ((m > 0.05 && m < 0.97) || !storyBegun()) tip.style.display = 'none';
         }
 
         // ----- Scroll → target time; the shown time glides after it -----
